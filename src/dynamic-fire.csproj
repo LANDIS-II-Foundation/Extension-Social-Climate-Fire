@@ -71,18 +71,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BytePixel.cs" />
-    <Compile Include="CSVParser.cs" />
     <Compile Include="DynamicFireRegion.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DynamicInputParser.cs" />
-    <Compile Include="DynamicInputRecord.cs" />
     <Compile Include="DynamicInputs.cs" />
-    <Compile Include="DynamicWeather.cs" />
-    <Compile Include="Event.cs">
+    <Compile Include="FireEvent.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="EventRegion.cs" />
     <Compile Include="EventsLog.cs" />
     <Compile Include="FireDamages.cs" />
     <Compile Include="FireRegions.cs">
@@ -90,8 +85,6 @@
     </Compile>
     <Compile Include="FireSeverity.cs" />
     <Compile Include="AnnualFireWeather.cs" />
-    <Compile Include="FuelEffects.cs" />
-    <Compile Include="FuelType.cs" />
     <Compile Include="InputParameterParser.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -106,17 +99,14 @@
     <Compile Include="PlugIn.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SeasonParameters.cs" />
     <Compile Include="SiteVars.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SummaryLog.cs" />
-    <Compile Include="TempRetrieveTest.cs" />
     <Compile Include="Topography.cs" />
     <Compile Include="ShortPixel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Weather.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

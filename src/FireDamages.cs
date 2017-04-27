@@ -84,15 +84,7 @@ namespace Landis.Extension.Scrapple
         public FireDamage()
         {
         }
-        //---------------------------------------------------------------------
-/*
-        public FireDamage(
-                        double maxAge,
-                        int  severTolerDifference)
-        {
-            this.maxAge = maxAge;
-            this.severTolerDifference = severTolerDifference;
-        }*/
+        
         //---------------------------------------------------------------------
 
         private void ValidateAge(Percentage age)
