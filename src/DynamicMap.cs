@@ -3,10 +3,12 @@
 
 using Edu.Wisc.Forest.Flel.Util;
 
+//RMS: An example of how to read in maps through time.  We're saving this for a late itertion.
+
 namespace Landis.Extension.Scrapple
 {
 
-    public interface IDynamicFireRegion
+    public interface IDynamicMap
     {
         int Year {get;set;}
         string MapName{get;set;}
@@ -15,8 +17,8 @@ namespace Landis.Extension.Scrapple
 
 namespace Landis.Extension.Scrapple
 {
-    public class DynamicFireRegion
-    : IDynamicFireRegion
+    public class DynamicMap
+    : IDynamicMap
     {
         private string mapName;
         private int year;
@@ -51,27 +53,9 @@ namespace Landis.Extension.Scrapple
         }
         //---------------------------------------------------------------------
 
-        public DynamicFireRegion()
+        public DynamicMap()
         {
         }
-        //---------------------------------------------------------------------
-/*
-        public DynamicFireRegion(
-            string mapName,
-            int year
-            )
-        {
-            this.mapName = mapName;
-            this.year = year;
-        }
-
-        //---------------------------------------------------------------------
-
-        public DynamicFireRegion()
-        {
-            this.mapName = "";
-            this.year = 0;
-        }*/
 
 
     }

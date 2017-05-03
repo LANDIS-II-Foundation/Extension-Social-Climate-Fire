@@ -13,7 +13,7 @@ namespace Landis.Extension.Scrapple
         
         public static ExtensionMetadata Extension {get; set;}
 
-        public static void InitializeMetadata(int Timestep, string MapFileName, string TimeMapFileName, ICore mCore)
+        public static void InitializeMetadata(int Timestep, string MapFileName, ICore mCore)
         {
             ScenarioReplicationMetadata scenRep = new ScenarioReplicationMetadata() {
                 RasterOutCellArea = PlugIn.ModelCore.CellArea,
@@ -71,16 +71,16 @@ namespace Landis.Extension.Scrapple
             };
             Extension.OutputMetadatas.Add(mapOut_Severity);
 
-            OutputMetadata mapOut_Time = new OutputMetadata()
-            {
-                Type = OutputType.Map,
-                Name = "TimeLastFire",
-                FilePath = @TimeMapFileName,
-                Map_DataType = MapDataType.Continuous,
-                Map_Unit = FieldUnits.Year,
-                Visualize = true,
-            };
-            Extension.OutputMetadatas.Add(mapOut_Time);
+            //OutputMetadata mapOut_Time = new OutputMetadata()
+            //{
+            //    Type = OutputType.Map,
+            //    Name = "TimeLastFire",
+            //    FilePath = @TimeMapFileName,
+            //    Map_DataType = MapDataType.Continuous,
+            //    Map_Unit = FieldUnits.Year,
+            //    Visualize = true,
+            //};
+            //Extension.OutputMetadatas.Add(mapOut_Time);
             //---------------------------------------
             MetadataProvider mp = new MetadataProvider(Extension);
             mp.WriteMetadataToXMLFile("Metadata", Extension.Name, Extension.Name);

@@ -80,8 +80,9 @@ namespace Landis.Extension.Scrapple
             //  Read table of Fire Damage classes.
             //  Damages are in increasing order.
              PlugIn.ModelCore.UI.WriteLine("   Loading Fire Damage data...");
-            
-            ReadName(FireDamage);
+
+             InputVar<string> fireDamage = new InputVar<string>("FireDamage");
+             ReadVar(fireDamage);
 
             InputVar<Percentage> maxAge = new InputVar<Percentage>("Max Survival Age");
             InputVar<int> severTolerDifference = new InputVar<int>("Severity Tolerance Diff");

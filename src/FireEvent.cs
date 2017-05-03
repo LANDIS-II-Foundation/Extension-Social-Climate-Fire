@@ -27,7 +27,7 @@ namespace Landis.Extension.Scrapple
         private double maxFireParameter;
         private int sizeBin;
         private double maxDuration;
-        private IDynamicInputRecord initiationFireRegion;
+        //private IDynamicInputRecord initiationFireRegion;
         private bool secondRegionMap;
         private int initiationPercentConifer;
         private int initiationFuel;
@@ -95,12 +95,12 @@ namespace Landis.Extension.Scrapple
         }
         //---------------------------------------------------------------------
 
-        public IDynamicInputRecord InitiationFireRegion
-        {
-            get {
-                return initiationFireRegion;
-            }
-        }
+        //public IDynamicInputRecord InitiationFireRegion
+        //{
+        //    get {
+        //        return initiationFireRegion;
+        //    }
+        //}
         //---------------------------------------------------------------------
 
         public bool SecondRegionMap
@@ -390,140 +390,38 @@ namespace Landis.Extension.Scrapple
         //---------------------------------------------------------------------
         public static FireEvent Initiate(ActiveSite site,
                                      int        timestep)
-                                     //SizeType   fireSizeType,
-                                     //bool       bui,
-                                     //ISeasonParameters[] seasons,
-                                     //double severityCalibrate,
-                                     //IDynamicInputRecord eco)
+
         {
 
 
-            //Adjust ignition probability (measured on an annual basis) for the
-            //user determined fire time step.
-
-
-            //int fuelIndex = SiteVars.CFSFuelType[site];
-            //if (eco.MapCode > FireRegions.MaxMapCode)
-            //    fuelIndex = SiteVars.CFSFuelType2[site];
-
-            //double initProb = FuelTypeParms[fuelIndex].InitiationProbability; 
-
-
-            //If mixed type, need to use weighted average initProb
-            //if (FuelTypeParms[fuelIndex].BaseFuel == BaseFuelType.Conifer && SiteVars.PercentHardwood[site] > 0) //Mixed type
-            //{
-            //    double decidInitProb;
-            //    int decidFuelIndex = SiteVars.DecidFuelType[site];
-            //    if (decidFuelIndex > 0)
-            //    {
-            //        decidInitProb = FuelTypeParms[decidFuelIndex].InitiationProbability;
-            //        initProb = (initProb * SiteVars.PercentConifer[site] + decidInitProb * SiteVars.PercentHardwood[site]) / 100;
-            //    }
-            //}
-
-            //The initial site must exceed the probability of initiation and
-            //have a severity > 0 and exceed the ignition threshold:
             double randomNum = PlugIn.ModelCore.GenerateUniform();
 
-            //ISeasonParameters fireSeason = Weather.GenerateSeason(seasons);
-            
-            // Calculate random day for this season
-            //int day = (int)((fireSeason.EndDay - fireSeason.StartDay) * randomNum) + fireSeason.StartDay;// System.Random(1, 366);  This selects a random day during the Fire Season
-            ////PlugIn.ModelCore.UI.WriteLine("Day selected for fire calculations =  {0}", day);
 
-            //if (SiteVars.PercentDeadFir[site] > 0) // If M3 or M4 type, use initProb if greater
-            //{
-            //    if (SiteVars.PercentConifer[site] == 100 ||
-            //        fireSeason.LeafStatus == LeafOnOff.LeafOff)
-            //    {
-            //        //find the fuelindex with surfacefuel M3
-            //        foreach (FuelType listFuel in FuelTypeParms)
-            //        {
-            //            if (listFuel.SurfaceFuel == SurfaceFuelType.M3)
-            //                if (listFuel.InitiationProbability > initProb) //Only use M3 initprob if > c-type
-            //                    initProb = listFuel.InitiationProbability;
-            //        }
-
-            //    }
-            //    else
-            //    {
-            //        //find the fuel index with surfacefuel M4
-            //        foreach (FuelType listFuel in FuelTypeParms)
-            //        {
-            //            if (listFuel.SurfaceFuel == SurfaceFuelType.M4)
-            //                if (listFuel.InitiationProbability > initProb) //Only use M4 initprob if > c-type
-            //                    initProb = listFuel.InitiationProbability;
-            //        }
-            //    }
-            //}
-
-            bool initiation = false;
-
-            
-            //if (PlugIn.ClimateLibraryActive) //Alec: This is a y/n for climate library activation
-            //{
-
-                IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
                 
-                
-                AnnualFireWeather.CalculateFireWeather(day, ecoregion);
-                // Get probability of ignition based on Jen Beverly equation and FWI;
-                double FWIshape = FuelTypeParms[fuelIndex].IgnitionDistributionShape;  
+                // Ignition moved to Run()
 
-                double FWIscale = FuelTypeParms[fuelIndex].IgnitionDistributionScale;
+                //// Get probability of ignition based on Jen Beverly equation and FWI;
 
-                // A. Kretchun: My equation that includes FWIshape and FWIscale and AnnualFire.FireWeatherIndex. This equation comes from Beverly et al 2007
-                double ignitionProbability = 1/(1+Math.Exp(-(FWIshape+FWIscale*AnnualFireWeather.FireWeatherIndex))); 
+                //double FWIshape = FuelTypeParms[fuelIndex].IgnitionDistributionShape;//RMS: Necessary?  
+
+                //double FWIscale = FuelTypeParms[fuelIndex].IgnitionDistributionScale;//RMS: Necessary?
+
+                //// A. Kretchun: My equation that includes FWIshape and FWIscale and AnnualFire.FireWeatherIndex. This equation comes from Beverly et al 2007
+                //double ignitionProbability = 1/(1+Math.Exp(-(FWIshape+FWIscale*AnnualFireWeather.FireWeatherIndex))); 
+
+            IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
+            AnnualFireWeather.CalculateFireWeather(day, ecoregion);
 
 
-                // Add minimum:  If < 0.10, skip it.
-                if (AnnualFireWeather.FireWeatherIndex < 10) 
-                {
-                    return null;
-                    //initiation = false;
-                }
-                // If successful, test initialization
-                else 
-                {
-                    randomNum = PlugIn.ModelCore.GenerateUniform();
-
-                    if (initProb > randomNum)
-                        //return true; 
-                        initiation = true;
-                }
-            //}
-            //else if (randomNum <= initProb)
-            //{
-            //    if (isDebugEnabled)
-            //        PlugIn.ModelCore.UI.WriteLine("   Generating a new fire event...");
-            //    initiation = true;
-            //}
-            //else
-            //{
-            //    if (isDebugEnabled)
-            //        PlugIn.ModelCore.UI.WriteLine("   Fire Event failed to initiate due to fuel type initiation probability");
-            //    initiation = false; // return null;
-            //}
-
-            if (initiation)
-            {
                 FireEvent fireEvent = new FireEvent(/*site, fireSeason, fireSizeType, eco, */day); //Must create event to determine season
 
                 // Test that adequate weather data was retrieved:
-                if (fireEvent.windSpeed == 0)// && fireEvent.fineFuelMoistureCode == 0 && fireEvent.buildUpIndex == 0)
+                if (fireEvent.windSpeed == 0)
                 {
-                    //PlugIn.ModelCore.UI.WriteLine("   No weather data available:  {0}; fire_region = {1}.", fireEvent.fireSeason.NameOfSeason, fireEvent.initiationFireRegion.Name);
+                    // throw an error //RMS
                     return null;
                 }
 
-                //if (fireEvent.FireSeason.PercentCuring == 0 && FuelTypeParms[fuelIndex].BaseFuel == BaseFuelType.Open)
-                //    return null;
-
-                if (!fireEvent.Spread(site))//, eco, fireSizeType, bui, severityCalibrate))
-                    return null;
-                else
-                    return fireEvent;
-            }
             return null;
         }
 
@@ -531,7 +429,7 @@ namespace Landis.Extension.Scrapple
         private bool Spread(ActiveSite initiationSite)//, IDynamicInputRecord fire_region, SizeType fireSizeType, bool BUI, double severityCalibrate)
         {
             //First, check for fire overlap:
-            if(SiteVars.Event[initiationSite] != null)
+            if(SiteVars.FireEvent[initiationSite] != null)
                 return false;
 
             if (isDebugEnabled)
@@ -541,7 +439,7 @@ namespace Landis.Extension.Scrapple
 
             int totalSiteSeverities = 0;
             int siteCohortsKilled    = 0;
-            int totalISI = 0;
+            //int totalISI = 0;
             totalSitesDamaged = 1;
 
             //this.initiationFuel   = SiteVars.CFSFuelType[initiationSite];
@@ -669,7 +567,7 @@ namespace Landis.Extension.Scrapple
                 {
                     this.numSitesChecked++;
 
-                    this.siteSeverity = FireSeverity.CalcFireSeverity(currentSite, this); //, severityCalibrate, FMC);
+                    this.siteSeverity = 0; // FireSeverity.CalcFireSeverity(currentSite, this); //, severityCalibrate, FMC);
                     siteCohortsKilled = Damage(currentSite);
 
                     this.totalSitesDamaged++;
@@ -681,7 +579,7 @@ namespace Landis.Extension.Scrapple
                     //if (this.secondRegionMap)
                     //    siteFireRegion = SiteVars.FireRegion2[site];
 
-                    sitesInEvent[siteFireRegion.Index]++;
+                    //sitesInEvent[siteFireRegion.Index]++;
 
                     SiteVars.Disturbed[currentSite] = true;
                     SiteVars.Severity[currentSite] = (byte) siteSeverity;

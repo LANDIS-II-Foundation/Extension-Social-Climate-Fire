@@ -16,13 +16,13 @@ namespace Landis.Extension.Scrapple
     public interface IInputParameters
     {
         int Timestep{get;set;}
-        string ClimateConfigFile { get; set; }    
+        //string ClimateConfigFile { get; set; }    
         double RelativeHumiditySlopeAdjustment { get; set; }   //does this go in the interface or below in the input parameters?
         //SizeType FireSizeType{get;set;}
 
         //bool BUI{get;set;}
         double SeverityCalibrate { get;set;}
-        List<IDynamicFireRegion> DynamicFireRegions {get;}
+        //List<IDynamicFireRegion> DynamicFireRegions {get;}
         //List<IDynamicWeather> DynamicWeather { get;}
         //ISeasonParameters[] SeasonParameters{get;}
         //IFuelType[] FuelTypeParameters{get;}
@@ -46,7 +46,7 @@ namespace Landis.Extension.Scrapple
         
 //        private SizeType fireSizeType;
         
-        private bool buildUpIndex;
+        //private bool buildUpIndex;
         private double severityCalibrate;
         //private List<IDynamicFireRegion> dynamicFireRegions;
         //private List<IDynamicWeather> dynamicWeather;

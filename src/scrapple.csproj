@@ -71,19 +71,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BytePixel.cs" />
-    <Compile Include="DynamicFireRegion.cs">
+    <Compile Include="DynamicMap.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DynamicInputs.cs" />
     <Compile Include="FireEvent.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="EventsLog.cs" />
     <Compile Include="FireDamages.cs" />
-    <Compile Include="FireRegions.cs">
+    <Compile Include="ReadMap.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FireSeverity.cs" />
     <Compile Include="AnnualFireWeather.cs" />
     <Compile Include="InputParameterParser.cs">
       <SubType>Code</SubType>
