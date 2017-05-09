@@ -413,7 +413,7 @@ namespace Landis.Extension.Scrapple
             AnnualFireWeather.CalculateFireWeather(day, ecoregion);
 
 
-                FireEvent fireEvent = new FireEvent(/*site, fireSeason, fireSizeType, eco, */day); //Must create event to determine season
+                FireEvent fireEvent = new FireEvent(/*site, fireSeason, fireSizeType, eco, */int day); //Must create event to determine season
 
                 // Test that adequate weather data was retrieved:
                 if (fireEvent.windSpeed == 0)

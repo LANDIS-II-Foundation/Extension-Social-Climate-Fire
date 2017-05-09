@@ -130,30 +130,39 @@ namespace Landis.Extension.Scrapple
 
             //}
 
-            double fireWeatherIndex = 10.0; // this not be a static number. just now for testing (AnnualFireWeather.FireWeatherIndex)
-            int firesStarted;
+            double fireWeatherIndex = AnnualFireWeather.FireWeatherIndex;
+            
+            // If (timestep != 1) need to caculate different leapyear 
+            bool leapyear = ((modelCore.CurrentTime % 4) == 0) ? true : false;
+            int daysPerYear = leapyear ? 366 : 365;
 
-            // do this for each day of the year (365 days)
-            for (int i = 0; i < 364; ++i)
+            int numfiresStarted;
+            int numFires;
+            // do this for each day of the year
+            for (int i = 0; i < daysPerYear; ++i)
             {
                 // Check to make sure FireWeatherIndex is >= 10. If not skip day
                 if (fireWeatherIndex >= 10)
                 {
                     // check to make at least 1 ignition happend
-                    firesStarted = Ignitions(fireWeatherIndex);
+                    numFires = Ignitions(fireWeatherIndex);
 
-                    if (firesStarted >= 1)
+                    if (numFires >= 1)
                     {
-                        for (int i = 0; i < firesStarted)
-                        {
-                            // create fire event
-                        }
+                        numfiresStarted = (numFires > 3) ? 3 : numFires;
                     }
-                    // No fires started
+                    
                     else
                     {
-                        modelCore.GenerateUniform();
+                        if(modelCore.GenerateUniform() <= numFires)
+                        {
+                            numfiresStarted = numFires;
+                        }
                     }
+
+                    // create fire Event. How do i choose the site?
+                    FireEvent currentFireEvent = new FireEvent();
+                    LogEvent(modelCore.CurrentTime, currentFireEvent);
                 }
             }
 
@@ -263,7 +272,8 @@ namespace Landis.Extension.Scrapple
 
         private static int Ignitions(double fireWeatherIndex)
         {
-            return (fireWeatherIndex ^ 2) / 500;
+            int numIgnitions = (int)Math.Ceiling(fireWeatherIndex * fireWeatherIndex) / 500;
+            return numIgnitions;
         }
 
 
