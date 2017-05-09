@@ -114,21 +114,49 @@ namespace Landis.Extension.Scrapple
             // RMS:  foreach day-of-year loop
             // {
 
-                // Estimate number of successful ignitions per day based on FWI using algorithm from AK
-                // double FWI = AnnualFireWeather.FireWeatherIndex
-                // Add minimum:  If < 0.10, skip it.
-                // if (AnnualFireWeather.FireWeatherIndex < 10)
-                    // skip this day
+            // Estimate number of successful ignitions per day based on FWI using algorithm from AK
+            // double FWI = AnnualFireWeather.FireWeatherIndex
+            // Add minimum:  If < 0.10, skip it.
+            // if (AnnualFireWeather.FireWeatherIndex < 10)
+            // skip this day
 
-                // double numFires = fancy equation from AK
-                // if numFires > 1, then that's the number of fires to start (numFiresStarted)
-                // if numFires < 1, then:
-                    // if (modelCore.GenerateUniform() <= numFires)
-                        // numFiresStarted = 1;
+            // double numFires = fancy equation from AK
+            // if numFires > 1, then that's the number of fires to start (numFiresStarted)
+            // if numFires < 1, then:
+            // if (modelCore.GenerateUniform() <= numFires)
+            // numFiresStarted = 1;
 
-                // Next create a FireEvent and burn baby burn!
-            
+            // Next create a FireEvent and burn baby burn!
+
             //}
+
+            double fireWeatherIndex = 10.0; // this not be a static number. just now for testing (AnnualFireWeather.FireWeatherIndex)
+            int firesStarted;
+
+            // do this for each day of the year (365 days)
+            for (int i = 0; i < 364; ++i)
+            {
+                // Check to make sure FireWeatherIndex is >= 10. If not skip day
+                if (fireWeatherIndex >= 10)
+                {
+                    // check to make at least 1 ignition happend
+                    firesStarted = Ignitions(fireWeatherIndex);
+
+                    if (firesStarted >= 1)
+                    {
+                        for (int i = 0; i < firesStarted)
+                        {
+                            // create fire event
+                        }
+                    }
+                    // No fires started
+                    else
+                    {
+                        modelCore.GenerateUniform();
+                    }
+                }
+            }
+
 
             // Track the time of last fire; registered in SiteVars.cs for other extensions to access.
             if (isDebugEnabled)
@@ -231,6 +259,11 @@ namespace Landis.Extension.Scrapple
             }
 
             return shuffledList;
+        }
+
+        private static int Ignitions(double fireWeatherIndex)
+        {
+            return (fireWeatherIndex ^ 2) / 500;
         }
 
 
