@@ -4,12 +4,13 @@
 using Landis.Library.AgeOnlyCohorts;
 using Landis.SpatialModeling;
 using Landis.Core;
+using Landis.Library.Climate;
 //using log4net;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-
+using System.Linq;
 
 namespace Landis.Extension.Scrapple
 {
@@ -303,11 +304,14 @@ namespace Landis.Extension.Scrapple
         //---------------------------------------------------------------------
         // Constructor function
 
-        private FireEvent(ActiveSite initiationSite, /*ISeasonParameters fireSeason, SizeType fireSizeType, IDynamicInputRecord eco,*/ int day)
+        public FireEvent(ActiveSite initiationSite, /*ISeasonParameters fireSeason, SizeType fireSizeType, IDynamicInputRecord eco,*/ int day)
         {
             this.initiationSite = initiationSite;
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[initiationSite];
-            
+
+            int actualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_DailyData.First().Key;
+            AnnualClimate_Daily annualWeatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
+
             //this.sitesInEvent = new int[FireRegions.Dataset.Length];
 
             //foreach (IDynamicInputRecord fire_region in FireRegions.Dataset)
@@ -326,13 +330,12 @@ namespace Landis.Extension.Scrapple
             //    this.secondRegionMap = false;
             //this.maxFireParameter = ComputeSize(eco.MeanSize, eco.StandardDeviation, eco.MinSize, eco.MaxSize); 
             //this.fireSeason         = fireSeason; 
-
-                this.FireWeatherIndex = AnnualFireWeather.FireWeatherIndex;
-                this.windSpeed = AnnualFireWeather.WindSpeedVelocity;
-                //this.fineFuelMoistureCode = (int) AnnualFireWeather.FineFuelMoistureCode;
-                //this.buildUpIndex = (int) AnnualFireWeather.BuildUpIndex;
-                this.windDirection = (double) AnnualFireWeather.WindAzimuth;
-                //this.foliarMC = Weather.GenerateFMC(this.fireSeason, eco);
+            this.FireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
+            this.windSpeed = annualWeatherData.DailyWindSpeed[day];
+            //this.fineFuelMoistureCode = (int) AnnualFireWeather.FineFuelMoistureCode;
+            //this.buildUpIndex = (int) AnnualFireWeather.BuildUpIndex;
+            this.windDirection = annualWeatherData.DailyWindDirection[day];
+            //this.foliarMC = Weather.GenerateFMC(this.fireSeason, eco);
 
 
         }
@@ -388,8 +391,7 @@ namespace Landis.Extension.Scrapple
         }
 
         //---------------------------------------------------------------------
-        public static FireEvent Initiate(ActiveSite site,
-                                     int        timestep)
+        public static FireEvent Initiate(ActiveSite site, int timestep, int day)
 
         {
 
@@ -409,20 +411,23 @@ namespace Landis.Extension.Scrapple
                 //// A. Kretchun: My equation that includes FWIshape and FWIscale and AnnualFire.FireWeatherIndex. This equation comes from Beverly et al 2007
                 //double ignitionProbability = 1/(1+Math.Exp(-(FWIshape+FWIscale*AnnualFireWeather.FireWeatherIndex))); 
 
+            /*
+             * VS: These were removed to being calculated once a year. 
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
-            AnnualFireWeather.CalculateFireWeather(day, ecoregion);
 
+            AnnualFireWeather.CalculateAnnualFireWeather(ecoregion);
+            */
+            FireEvent fireEvent = new FireEvent(site,/* fireSeason, fireSizeType, eco, */ day); //Must create event to determine season
 
-                FireEvent fireEvent = new FireEvent(/*site, fireSeason, fireSizeType, eco, */int day); //Must create event to determine season
+            // Test that adequate weather data was retrieved:
+            if (fireEvent.windSpeed == 0)
+            {
+            // throw an error //RMS
+                throw new Exception("Inadequate weasther data retrieved");
+                //return null;
+            }
 
-                // Test that adequate weather data was retrieved:
-                if (fireEvent.windSpeed == 0)
-                {
-                    // throw an error //RMS
-                    return null;
-                }
-
-            return null;
+            return fireEvent;
         }
 
         //---------------------------------------------------------------------

@@ -100,7 +100,6 @@ namespace Landis.Extension.Scrapple
         ///</summary>
         public override void Run()
         {
-
             SiteVars.InitializeFuelType();
             SiteVars.FireEvent.SiteValues = null;
             SiteVars.Severity.ActiveSiteValues = 0;
@@ -130,39 +129,51 @@ namespace Landis.Extension.Scrapple
 
             //}
 
-            double fireWeatherIndex = AnnualFireWeather.FireWeatherIndex;
+            int actualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_DailyData.First().Key;
+            AnnualFireWeather annualFireWeather = new AnnualFireWeather(actualYear);
+            foreach (IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
+            {
+                annualFireWeather.CalculateAnnualFireWeather(ecoregion);
+            }
             
             // If (timestep != 1) need to caculate different leapyear 
-            bool leapyear = ((modelCore.CurrentTime % 4) == 0) ? true : false;
+            bool leapyear = AnnualClimate.IsLeapYear(actualYear) ? true : false;
             int daysPerYear = leapyear ? 366 : 365;
 
-            int numfiresStarted;
-            int numFires;
+            // number of fires get initilized to 0 every timestep
+            int numFiresStarted = 0;
+            int numFires = 0;
+            
+            List<ActiveSite> activeSites = PlugIn.ModelCore.Landscape.ToList();
+            activeSites = Shuffle<ActiveSite>(activeSites);
+
             // do this for each day of the year
-            for (int i = 0; i < daysPerYear; ++i)
+            for (int day = 0; day < daysPerYear; ++day)
             {
-                // Check to make sure FireWeatherIndex is >= 10. If not skip day
-                if (fireWeatherIndex >= 10)
+                // Check to make sure FireWeatherIndex is >= 10. If not skip day 
+                // VS: this may need to change
+                if (annualFireWeather.FireWeatherIndex[day] >= 10)
                 {
                     // check to make at least 1 ignition happend
-                    numFires = Ignitions(fireWeatherIndex);
+                    numFires = Ignitions(annualFireWeather.FireWeatherIndex[day]);
 
                     if (numFires >= 1)
                     {
-                        numfiresStarted = (numFires > 3) ? 3 : numFires;
+                        numFiresStarted = (numFires > 3) ? 3 : numFires;
                     }
-                    
                     else
                     {
-                        if(modelCore.GenerateUniform() <= numFires)
-                        {
-                            numfiresStarted = numFires;
-                        }
+                        numFiresStarted = (modelCore.GenerateUniform() >= numFires) ? 1 : 0;
                     }
 
-                    // create fire Event. How do i choose the site?
-                    FireEvent currentFireEvent = new FireEvent();
-                    LogEvent(modelCore.CurrentTime, currentFireEvent);
+                    for (int i = 0; i < numFiresStarted; ++i )
+                    {
+                        // create fire Event. How do i determine if there was lightning or manmade?
+                        FireEvent fireEvent = FireEvent.Initiate(activeSites.First(), modelCore.CurrentTime, day);
+                        LogEvent(modelCore.CurrentTime, fireEvent);
+                        activeSites.Remove(activeSites.First());
+                    }
+                    
                 }
             }
 
@@ -224,7 +235,7 @@ namespace Landis.Extension.Scrapple
             el.WindSpeed = fireEvent.WindSpeed;
             el.WindDirection = fireEvent.WindDirection;
             el.TotalSites = fireEvent.NumSitesChecked;
-            el.FWI = fireEvent.FireWeatherIndex;
+            el.FireWeatherIndex = fireEvent.FireWeatherIndex;
             el.CohortsKilled = fireEvent.CohortsKilled;
             el.MeanSeverity = fireEvent.EventSeverity;
 
@@ -254,9 +265,9 @@ namespace Landis.Extension.Scrapple
         }
 
         // A helper function for randomly choosing which neighbor to spread to next.
-        private static List<Location> Shuffle<Location>(List<Location> list)
+        private static List<T> Shuffle<T>(List<T> list)
         {
-            List<Location> shuffledList = new List<Location>();
+            List<T> shuffledList = new List<T>();
 
             int randomIndex = 0;
             while (list.Count > 0)

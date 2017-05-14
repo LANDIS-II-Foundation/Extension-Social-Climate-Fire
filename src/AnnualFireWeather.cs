@@ -13,9 +13,9 @@ namespace Landis.Extension.Scrapple
 
     public class AnnualFireWeather
     {
+         
+        public double[] FireWeatherIndex = new double[365];
 
-        public static double FireWeatherIndex; 
-            
         //public static double  FineFuelMoistureCode;      
 
         //public static double DuffMoistureCode;   
@@ -24,43 +24,55 @@ namespace Landis.Extension.Scrapple
             
         //public static double BuildUpIndex;                
             
-        public static double WindSpeedVelocity;          
+        public double[] WindSpeedVelocity;          
             
-        public static double WindAzimuth;              
+        public double[] WindAzimuth;              
 
         //public Season mySeason;    
             
-        public int Ecoregion;          //RMS:  Necessary?        
+        // public int Ecoregion;          //RMS:  Necessary?        // VS: I don't believe it is
+        private int actualYear;
+
+        public AnnualFireWeather(int actualYear)
+        {
+            this.actualYear = actualYear;
+            FireWeatherIndex = AnnualClimate.IsLeapYear(actualYear) ? new double[365] : new double[364];
+            WindSpeedVelocity = AnnualClimate.IsLeapYear(actualYear) ? new double[365] : new double[364];
+            WindAzimuth = AnnualClimate.IsLeapYear(actualYear) ? new double[365] : new double[364];
+        }
 
         //public enum Season {Winter, Spring, Summer, Fall};
-	
-        public static void CalculateFireWeather(int day, IEcoregion ecoregion)
-        {
-            double RHslopeadjust =  PlugIn.RelativeHumiditySlopeAdjust;
 
+        // VS: pretty sure this is just for yearly so day is probably not necessary TBD
+        public void CalculateAnnualFireWeather(/*int day,*/ IEcoregion ecoregion)
+        {
+            double RHslopeAdjust =  PlugIn.RelativeHumiditySlopeAdjust;
             
             for (int d = 0; d <= 365; d++) //This section loops through all the days of the fire season and retrieves various climate variables below
             {
                 AnnualClimate_Daily myWeatherData;  
                 double temperature = -9999.0;
                 double precipitation = -9999.0;
-                WindSpeedVelocity = -9999.0;
-                WindAzimuth = -9999.0;
+                WindSpeedVelocity[d] = -9999.0;
+                WindAzimuth[d] = -9999.0;
                 double relative_humidity = -9999;
 
                 int actualYear = (PlugIn.ModelCore.CurrentTime -1) + Climate.Future_DailyData.First().Key;  
 
                 if (Climate.Future_DailyData.ContainsKey(actualYear))
                 {
+                    //what is annualAET
                     double test = Climate.Future_DailyData[actualYear][ecoregion.Index].AnnualAET;
 
                     myWeatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
                     temperature = (myWeatherData.DailyMaxTemp[d] + myWeatherData.DailyMinTemp[d]) / 2;  
                     precipitation = myWeatherData.DailyPrecip[d];
-                    WindSpeedVelocity = myWeatherData.DailyWindSpeed[d];
-                    WindAzimuth = myWeatherData.DailyWindDirection[d];
-                    relative_humidity = 100 * Math.Exp((RHslopeadjust * myWeatherData.DailyMinTemp[d]) / (273.15 + myWeatherData.DailyMinTemp[d]) - (RHslopeadjust * temperature) / (273.15 + temperature));
+                    WindSpeedVelocity[d] = myWeatherData.DailyWindSpeed[d];
+                    WindAzimuth[d] = myWeatherData.DailyWindDirection[d];
+                    relative_humidity = 100 * Math.Exp((RHslopeAdjust * myWeatherData.DailyMinTemp[d]) / (273.15 + myWeatherData.DailyMinTemp[d]) - (RHslopeAdjust * temperature) / (273.15 + temperature));
                     //Relative humidity calculations include RHslopeadjust variable to correct for location of study.
+                    myWeatherData.DailyFireWeatherIndex[d] = CalculateFWI(precipitation, temperature);
+                    FireWeatherIndex[d] = myWeatherData.DailyFireWeatherIndex[d];
                 }
                 else
                 {
@@ -72,8 +84,14 @@ namespace Landis.Extension.Scrapple
            return;
     }
 
+        private static double CalculateFWI(double precipitation, double temperature)
+        {
+            double FWI = 0.0;
 
-    private static int Calculate_month(int d)
+            return FWI;
+        }
+
+        private static int CalculateMonth(int d)
     {
         int month = 0;
 
@@ -131,7 +149,7 @@ namespace Landis.Extension.Scrapple
     }
 
 
-    private static double Calculate_WindFunction_ISI(int d, double WindSpeedVelocity)
+    private static double CalculateWindFunctionISI(int d, double WindSpeedVelocity)
 	{
 		double WindFunction_ISI = 0.0;
 
