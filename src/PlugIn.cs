@@ -137,8 +137,7 @@ namespace Landis.Extension.Scrapple
             }
             
             // If (timestep != 1) need to caculate different leapyear 
-            bool leapyear = AnnualClimate.IsLeapYear(actualYear) ? true : false;
-            int daysPerYear = leapyear ? 366 : 365;
+            int daysPerYear = (AnnualClimate.IsLeapYear(actualYear) ? true : false) ? 366 : 365;
 
             // number of fires get initilized to 0 every timestep
             int numFiresStarted = 0;

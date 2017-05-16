@@ -419,7 +419,7 @@ namespace Landis.Extension.Scrapple
             */
             FireEvent fireEvent = new FireEvent(site,/* fireSeason, fireSizeType, eco, */ day); //Must create event to determine season
 
-            // Test that adequate weather data was retrieved:
+            // Test that adequate weather data was retrieved:-
             if (fireEvent.windSpeed == 0)
             {
             // throw an error //RMS
@@ -750,6 +750,4 @@ namespace Landis.Extension.Scrapple
         }
 
     }
-
-
 }
