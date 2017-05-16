@@ -55,7 +55,7 @@ namespace Landis.Extension.Scrapple
         //public double ISI { set; get; }
 
         [DataFieldAttribute(Desc = "Fire Weather Index")]
-        public double FWI { set; get; }
+        public double FireWeatherIndex { set; get; }
 
         [DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Total Number of Sites in Event")]
         public int TotalSites { set; get; }

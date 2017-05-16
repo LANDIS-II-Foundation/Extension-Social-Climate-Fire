@@ -143,16 +143,16 @@ namespace Landis.Extension.Scrapple
         //}*/
         ////---------------------------------------------------------------------
         
-        //public double SeverityCalibrate
-        //{
-        //    get {
-        //        return severityCalibrate;
-        //    }
-        //    set
-        //    {
-        //        severityCalibrate = value;
-        //    }
-        //}
+        public double SeverityCalibrate
+        {
+            get {
+                return severityCalibrate;
+            }
+            set
+            {
+                severityCalibrate = value;
+            }
+        }
         
         ////---------------------------------------------------------------------
         

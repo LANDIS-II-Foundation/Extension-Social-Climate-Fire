@@ -100,7 +100,6 @@ namespace Landis.Extension.Scrapple
         ///</summary>
         public override void Run()
         {
-
             SiteVars.InitializeFuelType();
             SiteVars.FireEvent.SiteValues = null;
             SiteVars.Severity.ActiveSiteValues = 0;
@@ -114,21 +113,69 @@ namespace Landis.Extension.Scrapple
             // RMS:  foreach day-of-year loop
             // {
 
-                // Estimate number of successful ignitions per day based on FWI using algorithm from AK
-                // double FWI = AnnualFireWeather.FireWeatherIndex
-                // Add minimum:  If < 0.10, skip it.
-                // if (AnnualFireWeather.FireWeatherIndex < 10)
-                    // skip this day
+            // Estimate number of successful ignitions per day based on FWI using algorithm from AK
+            // double FWI = AnnualFireWeather.FireWeatherIndex
+            // Add minimum:  If < 0.10, skip it.
+            // if (AnnualFireWeather.FireWeatherIndex < 10)
+            // skip this day
 
-                // double numFires = fancy equation from AK
-                // if numFires > 1, then that's the number of fires to start (numFiresStarted)
-                // if numFires < 1, then:
-                    // if (modelCore.GenerateUniform() <= numFires)
-                        // numFiresStarted = 1;
+            // double numFires = fancy equation from AK
+            // if numFires > 1, then that's the number of fires to start (numFiresStarted)
+            // if numFires < 1, then:
+            // if (modelCore.GenerateUniform() <= numFires)
+            // numFiresStarted = 1;
 
-                // Next create a FireEvent and burn baby burn!
-            
+            // Next create a FireEvent and burn baby burn!
+
             //}
+
+            int actualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_DailyData.First().Key;
+            AnnualFireWeather annualFireWeather = new AnnualFireWeather(actualYear);
+            foreach (IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
+            {
+                annualFireWeather.CalculateAnnualFireWeather(ecoregion);
+            }
+            
+            // If (timestep != 1) need to caculate different leapyear 
+            int daysPerYear = (AnnualClimate.IsLeapYear(actualYear) ? true : false) ? 366 : 365;
+
+            // number of fires get initilized to 0 every timestep
+            int numFiresStarted = 0;
+            int numFires = 0;
+            
+            List<ActiveSite> activeSites = PlugIn.ModelCore.Landscape.ToList();
+            activeSites = Shuffle<ActiveSite>(activeSites);
+
+            // do this for each day of the year
+            for (int day = 0; day < daysPerYear; ++day)
+            {
+                // Check to make sure FireWeatherIndex is >= 10. If not skip day 
+                // VS: this may need to change
+                if (annualFireWeather.FireWeatherIndex[day] >= 10)
+                {
+                    // check to make at least 1 ignition happend
+                    numFires = Ignitions(annualFireWeather.FireWeatherIndex[day]);
+
+                    if (numFires >= 1)
+                    {
+                        numFiresStarted = (numFires > 3) ? 3 : numFires;
+                    }
+                    else
+                    {
+                        numFiresStarted = (modelCore.GenerateUniform() >= numFires) ? 1 : 0;
+                    }
+
+                    for (int i = 0; i < numFiresStarted; ++i )
+                    {
+                        // create fire Event. How do i determine if there was lightning or manmade?
+                        FireEvent fireEvent = FireEvent.Initiate(activeSites.First(), modelCore.CurrentTime, day);
+                        LogEvent(modelCore.CurrentTime, fireEvent);
+                        activeSites.Remove(activeSites.First());
+                    }
+                    
+                }
+            }
+
 
             // Track the time of last fire; registered in SiteVars.cs for other extensions to access.
             if (isDebugEnabled)
@@ -187,7 +234,7 @@ namespace Landis.Extension.Scrapple
             el.WindSpeed = fireEvent.WindSpeed;
             el.WindDirection = fireEvent.WindDirection;
             el.TotalSites = fireEvent.NumSitesChecked;
-            el.FWI = fireEvent.FireWeatherIndex;
+            el.FireWeatherIndex = fireEvent.FireWeatherIndex;
             el.CohortsKilled = fireEvent.CohortsKilled;
             el.MeanSeverity = fireEvent.EventSeverity;
 
@@ -217,9 +264,9 @@ namespace Landis.Extension.Scrapple
         }
 
         // A helper function for randomly choosing which neighbor to spread to next.
-        private static List<Location> Shuffle<Location>(List<Location> list)
+        private static List<T> Shuffle<T>(List<T> list)
         {
-            List<Location> shuffledList = new List<Location>();
+            List<T> shuffledList = new List<T>();
 
             int randomIndex = 0;
             while (list.Count > 0)
@@ -231,6 +278,12 @@ namespace Landis.Extension.Scrapple
             }
 
             return shuffledList;
+        }
+
+        private static int Ignitions(double fireWeatherIndex)
+        {
+            int numIgnitions = (int)Math.Ceiling(fireWeatherIndex * fireWeatherIndex) / 500;
+            return numIgnitions;
         }
 
 
