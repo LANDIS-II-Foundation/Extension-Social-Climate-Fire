@@ -2,11 +2,6 @@
 //  Authors:  Robert M. Scheller, Brian R. Miranda 
 
 using Edu.Wisc.Forest.Flel.Util;
-using Landis.Core;
-using System.Collections.Generic;
-using System.Text;
-using System.Collections;
-using System;
 
 namespace Landis.Extension.Scrapple
 {
@@ -36,6 +31,7 @@ namespace Landis.Extension.Scrapple
 
         protected override IInputParameters Parse()
         {
+            const string MapNames = "MapNames";
             ReadLandisDataVar();
 
             InputParameters parameters = new InputParameters();
@@ -43,51 +39,75 @@ namespace Landis.Extension.Scrapple
             InputVar<int> timestep = new InputVar<int>("Timestep");
             ReadVar(timestep);
             parameters.Timestep = timestep.Value;
-
-            //InputVar<string> climateConfigFile = new InputVar<string>("ClimateConfigFile"); 
-            //if (ReadOptionalVar(climateConfigFile))
-            //{
-            //    parameters.ClimateConfigFile = climateConfigFile.Value;
-            //    PlugIn.ReadClimateLibrary = true;
-            //}
-
+            
             InputVar<double> rha = new InputVar<double>("RelativeHumiditySlopeAdjust");
             if (ReadOptionalVar(rha))
                 parameters.RelativeHumiditySlopeAdjustment = rha.Value;
             else
                 parameters.RelativeHumiditySlopeAdjustment = 1.0;
 
+            // VS: Needed to spin up climate file
+            InputVar<int> duration = new InputVar<int>("Duration");
+            ReadVar(duration);
+            parameters.Duration = duration.Value;
 
+            // Read SpringStart Parameter
+            InputVar<int> springStart = new InputVar<int>("SpringStart");
+            if (ReadOptionalVar(springStart))
+            {
+                parameters.SpringStart = springStart.Value;
+            }
+            else
+            {
+                // Set as Julian Days if not provided
+                parameters.SpringStart = 60;
+            }
 
+            // Read WinterStart Parameter
+            InputVar<int> winterStart = new InputVar<int>("WinterStart");
+            if (ReadOptionalVar(winterStart))
+            {
+                parameters.WinterStart = winterStart.Value;
+            }
+            else
+            {
+                // Set as Julian Days if not provided
+                parameters.WinterStart = 336;
+            }
 
+            InputVar<string> climateConfigFile = new InputVar<string>("ClimateConfigFile");
+            ReadVar(climateConfigFile);
+            parameters.ClimateConfigFile = climateConfigFile.Value;
+
+            /*
+            // Load Ground Slope Data
             const string GroundSlopeFile = "GroundSlopeFile";
             InputVar<string> groundSlopeFile = new InputVar<string>("GroundSlopeFile");
             ReadVar(groundSlopeFile);
             
-                PlugIn.ModelCore.UI.WriteLine("   Loading Slope data...");
-                
-                Topography.ReadGroundSlopeMap(groundSlopeFile.Value);
+            PlugIn.ModelCore.UI.WriteLine("   Loading Slope data...");
+            Topography.ReadGroundSlopeMap(groundSlopeFile.Value);
 
-                InputVar<string> uphillSlopeMap = new InputVar<string>("UphillSlopeAzimuthMap");
-                ReadVar(uphillSlopeMap);
+            // Load Uphill Slope Azimuth Data
+            InputVar<string> uphillSlopeMap = new InputVar<string>("UphillSlopeAzimuthMap");
+            ReadVar(uphillSlopeMap);
 
-                PlugIn.ModelCore.UI.WriteLine("   Loading Azimuth data...");
-
-                Topography.ReadUphillSlopeAzimuthMap(uphillSlopeMap.Value);
+            PlugIn.ModelCore.UI.WriteLine("   Loading Azimuth data...");
+            Topography.ReadUphillSlopeAzimuthMap(uphillSlopeMap.Value);
 
             
             //-------------------------------------------------------------------
             //  Read table of Fire Damage classes.
             //  Damages are in increasing order.
-             PlugIn.ModelCore.UI.WriteLine("   Loading Fire Damage data...");
+            PlugIn.ModelCore.UI.WriteLine("   Loading Fire data...");
 
-             InputVar<string> fireDamage = new InputVar<string>("FireDamage");
-             ReadVar(fireDamage);
+            InputVar<string> fireDamage = new InputVar<string>("FireDamage");
+            ReadVar(fireDamage);
 
             InputVar<Percentage> maxAge = new InputVar<Percentage>("Max Survival Age");
             InputVar<int> severTolerDifference = new InputVar<int>("Severity Tolerance Diff");
 
-            const string MapNames = "MapNames";
+            
             int previousNumber = -5;
             double previousMaxAge = 0.0;
 
@@ -147,11 +167,10 @@ namespace Landis.Extension.Scrapple
             
             if (parameters.FireDamages.Count == 0)
                 throw NewParseException("No damage classes defined.");
-
+            */
             InputVar<string> mapNames = new InputVar<string>(MapNames);
             ReadVar(mapNames);
             parameters.MapNamesTemplate = mapNames.Value;
-
 
             return parameters; //.GetComplete();
         }
@@ -159,15 +178,14 @@ namespace Landis.Extension.Scrapple
 
         public static Distribution DistParse(string word)
         {
-            if (word == "gamma")
-                return Distribution.gamma;
-            else if (word == "lognormal")
-                return Distribution.lognormal;
-            else if (word == "normal")
-                return Distribution.normal;
-            else if (word == "Weibull")
-                return Distribution.Weibull;
-            throw new System.FormatException("Valid Distributions: gamma, lognormal, normal, Weibull");
+            switch (word)
+            {
+                case "gamma":     return Distribution.gamma;
+                case "lognormal": return Distribution.lognormal;
+                case "normal":    return Distribution.normal;
+                case "Weibull":   return Distribution.Weibull;
+                default: throw new System.FormatException("Valid Distributions: gamma, lognormal, normal, Weibull");
+            }
         }
 
 

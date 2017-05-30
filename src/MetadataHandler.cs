@@ -18,8 +18,7 @@ namespace Landis.Extension.Scrapple
             ScenarioReplicationMetadata scenRep = new ScenarioReplicationMetadata() {
                 RasterOutCellArea = PlugIn.ModelCore.CellArea,
                 TimeMin = PlugIn.ModelCore.StartTime,
-                TimeMax = PlugIn.ModelCore.EndTime//,
-                //ProjectionFilePath = "Projection.?" 
+                TimeMax = PlugIn.ModelCore.EndTime
             };
 
             Extension = new ExtensionMetadata(mCore){

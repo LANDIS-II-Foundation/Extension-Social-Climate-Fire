@@ -1,0 +1,12 @@
+LandisData  "SCRAPPLE"
+
+>> Note:  All inputs are provided as examples only.  They are not intended to serve as default values.
+     Parameter                      Value
+----------------------------       -------
+Timestep                            1
+RelativeHumiditySlopeAdjust         77.68
+Duration                            50
+
+MapNames  fire/severity-{timestep}.img
+>> LogFile   dynamic-fire-test-log.csv
+>> SummaryLogFile fire/summary-log.csv
