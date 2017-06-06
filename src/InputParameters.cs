@@ -34,6 +34,9 @@ namespace Landis.Extension.Scrapple
         int Duration { get; set; }
         int SpringStart { get; set; }
         int WinterStart { get; set; }
+        string LighteningFireMap { get; set; }
+        string RxFireMap { get; set; }
+        string AccidentalFireMap { get; set; }
     }
 }
 
@@ -67,6 +70,9 @@ namespace Landis.Extension.Scrapple
         private int springStart;
         private int winterStart;
         private int duration;
+        private string lighteningFireMap;
+        private string accidentalFireMap;
+        private string rxFireMap;
      
 
 
@@ -254,6 +260,43 @@ namespace Landis.Extension.Scrapple
             set {
                     MapNames.CheckTemplateVars(value);
                 mapNamesTemplate = value;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        public string LighteningFireMap
+        {
+            get
+            {
+                return lighteningFireMap;
+            }
+            set
+            {
+                lighteningFireMap = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public string RxFireMap
+        {
+            get
+            {
+                return rxFireMap;
+            }
+            set
+            {
+                rxFireMap = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public string AccidentalFireMap
+        {
+            get
+            {
+                return accidentalFireMap;
+            }
+            set
+            {
+                accidentalFireMap = value;
             }
         }
 

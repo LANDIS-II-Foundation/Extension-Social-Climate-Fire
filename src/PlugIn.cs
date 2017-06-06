@@ -25,7 +25,7 @@ namespace Landis.Extension.Scrapple
     public class PlugIn
         : ExtensionMain 
     {
-        private static readonly bool isDebugEnabled = false; 
+        private static readonly bool isDebugEnabled = true; 
 
         public static readonly ExtensionType ExtType = new ExtensionType("disturbance:fire");
         public static readonly string ExtensionName = "SCRAPPLE";
@@ -90,6 +90,7 @@ namespace Landis.Extension.Scrapple
             duration = parameters.Duration;
             springStart = parameters.SpringStart;
             winterStart = parameters.WinterStart;
+
             if (Debugger.Launch())
             {
                 modelCore.UI.WriteLine("Debugger is attached");
@@ -105,7 +106,8 @@ namespace Landis.Extension.Scrapple
             }
 
             modelCore.UI.WriteLine("   Initializing Fire Climate Data...");
-            Climate.Initialize(climateConfigFile, false, modelCore);
+            //Climate.Initialize(climateConfigFile, false, modelCore);
+            FireRegions.Initilize(parameters.LighteningFireMap);
 
             try
             {
@@ -130,7 +132,7 @@ namespace Landis.Extension.Scrapple
             }
 
             // VS: not to be used for building. Just output FWI.
-            OutputFWITable();
+            //OutputFWITable();
 
 
             MetadataHandler.InitializeMetadata(parameters.Timestep, parameters.MapNamesTemplate, ModelCore);
@@ -205,9 +207,12 @@ namespace Landis.Extension.Scrapple
             double fireWeatherIndex = 0.0;
             
             List<ActiveSite> activeSites = PlugIn.ModelCore.Landscape.ToList();
-            activeSites = Shuffle<ActiveSite>(activeSites);
-
-            AnnualClimate_Daily fireWeatherData = Climate.Future_DailyData[actualYear][activeSites.First().DataIndex];
+            
+            List<ActiveSite> shuffledActiveSites = Shuffle(activeSites, SiteVars.AccidentalFireWeight);
+            //List<ActiveSite> shuffledLightningSites = Shuffle(activeSites, SiteVars.LightningFireWeight);
+            //List
+            
+            AnnualClimate_Daily fireWeatherData = Climate.Future_DailyData[actualYear][shuffledActiveSites.First().DataIndex];
             // do this for each day of the year
             for (int day = 0; day < daysPerYear; ++day)
             {
@@ -238,15 +243,15 @@ namespace Landis.Extension.Scrapple
                     for (int i = 0; i < numFiresStarted; ++i )
                     {
                         // create fire Event. VS: How do i determine type? <== dealing with it at a later phase
-                        FireEvent fireEvent = FireEvent.Initiate(activeSites.First(), modelCore.CurrentTime, day);
+                        FireEvent fireEvent = FireEvent.Initiate(shuffledActiveSites.First(), modelCore.CurrentTime, day);
                         LogEvent(modelCore.CurrentTime, fireEvent);
-                        activeSites.Remove(activeSites.First());
+                        shuffledActiveSites.Remove(shuffledActiveSites.First());
+                        // shuffledLightningSites.Remove(shuffledActiveSites.First());
                     }
-
                 }
             }
 
-
+            /*
             // Track the time of last fire; registered in SiteVars.cs for other extensions to access.
             if (isDebugEnabled)
                 modelCore.UI.WriteLine("Assigning TimeOfLastFire SiteVar ...");
@@ -276,6 +281,7 @@ namespace Landis.Extension.Scrapple
                     outputRaster.WriteBufferPixel();
                 }
             }
+            */
 
             WriteSummaryLog(modelCore.CurrentTime);
 
@@ -286,7 +292,7 @@ namespace Landis.Extension.Scrapple
 
         //---------------------------------------------------------------------
 
-        private void LogEvent(int   currentTime, FireEvent fireEvent)
+        private void LogEvent(int currentTime, FireEvent fireEvent)
         {
 
             eventLog.Clear();
@@ -314,7 +320,7 @@ namespace Landis.Extension.Scrapple
 
         //---------------------------------------------------------------------
 
-        private void WriteSummaryLog(int   currentTime)
+        private void WriteSummaryLog(int currentTime)
         {
             //foreach (IDynamicInputRecord fire_region in FireRegions.Dataset)
             //{
@@ -330,33 +336,65 @@ namespace Landis.Extension.Scrapple
 
             //}
         }
-
-        // A helper function to shuffle a list
-        private static List<T> Shuffle<T>(List<T> list)
+        /*
+         * VS:: THIS MAY BE NEEDED
+         * 
+        private static List<ActiveSite> Sort<T>(List<ActiveSite> list, ISiteVar<T> type)
         {
-            List<T> shuffledList = new List<T>();
+            List<ActiveSite> sortedList = new List<ActiveSite>();
+            foreach(ActiveSite site in list)
+            {
+                type[site] 
+            }
+        }
+        */
 
-            int randomIndex = 0;
+        // A helper function to shuffle a list of ActiveSties: Algorithm may be improved.
+        private static List<ActiveSite> Shuffle(List<ActiveSite> list, ISiteVar<int> weightedSiteVar)
+        {
+            List<ActiveSite> shuffledList = new List<ActiveSite>();
+            int totalWeight = 0;
+            foreach(ActiveSite site in list)
+            {
+                totalWeight += weightedSiteVar[site];
+            }
+            
             while (list.Count > 0)
             {
-                //randomIndex = modelCore.GenerateUniform(list.Count); //Choose a random object in the list
-                randomIndex = (int) (list.Count * PlugIn.ModelCore.GenerateUniform());
-                shuffledList.Add(list[randomIndex]); //add it to the new, random list
-                list.RemoveAt(randomIndex); //remove to avoid duplicates
+                ActiveSite toAdd;
+                toAdd = SelectRandomSite(list, weightedSiteVar, totalWeight);
+                shuffledList.Add(toAdd);
+                totalWeight -= weightedSiteVar[toAdd];
+                list.Remove(toAdd);
             }
 
             return shuffledList;
+        }
+
+        public static ActiveSite SelectRandomSite(List<ActiveSite> list, ISiteVar<int> weightedSiteVar, int totalWeight)
+        {
+            ActiveSite selectedSite = list.FirstOrDefault(); // currently selected element
+            double randomNum = PlugIn.ModelCore.GenerateUniform();
+            
+            //check to make sure it is 
+            foreach (ActiveSite site in list)
+            {
+                if (randomNum < weightedSiteVar[site] )
+                {
+                    selectedSite = site;
+                    break;
+                }
+
+                randomNum -= weightedSiteVar[site];
+            }
+
+            return selectedSite; // when iterations end, selected is some element of sequence. 
         }
 
         private static double Ignitions(double fireWeatherIndex)
         {
             double numIgnitions = (fireWeatherIndex * fireWeatherIndex) / 500;
             return numIgnitions;
-        }
-
-        private void OutputFWITable()
-        {
-            throw new NotImplementedException();
         }
 
 

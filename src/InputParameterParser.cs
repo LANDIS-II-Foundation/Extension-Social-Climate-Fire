@@ -75,10 +75,23 @@ namespace Landis.Extension.Scrapple
                 parameters.WinterStart = 336;
             }
 
+            //                   --------- Input files ---------
+            //--------------------------------------------------------------------------
             InputVar<string> climateConfigFile = new InputVar<string>("ClimateConfigFile");
             ReadVar(climateConfigFile);
             parameters.ClimateConfigFile = climateConfigFile.Value;
 
+            InputVar<string> humanIgnitionsMapFile = new InputVar<string>("HumanIgnitionsMapFile");
+            ReadVar(humanIgnitionsMapFile);
+            parameters.AccidentalFireMap = humanIgnitionsMapFile.Value;
+
+            InputVar<string> lighteningIgnitionsMapFile = new InputVar<string>("LighteningIgnitionsMapFile");
+            ReadVar(lighteningIgnitionsMapFile);
+            parameters.LighteningFireMap = lighteningIgnitionsMapFile.Value;
+
+            InputVar<string> rxIgnitionsMapFile = new InputVar<string>("RxIgnitionsMapFile");
+            ReadVar(rxIgnitionsMapFile);
+            parameters.RxFireMap = rxIgnitionsMapFile.Value;
             /*
             // Load Ground Slope Data
             const string GroundSlopeFile = "GroundSlopeFile";

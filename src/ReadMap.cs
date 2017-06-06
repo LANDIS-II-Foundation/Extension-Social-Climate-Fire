@@ -8,13 +8,20 @@ using System.Collections.Generic;
 
 namespace Landis.Extension.Scrapple
 {
-    public class FireRegions
+    public static class FireRegions
     {
-        //RMS: This class is derelict but it does provide an example of how to read a map.
+        private static List<FireRegion> fireRegionsSites;
+        public static List<FireRegion> FireRegionsSites { get => fireRegionsSites; set => fireRegionsSites = value; }
 
-        //public static IDynamicInputRecord[] Dataset;
-        //public static int MaxMapCode;
-        //public static Dictionary<int, IDynamicInputRecord[]> AllData;
+        //RMS: This class is derelict but it does provide an example of how to read a map.
+        
+
+        public static void Initilize(string lighteningFireMap/*, string rxFireMap, string accidentalFireMap */)
+        {
+            ReadMap(lighteningFireMap);
+            //ReadMap(rxFireMap);
+            //ReadMap(accidentalFireMap);
+        }
 
         //---------------------------------------------------------------------
 
@@ -40,14 +47,15 @@ namespace Landis.Extension.Scrapple
 
             using (map) {
                 IntPixel pixel = map.BufferPixel;
-                //MaxMapCode = 0;
                 foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
                 {
                     map.ReadBufferPixel();
                     int mapCode = pixel.MapCode.Value;
                     if (site.IsActive)
                     {
-                        // RMS: SiteVars.MY-FAVORITE-SITEVAR HERE[site] = mapCode; 
+                        // RMS: SiteVars.MY-FAVORITE-SITEVAR-HERE[site] = mapCode; 
+                        SiteVars.LightningFireWeight[site] = mapCode;
+                        PlugIn.ModelCore.UI.WriteLine(string.Format("site name: {0},    map code: {1}", site.ToString(), mapCode));
                     }
                 }
             }
