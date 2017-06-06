@@ -13,6 +13,11 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<int> percentConifer;  //RMS: Maybe useful?
         private static ISiteVar<int> percentHardwood; //RMS: Maybe useful?
         private static ISiteVar<int> percentDeadFir;  //RMS: Maybe useful?
+        //added for scrapple: ---
+        private static ISiteVar<int> lightningFireWeight;
+        private static ISiteVar<int> rxFireWeight;
+        private static ISiteVar<int> accidentalFireWeight;
+        // --------------End add
         private static ISiteVar<byte> severity;
         private static ISiteVar<byte> lastSeverity;
         private static ISiteVar<bool> disturbed;
@@ -38,16 +43,20 @@ namespace Landis.Extension.Scrapple
 
             cohorts = PlugIn.ModelCore.GetSiteVar<ISiteCohorts>("Succession.AgeCohorts");
             
-            eventVar            = PlugIn.ModelCore.Landscape.NewSiteVar<FireEvent>(InactiveSiteMode.DistinctValues);
-            timeOfLastFire      = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
-            percentDeadFir      = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
-            severity            = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
-            lastSeverity        = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
-            disturbed           = PlugIn.ModelCore.Landscape.NewSiteVar<bool>();
-            groundSlope         = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
-            uphillSlopeAzimuth  = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
-            siteWindSpeed       = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
-            siteWindDirection   = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
+            eventVar             = PlugIn.ModelCore.Landscape.NewSiteVar<FireEvent>(InactiveSiteMode.DistinctValues);
+            timeOfLastFire       = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
+            percentDeadFir       = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
+            severity             = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
+            lastSeverity         = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
+            disturbed            = PlugIn.ModelCore.Landscape.NewSiteVar<bool>();
+            groundSlope          = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
+            uphillSlopeAzimuth   = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
+            siteWindSpeed        = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
+            siteWindDirection    = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
+            // Added for scrapple:
+            lightningFireWeight  = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
+            rxFireWeight         = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
+            accidentalFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
 
             //Also initialize topography, will be overwritten if optional parameters provided:
             SiteVars.GroundSlope.ActiveSiteValues = 0;
@@ -87,6 +96,33 @@ namespace Landis.Extension.Scrapple
             //SiteVars.PercentDeadFir.ActiveSiteValues = 0;
 
         }
+        ////---------------------------------------------------------------------
+        // Added for Scrapple:
+        ////---------------------------------------------------------------------
+        public static ISiteVar<int> LightningFireWeight
+        {
+            get
+            {
+                return lightningFireWeight;
+            }
+        }
+        ////---------------------------------------------------------------------
+        public static ISiteVar<int> RxFireWeight
+        {
+            get
+            {
+                return rxFireWeight;
+            }
+        }
+        ////---------------------------------------------------------------------
+        public static ISiteVar<int> AccidentalFireWeight
+        {
+            get
+            {
+                return accidentalFireWeight;
+            }
+        }
+        // ------------ End addition
 
         ////---------------------------------------------------------------------
 

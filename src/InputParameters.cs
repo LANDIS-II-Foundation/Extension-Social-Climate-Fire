@@ -16,7 +16,7 @@ namespace Landis.Extension.Scrapple
     public interface IInputParameters
     {
         int Timestep{get;set;}
-        //string ClimateConfigFile { get; set; }    
+        string ClimateConfigFile { get; set; }    
         double RelativeHumiditySlopeAdjustment { get; set; }   //does this go in the interface or below in the input parameters?
         //SizeType FireSizeType{get;set;}
 
@@ -31,6 +31,12 @@ namespace Landis.Extension.Scrapple
 //        string InitialWeatherPath{get;set;}
 //        string WindInputPath { get; set; }
 //        string DynamicFireRegionInputFile { get; set; }
+        int Duration { get; set; }
+        int SpringStart { get; set; }
+        int WinterStart { get; set; }
+        string LighteningFireMap { get; set; }
+        string RxFireMap { get; set; }
+        string AccidentalFireMap { get; set; }
     }
 }
 
@@ -59,8 +65,15 @@ namespace Landis.Extension.Scrapple
         //private string initialWeatherPath;
         //private string windInputPath;
         //private string dynamicFireRegionInputFile;
-        //private string climateConfigFile;
+        private string climateConfigFile;
         private double relativeHumiditySlopeAdjust;
+        private int springStart;
+        private int winterStart;
+        private int duration;
+        private string lighteningFireMap;
+        private string accidentalFireMap;
+        private string rxFireMap;
+     
 
 
         //---------------------------------------------------------------------
@@ -81,23 +94,59 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        //public string ClimateConfigFile
-        //{
-        //    get
-        //    {
-        //        return climateConfigFile;
-        //    }
-        //    set
-        //    {
-        //        if (value != null)
-        //        {
-        //            ValidatePath(value);
-        //        }
-        //        climateConfigFile = value;
-        //    }
-        //}
+        public string ClimateConfigFile
+        {
+            get
+            {
+                return climateConfigFile;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    ValidatePath(value);
+                }
+                climateConfigFile = value;
+            }
+        }
         //---------------------------------------------------------------------
+        public int Duration
+        {
+            get
+            {
+                return duration;
+            }
+            set
+            {
+                duration = value;
+            }
+        }
         //---------------------------------------------------------------------
+        public int WinterStart
+        {
+            get
+            {
+                return winterStart;
+            }
+            set
+            {
+                winterStart = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public int SpringStart
+        {
+            get
+            {
+                return springStart;
+            }
+            set
+            {
+                springStart = value;
+            }
+        }
+        //---------------------------------------------------------------------
+
         public double RelativeHumiditySlopeAdjustment
         {
             get
@@ -106,7 +155,7 @@ namespace Landis.Extension.Scrapple
             }
             set
             {
-                if (value < 0.0 || value > 50.0)
+                if (value < 0.0 || value > 100.0)
                     throw new InputValueException(value.ToString(), "Relative Humidity Slope Adjustment must be > 0.0 and < 50");
                 relativeHumiditySlopeAdjust = value;
             }
@@ -154,8 +203,8 @@ namespace Landis.Extension.Scrapple
             }
         }
         
+
         ////---------------------------------------------------------------------
-        
         //public List<IDynamicFireRegion> DynamicFireRegions
         //{
         //    get {
@@ -211,6 +260,43 @@ namespace Landis.Extension.Scrapple
             set {
                     MapNames.CheckTemplateVars(value);
                 mapNamesTemplate = value;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        public string LighteningFireMap
+        {
+            get
+            {
+                return lighteningFireMap;
+            }
+            set
+            {
+                lighteningFireMap = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public string RxFireMap
+        {
+            get
+            {
+                return rxFireMap;
+            }
+            set
+            {
+                rxFireMap = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public string AccidentalFireMap
+        {
+            get
+            {
+                return accidentalFireMap;
+            }
+            set
+            {
+                accidentalFireMap = value;
             }
         }
 

@@ -8,8 +8,8 @@
     <ProjectGuid>{62771E6E-2D49-4ADD-A860-FCAEB4D01549}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>dynamic_fire</RootNamespace>
-    <AssemblyName>Landis.Extension.DynamicFire</AssemblyName>
+    <RootNamespace>Scrapple</RootNamespace>
+    <AssemblyName>Landis.Extension.Scrapple</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -79,10 +79,15 @@
     </Compile>
     <Compile Include="EventsLog.cs" />
     <Compile Include="FireDamages.cs" />
+    <Compile Include="FireRegion.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="ReadMap.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AnnualFireWeather.cs" />
     <Compile Include="InputParameterParser.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -97,6 +102,7 @@
     <Compile Include="PlugIn.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="SiteVars.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -106,13 +112,29 @@
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="scenario.txt" />
+    <Content Include="Scrapple.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="RasterIO\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>call $(SolutionDir)\install-libs.cmd</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

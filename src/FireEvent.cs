@@ -399,17 +399,17 @@ namespace Landis.Extension.Scrapple
             double randomNum = PlugIn.ModelCore.GenerateUniform();
 
 
-                
-                // Ignition moved to Run()
 
-                //// Get probability of ignition based on Jen Beverly equation and FWI;
+            // Ignition moved to Run()
 
-                //double FWIshape = FuelTypeParms[fuelIndex].IgnitionDistributionShape;//RMS: Necessary?  
+            //// Get probability of ignition based on Jen Beverly equation and FWI;
 
-                //double FWIscale = FuelTypeParms[fuelIndex].IgnitionDistributionScale;//RMS: Necessary?
+            //double FWIshape = FuelTypeParms[fuelIndex].IgnitionDistributionShape;//RMS: Necessary?  
 
-                //// A. Kretchun: My equation that includes FWIshape and FWIscale and AnnualFire.FireWeatherIndex. This equation comes from Beverly et al 2007
-                //double ignitionProbability = 1/(1+Math.Exp(-(FWIshape+FWIscale*AnnualFireWeather.FireWeatherIndex))); 
+            //double FWIscale = FuelTypeParms[fuelIndex].IgnitionDistributionScale;//RMS: Necessary?
+
+            //// A. Kretchun: My equation that includes FWIshape and FWIscale and AnnualFire.FireWeatherIndex. This equation comes from Beverly et al 2007
+            //double ignitionProbability = 1/(1+Math.Exp(-(FWIshape+FWIscale*AnnualFireWeather.FireWeatherIndex))); 
 
             /*
              * VS: These were removed to being calculated once a year. 
@@ -420,13 +420,14 @@ namespace Landis.Extension.Scrapple
             FireEvent fireEvent = new FireEvent(site,/* fireSeason, fireSizeType, eco, */ day); //Must create event to determine season
 
             // Test that adequate weather data was retrieved:-
+            /*
             if (fireEvent.windSpeed == 0)
             {
             // throw an error //RMS
                 throw new Exception("Inadequate weasther data retrieved");
                 //return null;
             }
-
+            */
             return fireEvent;
         }
 
