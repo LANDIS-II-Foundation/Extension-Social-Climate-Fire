@@ -36,7 +36,7 @@ namespace Landis.Extension.Scrapple
                 foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
                 {
                     map.ReadBufferPixel();
-                    int mapCode = pixel.MapCode.Value;
+                    double mapCode = pixel.MapCode.Value;
                     if (site.IsActive)
                     {
                         if (mapCode < 0)
@@ -77,7 +77,7 @@ namespace Landis.Extension.Scrapple
                 foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
                 {
                     map.ReadBufferPixel();
-                    int mapCode = pixel.MapCode.Value;
+                    double mapCode = pixel.MapCode.Value;
                     if (site.IsActive)
                     {
                         if (mapCode < 0 || mapCode > 360)

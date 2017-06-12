@@ -1,0 +1,47 @@
+2017-06-12 16:26:10,157 - LANDIS-II 6.2 (beta release 1)
+2017-06-12 16:26:10,169 - 
+2017-06-12 16:26:10,291 - Loading scenario from file "scenario_s2e1.txt" ...
+2017-06-12 16:26:10,360 - Initialized random number generator with seed = 3,676,114,658
+2017-06-12 16:26:10,362 - Loading species data from file "./species_s2e1.txt" ...
+2017-06-12 16:26:10,386 - Loading ecoregions from file "./ecoregions_s2e1.txt" ...
+2017-06-12 16:26:10,406 - Initializing landscape from ecoregions map "./ecoregions_s2e1.gis" ...
+2017-06-12 16:26:10,423 - Cell length = 100 m, cell area = 1 ha
+2017-06-12 16:26:10,426 - Map dimensions: 99 rows by 99 columns = 9,801 cells
+2017-06-12 16:26:10,435 - Sites: 9,801 active (100.0 %), 0 inactive (0.0 %)
+2017-06-12 16:26:10,450 - Loading Biomass Succession extension ...
+2017-06-12 16:26:10,465 -    Registering Data:  Succession.BiomassCohorts.
+2017-06-12 16:26:10,468 -    Registering Data:  Succession.AgeCohorts.
+2017-06-12 16:26:10,471 -    Registering Data:  Succession.WoodyDebris.
+2017-06-12 16:26:10,473 -    Registering Data:  Succession.Litter.
+2017-06-12 16:26:12,957 - Debugger not attached
+2017-06-12 16:26:12,963 -    Loading dynamic input data from file "biomass-succession_DynamicInputs_s2e1.txt" ...
+2017-06-12 16:26:12,965 -   Dynamic Input Parser:  Add new year = 0.
+2017-06-12 16:26:12,974 -    Opening Biomass-succession log file "Biomass-succession-v3-log.csv" ...
+2017-06-12 16:26:12,979 -    Registering Data:  TimeOfLastSuccession.
+2017-06-12 16:26:12,980 -    Registering Data:  Shade.
+2017-06-12 16:26:12,981 -    Creating Dispersal Neighborhood List.
+2017-06-12 16:26:12,981 -    Dispersal:  NeighborRadius=15050, CellLength=100, numCellRadius=150
+2017-06-12 16:26:13,002 -    Loading biomass parameters for age-only disturbances from file "biomass-succession_StdBiomassReductions.txt" ...
+2017-06-12 16:26:13,005 -    Age-only-disturbances:  reading CohortBiomassReductions.
+2017-06-12 16:26:13,007 -    Age-only-disturbances:  reading DeadBiomassReductions.
+2017-06-12 16:26:13,009 -    Loading initial communities from file "./biomass-succession_InitialCommunities_s2e1.txt" ...
+2017-06-12 16:26:13,024 -    Reading initial communities map "./biomass-succession_InitialCommunities_s2e1.gis" ...
+2017-06-12 16:26:13,173 - Loading SCRAPPLE extension ...
+2017-06-12 16:26:13,204 -    Registering Data:  Fire.Severity.
+2017-06-12 16:26:13,205 -    Registering Data:  Fire.LastSeverity.
+2017-06-12 16:26:13,206 -    Registering Data:  Fire.TimeOfLastEvent.
+2017-06-12 16:26:14,122 - Debugger not attached
+2017-06-12 16:26:14,122 -    Initializing Fire Climate Data...
+2017-06-12 16:26:14,180 -    Loading weather data ...
+2017-06-12 16:26:27,952 - Internal error occurred within the program:
+2017-06-12 16:26:27,953 -   The given key was not present in the dictionary.
+2017-06-12 16:26:27,953 - 
+2017-06-12 16:26:27,954 - Stack trace:
+2017-06-12 16:26:27,959 -    at System.ThrowHelper.ThrowKeyNotFoundException()
+   at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
+   at Landis.Library.Climate.Climate.WriteFuture_DailyData(ClimateRecord[][] TimestepData, Int32 year, Int32 maxTimeStep) in C:\Users\avala\Desktop\Scrapple\Library-Climate\src\Climate.cs:line 554
+   at Landis.Library.Climate.Climate.Initialize(String climateConfigFilename, Boolean writeOutput, ICore mCore) in C:\Users\avala\Desktop\Scrapple\Library-Climate\src\Climate.cs:line 256
+   at Landis.Extension.Scrapple.PlugIn.Initialize() in C:\Users\avala\Desktop\Scrapple\extension-scrapple\src\PlugIn.cs:line 114
+   at Landis.Model.InitExtensions(ExtensionMain[] extensions)
+   at Landis.Model.Run(String scenarioPath, IUserInterface ui)
+   at Landis.App.Main(String[] args)
