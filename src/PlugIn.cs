@@ -87,7 +87,9 @@ namespace Landis.Extension.Scrapple
             springStart = parameters.SpringStart;
             winterStart = parameters.WinterStart;
 
-            /// DEBUGGER LAUNCH
+            ///******************** DEBUGGER LAUNCH *********************
+            /// 
+            /*
             if (Debugger.Launch())
             {
                 modelCore.UI.WriteLine("Debugger is attached");
@@ -101,8 +103,8 @@ namespace Landis.Extension.Scrapple
             { 
                 modelCore.UI.WriteLine("Debugger not attached");
             }
-
-            ///***********************
+            */
+            ///******************** DEBUGGER END *********************
 
             modelCore.UI.WriteLine("   Initializing Fire Climate Data...");
             FireRegions.Initilize(parameters.LighteningFireMap);
