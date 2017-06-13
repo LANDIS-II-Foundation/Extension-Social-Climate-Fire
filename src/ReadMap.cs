@@ -18,14 +18,14 @@ namespace Landis.Extension.Scrapple
 
         public static void Initilize(string lighteningFireMap/*, string rxFireMap, string accidentalFireMap */)
         {
-            ReadMap(lighteningFireMap);
+            ReadMap(lighteningFireMap, SiteVars.LightningFireWeight);
             //ReadMap(rxFireMap);
             //ReadMap(accidentalFireMap);
         }
 
         //---------------------------------------------------------------------
 
-        public static void ReadMap(string path)
+        public static void ReadMap(string path, ISiteVar<double> siteVar)
         {
             IInputRaster<IntPixel> map;
 
@@ -50,12 +50,13 @@ namespace Landis.Extension.Scrapple
                 foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
                 {
                     map.ReadBufferPixel();
-                    int mapCode = pixel.MapCode.Value;
+                    double mapCode = pixel.MapCode.Value;
+
                     if (site.IsActive)
                     {
                         // RMS: SiteVars.MY-FAVORITE-SITEVAR-HERE[site] = mapCode; 
-                        SiteVars.LightningFireWeight[site] = mapCode;
-                        PlugIn.ModelCore.UI.WriteLine(string.Format("site name: {0},    map code: {1}", site.ToString(), mapCode));
+                        siteVar[site] = mapCode;
+                        //PlugIn.ModelCore.UI.WriteLine(string.Format("site name: {0},    map code: {1},    2nd code: {2},    3rd code: {3},   4th code: {4}", site.ToString(), mapCode, secondCode, thirdCode, forthCode));
                     }
                 }
             }

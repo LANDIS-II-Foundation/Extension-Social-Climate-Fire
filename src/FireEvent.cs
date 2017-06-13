@@ -304,13 +304,15 @@ namespace Landis.Extension.Scrapple
         //---------------------------------------------------------------------
         // Constructor function
 
-        public FireEvent(ActiveSite initiationSite, /*ISeasonParameters fireSeason, SizeType fireSizeType, IDynamicInputRecord eco,*/ int day)
+        public FireEvent(ActiveSite initiationSite, int day)
         {
             this.initiationSite = initiationSite;
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[initiationSite];
 
             int actualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_DailyData.First().Key;
             AnnualClimate_Daily annualWeatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
+            SiteVars.TypeOfIginition[initiationSite] = 1;
+            SiteVars.Disturbed[initiationSite] = true;
 
             //this.sitesInEvent = new int[FireRegions.Dataset.Length];
 
@@ -319,6 +321,7 @@ namespace Landis.Extension.Scrapple
             this.cohortsKilled = 0;
             this.eventSeverity = 0;
             this.totalSitesDamaged = 0;
+            
             //this.lengthB = 0.0;
             //this.lengthA = 0.0;
             //this.lengthD = 0.0;

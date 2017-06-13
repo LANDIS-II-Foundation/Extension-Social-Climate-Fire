@@ -7,6 +7,6 @@ Timestep                            1
 RelativeHumiditySlopeAdjust         77.68
 Duration                            50
 
-MapNames  fire/severity-{timestep}.img
+MapNames  fire/ignitions-{timestep}.img
 >> LogFile   dynamic-fire-test-log.csv
 >> SummaryLogFile fire/summary-log.csv

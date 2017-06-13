@@ -7,7 +7,7 @@ namespace Landis.Extension.Scrapple
 {
     public class IntPixel : Pixel
     {
-        public Band<int> MapCode  = "The numeric code for each raster cell";
+        public Band<double> MapCode  = "The numeric code for each raster cell";
 
         public IntPixel()
         {

@@ -43,11 +43,10 @@ namespace Landis.Extension.Scrapple
             }
 
             set {
-                //if (value != null) {
-                    if (value < 0 )
-                        throw new InputValueException(value.ToString(),
-                            "Value must be > 0 ");
-                //}
+                if (value < 0 )
+                {
+                    throw new InputValueException(value.ToString(), "Value must be > 0 ");
+                }
                 year = value;
             }
         }

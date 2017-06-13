@@ -31,19 +31,15 @@ namespace Landis.Extension.Scrapple
         public static readonly string ExtensionName = "SCRAPPLE";
         public static MetadataTable<EventsLog> eventLog;
         public static MetadataTable<SummaryLog> summaryLog;
-
-        //public static bool ClimateLibraryActive = false;
-        //public static bool ReadClimateLibrary = false;
+        
         public static int FutureClimateBaseYear;
-        //public static DataTable WeatherDataTable;
-        //public static DataTable WindDataTable;
         public static int WeatherRandomizer = 0;
-        //public static ISeasonParameters[] SeasonParameters;
         private static double RelativeHumiditySlopeAdjust;
         private static int springStart;
         private static int winterStart;
         private int duration;
         private string climateConfigFile;
+        
 
         private string mapNameTemplate;
         private double severityCalibrate;
@@ -91,6 +87,9 @@ namespace Landis.Extension.Scrapple
             springStart = parameters.SpringStart;
             winterStart = parameters.WinterStart;
 
+            ///******************** DEBUGGER LAUNCH *********************
+            /// 
+            /*
             if (Debugger.Launch())
             {
                 modelCore.UI.WriteLine("Debugger is attached");
@@ -101,38 +100,17 @@ namespace Landis.Extension.Scrapple
                 Debugger.Break();
             }
             else
-            {
+            { 
                 modelCore.UI.WriteLine("Debugger not attached");
             }
+            */
+            ///******************** DEBUGGER END *********************
 
             modelCore.UI.WriteLine("   Initializing Fire Climate Data...");
-            //Climate.Initialize(climateConfigFile, false, modelCore);
             FireRegions.Initilize(parameters.LighteningFireMap);
-
-            try
-            {
-                int actualYear = Climate.Future_DailyData.First().Key;
-                foreach (IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
-                {
-                    for(int i = 0; i < duration; i++)
-                    {
-                        actualYear = Climate.Future_DailyData.First().Key + i;
-                        //FireClimate.CalculateFireWeather(RelativeHumiditySlopeAdjust, ecoregion, springStart, winterStart, actualYear);
-                    }
-                   
-                }
-            }
-            catch (UninitializedClimateData uninitVarException)
-            {
-                throw new Exception(string.Format("EXCEPTION: {0}", uninitVarException.Message));
-            }
-            catch
-            {
-                throw new Exception(string.Format("An Exception occured while calculating Fire Climate in Landis.Library.Climate.FireClimate.CalculateFireWeather()"));
-            }
-
-            // VS: not to be used for building. Just output FWI.
-            //OutputFWITable();
+            
+            Climate.Initialize(parameters.ClimateConfigFile, false, modelCore);
+            FutureClimateBaseYear = Climate.Future_MonthlyData.Keys.Min();
 
 
             MetadataHandler.InitializeMetadata(parameters.Timestep, parameters.MapNamesTemplate, ModelCore);
@@ -162,6 +140,7 @@ namespace Landis.Extension.Scrapple
             //SiteVars.TravelTime.ActiveSiteValues = Double.PositiveInfinity;
             //SiteVars.MinNeighborTravelTime.ActiveSiteValues = Double.PositiveInfinity;
             //SiteVars.RateOfSpread.ActiveSiteValues = 0.0;
+            List<FireEvent> fireEvents = new List<FireEvent>();
 
             
             modelCore.UI.WriteLine("   Processing landscape for Fire events ...");
@@ -185,19 +164,18 @@ namespace Landis.Extension.Scrapple
             //}
 
             int actualYear = 0;
-            
 
+            
             try
             {
-                actualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_DailyData.First().Key;
+                actualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_AllData.First().Key;
             }
             catch
             {
                 throw new UninitializedClimateData(string.Format("No climate data for year:", actualYear));
             }
-
             
-            
+           
             int daysPerYear = 366;
             //daysPerYear = (AnnualClimate.IsLeapYear(actualYear) ? true : false) ? 366 : 365;
 
@@ -205,88 +183,88 @@ namespace Landis.Extension.Scrapple
             int numFiresStarted = 0;
             double numFires = 0.0;
             double fireWeatherIndex = 0.0;
+            bool fireWeatherDataExists = true;
             
+            // Get the active sites from the landscape and shuffle them according to 
             List<ActiveSite> activeSites = PlugIn.ModelCore.Landscape.ToList();
-            
             List<ActiveSite> shuffledActiveSites = Shuffle(activeSites, SiteVars.AccidentalFireWeight);
-            //List<ActiveSite> shuffledLightningSites = Shuffle(activeSites, SiteVars.LightningFireWeight);
-            //List
-            
-            AnnualClimate_Daily fireWeatherData = Climate.Future_DailyData[actualYear][shuffledActiveSites.First().DataIndex];
-            // do this for each day of the year
-            for (int day = 0; day < daysPerYear; ++day)
+            ActiveSite site = shuffledActiveSites.First();
+            foreach(IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
             {
-                // Check to make sure FireWeatherIndex is >= .10. If not skip day
-                try
+                AnnualClimate_Daily weatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
+                // do this for each day of the year
+                for (int day = 0; day < daysPerYear; ++day)
                 {
-                    fireWeatherIndex = fireWeatherData.DailyFireWeatherIndex[day];
-                }
-                catch
-                {
-                    throw new Exception("FireClimate not initialized");
-                }
-                if (fireWeatherIndex >= .10)
-                {
-                    // check to make at least 1 ignition happend
-                    numFires = Ignitions(fireWeatherIndex);
-
-                    if (numFires >= 1)
+                    // Check to make sure FireWeatherIndex is >= .10. If not skip day
+                    try
                     {
-                        numFiresStarted = (numFires > 3.0) ? 3 : (int)Math.Round(numFires);
+                        fireWeatherIndex = weatherData.DailyFireWeatherIndex[day];
+                    }
+                    catch
+                    {
+                        fireWeatherDataExists = false;
+                    }
+                    if (fireWeatherIndex >= .10 && fireWeatherDataExists)
+                    {
+                        // check to make at least 1 ignition happend
+                        numFires = Ignitions(fireWeatherIndex);
+
+                        if (numFires >= 1)
+                        {
+                            numFiresStarted = (numFires > 3.0) ? 3 : (int)Math.Round(numFires);
+                        }
+                        else
+                        {
+                            numFiresStarted = (modelCore.GenerateUniform() >= numFires) ? 1 : 0;
+                        }
+
+                        // create a fire event for each fire
+                        for (int i = 0; i < numFiresStarted; ++i)
+                        {
+                            // create fire Event. VS: How do i determine type? <== dealing with it at a later phase
+                            FireEvent fireEvent = FireEvent.Initiate(shuffledActiveSites.First(), modelCore.CurrentTime, day);
+                            
+                            LogEvent(modelCore.CurrentTime, fireEvent);
+                            shuffledActiveSites.Remove(shuffledActiveSites.First());
+                            // shuffledLightningSites.Remove(shuffledActiveSites.First());
+                        }
+                    }
+                }
+           
+            }
+
+            WriteYearlyIgnitionsMap(PlugIn.ModelCore.CurrentTime);
+
+            WriteSummaryLog(modelCore.CurrentTime);
+
+            if (isDebugEnabled)
+                modelCore.UI.WriteLine("Done running extension");
+        }
+
+        private void WriteYearlyIgnitionsMap(int currentTime)
+        {
+            string path = MapNames.ReplaceTemplateVars(mapNameTemplate, currentTime);
+
+            using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
+            {
+                ShortPixel pixel = outputRaster.BufferPixel;
+                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                {
+                    if (site.IsActive)
+                    {
+                        if (SiteVars.Disturbed[site])
+                            pixel.MapCode.Value = (short)(SiteVars.TypeOfIginition[site]);
+                        else
+                            pixel.MapCode.Value = 0;
                     }
                     else
                     {
-                        numFiresStarted = (modelCore.GenerateUniform() >= numFires) ? 1 : 0;
-                    }
-
-                    // create a fire event for each fire
-                    for (int i = 0; i < numFiresStarted; ++i )
-                    {
-                        // create fire Event. VS: How do i determine type? <== dealing with it at a later phase
-                        FireEvent fireEvent = FireEvent.Initiate(shuffledActiveSites.First(), modelCore.CurrentTime, day);
-                        LogEvent(modelCore.CurrentTime, fireEvent);
-                        shuffledActiveSites.Remove(shuffledActiveSites.First());
-                        // shuffledLightningSites.Remove(shuffledActiveSites.First());
-                    }
-                }
-            }
-
-            /*
-            // Track the time of last fire; registered in SiteVars.cs for other extensions to access.
-            if (isDebugEnabled)
-                modelCore.UI.WriteLine("Assigning TimeOfLastFire SiteVar ...");
-            foreach (Site site in modelCore.Landscape.AllSites)
-                if(SiteVars.Disturbed[site])
-                    SiteVars.TimeOfLastFire[site] = modelCore.CurrentTime;
-
-            // Output maps here.
-            //  Write Fire severity map
-            string path = MapNames.ReplaceTemplateVars(mapNameTemplate, modelCore.CurrentTime);
-            modelCore.UI.WriteLine("   Writing Fire severity map to {0} ...", path);
-            using (IOutputRaster<BytePixel> outputRaster = modelCore.CreateRaster<BytePixel>(path, modelCore.Landscape.Dimensions))
-            {
-                BytePixel pixel = outputRaster.BufferPixel;
-                foreach (Site site in modelCore.Landscape.AllSites)
-                {
-                    if (site.IsActive) {
-                        if (SiteVars.Disturbed[site])
-                            pixel.MapCode.Value = (byte) (SiteVars.Severity[site] + 2);
-                        else
-                            pixel.MapCode.Value = 1;
-                    }
-                    else {
                         //  Inactive site
                         pixel.MapCode.Value = 0;
                     }
                     outputRaster.WriteBufferPixel();
                 }
             }
-            */
-
-            WriteSummaryLog(modelCore.CurrentTime);
-
-            if (isDebugEnabled)
-                modelCore.UI.WriteLine("Done running extension");
         }
 
 
@@ -350,10 +328,10 @@ namespace Landis.Extension.Scrapple
         */
 
         // A helper function to shuffle a list of ActiveSties: Algorithm may be improved.
-        private static List<ActiveSite> Shuffle(List<ActiveSite> list, ISiteVar<int> weightedSiteVar)
+        private static List<ActiveSite> Shuffle(List<ActiveSite> list, ISiteVar<double> weightedSiteVar)
         {
             List<ActiveSite> shuffledList = new List<ActiveSite>();
-            int totalWeight = 0;
+            double totalWeight = 0;
             foreach(ActiveSite site in list)
             {
                 totalWeight += weightedSiteVar[site];
@@ -371,7 +349,7 @@ namespace Landis.Extension.Scrapple
             return shuffledList;
         }
 
-        public static ActiveSite SelectRandomSite(List<ActiveSite> list, ISiteVar<int> weightedSiteVar, int totalWeight)
+        public static ActiveSite SelectRandomSite(List<ActiveSite> list, ISiteVar<double> weightedSiteVar, double totalWeight)
         {
             ActiveSite selectedSite = list.FirstOrDefault(); // currently selected element
             double randomNum = PlugIn.ModelCore.GenerateUniform();

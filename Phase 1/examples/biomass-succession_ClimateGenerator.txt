@@ -1,0 +1,11 @@
+LandisData "Climate Config"				
+		
+ClimateTimeSeries			Daily_AverageAllYears
+ClimateFile				./PRISM_data_AFRI_4.18.13.csv
+ClimateFileFormat			Daily_Temp-C_Precip-mmDay
+
+SpinUpClimateTimeSeries			Daily_AverageAllYears
+SpinUpClimateFile			./PRISM_data_AFRI_4.18.13.csv
+SpinUpClimateFileFormat			Daily_Temp-C_Precip-mmDay
+
+RelativeHumiditySlopeAdjust             77.68

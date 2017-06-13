@@ -55,10 +55,9 @@ namespace Landis.Extension.Scrapple
                 return name;
             }
             set {
-                //if (value != null) {
-                    if (value.Trim() == "")
-                        throw new InputValueException(value, "Missing name");
-                //}
+               if (value.Trim() == "")
+                   throw new InputValueException(value, "Missing name");
+             
                 name = value;
             }
         }
@@ -84,9 +83,6 @@ namespace Landis.Extension.Scrapple
             {
                 return fireRegionSites;
             }
-            //set {
-            //    fireRegionSites = value;
-            //}
         }
 
         public double LighteningFire

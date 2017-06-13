@@ -14,20 +14,14 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<int> percentHardwood; //RMS: Maybe useful?
         private static ISiteVar<int> percentDeadFir;  //RMS: Maybe useful?
         //added for scrapple: ---
-        private static ISiteVar<int> lightningFireWeight;
-        private static ISiteVar<int> rxFireWeight;
-        private static ISiteVar<int> accidentalFireWeight;
+        private static ISiteVar<double> lightningFireWeight;
+        private static ISiteVar<double> rxFireWeight;
+        private static ISiteVar<double> accidentalFireWeight;
+        private static ISiteVar<byte> typeOfIginition;
         // --------------End add
         private static ISiteVar<byte> severity;
         private static ISiteVar<byte> lastSeverity;
         private static ISiteVar<bool> disturbed;
-        //private static ISiteVar<double> travelTime;
-        //private static ISiteVar<double> minNeighborTravelTime;
-        //private static ISiteVar<double> simpleTravelTime;
-        //private static ISiteVar<double> rateOfSpread;
-        //private static ISiteVar<double> isi;
-        //private static ISiteVar<double> adjROS;
-        //private static ISiteVar<double> costTime;
         private static ISiteVar<ushort> groundSlope;
         private static ISiteVar<ushort> uphillSlopeAzimuth;
 
@@ -54,9 +48,10 @@ namespace Landis.Extension.Scrapple
             siteWindSpeed        = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
             siteWindDirection    = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
             // Added for scrapple:
-            lightningFireWeight  = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
-            rxFireWeight         = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
-            accidentalFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
+            lightningFireWeight  = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
+            rxFireWeight         = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
+            accidentalFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
+            typeOfIginition      = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
 
             //Also initialize topography, will be overwritten if optional parameters provided:
             SiteVars.GroundSlope.ActiveSiteValues = 0;
@@ -99,7 +94,7 @@ namespace Landis.Extension.Scrapple
         ////---------------------------------------------------------------------
         // Added for Scrapple:
         ////---------------------------------------------------------------------
-        public static ISiteVar<int> LightningFireWeight
+        public static ISiteVar<double> LightningFireWeight
         {
             get
             {
@@ -107,7 +102,7 @@ namespace Landis.Extension.Scrapple
             }
         }
         ////---------------------------------------------------------------------
-        public static ISiteVar<int> RxFireWeight
+        public static ISiteVar<double> RxFireWeight
         {
             get
             {
@@ -115,33 +110,23 @@ namespace Landis.Extension.Scrapple
             }
         }
         ////---------------------------------------------------------------------
-        public static ISiteVar<int> AccidentalFireWeight
+        public static ISiteVar<double> AccidentalFireWeight
         {
             get
             {
                 return accidentalFireWeight;
             }
         }
+
+        public static ISiteVar<byte> TypeOfIginition
+        {
+            get
+            {
+                return typeOfIginition;
+            }
+        }
         // ------------ End addition
-
-        ////---------------------------------------------------------------------
-
-        //public static ISiteVar<IDynamicInputRecord> FireRegion
-        //{
-        //    get {
-        //        return fire_regions;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public static ISiteVar<IDynamicInputRecord> FireRegion2
-        //{
-        //    get
-        //    {
-        //        return fire_regions2;
-        //    }
-        //}
-        //---------------------------------------------------------------------
+        
 
         public static ISiteVar<int> TimeOfLastFire
         {
@@ -156,33 +141,7 @@ namespace Landis.Extension.Scrapple
                 return eventVar;
             }
         }
-
-        ////---------------------------------------------------------------------
-
-        //public static ISiteVar<int> CFSFuelType
-        //{
-        //    get {
-        //        return cfsFuelType;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public static ISiteVar<int> CFSFuelType2
-        //{
-        //    get
-        //    {
-        //        return cfsFuelType2;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-        //public static ISiteVar<int> DecidFuelType
-        //{
-        //    get {
-        //        return decidFuelType;
-        //    }
-        //}
-        //---------------------------------------------------------------------
-
+        
         public static ISiteVar<int> PercentConifer
         {
             get {
@@ -233,54 +192,7 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-
-        //public static ISiteVar<double> TravelTime
-        //{
-        //    get {
-        //        return travelTime;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public static ISiteVar<double> MinNeighborTravelTime
-        //{
-        //    get {
-        //        return minNeighborTravelTime;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public static ISiteVar<double> RateOfSpread
-        //{
-        //    get {
-        //        return rateOfSpread;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public static ISiteVar<double> ISI
-        //{
-        //    get {
-        //        return isi;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-        //public static ISiteVar<double> AdjROS
-        //{
-        //    get
-        //    {
-        //        return adjROS;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-        //public static ISiteVar<double> CostTime
-        //{
-        //    get
-        //    {
-        //        return costTime;
-        //    }
-        //}
-        //---------------------------------------------------------------------
+        
         public static ISiteVar<ushort> GroundSlope
         {
             get {
