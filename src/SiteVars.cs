@@ -22,13 +22,6 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<byte> severity;
         private static ISiteVar<byte> lastSeverity;
         private static ISiteVar<bool> disturbed;
-        //private static ISiteVar<double> travelTime;
-        //private static ISiteVar<double> minNeighborTravelTime;
-        //private static ISiteVar<double> simpleTravelTime;
-        //private static ISiteVar<double> rateOfSpread;
-        //private static ISiteVar<double> isi;
-        //private static ISiteVar<double> adjROS;
-        //private static ISiteVar<double> costTime;
         private static ISiteVar<ushort> groundSlope;
         private static ISiteVar<ushort> uphillSlopeAzimuth;
 
@@ -133,25 +126,7 @@ namespace Landis.Extension.Scrapple
             }
         }
         // ------------ End addition
-
-        ////---------------------------------------------------------------------
-
-        //public static ISiteVar<IDynamicInputRecord> FireRegion
-        //{
-        //    get {
-        //        return fire_regions;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public static ISiteVar<IDynamicInputRecord> FireRegion2
-        //{
-        //    get
-        //    {
-        //        return fire_regions2;
-        //    }
-        //}
-        //---------------------------------------------------------------------
+        
 
         public static ISiteVar<int> TimeOfLastFire
         {
@@ -166,33 +141,7 @@ namespace Landis.Extension.Scrapple
                 return eventVar;
             }
         }
-
-        ////---------------------------------------------------------------------
-
-        //public static ISiteVar<int> CFSFuelType
-        //{
-        //    get {
-        //        return cfsFuelType;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public static ISiteVar<int> CFSFuelType2
-        //{
-        //    get
-        //    {
-        //        return cfsFuelType2;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-        //public static ISiteVar<int> DecidFuelType
-        //{
-        //    get {
-        //        return decidFuelType;
-        //    }
-        //}
-        //---------------------------------------------------------------------
-
+        
         public static ISiteVar<int> PercentConifer
         {
             get {
@@ -243,54 +192,7 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-
-        //public static ISiteVar<double> TravelTime
-        //{
-        //    get {
-        //        return travelTime;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public static ISiteVar<double> MinNeighborTravelTime
-        //{
-        //    get {
-        //        return minNeighborTravelTime;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public static ISiteVar<double> RateOfSpread
-        //{
-        //    get {
-        //        return rateOfSpread;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public static ISiteVar<double> ISI
-        //{
-        //    get {
-        //        return isi;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-        //public static ISiteVar<double> AdjROS
-        //{
-        //    get
-        //    {
-        //        return adjROS;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-        //public static ISiteVar<double> CostTime
-        //{
-        //    get
-        //    {
-        //        return costTime;
-        //    }
-        //}
-        //---------------------------------------------------------------------
+        
         public static ISiteVar<ushort> GroundSlope
         {
             get {

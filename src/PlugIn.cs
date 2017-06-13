@@ -31,12 +31,8 @@ namespace Landis.Extension.Scrapple
         public static readonly string ExtensionName = "SCRAPPLE";
         public static MetadataTable<EventsLog> eventLog;
         public static MetadataTable<SummaryLog> summaryLog;
-
-        //public static bool ClimateLibraryActive = false;
-        //public static bool ReadClimateLibrary = false;
+        
         public static int FutureClimateBaseYear;
-        //public static DataTable WeatherDataTable;
-        //public static DataTable WindDataTable;
         public static int WeatherRandomizer = 0;
         private static double RelativeHumiditySlopeAdjust;
         private static int springStart;
@@ -102,7 +98,7 @@ namespace Landis.Extension.Scrapple
                 Debugger.Break();
             }
             else
-            {
+            { 
                 modelCore.UI.WriteLine("Debugger not attached");
             }
 
@@ -113,30 +109,6 @@ namespace Landis.Extension.Scrapple
             
             Climate.Initialize(parameters.ClimateConfigFile, false, modelCore);
             FutureClimateBaseYear = Climate.Future_MonthlyData.Keys.Min();
-            /************************access climate data**************
-            try
-            {
-                int actualYear = Climate.Future_DailyData.First().Key;
-                foreach (IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
-                {
-                    for(int i = 0; i < duration; i++)
-                    {
-                        actualYear = Climate.Future_DailyData.First().Key + i;
-                        //FireClimate.CalculateFireWeather(RelativeHumiditySlopeAdjust, ecoregion, springStart, winterStart, actualYear);
-                    }
-                }
-            }
-            catch (UninitializedClimateData uninitVarException)
-            {
-                throw new Exception(string.Format("EXCEPTION: {0}", uninitVarException.Message));
-            }
-            catch
-            {
-                throw new Exception(string.Format("An Exception occured while calculating Fire Climate in Landis.Library.Climate.FireClimate.CalculateFireWeather()"));
-            }
-            */
-            // VS: not to be used for building. Just output FWI.
-            //OutputFWITable();
 
 
             MetadataHandler.InitializeMetadata(parameters.Timestep, parameters.MapNamesTemplate, ModelCore);
@@ -201,8 +173,7 @@ namespace Landis.Extension.Scrapple
                 throw new UninitializedClimateData(string.Format("No climate data for year:", actualYear));
             }
             
-
-            modelCore.UI.WriteLine("TEST!!!!");
+           
             int daysPerYear = 366;
             //daysPerYear = (AnnualClimate.IsLeapYear(actualYear) ? true : false) ? 366 : 365;
 
@@ -212,10 +183,9 @@ namespace Landis.Extension.Scrapple
             double fireWeatherIndex = 0.0;
             bool fireWeatherDataExists = true;
             
+            // Get the active sites from the landscape and shuffle them according to 
             List<ActiveSite> activeSites = PlugIn.ModelCore.Landscape.ToList();
             List<ActiveSite> shuffledActiveSites = Shuffle(activeSites, SiteVars.AccidentalFireWeight);
-            //List<ActiveSite> shuffledLightningSites = Shuffle(activeSites, SiteVars.LightningFireWeight);
-            //List
             ActiveSite site = shuffledActiveSites.First();
             foreach(IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
             {
@@ -261,38 +231,7 @@ namespace Landis.Extension.Scrapple
            
             }
 
-            WriteYearlyFireMap(PlugIn.ModelCore.CurrentTime);
-            /*
-            // Track the time of last fire; registered in SiteVars.cs for other extensions to access.
-            if (isDebugEnabled)
-                modelCore.UI.WriteLine("Assigning TimeOfLastFire SiteVar ...");
-            foreach (Site site in modelCore.Landscape.AllSites)
-                if(SiteVars.Disturbed[site])
-                    SiteVars.TimeOfLastFire[site] = modelCore.CurrentTime;
-
-            // Output maps here.
-            //  Write Fire severity map
-            string path = MapNames.ReplaceTemplateVars(mapNameTemplate, modelCore.CurrentTime);
-            modelCore.UI.WriteLine("   Writing Fire severity map to {0} ...", path);
-            using (IOutputRaster<BytePixel> outputRaster = modelCore.CreateRaster<BytePixel>(path, modelCore.Landscape.Dimensions))
-            {
-                BytePixel pixel = outputRaster.BufferPixel;
-                foreach (Site site in modelCore.Landscape.AllSites)
-                {
-                    if (site.IsActive) {
-                        if (SiteVars.Disturbed[site])
-                            pixel.MapCode.Value = (byte) (SiteVars.Severity[site] + 2);
-                        else
-                            pixel.MapCode.Value = 1;
-                    }
-                    else {
-                        //  Inactive site
-                        pixel.MapCode.Value = 0;
-                    }
-                    outputRaster.WriteBufferPixel();
-                }
-            }
-            */
+            WriteYearlyIgnitionsMap(PlugIn.ModelCore.CurrentTime);
 
             WriteSummaryLog(modelCore.CurrentTime);
 
@@ -300,7 +239,7 @@ namespace Landis.Extension.Scrapple
                 modelCore.UI.WriteLine("Done running extension");
         }
 
-        private void WriteYearlyFireMap(int currentTime)
+        private void WriteYearlyIgnitionsMap(int currentTime)
         {
             string path = MapNames.ReplaceTemplateVars(mapNameTemplate, currentTime);
 
