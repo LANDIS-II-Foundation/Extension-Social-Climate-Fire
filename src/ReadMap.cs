@@ -55,7 +55,7 @@ namespace Landis.Extension.Scrapple
                     if (site.IsActive)
                     {
                         // RMS: SiteVars.MY-FAVORITE-SITEVAR-HERE[site] = mapCode; 
-                        siteVar[site] = mapCode;
+                        SiteVars.AccidentalFireWeight[site] = mapCode;
                         //PlugIn.ModelCore.UI.WriteLine(string.Format("site name: {0},    map code: {1},    2nd code: {2},    3rd code: {3},   4th code: {4}", site.ToString(), mapCode, secondCode, thirdCode, forthCode));
                     }
                 }
