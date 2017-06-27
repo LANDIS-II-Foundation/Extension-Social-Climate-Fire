@@ -189,6 +189,7 @@ namespace Landis.Extension.Scrapple
             List<ActiveSite> activeSites = PlugIn.ModelCore.Landscape.ToList();
             List<ActiveSite> shuffledActiveSites = Shuffle(activeSites, SiteVars.AccidentalFireWeight);
             ActiveSite site = shuffledActiveSites.First();
+
             foreach(IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
             {
                 AnnualClimate_Daily weatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
