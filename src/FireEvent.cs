@@ -15,6 +15,14 @@ using System.Linq;
 namespace Landis.Extension.Scrapple
 {
 
+    public enum Ignition
+    {
+        Accidental,
+        Lightning,
+        Rx,
+        Spread
+    }
+
     public class FireEvent
         : ICohortDisturbance
     {
@@ -44,16 +52,9 @@ namespace Landis.Extension.Scrapple
         //private ISeasonParameters fireSeason;
         private double windSpeed;  
         private double windDirection;
-        //private int fineFuelMoistureCode;
-        //private int buildUpIndex;
-        //private int foliarMC;
-        //private int isi;
-        //private double lengthB;
-        //private double lengthA;
-        //private double lengthD;
-        //private double lbr;  //lenght:breadth ratio
 
-        public double FireWeatherIndex;
+        public double fireWeatherIndex;
+        private Ignition ignitionType;
 
         //---------------------------------------------------------------------
         static FireEvent()
@@ -97,11 +98,6 @@ namespace Landis.Extension.Scrapple
         //---------------------------------------------------------------------
 
         //public IDynamicInputRecord InitiationFireRegion
-        //{
-        //    get {
-        //        return initiationFireRegion;
-        //    }
-        //}
         //---------------------------------------------------------------------
 
         public bool SecondRegionMap
@@ -197,94 +193,6 @@ namespace Landis.Extension.Scrapple
         }
         //---------------------------------------------------------------------
 
-        //public int FFMC
-        //{
-        //    get {
-        //        return fineFuelMoistureCode;
-        //    }
-        //}
-
-        ////---------------------------------------------------------------------
-
-        //public int BuildUpIndex
-        //{
-        //    get {
-        //        return buildUpIndex;
-        //    }
-        //}
-
-        ////---------------------------------------------------------------------
-
-        //public int FMC
-        //{
-        //    get
-        //    {
-        //        return foliarMC;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public int ISI
-        //{
-        //    get
-        //    {
-        //        return isi;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public ISeasonParameters FireSeason
-        //{
-        //    get {
-        //        return fireSeason;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public double LengthB
-        //{
-        //    get {
-        //        return lengthB;
-        //    }
-        //    set {
-        //        lengthB = value;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public double LengthA
-        //{
-        //    get {
-        //        return lengthA;
-        //    }
-        //    set {
-        //        lengthA = value;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public double LengthD
-        //{
-        //    get {
-        //        return lengthD;
-        //    }
-        //    set {
-        //        lengthD = value;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public double LB
-        //{
-        //    get {
-        //        return lbr;
-        //    }
-        //    set {
-        //        lbr = value;
-        //    }
-        //}
-        //---------------------------------------------------------------------
-
         ExtensionType IDisturbance.Type
         {
             get {
@@ -304,7 +212,7 @@ namespace Landis.Extension.Scrapple
         //---------------------------------------------------------------------
         // Constructor function
 
-        public FireEvent(ActiveSite initiationSite, int day)
+        public FireEvent(ActiveSite initiationSite, int day, Ignition ignitionType)
         {
             this.initiationSite = initiationSite;
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[initiationSite];
@@ -313,34 +221,14 @@ namespace Landis.Extension.Scrapple
             AnnualClimate_Daily annualWeatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
             SiteVars.TypeOfIginition[initiationSite] = 1;
             SiteVars.Disturbed[initiationSite] = true;
-
-            //this.sitesInEvent = new int[FireRegions.Dataset.Length];
-
-            //foreach (IDynamicInputRecord fire_region in FireRegions.Dataset)
-            //    this.sitesInEvent[fire_region.Index] = 0;
+            
             this.cohortsKilled = 0;
             this.eventSeverity = 0;
             this.totalSitesDamaged = 0;
             
-            //this.lengthB = 0.0;
-            //this.lengthA = 0.0;
-            //this.lengthD = 0.0;
-            ////IFireRegion eco = SiteVars.FireRegion[initiationSite];
-            //this.initiationFireRegion = eco;
-            //if (eco.MapCode > FireRegions.MaxMapCode)
-            //    this.secondRegionMap = true;
-            //else
-            //    this.secondRegionMap = false;
-            //this.maxFireParameter = ComputeSize(eco.MeanSize, eco.StandardDeviation, eco.MinSize, eco.MaxSize); 
-            //this.fireSeason         = fireSeason; 
-            this.FireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
+            this.fireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
             this.windSpeed = annualWeatherData.DailyWindSpeed[day];
-            //this.fineFuelMoistureCode = (int) AnnualFireWeather.FineFuelMoistureCode;
-            //this.buildUpIndex = (int) AnnualFireWeather.BuildUpIndex;
             this.windDirection = annualWeatherData.DailyWindDirection[day];
-            //this.foliarMC = Weather.GenerateFMC(this.fireSeason, eco);
-
-
         }
 
         //---------------------------------------------------------------------
@@ -394,25 +282,12 @@ namespace Landis.Extension.Scrapple
         }
 
         //---------------------------------------------------------------------
-        public static FireEvent Initiate(ActiveSite site, int timestep, int day)
+        public static FireEvent Initiate(ActiveSite site, int timestep, int day, Ignition ignitionType)
 
         {
 
 
             double randomNum = PlugIn.ModelCore.GenerateUniform();
-
-
-
-            // Ignition moved to Run()
-
-            //// Get probability of ignition based on Jen Beverly equation and FWI;
-
-            //double FWIshape = FuelTypeParms[fuelIndex].IgnitionDistributionShape;//RMS: Necessary?  
-
-            //double FWIscale = FuelTypeParms[fuelIndex].IgnitionDistributionScale;//RMS: Necessary?
-
-            //// A. Kretchun: My equation that includes FWIshape and FWIscale and AnnualFire.FireWeatherIndex. This equation comes from Beverly et al 2007
-            //double ignitionProbability = 1/(1+Math.Exp(-(FWIshape+FWIscale*AnnualFireWeather.FireWeatherIndex))); 
 
             /*
              * VS: These were removed to being calculated once a year. 
@@ -420,7 +295,8 @@ namespace Landis.Extension.Scrapple
 
             AnnualFireWeather.CalculateAnnualFireWeather(ecoregion);
             */
-            FireEvent fireEvent = new FireEvent(site,/* fireSeason, fireSizeType, eco, */ day); //Must create event to determine season
+            // FireEvent fireEvent = new FireEvent(site,/* fireSeason, fireSizeType, eco, */ day); 
+            FireEvent fireEvent = new FireEvent(site, day, ignitionType);
 
             // Test that adequate weather data was retrieved:-
             /*
@@ -434,221 +310,130 @@ namespace Landis.Extension.Scrapple
             return fireEvent;
         }
 
+        
+
         //---------------------------------------------------------------------
-        private bool Spread(ActiveSite initiationSite)//, IDynamicInputRecord fire_region, SizeType fireSizeType, bool BUI, double severityCalibrate)
+        public void Spread(ActiveSite initiationSite)
         {
             //First, check for fire overlap:
-            if(SiteVars.FireEvent[initiationSite] != null)
-                return false;
-
-            if (isDebugEnabled)
-                PlugIn.ModelCore.UI.WriteLine("   Spreading fire event started at {0} ...", initiationSite.Location);
-
-            //IDynamicInputRecord fire_region = SiteVars.FireRegion[initiationSite];
-
-            int totalSiteSeverities = 0;
-            int siteCohortsKilled    = 0;
-            //int totalISI = 0;
-            totalSitesDamaged = 1;
-
-            //this.initiationFuel   = SiteVars.CFSFuelType[initiationSite];
-            //if (this.secondRegionMap)
-            //    this.initiationFuel = SiteVars.CFSFuelType2[initiationSite];
-            this.initiationPercentConifer = SiteVars.PercentConifer[initiationSite];
-
-            //Next, calculate the fire area:
-            List<Site> FireLocations = new List<Site>();
-
-            //if (isDebugEnabled) PlugIn.ModelCore.UI.WriteLine("  Calling SizeFireCostSurface ...");
-
-            //FireLocations = EventRegion.SizeFireCostSurface(this, fireSizeType, BUI);
-
-            //if (isDebugEnabled) PlugIn.ModelCore.UI.WriteLine("    FireLocations.Count = {0}", FireLocations.Count);
-
-            //if (FireLocations.Count == 0) return false;
-
-            ////Attach travel time weights here
-            //if (isDebugEnabled)
-            //    PlugIn.ModelCore.UI.WriteLine("  Computing SizeFireCostSurface ...");
-            //List<WeightedSite> FireCostSurface = new List<WeightedSite>(0);
-            //foreach(Site site in FireLocations)
-            //{
-            //    double myWeight = SiteVars.TravelTime[site];
-            //    if ((Double.IsNaN(myWeight))||(Double.IsInfinity(myWeight))) { }
-            //    else
-            //    {
-            //       FireCostSurface.Add(new WeightedSite(site, myWeight));
-            //    }
-            //}
-            //WeightComparer weightComp = new WeightComparer();
-            //FireCostSurface.Sort(weightComp);
-            FireLocations = new List<Site>();
-
-            double cellArea = (PlugIn.ModelCore.CellLength * PlugIn.ModelCore.CellLength) / 10000; //convert to ha
-            //double totalArea = 0.0;
-            //int cellCnt = 0;
-            //double durMax = 0;
-
-            //if (isDebugEnabled)
-            //    PlugIn.ModelCore.UI.WriteLine("  Determining cells burned ...");
-            //if (fireSizeType == SizeType.size_based)
-            //{
-
-            //    foreach(WeightedSite weighted in FireCostSurface)
-            //    {
-            //        //weightCnt++;
-            //        cellCnt++;
-            //        if(totalArea > this.maxFireParameter)
-            //        {
-            //            SiteVars.Event[weighted.Site] = null;
-            //        }
-            //        else
-            //        {
-            //            totalArea += cellArea;
-            //            FireLocations.Add(weighted.Site);
-            //            if (SiteVars.TravelTime[weighted.Site] > durMax)
-            //                durMax = SiteVars.TravelTime[weighted.Site];
-            //        }
-            //    }
-            //    this.maxDuration = durMax;
-            //    //Debug
-            //    if ((durMax < 0.01)&& (FireLocations.Count > 0))
-            //        PlugIn.ModelCore.UI.WriteLine("Duration = 0");
-            //    //PlugIn.ModelCore.Log.WriteLine("   Fire Summary:  Cells Checked={0}, BurnedArea={1:0.0} (ha), Target Area={2:0.0} (ha).", cellCnt, totalArea, this.maxFireParameter);
-            //    //if(totalArea < this.maxFireParameter)
-            //    //    PlugIn.ModelCore.Log.WriteLine("      NOTE:  Partial fire burn; fire may have spread to the edge of the active area.");
-            //}
-            //else if (fireSizeType == SizeType.duration_based)
-            //{
-            //    double durationAdj = this.maxFireParameter;
-            //    if (durationAdj >= 1440)
-            //        durationAdj = durationAdj * this.FireSeason.DayLengthProp;
-
-
-            //    foreach(WeightedSite weighted in FireCostSurface)
-            //    {
-            //        cellCnt++;
-            //        if (weighted.Site == this.initiationSite)
-            //        {
-            //            totalArea += cellArea;
-            //            FireLocations.Add(weighted.Site);
-            //            if (SiteVars.TravelTime[weighted.Site] > durMax)
-            //                durMax = SiteVars.TravelTime[weighted.Site];
-            //        }
-            //        else
-            //        {
-            //            if (weighted.Weight > durationAdj)
-            //            {
-            //                SiteVars.Event[weighted.Site] = null;
-            //            }
-            //            else
-            //            {
-            //                totalArea += cellArea;
-            //                FireLocations.Add(weighted.Site);
-            //                //-----Added by BRM-----
-            //                if (SiteVars.TravelTime[weighted.Site] > durMax)
-            //                    durMax = SiteVars.TravelTime[weighted.Site];
-            //                //----------
-            //            }
-            //        }
-            //    }
-            //    this.maxDuration = durMax;
-            //    //Debug
-            //    if ((durMax < 0.01) && (FireLocations.Count > 0))
-            //        PlugIn.ModelCore.UI.WriteLine("Duration = 0");
-
-            //    //PlugIn.ModelCore.Log.WriteLine("   Fire Summary:  Cells Checked={0}, BurnedArea={1:0.0} (ha), Target Duration={2:0.0}, Adjusted Duration = {3:0.0}.", cellCnt, totalArea, this.maxFireParameter, durationAdj);
-            //    //if(durationAdj - durMax > 5.0)
-            //    //    PlugIn.ModelCore.Log.WriteLine("      NOTE:  Partial fire burn; fire may have spread to the edge of the active area.");
-            //}
-            //if (isDebugEnabled)
-            //    PlugIn.ModelCore.UI.WriteLine("  FireLocations.Count = {0}", FireLocations.Count);
-            //int FMC = this.FMC;  //Foliar Moisture Content
-
-            if (FireLocations.Count == 0) return false;
-
-            if (isDebugEnabled)
-                PlugIn.ModelCore.UI.WriteLine("  Damaging cohorts at burned sites ...");
-            foreach(Site site in FireLocations)
+            if(SiteVars.Disturbed[initiationSite])
             {
-                currentSite = (ActiveSite) site;
-                if(site.IsActive)
+                // Randomly select neighbor to spread to
+                if (isDebugEnabled)
+                    PlugIn.ModelCore.UI.WriteLine("   Spreading fire event started at {0} ...", initiationSite.Location);
+
+                List<Site> neighbors = Get4WeightedNeighbors(initiationSite);
+                // remove any neighbors that are already disturbed by fire. This avoids overlap
+                foreach (Site neighbor in neighbors)
                 {
-                    this.numSitesChecked++;
+                    if(SiteVars.Disturbed[neighbor])
+                    {
+                        neighbors.Remove(neighbor);
+                    }
+                }
 
-                    this.siteSeverity = 0; // FireSeverity.CalcFireSeverity(currentSite, this); //, severityCalibrate, FMC);
-                    siteCohortsKilled = Damage(currentSite);
+                // if there are no neighbors already disturbed then nothing to do since it can't spread
+                if (neighbors.Count > 0)
+                {
+                    // Randomly select neighbor from remaining list and create a new fire event
+                }
+                
 
-                    this.totalSitesDamaged++;
-                    totalSiteSeverities += this.siteSeverity;
-                    //totalISI += (int) SiteVars.ISI[site];
-                    
-                    
-                    //IDynamicInputRecord siteFireRegion = SiteVars.FireRegion[site];
-                    //if (this.secondRegionMap)
-                    //    siteFireRegion = SiteVars.FireRegion2[site];
+                /*
+                int totalSiteSeverities = 0;
+                int siteCohortsKilled = 0;
+                //int totalISI = 0;
+                totalSitesDamaged = 1;
 
-                    //sitesInEvent[siteFireRegion.Index]++;
+                //this.initiationFuel   = SiteVars.CFSFuelType[initiationSite];
+                //if (this.secondRegionMap)
+                //    this.initiationFuel = SiteVars.CFSFuelType2[initiationSite];
+                this.initiationPercentConifer = SiteVars.PercentConifer[initiationSite];
 
-                    SiteVars.Disturbed[currentSite] = true;
-                    SiteVars.Severity[currentSite] = (byte) siteSeverity;
+                //Next, calculate the fire area:
+                List<Site> FireLocations = new List<Site>();
+                FireLocations = new List<Site>();
 
-                    if(siteSeverity > 0)
-                        SiteVars.LastSeverity[currentSite] = (byte)siteSeverity;
+                double cellArea = (PlugIn.ModelCore.CellLength * PlugIn.ModelCore.CellLength) / 10000; 
+
+                if (FireLocations.Count == 0) return false;
+
+                if (isDebugEnabled)
+                    PlugIn.ModelCore.UI.WriteLine("  Damaging cohorts at burned sites ...");
+                foreach (Site site in FireLocations)
+                {
+                    currentSite = (ActiveSite)site;
+                    if (site.IsActive)
+                    {
+                        this.numSitesChecked++;
+
+                        this.siteSeverity = 0; 
+                        siteCohortsKilled = Damage(currentSite);
+
+                        this.totalSitesDamaged++;
+                        totalSiteSeverities += this.siteSeverity;
+                        //totalISI += (int) SiteVars.ISI[site];
+
+
+                        //IDynamicInputRecord siteFireRegion = SiteVars.FireRegion[site];
+                        //if (this.secondRegionMap)
+                        //    siteFireRegion = SiteVars.FireRegion2[site];
+
+                        //sitesInEvent[siteFireRegion.Index]++;
+
+                        SiteVars.Disturbed[currentSite] = true;
+                        SiteVars.Severity[currentSite] = (byte)siteSeverity;
+
+                        if (siteSeverity > 0)
+                            SiteVars.LastSeverity[currentSite] = (byte)siteSeverity;
+                    }
+                }
+
+                if (this.totalSitesDamaged == 0)
+                    this.eventSeverity = 0;
+                else
+                    this.eventSeverity = ((double)totalSiteSeverities) / (double)this.totalSitesDamaged;
+
+                //this.isi = (int) ((double) totalISI / (double) this.totalSitesDamaged);
+
+                if (isDebugEnabled)
+                    PlugIn.ModelCore.UI.WriteLine("  Done spreading");
+                return true;
+                */
+            }
+
+                
+
+        }
+
+        //---------------------------------------------------------------------
+        private static List<Site> Get4WeightedNeighbors(Site srcSite)
+        {
+            if (!srcSite.IsActive)
+                throw new ApplicationException("Source site is not active.");
+
+            List<Site> neighbors = new List<Site>();
+
+            RelativeLocation[] neighborhood = new RelativeLocation[]
+            {
+                new RelativeLocation(-1,  0),  // north
+                new RelativeLocation( 0,  1),  // east
+                new RelativeLocation( 1,  0),  // south
+                new RelativeLocation( 0, -1),  // west
+            };
+
+            foreach (RelativeLocation relativeLoc in neighborhood)
+            {
+                Site neighbor = srcSite.GetNeighbor(relativeLoc);
+
+                if (neighbor != null && neighbor.IsActive)
+                {
+                    neighbors.Add(neighbor);
                 }
             }
 
-            if (this.totalSitesDamaged == 0)
-                this.eventSeverity = 0;
-            else
-                this.eventSeverity = ((double) totalSiteSeverities) / (double)this.totalSitesDamaged;
-
-            //this.isi = (int) ((double) totalISI / (double) this.totalSitesDamaged);
-
-            if (isDebugEnabled)
-                PlugIn.ModelCore.UI.WriteLine("  Done spreading");
-            return true;
+            return neighbors; //fastNeighbors;
         }
-        //---------------------------------------------------------------------
-
-        //public static double ComputeSize(double meanSize, double sd, double minSize, double maxSize)
-        //{
-
-        //    double sizeGenerated = maxSize * 2.0;
-        //    //LognormalDistribution randVar = new LognormalDistribution(RandomNumberGenerator.Singleton);
-        //    //double minSize = 0.0;
-
-        //    while(sizeGenerated > maxSize || sizeGenerated <= minSize)
-        //    {
-        //        PlugIn.ModelCore.LognormalDistribution.Mu = meanSize;      //randVar.Mu for Lognormal //randVar.Alpha for Gamma
-        //        PlugIn.ModelCore.LognormalDistribution.Sigma = sd;   //randVar.Sigma for Lognormal //randVar.Theta for Gamma
-        //        sizeGenerated = PlugIn.ModelCore.LognormalDistribution.NextDouble();
-        //        //PlugIn.ModelCore.Log.WriteLine(sizeGenerated.ToString());
-        //    }
-        //    return sizeGenerated;
-        //}
-
-        //public static int ComputeSizeBin(double meanSize, double sd, double sizeGenerated)
-        //{
-        //    // Percentile cutoffs from MN DNR (www.dnr.state.mn.us/forestry/fire/reports/canadian_indexes_o.html)
-        //    double size5 = Math.Exp(meanSize + sd * 1.9600); // 97.5th percentil
-        //    double size4 = Math.Exp(meanSize + sd * 1.2816); // 90th percentile
-        //    double size3 = Math.Exp(meanSize + sd * 0.722);  // 76.5th percentile
-        //    double size2 = Math.Exp(meanSize + sd * (-0.087)); // 46.5th percentile
-        //    int sizeBin = 0;
-        //    if (sizeGenerated >= size5)
-        //        sizeBin = 5;
-        //    else if (sizeGenerated >= size4)
-        //        sizeBin = 4;
-        //    else if (sizeGenerated >= size3)
-        //        sizeBin = 3;
-        //    else if (sizeGenerated >= size2)
-        //        sizeBin = 2;
-        //    else
-        //        sizeBin = 1;
-        //    return sizeBin;
-        //}
-
         //---------------------------------------------------------------------
 
         private int Damage(ActiveSite site)
