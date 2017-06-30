@@ -17,8 +17,6 @@ using System.Diagnostics;
 
 namespace Landis.Extension.Scrapple
 {
-
-
     ///<summary>
     /// A disturbance plug-in that simulates Fire disturbance.
     /// </summary>
@@ -109,8 +107,8 @@ namespace Landis.Extension.Scrapple
             modelCore.UI.WriteLine("   Initializing Fire Climate Data...");
             FireRegions.Initilize(parameters.LighteningFireMap);
             
-            Climate.Initialize(parameters.ClimateConfigFile, false, modelCore);
-            FutureClimateBaseYear = Climate.Future_MonthlyData.Keys.Min();
+            //Climate.Initialize(parameters.ClimateConfigFile, false, modelCore);
+            //FutureClimateBaseYear = Climate.Future_MonthlyData.Keys.Min();
 
 
             MetadataHandler.InitializeMetadata(parameters.Timestep, parameters.MapNamesTemplate, ModelCore);
@@ -135,11 +133,7 @@ namespace Landis.Extension.Scrapple
         {
             SiteVars.InitializeFuelType();
             SiteVars.FireEvent.SiteValues = null;
-            SiteVars.Severity.ActiveSiteValues = 0;
             SiteVars.Disturbed.ActiveSiteValues = false;
-            //SiteVars.TravelTime.ActiveSiteValues = Double.PositiveInfinity;
-            //SiteVars.MinNeighborTravelTime.ActiveSiteValues = Double.PositiveInfinity;
-            //SiteVars.RateOfSpread.ActiveSiteValues = 0.0;
             List<FireEvent> fireEvents = new List<FireEvent>();
 
             
@@ -204,6 +198,7 @@ namespace Landis.Extension.Scrapple
                     catch
                     {
                         fireWeatherDataExists = false;
+                        //throw new Exception("NO WEATHER MAN!!!!!!!!!\n\n\n");
                     }
                     if (fireWeatherIndex >= .10 && fireWeatherDataExists)
                     {
@@ -223,15 +218,21 @@ namespace Landis.Extension.Scrapple
                         for (int i = 0; i < numFiresStarted; ++i)
                         {
                             // create fire Event. VS: How do i determine type? <== dealing with it at a later phase
-                            FireEvent fireEvent = FireEvent.Initiate(shuffledActiveSites.First(), modelCore.CurrentTime, day);
-                            
+                            //
+                            FireEvent fireEvent = FireEvent.Initiate(shuffledActiveSites.First(), modelCore.CurrentTime, day, Ignition.Lightning, spreadLength(fireWeatherIndex));
                             LogEvent(modelCore.CurrentTime, fireEvent);
+                            FireEvent.Spread(fireEvent, modelCore.CurrentTime, day);
                             shuffledActiveSites.Remove(shuffledActiveSites.First());
+
                             // shuffledLightningSites.Remove(shuffledActiveSites.First());
                         }
                     }
                 }
-           
+            }
+
+            foreach (IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
+            {
+                
             }
 
             WriteYearlyIgnitionsMap(PlugIn.ModelCore.CurrentTime);
@@ -241,7 +242,7 @@ namespace Landis.Extension.Scrapple
             if (isDebugEnabled)
                 modelCore.UI.WriteLine("Done running extension");
         }
-
+        
         private void WriteYearlyIgnitionsMap(int currentTime)
         {
             string path = MapNames.ReplaceTemplateVars(mapNameTemplate, currentTime);
@@ -271,7 +272,7 @@ namespace Landis.Extension.Scrapple
 
         //---------------------------------------------------------------------
 
-        private void LogEvent(int currentTime, FireEvent fireEvent)
+        public static void LogEvent(int currentTime, FireEvent fireEvent)
         {
 
             eventLog.Clear();
@@ -279,14 +280,8 @@ namespace Landis.Extension.Scrapple
             el.Time = currentTime;
             el.InitRow = fireEvent.StartLocation.Row;
             el.InitColumn = fireEvent.StartLocation.Column;
-            //el.InitFuel = fireEvent.InitiationFuel;
-            el.InitPercentConifer = fireEvent.InitiationPercentConifer;
-            //el.SizeOrDuration = fireEvent.MaxFireParameter;
-            //el.SizeBin = fireEvent.SizeBin;
-            //el.Duration = fireEvent.MaxDuration;
             el.WindSpeed = fireEvent.WindSpeed;
             el.WindDirection = fireEvent.WindDirection;
-            el.TotalSites = fireEvent.NumSitesChecked;
             el.FireWeatherIndex = fireEvent.FireWeatherIndex;
             el.CohortsKilled = fireEvent.CohortsKilled;
             el.MeanSeverity = fireEvent.EventSeverity;
@@ -350,10 +345,16 @@ namespace Landis.Extension.Scrapple
             return shuffledList;
         }
 
+        //
         public static ActiveSite SelectRandomSite(List<ActiveSite> list, ISiteVar<double> weightedSiteVar, double totalWeight)
         {
             ActiveSite selectedSite = list.FirstOrDefault(); // currently selected element
-            double randomNum = PlugIn.ModelCore.GenerateUniform();
+            
+            int randomNum = FireEvent.rnd.Next((int)totalWeight);
+            while (randomNum > totalWeight)
+            {
+                randomNum = FireEvent.rnd.Next(list.Count);
+            }
             
             //check to make sure it is 
             foreach (ActiveSite site in list)
@@ -364,18 +365,26 @@ namespace Landis.Extension.Scrapple
                     break;
                 }
 
-                randomNum -= weightedSiteVar[site];
+                randomNum -= (int)weightedSiteVar[site];
             }
 
             return selectedSite; // when iterations end, selected is some element of sequence. 
         }
 
+
+        //  
         private static double Ignitions(double fireWeatherIndex)
         {
             double numIgnitions = (fireWeatherIndex * fireWeatherIndex) / 500;
             return numIgnitions;
         }
 
+        // 
+        private static int spreadLength(double fireWeatherIndex)
+        {
+            return 5;
+        }
 
+        
     }
 }

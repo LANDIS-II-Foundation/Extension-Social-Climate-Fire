@@ -1,0 +1,1 @@
+<landisMetadata><extension name="Biomass Succession" timeInterval="0"><scenario-replication timeMin="0" timeMax="20" rasterOutCellArea="1" /><outputs><output type="Table" name="SummaryLog" filePath="Biomass-succession-v3-log" visualize="True" MetadataFilePath="Metadata\Biomass Succession\SummaryLog_Metadata.xml" /></outputs></extension></landisMetadata>

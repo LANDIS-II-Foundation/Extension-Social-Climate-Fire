@@ -27,41 +27,50 @@ namespace Landis.Extension.Scrapple
         : ICohortDisturbance
     {
         private static readonly bool isDebugEnabled = false; //debugLog.IsDebugEnabled;
-
-        //public static IFuelType[] FuelTypeParms;
-        public static double SF;
-        private static List<IFireDamage> damages;
+        public static Random rnd = new Random();
 
         private ActiveSite initiationSite;
-        private double maxFireParameter;
-        private int sizeBin;
-        private double maxDuration;
-        //private IDynamicInputRecord initiationFireRegion;
-        private bool secondRegionMap;
-        private int initiationPercentConifer;
-        private int initiationFuel;
+        private Location originLocation;
         private int totalSitesDamaged;
+        private int spreadLength;
+        
+
         private int cohortsKilled;
         private double eventSeverity;
-        private int numSitesChecked;
-        private int[] sitesInEvent;
-
-        private ActiveSite currentSite; // current site where cohorts are being damaged
-        private int siteSeverity;      // used to compute maximum cohort severity at a site
-
-        //private ISeasonParameters fireSeason;
+        
         private double windSpeed;  
         private double windDirection;
 
-        public double fireWeatherIndex;
+        private double fireWeatherIndex;
         private Ignition ignitionType;
+        private int numSpread;
 
         //---------------------------------------------------------------------
         static FireEvent()
         {
         }
 
+        public int SpreadLength
+        {
+            get
+            {
+                return spreadLength;
+            }
+
+            set
+            {
+                spreadLength = value;
+            }
+        }
         //---------------------------------------------------------------------
+
+        public double FireWeatherIndex
+        {
+            get
+            {
+                return fireWeatherIndex;
+            }
+        }
 
         public Location StartLocation
         {
@@ -69,82 +78,13 @@ namespace Landis.Extension.Scrapple
                 return initiationSite.Location;
             }
         }
-
-        //---------------------------------------------------------------------
-
-        public double MaxFireParameter
-        {
-            get {
-                return maxFireParameter;
-            }
-        }
-        //---------------------------------------------------------------------
-
-        public double SizeBin
-        {
-            get
-            {
-                return sizeBin;
-            }
-        }
-        //---------------------------------------------------------------------
-        public double MaxDuration
-        {
-            get
-            {
-                return maxDuration;
-            }
-        }
-        //---------------------------------------------------------------------
-
-        //public IDynamicInputRecord InitiationFireRegion
-        //---------------------------------------------------------------------
-
-        public bool SecondRegionMap
-        {
-            get
-            {
-                return secondRegionMap;
-            }
-        }
-        //---------------------------------------------------------------------
-        public int InitiationPercentConifer
-        {
-            get {
-                return initiationPercentConifer;
-            }
-        }
-        //---------------------------------------------------------------------
-
-        public int InitiationFuel
-        {
-            get {
-                return initiationFuel;
-            }
-        }
+        
         //---------------------------------------------------------------------
 
         public int TotalSitesDamaged
         {
             get {
                 return totalSitesDamaged;
-            }
-        }
-        //---------------------------------------------------------------------
-
-        public int[] SitesInEvent
-        {
-            get {
-                return sitesInEvent;
-            }
-        }
-
-        //---------------------------------------------------------------------
-
-        public int NumSitesChecked
-        {
-            get {
-                return numSitesChecked;
             }
         }
         //---------------------------------------------------------------------
@@ -202,14 +142,27 @@ namespace Landis.Extension.Scrapple
 
         //---------------------------------------------------------------------
 
-        ActiveSite IDisturbance.CurrentSite
+        public Location OriginLocation
         {
             get {
-                return currentSite;
+                return originLocation;
+            }
+            set
+            {
+                value = originLocation;
             }
         }
 
+
+
         //---------------------------------------------------------------------
+        ActiveSite IDisturbance.CurrentSite
+        {
+            get
+            {
+                return initiationSite;
+            }
+        }
         // Constructor function
 
         public FireEvent(ActiveSite initiationSite, int day, Ignition ignitionType)
@@ -219,7 +172,7 @@ namespace Landis.Extension.Scrapple
 
             int actualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_DailyData.First().Key;
             AnnualClimate_Daily annualWeatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
-            SiteVars.TypeOfIginition[initiationSite] = 1;
+            SiteVars.TypeOfIginition[initiationSite] = (byte)ignitionType;
             SiteVars.Disturbed[initiationSite] = true;
             
             this.cohortsKilled = 0;
@@ -229,60 +182,13 @@ namespace Landis.Extension.Scrapple
             this.fireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
             this.windSpeed = annualWeatherData.DailyWindSpeed[day];
             this.windDirection = annualWeatherData.DailyWindDirection[day];
+            this.originLocation = initiationSite.Location;
+            this.initiationSite = initiationSite;
         }
+        
 
         //---------------------------------------------------------------------
-
-        public static void Initialize(//ISeasonParameters[] seasons,
-                                      //IFuelType[] fuelTypeParameters,
-                                      List<IFireDamage>    damages)
-        {
-            //if (isDebugEnabled)
-            //    PlugIn.ModelCore.UI.WriteLine("Initializing event parameters ...");
-
-            //if(seasons == null || fuelTypeParameters == null || damages == null)
-            //{
-            //    if(seasons == null)
-            //        PlugIn.ModelCore.UI.WriteLine("Error:  Seasons table empty.");
-            //    if(fuelTypeParameters == null)
-            //        PlugIn.ModelCore.UI.WriteLine("Error:  FuelTypeParameters table empty.");
-            //    if(damages == null)
-            //        PlugIn.ModelCore.UI.WriteLine("Error:  Damages table empty.");
-            //    throw new System.ApplicationException("Error: Event class could not be initialized.");
-            //}
-
-            //float totalSeasonFireProb = 0.0F;
-            //foreach(ISeasonParameters season in seasons)
-            //    totalSeasonFireProb += (float) season.FireProbability;
-
-            //if (totalSeasonFireProb != 1.0)
-            //    throw new System.ApplicationException("Error: Season Probabilities don't add to 1.0");
-
-            //Event.FuelTypeParms = fuelTypeParameters;
-            FireEvent.damages = damages;
-
-            int tempSlope, sumSlope = 0, cellCount = 0, meanSlope = 0;
-            foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
-            {
-                if (site.IsActive)
-                {
-                    tempSlope = SiteVars.GroundSlope[site];
-                    sumSlope += tempSlope;
-                    cellCount++;
-                }
-            }
-
-            if(sumSlope > 0)
-            {
-                meanSlope = sumSlope / cellCount;
-                if (meanSlope > 60)
-                    meanSlope = 60;
-                FireEvent.SF = CalculateSF(meanSlope);
-            }
-        }
-
-        //---------------------------------------------------------------------
-        public static FireEvent Initiate(ActiveSite site, int timestep, int day, Ignition ignitionType)
+        public static FireEvent Initiate(ActiveSite site, int timestep, int day, Ignition ignitionType, int spreadLength)
 
         {
 
@@ -297,6 +203,8 @@ namespace Landis.Extension.Scrapple
             */
             // FireEvent fireEvent = new FireEvent(site,/* fireSeason, fireSizeType, eco, */ day); 
             FireEvent fireEvent = new FireEvent(site, day, ignitionType);
+            fireEvent.SpreadLength = spreadLength;
+
 
             // Test that adequate weather data was retrieved:-
             /*
@@ -313,93 +221,35 @@ namespace Landis.Extension.Scrapple
         
 
         //---------------------------------------------------------------------
-        public void Spread(ActiveSite initiationSite)
+        public static void Spread(FireEvent initiationEvent, int currentTime, int day)
         {
             //First, check for fire overlap:
-            if(SiteVars.Disturbed[initiationSite])
+            
+            if (SiteVars.Disturbed[initiationEvent.initiationSite])
             {
                 // Randomly select neighbor to spread to
                 if (isDebugEnabled)
-                    PlugIn.ModelCore.UI.WriteLine("   Spreading fire event started at {0} ...", initiationSite.Location);
+                    PlugIn.ModelCore.UI.WriteLine("   Spreading fire event started at {0} ...", initiationEvent.initiationSite.Location);
 
-                List<Site> neighbors = Get4WeightedNeighbors(initiationSite);
-                // remove any neighbors that are already disturbed by fire. This avoids overlap
-                foreach (Site neighbor in neighbors)
-                {
-                    if(SiteVars.Disturbed[neighbor])
-                    {
-                        neighbors.Remove(neighbor);
-                    }
-                }
+                List<Site> neighbors = Get4WeightedNeighbors(initiationEvent.initiationSite);
+                neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor] || !neighbor.IsActive);
 
                 // if there are no neighbors already disturbed then nothing to do since it can't spread
                 if (neighbors.Count > 0)
                 {
-                    // Randomly select neighbor from remaining list and create a new fire event
-                }
-                
+                    //VS: for now pick random site to spread to
+                    int r = rnd.Next(neighbors.Count);
+                    Site nextSite = neighbors[r];
 
-                /*
-                int totalSiteSeverities = 0;
-                int siteCohortsKilled = 0;
-                //int totalISI = 0;
-                totalSitesDamaged = 1;
-
-                //this.initiationFuel   = SiteVars.CFSFuelType[initiationSite];
-                //if (this.secondRegionMap)
-                //    this.initiationFuel = SiteVars.CFSFuelType2[initiationSite];
-                this.initiationPercentConifer = SiteVars.PercentConifer[initiationSite];
-
-                //Next, calculate the fire area:
-                List<Site> FireLocations = new List<Site>();
-                FireLocations = new List<Site>();
-
-                double cellArea = (PlugIn.ModelCore.CellLength * PlugIn.ModelCore.CellLength) / 10000; 
-
-                if (FireLocations.Count == 0) return false;
-
-                if (isDebugEnabled)
-                    PlugIn.ModelCore.UI.WriteLine("  Damaging cohorts at burned sites ...");
-                foreach (Site site in FireLocations)
-                {
-                    currentSite = (ActiveSite)site;
-                    if (site.IsActive)
+                    //Initiate a fireevent at that site
+                    FireEvent spreadEvent = Initiate((ActiveSite)nextSite, currentTime, day, Ignition.Spread, (initiationEvent.SpreadLength - 1));
+                    spreadEvent.OriginLocation = initiationEvent.initiationSite.Location;
+                    PlugIn.LogEvent(currentTime, spreadEvent);
+                    if(spreadEvent.SpreadLength > 0)
                     {
-                        this.numSitesChecked++;
-
-                        this.siteSeverity = 0; 
-                        siteCohortsKilled = Damage(currentSite);
-
-                        this.totalSitesDamaged++;
-                        totalSiteSeverities += this.siteSeverity;
-                        //totalISI += (int) SiteVars.ISI[site];
-
-
-                        //IDynamicInputRecord siteFireRegion = SiteVars.FireRegion[site];
-                        //if (this.secondRegionMap)
-                        //    siteFireRegion = SiteVars.FireRegion2[site];
-
-                        //sitesInEvent[siteFireRegion.Index]++;
-
-                        SiteVars.Disturbed[currentSite] = true;
-                        SiteVars.Severity[currentSite] = (byte)siteSeverity;
-
-                        if (siteSeverity > 0)
-                            SiteVars.LastSeverity[currentSite] = (byte)siteSeverity;
+                        Spread(spreadEvent, currentTime, day);
                     }
                 }
-
-                if (this.totalSitesDamaged == 0)
-                    this.eventSeverity = 0;
-                else
-                    this.eventSeverity = ((double)totalSiteSeverities) / (double)this.totalSitesDamaged;
-
-                //this.isi = (int) ((double) totalISI / (double) this.totalSitesDamaged);
-
-                if (isDebugEnabled)
-                    PlugIn.ModelCore.UI.WriteLine("  Done spreading");
-                return true;
-                */
             }
 
                 
@@ -450,8 +300,10 @@ namespace Landis.Extension.Scrapple
         bool ICohortDisturbance.MarkCohortForDeath(ICohort cohort)
         {
             bool killCohort = false;
+                        
 
             //Fire Severity 5 kills all cohorts:
+            /*
             if (siteSeverity == 5)
             {
                 killCohort = true;
@@ -470,11 +322,11 @@ namespace Landis.Extension.Scrapple
                         {
                             killCohort = true;
 
-                            break;  // No need to search further in the table
-                        }
+                            break;  // No need to search further in th
                     }
                 }
             }
+            */
 
             if (killCohort) {
                 this.cohortsKilled++;
