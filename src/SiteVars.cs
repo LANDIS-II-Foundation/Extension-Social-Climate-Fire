@@ -18,8 +18,9 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<double> rxFireWeight;
         private static ISiteVar<double> accidentalFireWeight;
         private static ISiteVar<byte> typeOfIginition;
-        // --------------End add
-        private static ISiteVar<byte> severity;
+        private static ISiteVar<bool> burned;
+        private static ISiteVar<Site> originSite;
+        // --------------End addgit 
         private static ISiteVar<byte> lastSeverity;
         private static ISiteVar<bool> disturbed;
         private static ISiteVar<ushort> groundSlope;
@@ -40,18 +41,20 @@ namespace Landis.Extension.Scrapple
             eventVar             = PlugIn.ModelCore.Landscape.NewSiteVar<FireEvent>(InactiveSiteMode.DistinctValues);
             timeOfLastFire       = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             percentDeadFir       = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
-            severity             = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
             lastSeverity         = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
-            disturbed            = PlugIn.ModelCore.Landscape.NewSiteVar<bool>();
+            
             groundSlope          = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
             uphillSlopeAzimuth   = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
             siteWindSpeed        = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
             siteWindDirection    = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
+
             // Added for scrapple:
             lightningFireWeight  = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
-            rxFireWeight         = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
+            rxFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             accidentalFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
-            typeOfIginition      = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
+            typeOfIginition = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
+            originSite  = PlugIn.ModelCore.Landscape.NewSiteVar<Site>();
+            disturbed = PlugIn.ModelCore.Landscape.NewSiteVar<bool>();
 
             //Also initialize topography, will be overwritten if optional parameters provided:
             SiteVars.GroundSlope.ActiveSiteValues = 0;
@@ -67,7 +70,6 @@ namespace Landis.Extension.Scrapple
 
             //PlugIn.ModelCore.RegisterSiteVar(SiteVars.FireRegion, "Fire.FireRegion");
             //PlugIn.ModelCore.RegisterSiteVar(SiteVars.FireRegion2, "Fire.FireRegion2");
-            PlugIn.ModelCore.RegisterSiteVar(SiteVars.Severity, "Fire.Severity");
             PlugIn.ModelCore.RegisterSiteVar(SiteVars.LastSeverity, "Fire.LastSeverity");
             PlugIn.ModelCore.RegisterSiteVar(SiteVars.TimeOfLastFire, "Fire.TimeOfLastEvent");
         }
@@ -125,6 +127,19 @@ namespace Landis.Extension.Scrapple
                 return typeOfIginition;
             }
         }
+
+        public static ISiteVar<Site> OriginSite
+        {
+            get
+            {
+                return originSite;
+            }
+
+            set
+            {
+                originSite = value;
+            }
+        }
         // ------------ End addition
         
 
@@ -163,14 +178,6 @@ namespace Landis.Extension.Scrapple
         {
             get {
                 return percentDeadFir;
-            }
-        }
-        //---------------------------------------------------------------------
-
-        public static ISiteVar<byte> Severity
-        {
-            get {
-                return severity;
             }
         }
 
