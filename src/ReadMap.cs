@@ -10,17 +10,11 @@ namespace Landis.Extension.Scrapple
 {
     public static class FireRegions
     {
-        private static List<FireRegion> fireRegionsSites;
-        public static List<FireRegion> FireRegionsSites { get => fireRegionsSites; set => fireRegionsSites = value; }
-
-        //RMS: This class is derelict but it does provide an example of how to read a map.
-        
-
-        public static void Initilize(string lighteningFireMap/*, string rxFireMap, string accidentalFireMap */)
+        public static void Initilize(string lightningFireMap, string rxFireMap, string accidentalFireMap)
         {
-            ReadMap(lighteningFireMap, SiteVars.AccidentalFireWeight);
-            //ReadMap(rxFireMap);
-            //ReadMap(accidentalFireMap);
+            ReadMap(lightningFireMap, SiteVars.LightningFireWeight);
+            ReadMap(rxFireMap, SiteVars.RxFireWeight);
+            ReadMap(accidentalFireMap, SiteVars.AccidentalFireWeight);
         }
 
         //---------------------------------------------------------------------
@@ -35,14 +29,14 @@ namespace Landis.Extension.Scrapple
             }
             catch (FileNotFoundException)
             {
-                string mesg = string.Format("Error: The file {0} does not exist", path);
-                throw new System.ApplicationException(mesg);
+                string messege = string.Format("Error: The file {0} does not exist", path);
+                throw new System.ApplicationException(messege);
             }
 
             if (map.Dimensions != PlugIn.ModelCore.Landscape.Dimensions)
             {
-                string mesg = string.Format("Error: The input map {0} does not have the same dimension (row, column) as the ecoregions map", path);
-                throw new System.ApplicationException(mesg);
+                string messege = string.Format("Error: The input map {0} does not have the same dimension (row, column) as the ecoregions map", path);
+                throw new System.ApplicationException(messege);
             }
 
             using (map) {
@@ -54,9 +48,7 @@ namespace Landis.Extension.Scrapple
 
                     if (site.IsActive)
                     {
-                        // RMS: SiteVars.MY-FAVORITE-SITEVAR-HERE[site] = mapCode; 
                         siteVar[site] = mapCode;
-                        //PlugIn.ModelCore.UI.WriteLine(string.Format("site name: {0},    map code: {1},    2nd code: {2},    3rd code: {3},   4th code: {4}", site.ToString(), mapCode, secondCode, thirdCode, forthCode));
                     }
                 }
             }
