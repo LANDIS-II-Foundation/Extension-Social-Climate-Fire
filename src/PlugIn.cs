@@ -177,7 +177,9 @@ namespace Landis.Extension.Scrapple
             List<ActiveSite> activeSites = PlugIn.ModelCore.Landscape.ToList();
 
             List<ActiveSite> shuffledAccidentalFireSites = Shuffle(activeSites, SiteVars.AccidentalFireWeight);
+            activeSites = PlugIn.ModelCore.Landscape.ToList();
             List<ActiveSite> shuffledLightningFireSites = Shuffle(activeSites, SiteVars.LightningFireWeight);
+            activeSites = PlugIn.ModelCore.Landscape.ToList();
             List<ActiveSite> shuffledRxFireSites = Shuffle(activeSites, SiteVars.RxFireWeight);
 
             foreach(IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
