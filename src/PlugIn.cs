@@ -405,14 +405,17 @@ namespace Landis.Extension.Scrapple
         // Ignites and Spreads a fire
         private static void Ignite(Ignition ignitionType, List<ActiveSite> shuffledFireSites, int day, double fireWeatherIndex)
         {
-            while (SiteVars.Disturbed[shuffledFireSites.First()])
+            
+            while ( shuffledFireSites.Count() > 0 && SiteVars.Disturbed[shuffledFireSites.First()] == true )
             {
                 shuffledFireSites.Remove(shuffledFireSites.First());
             }
-
-            FireEvent fireEvent = FireEvent.Initiate(shuffledFireSites.First(), modelCore.CurrentTime, day, ignitionType, SpreadLength(fireWeatherIndex));
-            LogEvent(modelCore.CurrentTime, fireEvent);
-            fireEvent.Spread(modelCore.CurrentTime, day);
+            if (shuffledFireSites.Count() > 0)
+            {
+                FireEvent fireEvent = FireEvent.Initiate(shuffledFireSites.First(), modelCore.CurrentTime, day, ignitionType, SpreadLength(fireWeatherIndex));
+                LogEvent(modelCore.CurrentTime, fireEvent);
+                fireEvent.Spread(modelCore.CurrentTime, day);
+            }
         }
 
         //---------------------------------------------------------------------
