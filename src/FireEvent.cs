@@ -219,7 +219,7 @@ namespace Landis.Extension.Scrapple
         }
         
         //---------------------------------------------------------------------
-        
+
         public void Spread(int currentTime, int day)
         {
             //First, check for fire overlap:

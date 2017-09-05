@@ -177,9 +177,12 @@ namespace Landis.Extension.Scrapple
             
             // Get the active sites from the landscape and shuffle them 
             List<ActiveSite> activeSites = PlugIn.ModelCore.Landscape.ToList();
-
             List<ActiveSite> shuffledAccidentalFireSites = Shuffle(activeSites, SiteVars.AccidentalFireWeight);
+            
+            activeSites = PlugIn.ModelCore.Landscape.ToList();
             List<ActiveSite> shuffledLightningFireSites = Shuffle(activeSites, SiteVars.LightningFireWeight);
+            
+            activeSites = PlugIn.ModelCore.Landscape.ToList();
             List<ActiveSite> shuffledRxFireSites = Shuffle(activeSites, SiteVars.RxFireWeight);
 
             foreach(IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
@@ -406,14 +409,18 @@ namespace Landis.Extension.Scrapple
         // Ignites and Spreads a fire
         private static void Ignite(Ignition ignitionType, List<ActiveSite> shuffledFireSites, int day, double fireWeatherIndex)
         {
-            while (SiteVars.Disturbed[shuffledFireSites.First()])
+
+            
+            while ( shuffledFireSites.Count() > 0 && SiteVars.Disturbed[shuffledFireSites.First()] == true )
             {
                 shuffledFireSites.Remove(shuffledFireSites.First());
             }
-
-            FireEvent fireEvent = FireEvent.Initiate(shuffledFireSites.First(), modelCore.CurrentTime, day, ignitionType, SpreadLength(fireWeatherIndex));
-            LogEvent(modelCore.CurrentTime, fireEvent);
-            fireEvent.Spread(modelCore.CurrentTime, day);
+            if (shuffledFireSites.Count() > 0)
+            {
+                FireEvent fireEvent = FireEvent.Initiate(shuffledFireSites.First(), modelCore.CurrentTime, day, ignitionType, SpreadLength(fireWeatherIndex));
+                LogEvent(modelCore.CurrentTime, fireEvent);
+                fireEvent.Spread(modelCore.CurrentTime, day);
+            }
         }
 
         //---------------------------------------------------------------------

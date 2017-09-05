@@ -1,12 +1,20 @@
 LandisData "Climate Config"				
 		
-ClimateTimeSeries			Monthly_AverageAllYears
-ClimateFile				PRISM_data_AFRI_4.18.13_backup.csv
-ClimateFileFormat			Monthly_Temp-C_Precip-mmMonth
+>> ClimateTimeSeries			Monthly_AverageAllYears
+>> ClimateFile				PRISM_data_AFRI_4.18.13_backup.csv
+>> ClimateFileFormat			Monthly_Temp-C_Precip-mmMonth
 
-SpinUpClimateTimeSeries			Monthly_AverageAllYears
-SpinUpClimateFile			PRISM_data_AFRI_4.18.13_backup.csv
-SpinUpClimateFileFormat			Monthly_Temp-C_Precip-mmMonth
+>> SpinUpClimateTimeSeries			Monthly_AverageAllYears
+>> SpinUpClimateFile			PRISM_data_AFRI_4.18.13_backup.csv
+>> SpinUpClimateFileFormat			Monthly_Temp-C_Precip-mmMonth
+
+ClimateTimeSeries			Daily_AverageAllYears
+ClimateFile				LTB_1992_2010_fix.csv
+ClimateFileFormat			Daily_Temp-C_Precip-mmday
+
+SpinUpClimateTimeSeries			Daily_AverageAllYears
+SpinUpClimateFile			LTB_1992_2010_fix.csv
+SpinUpClimateFileFormat			Daily_Temp-C_Precip-mmday
 
 UsingFireClimate			yes
 RelativeHumiditySlopeAdjust             77.68
