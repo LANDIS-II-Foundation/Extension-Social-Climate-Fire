@@ -217,43 +217,40 @@ namespace Landis.Extension.Scrapple
             */
             return fireEvent;
         }
-
         
-
         //---------------------------------------------------------------------
-        public static void Spread(FireEvent initiationEvent, int currentTime, int day)
+        
+        public void Spread(int currentTime, int day)
         {
             //First, check for fire overlap:
             
-            if (SiteVars.Disturbed[initiationEvent.initiationSite])
+            if (SiteVars.Disturbed[this.initiationSite])
             {
                 // Randomly select neighbor to spread to
                 if (isDebugEnabled)
-                    PlugIn.ModelCore.UI.WriteLine("   Spreading fire event started at {0} ...", initiationEvent.initiationSite.Location);
+                    PlugIn.ModelCore.UI.WriteLine("   Spreading fire event started at {0} ...", this.initiationSite.Location);
 
-                List<Site> neighbors = Get4WeightedNeighbors(initiationEvent.initiationSite);
+                List<Site> neighbors = Get4WeightedNeighbors(this.initiationSite);
                 neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor] || !neighbor.IsActive);
 
                 // if there are no neighbors already disturbed then nothing to do since it can't spread
                 if (neighbors.Count > 0)
                 {
                     //VS: for now pick random site to spread to
+                    // function --> windspeed, direction, FWI, FineFuels (0->1), Landscape azimuth
                     int r = rnd.Next(neighbors.Count);
                     Site nextSite = neighbors[r];
 
                     //Initiate a fireevent at that site
-                    FireEvent spreadEvent = Initiate((ActiveSite)nextSite, currentTime, day, Ignition.Spread, (initiationEvent.SpreadLength - 1));
-                    spreadEvent.OriginLocation = initiationEvent.initiationSite.Location;
+                    FireEvent spreadEvent = Initiate((ActiveSite)nextSite, currentTime, day, Ignition.Spread, (this.SpreadLength - 1));
+                    spreadEvent.OriginLocation = this.initiationSite.Location;
                     PlugIn.LogEvent(currentTime, spreadEvent);
                     if(spreadEvent.SpreadLength > 0)
                     {
-                        Spread(spreadEvent, currentTime, day);
+                        spreadEvent.Spread(currentTime, day);
                     }
                 }
             }
-
-                
-
         }
 
         //---------------------------------------------------------------------

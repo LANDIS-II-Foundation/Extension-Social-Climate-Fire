@@ -1,6 +1,8 @@
 //  Copyright 2006-2010 USFS Portland State University, Northern Research Station, University of Wisconsin
 //  Authors:  Robert M. Scheller, Brian R. Miranda 
 
+//// NECN will take in carbon dead to calculate FineFuels
+
 using Landis.Library.AgeOnlyCohorts;
 using Landis.SpatialModeling;
 using Landis.Library.Climate;
@@ -104,18 +106,13 @@ namespace Landis.Extension.Scrapple
             */
             ///******************** DEBUGGER END *********************
 
-            modelCore.UI.WriteLine("   Initializing Fire Climate Data...");
-            FireRegions.Initilize(parameters.LighteningFireMap);
-            
-            //Climate.Initialize(parameters.ClimateConfigFile, false, modelCore);
-            //FutureClimateBaseYear = Climate.Future_MonthlyData.Keys.Min();
-
-
+            // Initilize the FireRegions Maps
+            modelCore.UI.WriteLine("   Initializing Fire Region Maps...");
+            FireRegions.Initilize(parameters.LighteningFireMap, parameters.AccidentalFireMap, parameters.RxFireMap);
             MetadataHandler.InitializeMetadata(parameters.Timestep, parameters.MapNamesTemplate, ModelCore);
 
             modelCore.UI.WriteLine("   Initializing Fire Events...");
             //FireEvent.Initialize(parameters.FireDamages);
-            
 
             if (isDebugEnabled)
                 modelCore.UI.WriteLine("Initialization done");
@@ -135,8 +132,10 @@ namespace Landis.Extension.Scrapple
             SiteVars.FireEvent.SiteValues = null;
             SiteVars.Disturbed.ActiveSiteValues = false;
             List<FireEvent> fireEvents = new List<FireEvent>();
+            AnnualClimate_Daily weatherData = null;
 
-            
+
+
             modelCore.UI.WriteLine("   Processing landscape for Fire events ...");
 
             // RMS:  foreach day-of-year loop
@@ -158,82 +157,77 @@ namespace Landis.Extension.Scrapple
             //}
 
             int actualYear = 0;
-
-            
             try
             {
                 actualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_AllData.First().Key;
             }
             catch
             {
-                throw new UninitializedClimateData(string.Format("No climate data for year:", actualYear));
+                throw new UninitializedClimateData("Could not initilize the actual year from climate data");
             }
             
            
             int daysPerYear = 366;
-            //daysPerYear = (AnnualClimate.IsLeapYear(actualYear) ? true : false) ? 366 : 365;
+            // VS: hasn't been properly integrated into Climate Library.
+            //int daysPerYear = (AnnualClimate.IsLeapYear(actualYear) ? true : false) ? 366 : 365;
 
             // number of fires get initilized to 0 every timestep
-            int numFiresStarted = 0;
-            double numFires = 0.0;
+            int numFires = 0;
             double fireWeatherIndex = 0.0;
-            bool fireWeatherDataExists = true;
             
-            // Get the active sites from the landscape and shuffle them according to 
+            // Get the active sites from the landscape and shuffle them 
             List<ActiveSite> activeSites = PlugIn.ModelCore.Landscape.ToList();
-            List<ActiveSite> shuffledActiveSites = Shuffle(activeSites, SiteVars.AccidentalFireWeight);
-            ActiveSite site = shuffledActiveSites.First();
+
+            List<ActiveSite> shuffledAccidentalFireSites = Shuffle(activeSites, SiteVars.AccidentalFireWeight);
+            List<ActiveSite> shuffledLightningFireSites = Shuffle(activeSites, SiteVars.LightningFireWeight);
+            List<ActiveSite> shuffledRxFireSites = Shuffle(activeSites, SiteVars.RxFireWeight);
 
             foreach(IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
             {
-                AnnualClimate_Daily weatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
-                // do this for each day of the year
+                try
+                {
+                    weatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
+                }
+                catch
+                {
+                    throw new UninitializedClimateData(string.Format("Climate data could not be found \t year: {0} in ecoregion: {1}", actualYear, ecoregion.Name));
+                }
                 for (int day = 0; day < daysPerYear; ++day)
                 {
-                    // Check to make sure FireWeatherIndex is >= .10. If not skip day
                     try
                     {
                         fireWeatherIndex = weatherData.DailyFireWeatherIndex[day];
                     }
                     catch
                     {
-                        fireWeatherDataExists = false;
-                        //throw new Exception("NO WEATHER MAN!!!!!!!!!\n\n\n");
+                        throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found \t year: {0}, day: {1} in ecoregion: {2} not found", actualYear, day, ecoregion.Name));
                     }
-                    if (fireWeatherIndex >= .10 && fireWeatherDataExists)
+                    // FWI must be > .10 
+                    if (fireWeatherIndex >= .10)
                     {
-                        // check to make at least 1 ignition happend
                         numFires = Ignitions(fireWeatherIndex);
-
-                        if (numFires >= 1)
+                        // Ignite Accidental Fires
+                        for (int i = 0; i < numFires; ++i)
                         {
-                            numFiresStarted = (numFires > 3.0) ? 3 : (int)Math.Round(numFires);
+                            Ignite(Ignition.Accidental, shuffledAccidentalFireSites, day, fireWeatherIndex);
                         }
-                        else
+                        // Ignite Lightning Fires
+                        for (int i = 0; i < numFires; ++i)
                         {
-                            numFiresStarted = (modelCore.GenerateUniform() >= numFires) ? 1 : 0;
+                            Ignite(Ignition.Lightning, shuffledLightningFireSites, day, fireWeatherIndex);
                         }
-
-                        // create a fire event for each fire
-                        for (int i = 0; i < numFiresStarted; ++i)
-                        {
-                            // create fire Event. VS: How do i determine type? <== dealing with it at a later phase
-                            //
-                            FireEvent fireEvent = FireEvent.Initiate(shuffledActiveSites.First(), modelCore.CurrentTime, day, Ignition.Lightning, spreadLength(fireWeatherIndex));
-                            LogEvent(modelCore.CurrentTime, fireEvent);
-                            FireEvent.Spread(fireEvent, modelCore.CurrentTime, day);
-                            shuffledActiveSites.Remove(shuffledActiveSites.First());
-
-                            // shuffledLightningSites.Remove(shuffledActiveSites.First());
-                        }
+                    }
+                    if ( AllowRxFire(day, fireWeatherIndex) )
+                    {
+                        Ignite(Ignition.Rx, shuffledRxFireSites, day, fireWeatherIndex);
                     }
                 }
             }
-
-            foreach (IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
-            {
+            // VS: not sure why i created this.. Useful? what is it to do?
+            //foreach (IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
+            //{
                 
-            }
+            //}
 
             WriteYearlyIgnitionsMap(PlugIn.ModelCore.CurrentTime);
 
@@ -242,7 +236,10 @@ namespace Landis.Extension.Scrapple
             if (isDebugEnabled)
                 modelCore.UI.WriteLine("Done running extension");
         }
-        
+
+
+        //---------------------------------------------------------------------
+
         private void WriteYearlyIgnitionsMap(int currentTime)
         {
             string path = MapNames.ReplaceTemplateVars(mapNameTemplate, currentTime);
@@ -268,8 +265,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
         }
-
-
+        
         //---------------------------------------------------------------------
 
         public static void LogEvent(int currentTime, FireEvent fireEvent)
@@ -310,6 +306,9 @@ namespace Landis.Extension.Scrapple
 
             //}
         }
+
+        //---------------------------------------------------------------------
+
         /*
          * VS:: THIS MAY BE NEEDED
          * 
@@ -345,7 +344,8 @@ namespace Landis.Extension.Scrapple
             return shuffledList;
         }
 
-        //
+        //---------------------------------------------------------------------
+
         public static ActiveSite SelectRandomSite(List<ActiveSite> list, ISiteVar<double> weightedSiteVar, double totalWeight)
         {
             ActiveSite selectedSite = list.FirstOrDefault(); // currently selected element
@@ -371,20 +371,58 @@ namespace Landis.Extension.Scrapple
             return selectedSite; // when iterations end, selected is some element of sequence. 
         }
 
+        //---------------------------------------------------------------------
 
-        //  
-        private static double Ignitions(double fireWeatherIndex)
+        //  Determines the number of Ignitions per day
+        //  Returns: 0 <= numIgnitons <= 3
+        private static int Ignitions(double fireWeatherIndex)
         {
-            double numIgnitions = (fireWeatherIndex * fireWeatherIndex) / 500;
+            int numIgnitions = 0;
+            double possibleIgnitions = (fireWeatherIndex * fireWeatherIndex) / 500;
+            if (possibleIgnitions >= 3.0)
+            {
+                numIgnitions = 3;
+            }
+            else
+            {
+                int floorPossibleIginitions = (int)Math.Floor(possibleIgnitions);
+                numIgnitions +=  floorPossibleIginitions;
+                numIgnitions += (modelCore.GenerateUniform() >= (possibleIgnitions - (double)floorPossibleIginitions) ? 1 : 0);
+            }
             return numIgnitions;
         }
 
-        // 
-        private static int spreadLength(double fireWeatherIndex)
+        //---------------------------------------------------------------------
+
+        // Detemines the number of cells a given ignition can spread to
+        // Windspeed, wind direction, fireweatherindex, fuels
+        private static int SpreadLength(double fireWeatherIndex)
         {
             return 5;
         }
 
-        
+        //---------------------------------------------------------------------
+
+        // Ignites and Spreads a fire
+        private static void Ignite(Ignition ignitionType, List<ActiveSite> shuffledFireSites, int day, double fireWeatherIndex)
+        {
+            while (SiteVars.Disturbed[shuffledFireSites.First()])
+            {
+                shuffledFireSites.Remove(shuffledFireSites.First());
+            }
+
+            FireEvent fireEvent = FireEvent.Initiate(shuffledFireSites.First(), modelCore.CurrentTime, day, ignitionType, SpreadLength(fireWeatherIndex));
+            LogEvent(modelCore.CurrentTime, fireEvent);
+            fireEvent.Spread(modelCore.CurrentTime, day);
+        }
+
+        //---------------------------------------------------------------------
+
+        // Determines if an Rx Fire will start on the given day
+        private bool AllowRxFire(int day, double fireWeatherIndex)
+        {
+            return false;
+        }
+
     }
 }
