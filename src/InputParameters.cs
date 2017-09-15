@@ -7,8 +7,6 @@ using System.Collections.Generic;
 namespace Landis.Extension.Scrapple
 {
 
-    //public enum SizeType {size_based, duration_based};
-    public enum Distribution {gamma, lognormal, normal, Weibull};
 
     /// <summary>
     /// Parameters for the plug-in.
@@ -18,25 +16,21 @@ namespace Landis.Extension.Scrapple
         int Timestep{get;set;}
         string ClimateConfigFile { get; set; }    
         double RelativeHumiditySlopeAdjustment { get; set; }   //does this go in the interface or below in the input parameters?
-        //SizeType FireSizeType{get;set;}
-
-        //bool BUI{get;set;}
-        double SeverityCalibrate { get;set;}
-        //List<IDynamicFireRegion> DynamicFireRegions {get;}
-        //List<IDynamicWeather> DynamicWeather { get;}
-        //ISeasonParameters[] SeasonParameters{get;}
-        //IFuelType[] FuelTypeParameters{get;}
+        //double SeverityCalibrate { get;set;}
         List<IFireDamage> FireDamages{get;}
         string MapNamesTemplate{get;set;}
-//        string InitialWeatherPath{get;set;}
-//        string WindInputPath { get; set; }
-//        string DynamicFireRegionInputFile { get; set; }
-        int Duration { get; set; }
-        int SpringStart { get; set; }
-        int WinterStart { get; set; }
+        //int Duration { get; set; }
+        //int SpringStart { get; set; }
+        //int WinterStart { get; set; }
         string LighteningFireMap { get; set; }
         string RxFireMap { get; set; }
         string AccidentalFireMap { get; set; }
+        double LightningIgnitionB0 { get; set; }
+        double LightningIgnitionB1 { get; set; }
+        double RxFireIgnitionB0 { get; set; }
+        double RxFireIgnitionB1 { get; set; }
+        double AccidentalFireIgnitionB0 { get; set; }
+        double AccidentalFireIgnitionB1 { get; set; }
     }
 }
 
@@ -50,30 +44,25 @@ namespace Landis.Extension.Scrapple
     {
         private int timestep;
         
-//        private SizeType fireSizeType;
-        
-        //private bool buildUpIndex;
-        private double severityCalibrate;
-        //private List<IDynamicFireRegion> dynamicFireRegions;
-        //private List<IDynamicWeather> dynamicWeather;
-        //private ISeasonParameters[] seasons;
-        //private IFuelType[] fuelTypeParameters;
         private List<IFireDamage> damages;
         private string mapNamesTemplate;
         //private string logFileName;
         //private string summaryLogFileName;
-        //private string initialWeatherPath;
-        //private string windInputPath;
-        //private string dynamicFireRegionInputFile;
         private string climateConfigFile;
         private double relativeHumiditySlopeAdjust;
-        private int springStart;
-        private int winterStart;
-        private int duration;
+        //private int springStart;
+        //private int winterStart;
+        //private int duration;
         private string lighteningFireMap;
         private string accidentalFireMap;
         private string rxFireMap;
-     
+        private double lightningIgnitionB0;
+        private double lightningIgnitionB1;
+        private double rxFireIgnitionB0;
+        private double rxFireIgnitionB1;
+        private double accidentalFireIgnitionB0;
+        private double accidentalFireIgnitionB1;
+
 
 
         //---------------------------------------------------------------------
@@ -110,41 +99,41 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public int Duration
-        {
-            get
-            {
-                return duration;
-            }
-            set
-            {
-                duration = value;
-            }
-        }
-        //---------------------------------------------------------------------
-        public int WinterStart
-        {
-            get
-            {
-                return winterStart;
-            }
-            set
-            {
-                winterStart = value;
-            }
-        }
-        //---------------------------------------------------------------------
-        public int SpringStart
-        {
-            get
-            {
-                return springStart;
-            }
-            set
-            {
-                springStart = value;
-            }
-        }
+        //public int Duration
+        //{
+        //    get
+        //    {
+        //        return duration;
+        //    }
+        //    set
+        //    {
+        //        duration = value;
+        //    }
+        //}
+        ////---------------------------------------------------------------------
+        //public int WinterStart
+        //{
+        //    get
+        //    {
+        //        return winterStart;
+        //    }
+        //    set
+        //    {
+        //        winterStart = value;
+        //    }
+        //}
+        ////---------------------------------------------------------------------
+        //public int SpringStart
+        //{
+        //    get
+        //    {
+        //        return springStart;
+        //    }
+        //    set
+        //    {
+        //        springStart = value;
+        //    }
+        //}
         //---------------------------------------------------------------------
 
         public double RelativeHumiditySlopeAdjustment
@@ -160,84 +149,6 @@ namespace Landis.Extension.Scrapple
                 relativeHumiditySlopeAdjust = value;
             }
         }
-        ////---------------------------------------------------------------------
-        //public SizeType FireSizeType
-        //{
-        //    get {
-        //        return fireSizeType;
-        //    }
-        //    set {
-        //        fireSizeType = value;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-        
-        //public bool BUI
-        //{
-        //    get {
-        //        return buildUpIndex;
-        //    }
-        //    set {
-        //        buildUpIndex = value;
-        //    }
-        //}
-
-        ////---------------------------------------------------------------------
-        ///*
-        //public int WeatherRandomizer
-        //{
-        //    get {
-        //        return weatherRandomizer;
-        //    }
-        //}*/
-        ////---------------------------------------------------------------------
-        
-        public double SeverityCalibrate
-        {
-            get {
-                return severityCalibrate;
-            }
-            set
-            {
-                severityCalibrate = value;
-            }
-        }
-        
-
-        ////---------------------------------------------------------------------
-        //public List<IDynamicFireRegion> DynamicFireRegions
-        //{
-        //    get {
-        //        return dynamicFireRegions;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-        //public List<IDynamicWeather> DynamicWeather
-        //{
-        //    get
-        //    {
-        //        return dynamicWeather;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public ISeasonParameters[] SeasonParameters
-        //{
-        //    get {
-        //        return seasons;
-        //    }
-        //    set {
-        //        seasons = value;
-        //    }
-         
-        //}
-        ////---------------------------------------------------------------------
-        //public IFuelType[] FuelTypeParameters
-        //{
-        //    get {
-        //        return fuelTypeParameters;
-        //    }
-        //}
 
         //---------------------------------------------------------------------
         public List<IFireDamage> FireDamages
@@ -300,7 +211,81 @@ namespace Landis.Extension.Scrapple
             }
         }
 
+        //---------------------------------------------------------------------
+        public double LightningIgnitionB0
+        {
+            get
+            {
+                return lightningIgnitionB0;
+            }
+            set
+            {
+                lightningIgnitionB0 = value;
+            }
+        }
 
+        //---------------------------------------------------------------------
+        public double LightningIgnitionB1
+        {
+            get
+            {
+                return lightningIgnitionB1;
+            }
+            set
+            {
+                lightningIgnitionB1 = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public double RxFireIgnitionB0
+        {
+            get
+            {
+                return rxFireIgnitionB0;
+            }
+            set
+            {
+                rxFireIgnitionB0 = value;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        public double RxFireIgnitionB1
+        {
+            get
+            {
+                return rxFireIgnitionB1;
+            }
+            set
+            {
+                rxFireIgnitionB1 = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public double AccidentalFireIgnitionB0
+        {
+            get
+            {
+                return accidentalFireIgnitionB0;
+            }
+            set
+            {
+                accidentalFireIgnitionB0 = value;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        public double AccidentalFireIgnitionB1
+        {
+            get
+            {
+                return accidentalFireIgnitionB1;
+            }
+            set
+            {
+                accidentalFireIgnitionB1 = value;
+            }
+        }
         ////---------------------------------------------------------------------
 
         ///// <summary>
@@ -331,33 +316,11 @@ namespace Landis.Extension.Scrapple
         //        windInputPath = value;
         //    }
         //}
-        ////---------------------------------------------------------------------
-        ///// <summary>
-        ///// Input file for the dynamic inputs
-        ///// </summary>
-        //public string DynamicFireRegionInputFile
-        //{
-        //    get
-        //    {
-        //        return dynamicFireRegionInputFile;
-        //    }
-        //    set
-        //    {
-        //        dynamicFireRegionInputFile = value;
-        //    }
-        //}
         //---------------------------------------------------------------------
 
         public InputParameters()
         {
-//            seasons = new SeasonParameters[3];
             damages = new List<IFireDamage>();
-//            dynamicFireRegions = new List<IDynamicFireRegion>();
-            //dynamicWeather = new List<IDynamicWeather>();
-            
-            //fuelTypeParameters = new FuelType[100];
-            //for(int i=0; i<100; i++)
-            //    fuelTypeParameters[i] = new FuelType();
         }
         //---------------------------------------------------------------------
 

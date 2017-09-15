@@ -1,5 +1,4 @@
-//  Copyright 2006-2010 USFS Portland State University, Northern Research Station, University of Wisconsin
-//  Authors:  Robert M. Scheller, Brian R. Miranda 
+//  Authors:  Robert M. Scheller, Vincent Schuster, Alec Kretchun
 
 using Edu.Wisc.Forest.Flel.Util;
 
@@ -24,7 +23,7 @@ namespace Landis.Extension.Scrapple
         public InputParameterParser()
         {
             Edu.Wisc.Forest.Flel.Util.Percentage p = new Edu.Wisc.Forest.Flel.Util.Percentage();
-            RegisterForInputValues();
+            // RegisterForInputValues();
         }
 
         //---------------------------------------------------------------------
@@ -47,33 +46,33 @@ namespace Landis.Extension.Scrapple
                 parameters.RelativeHumiditySlopeAdjustment = 1.0;
 
             // VS: Needed to spin up climate file
-            InputVar<int> duration = new InputVar<int>("Duration");
-            ReadVar(duration);
-            parameters.Duration = duration.Value;
+            //InputVar<int> duration = new InputVar<int>("Duration");
+            //ReadVar(duration);
+            //parameters.Duration = duration.Value;
 
-            // Read SpringStart Parameter
-            InputVar<int> springStart = new InputVar<int>("SpringStart");
-            if (ReadOptionalVar(springStart))
-            {
-                parameters.SpringStart = springStart.Value;
-            }
-            else
-            {
-                // Set as Julian Days if not provided
-                parameters.SpringStart = 60;
-            }
+            //// Read SpringStart Parameter
+            //InputVar<int> springStart = new InputVar<int>("SpringStart");
+            //if (ReadOptionalVar(springStart))
+            //{
+            //    parameters.SpringStart = springStart.Value;
+            //}
+            //else
+            //{
+            //    // Set as Julian Days if not provided
+            //    parameters.SpringStart = 60;
+            //}
 
-            // Read WinterStart Parameter
-            InputVar<int> winterStart = new InputVar<int>("WinterStart");
-            if (ReadOptionalVar(winterStart))
-            {
-                parameters.WinterStart = winterStart.Value;
-            }
-            else
-            {
-                // Set as Julian Days if not provided
-                parameters.WinterStart = 336;
-            }
+            //// Read WinterStart Parameter
+            //InputVar<int> winterStart = new InputVar<int>("WinterStart");
+            //if (ReadOptionalVar(winterStart))
+            //{
+            //    parameters.WinterStart = winterStart.Value;
+            //}
+            //else
+            //{
+            //    // Set as Julian Days if not provided
+            //    parameters.WinterStart = 336;
+            //}
 
             //                   --------- Input files ---------
             //--------------------------------------------------------------------------
@@ -92,6 +91,31 @@ namespace Landis.Extension.Scrapple
             InputVar<string> rxIgnitionsMapFile = new InputVar<string>("RxIgnitionsMapFile");
             ReadVar(rxIgnitionsMapFile);
             parameters.RxFireMap = rxIgnitionsMapFile.Value;
+
+            InputVar<double> lightningB0 = new InputVar<double>("LighteningIgnitionsB0");
+            ReadVar(lightningB0);
+            parameters.LightningIgnitionB0 = lightningB0.Value;
+
+            InputVar<double> lightningB1 = new InputVar<double>("LighteningIgnitionsB1");
+            ReadVar(lightningB1);
+            parameters.LightningIgnitionB1 = lightningB1.Value;
+
+            InputVar<double> rxB0 = new InputVar<double>("RxFireIgnitionsB0");
+            ReadVar(rxB0);
+            parameters.LightningIgnitionB0 = rxB0.Value;
+
+            InputVar<double> rxB1 = new InputVar<double>("RxFireIgnitionsB1");
+            ReadVar(rxB1);
+            parameters.LightningIgnitionB1 = rxB1.Value;
+
+            InputVar<double> accidentalB0 = new InputVar<double>("AccidentalIgnitionsB0");
+            ReadVar(accidentalB0);
+            parameters.LightningIgnitionB0 = accidentalB0.Value;
+
+            InputVar<double> accidentalB1 = new InputVar<double>("AccidentalIgnitionsB1");
+            ReadVar(accidentalB1);
+            parameters.LightningIgnitionB1 = accidentalB1.Value;
+
             /*
             // Load Ground Slope Data
             const string GroundSlopeFile = "GroundSlopeFile";
@@ -185,21 +209,21 @@ namespace Landis.Extension.Scrapple
             ReadVar(mapNames);
             parameters.MapNamesTemplate = mapNames.Value;
 
-            return parameters; //.GetComplete();
+            return parameters; 
         }
         //---------------------------------------------------------------------
 
-        public static Distribution DistParse(string word)
-        {
-            switch (word)
-            {
-                case "gamma":     return Distribution.gamma;
-                case "lognormal": return Distribution.lognormal;
-                case "normal":    return Distribution.normal;
-                case "Weibull":   return Distribution.Weibull;
-                default: throw new System.FormatException("Valid Distributions: gamma, lognormal, normal, Weibull");
-            }
-        }
+        //public static Distribution DistParse(string word)
+        //{
+        //    switch (word)
+        //    {
+        //        case "gamma":     return Distribution.gamma;
+        //        case "lognormal": return Distribution.lognormal;
+        //        case "normal":    return Distribution.normal;
+        //        case "Weibull":   return Distribution.Weibull;
+        //        default: throw new System.FormatException("Valid Distributions: gamma, lognormal, normal, Weibull");
+        //    }
+        //}
 
 
         //---------------------------------------------------------------------
@@ -207,12 +231,12 @@ namespace Landis.Extension.Scrapple
         /// <summary>
         /// Registers the appropriate method for reading input values.
         /// </summary>
-        public static void RegisterForInputValues()
-        {
+        //public static void RegisterForInputValues()
+        //{
 
-            Edu.Wisc.Forest.Flel.Util.Type.SetDescription<Distribution>("Random Number Distribution");
-            InputValues.Register<Distribution>(DistParse);
-        }
+        //    Edu.Wisc.Forest.Flel.Util.Type.SetDescription<Distribution>("Random Number Distribution");
+        //    InputValues.Register<Distribution>(DistParse);
+        //}
         //---------------------------------------------------------------------
 
         private void ValidatePath(InputValue<string> path)

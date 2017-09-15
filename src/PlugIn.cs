@@ -33,14 +33,14 @@ namespace Landis.Extension.Scrapple
         public static int FutureClimateBaseYear;
         public static int WeatherRandomizer = 0;
         private static double RelativeHumiditySlopeAdjust;
-        private static int springStart;
-        private static int winterStart;
-        private int duration;
+        //private static int springStart;
+        //private static int winterStart;
+        //private int duration;
         private string climateConfigFile;
         
 
         private string mapNameTemplate;
-        private double severityCalibrate;
+        //private double severityCalibrate;
         private static IInputParameters parameters;
         private static ICore modelCore;
 
@@ -81,9 +81,9 @@ namespace Landis.Extension.Scrapple
             mapNameTemplate = parameters.MapNamesTemplate;
             climateConfigFile = parameters.ClimateConfigFile;
             //severityCalibrate = parameters.SeverityCalibrate;
-            duration = parameters.Duration;
-            springStart = parameters.SpringStart;
-            winterStart = parameters.WinterStart;
+            //duration = parameters.Duration;
+            //springStart = parameters.SpringStart;
+            //winterStart = parameters.WinterStart;
 
             ///******************** DEBUGGER LAUNCH *********************
             /// 
@@ -205,13 +205,14 @@ namespace Landis.Extension.Scrapple
                     // FWI must be > .10 
                     if (fireWeatherIndex >= .10)
                     {
-                        numFires = Ignitions(fireWeatherIndex);
+                        numFires = NumberOfIgnitions(Ignition.Accidental, fireWeatherIndex);
                         // Ignite Accidental Fires
                         for (int i = 0; i < numFires; ++i)
                         {
                             Ignite(Ignition.Accidental, shuffledAccidentalFireSites, day, fireWeatherIndex);
                         }
                         // Ignite Lightning Fires
+                        numFires = NumberOfIgnitions(Ignition.Lightning, fireWeatherIndex);
                         for (int i = 0; i < numFires; ++i)
                         {
                             Ignite(Ignition.Lightning, shuffledLightningFireSites, day, fireWeatherIndex);
@@ -219,6 +220,7 @@ namespace Landis.Extension.Scrapple
                     }
                     if ( AllowRxFire(day, fireWeatherIndex) )
                     {
+                        numFires = NumberOfIgnitions(Ignition.Rx, fireWeatherIndex);
                         Ignite(Ignition.Rx, shuffledRxFireSites, day, fireWeatherIndex);
                     }
                 }
@@ -292,8 +294,6 @@ namespace Landis.Extension.Scrapple
 
         private void WriteSummaryLog(int currentTime)
         {
-            //foreach (IDynamicInputRecord fire_region in FireRegions.Dataset)
-            //{
                 summaryLog.Clear();
                 SummaryLog sl = new SummaryLog();
                 sl.Time = currentTime;
@@ -303,8 +303,6 @@ namespace Landis.Extension.Scrapple
 
                 summaryLog.AddObject(sl);
                 summaryLog.WriteToFile();
-
-            //}
         }
 
         //---------------------------------------------------------------------
@@ -375,20 +373,38 @@ namespace Landis.Extension.Scrapple
 
         //  Determines the number of Ignitions per day
         //  Returns: 0 <= numIgnitons <= 3
-        private static int Ignitions(double fireWeatherIndex)
+        private static int NumberOfIgnitions(Ignition ignitionType, double fireWeatherIndex)
         {
-            int numIgnitions = 0;
-            double possibleIgnitions = (fireWeatherIndex * fireWeatherIndex) / 500;
-            if (possibleIgnitions >= 3.0)
+            double b0 = 0.0;
+            double b1 = 0.0;
+            if(ignitionType == Ignition.Lightning)
             {
-                numIgnitions = 3;
+                b0 = parameters.LightningIgnitionB0;
+                b1 = parameters.LightningIgnitionB1;
             }
-            else
+            if (ignitionType == Ignition.Rx)
             {
+                b0 = parameters.RxFireIgnitionB0;
+                b1 = parameters.RxFireIgnitionB1;
+            }
+            if (ignitionType == Ignition.Accidental)
+            {
+                b0 = parameters.AccidentalFireIgnitionB0;
+                b1 = parameters.AccidentalFireIgnitionB1;
+            }
+
+            int numIgnitions = 0;
+            double possibleIgnitions = Math.Pow(Math.E, (b0 * b1* fireWeatherIndex));
+            //if (possibleIgnitions >= 3.0)
+            //{
+            //    numIgnitions = 3;
+            //}
+            //else
+            //{
                 int floorPossibleIginitions = (int)Math.Floor(possibleIgnitions);
                 numIgnitions +=  floorPossibleIginitions;
                 numIgnitions += (modelCore.GenerateUniform() >= (possibleIgnitions - (double)floorPossibleIginitions) ? 1 : 0);
-            }
+            //}
             return numIgnitions;
         }
 

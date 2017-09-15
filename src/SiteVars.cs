@@ -18,7 +18,7 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<double> rxFireWeight;
         private static ISiteVar<double> accidentalFireWeight;
         private static ISiteVar<byte> typeOfIginition;
-        private static ISiteVar<bool> burned;
+        //private static ISiteVar<bool> burned;
         private static ISiteVar<Site> originSite;
         // --------------End addgit 
         private static ISiteVar<byte> lastSeverity;
@@ -70,7 +70,7 @@ namespace Landis.Extension.Scrapple
 
             //PlugIn.ModelCore.RegisterSiteVar(SiteVars.FireRegion, "Fire.FireRegion");
             //PlugIn.ModelCore.RegisterSiteVar(SiteVars.FireRegion2, "Fire.FireRegion2");
-            PlugIn.ModelCore.RegisterSiteVar(SiteVars.LastSeverity, "Fire.LastSeverity");
+            PlugIn.ModelCore.RegisterSiteVar(SiteVars.LastSeverity, "Fire.Severity");
             PlugIn.ModelCore.RegisterSiteVar(SiteVars.TimeOfLastFire, "Fire.TimeOfLastEvent");
         }
 

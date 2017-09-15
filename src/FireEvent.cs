@@ -43,7 +43,7 @@ namespace Landis.Extension.Scrapple
 
         private double fireWeatherIndex;
         private Ignition ignitionType;
-        private int numSpread;
+        //private int numSpread;
 
         //---------------------------------------------------------------------
         static FireEvent()
@@ -203,7 +203,7 @@ namespace Landis.Extension.Scrapple
             */
             // FireEvent fireEvent = new FireEvent(site,/* fireSeason, fireSizeType, eco, */ day); 
             FireEvent fireEvent = new FireEvent(site, day, ignitionType);
-            fireEvent.SpreadLength = spreadLength;
+            //fireEvent.SpreadLength = spreadLength;
 
 
             // Test that adequate weather data was retrieved:-

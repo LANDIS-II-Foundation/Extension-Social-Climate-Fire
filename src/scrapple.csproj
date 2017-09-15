@@ -111,10 +111,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="scenario.txt" />
-    <Content Include="Scrapple.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
