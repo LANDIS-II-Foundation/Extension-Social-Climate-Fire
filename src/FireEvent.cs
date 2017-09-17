@@ -107,30 +107,30 @@ namespace Landis.Extension.Scrapple
 
         //---------------------------------------------------------------------
 
-        public double WindSpeed
-        {
-            get
-            {
-                return windSpeed;
-            }
-            set
-            {
-                windSpeed = value;
-            }
-        }
-        //---------------------------------------------------------------------
+        //public double WindSpeed
+        //{
+        //    get
+        //    {
+        //        return windSpeed;
+        //    }
+        //    set
+        //    {
+        //        windSpeed = value;
+        //    }
+        //}
+        ////---------------------------------------------------------------------
 
-        public double WindDirection
-        {
-            get
-            {
-                return windDirection;
-            }
-            set
-            {
-                windDirection = value;
-            }
-        }
+        //public double WindDirection
+        //{
+        //    get
+        //    {
+        //        return windDirection;
+        //    }
+        //    set
+        //    {
+        //        windDirection = value;
+        //    }
+        //}
         //---------------------------------------------------------------------
 
         ExtensionType IDisturbance.Type
@@ -260,7 +260,8 @@ namespace Landis.Extension.Scrapple
         //---------------------------------------------------------------------
         public void Spread(int currentTime, int day)
         {
-            // First, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
+
+            // First, load necessary parameters
             //      load fwi
             //      load wind speed velocity (in which case, NOT a fire event parameter)
             //      load wind direction (in which case, NOT a fire event parameter)
@@ -268,11 +269,18 @@ namespace Landis.Extension.Scrapple
             //      load uphill slope azimuth
             //      wind speed = ALEC NEED FORMULA FOR MODIFICATION BY SPEED AND AZIMUTH
 
+            // Next, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
+            //      Severity a function of fwi, ladder fuels, other? (AK)
+
             // If severity > 0
+            //      Calculate spread-distance-max (AK)
             //      if spread-distance > spread-distance-max, day = day + 1
             //      spread to neighbors    
+            //          Calculate P-spread based on fwi, adjusted wind speed, fine fuels, source intensity (or similar). (AK)
+            //          Adjust P-spread to account for suppression (RMS)
+
             //      Cause mortality
-            //      map daily spread (doy)
+            //      map daily spread (doy) (add SiteVar)
             //      map severity
 
         }

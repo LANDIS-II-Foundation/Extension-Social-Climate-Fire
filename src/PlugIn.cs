@@ -277,8 +277,8 @@ namespace Landis.Extension.Scrapple
             el.Time = currentTime;
             el.InitRow = fireEvent.StartLocation.Row;
             el.InitColumn = fireEvent.StartLocation.Column;
-            el.WindSpeed = fireEvent.WindSpeed;
-            el.WindDirection = fireEvent.WindDirection;
+            //el.WindSpeed = fireEvent.WindSpeed;
+            //el.WindDirection = fireEvent.WindDirection;
             el.FireWeatherIndex = fireEvent.FireWeatherIndex;
             el.CohortsKilled = fireEvent.CohortsKilled;
             el.MeanSeverity = fireEvent.EventSeverity;
