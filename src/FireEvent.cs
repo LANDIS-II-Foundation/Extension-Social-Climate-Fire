@@ -4,7 +4,6 @@ using Landis.Library.AgeOnlyCohorts;
 using Landis.SpatialModeling;
 using Landis.Core;
 using Landis.Library.Climate;
-//using log4net;
 using System;
 using System.Collections;
 using System.Collections.Generic;

@@ -1,6 +1,8 @@
 //  Authors:  Robert M. Scheller, Alec Kretchun, Vincent Schuster
 
 using Edu.Wisc.Forest.Flel.Util;
+using Landis.Core;
+
 
 namespace Landis.Extension.Scrapple
 {
@@ -10,10 +12,17 @@ namespace Landis.Extension.Scrapple
     public interface IFireDamage
     {
         /// <summary>
+        /// The species that damage is applied to.
+        /// </summary>
+        ISpecies DamageSpecies
+        { get; set; }
+
+
+        /// <summary>
         /// The maximum cohort ages (as % of species longevity) that the
         /// damage class applies to.
         /// </summary>
-        Percentage MaxAge
+        int MaxAge
         {get;set;}
 
         //---------------------------------------------------------------------
@@ -21,7 +30,7 @@ namespace Landis.Extension.Scrapple
         /// <summary>
         /// The difference between fire severity and species fire tolerance.
         /// </summary>
-        int SeverTolerDifference
+        double ProbablityMortality
         {get;set;}
 
     }
@@ -36,45 +45,58 @@ namespace Landis.Extension.Scrapple
     public class FireDamage
         : IFireDamage
     {
-        private Percentage maxAge;
-        private int severTolerDifference;
+        private int maxAge;
+        private double probabilityMortality;
+        private ISpecies damageSpecies;
 
         //---------------------------------------------------------------------
+
+        /// <summary>
+        /// The species that damage is applied to.
+        /// </summary>
+        public ISpecies DamageSpecies
+        { 
+            get {
+                return damageSpecies;
+            }
+            set {
+                damageSpecies = value;
+            }
+        }
 
         /// <summary>
         /// The maximum cohort ages (as % of species longevity) that the
         /// damage class applies to.
         /// </summary>
-        public Percentage MaxAge
+        public int MaxAge
         {
             get {
                 return maxAge;
             }
 
             set {
-                //if (value != null) {
-                ValidateAge(value);
-                //}
-                maxAge = value;
+                if(value < damageSpecies.Longevity)
+                    maxAge = value;
+                else
+                    throw new InputValueException(value.ToString(),
+                                                  "Value must be < species longevity");
             }
         }
 
         /// <summary>
-        /// The difference between fire severity and species fire tolerance.
+        /// The probability of mortality for a given severity
         /// </summary>
-        public int SeverTolerDifference
+        public double ProbablityMortality
         {
             get {
-                return severTolerDifference;
+                return probabilityMortality;
             }
 
             set {
-                //if (value != null) {
-                    if (value < -4 || value > 4)
-                        throw new InputValueException(value.ToString(),
-                                                      "Value must be between -4 and 4");
-                //}
-                severTolerDifference = value;
+                if (value < 0.0 || value > 1.0)
+                    throw new InputValueException(value.ToString(),
+                                                  "Value must be between 0.0 and 1.0");
+                probabilityMortality = value;
             }
         }
 
@@ -84,13 +106,5 @@ namespace Landis.Extension.Scrapple
         {
         }
         
-        //---------------------------------------------------------------------
-
-        private void ValidateAge(Percentage age)
-        {
-            if (age < 0.0 || age > 1.0)
-                throw new InputValueException(age.ToString(),
-                                              "Value must be between 0% and 100%");
-        }
     }
 }
