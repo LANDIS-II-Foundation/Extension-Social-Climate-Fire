@@ -17,10 +17,14 @@ namespace Landis.Extension.Scrapple
         ISpecies DamageSpecies
         { get; set; }
 
+        /// <summary>
+        /// The minimum species ages that the damage class applies to.
+        /// </summary>
+        int MinAge
+        { get; set; }
 
         /// <summary>
-        /// The maximum cohort ages (as % of species longevity) that the
-        /// damage class applies to.
+        /// The maximum species ages that the damage class applies to.
         /// </summary>
         int MaxAge
         {get;set;}
@@ -28,7 +32,7 @@ namespace Landis.Extension.Scrapple
         //---------------------------------------------------------------------
 
         /// <summary>
-        /// The difference between fire severity and species fire tolerance.
+        /// The probability of mortality for the spp-age range.
         /// </summary>
         double ProbablityMortality
         {get;set;}
@@ -45,6 +49,7 @@ namespace Landis.Extension.Scrapple
     public class FireDamage
         : IFireDamage
     {
+        private int minAge;
         private int maxAge;
         private double probabilityMortality;
         private ISpecies damageSpecies;
@@ -64,9 +69,29 @@ namespace Landis.Extension.Scrapple
             }
         }
 
+        //---------------------------------------------------------------------
         /// <summary>
-        /// The maximum cohort ages (as % of species longevity) that the
-        /// damage class applies to.
+        /// The minimum species ages that the damage class applies to.
+        /// </summary>
+        public int MinAge
+        {
+            get
+            {
+                return minAge;
+            }
+
+            set
+            {
+                if (value < damageSpecies.Longevity)
+                    minAge = value;
+                else
+                    throw new InputValueException(value.ToString(),
+                                                  "Value must be < species longevity");
+            }
+        }
+        //---------------------------------------------------------------------
+        /// <summary>
+        /// The maximum species ages that the damage class applies to.
         /// </summary>
         public int MaxAge
         {
@@ -83,6 +108,7 @@ namespace Landis.Extension.Scrapple
             }
         }
 
+        //---------------------------------------------------------------------
         /// <summary>
         /// The probability of mortality for a given severity
         /// </summary>

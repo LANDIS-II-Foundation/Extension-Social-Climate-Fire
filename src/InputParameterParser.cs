@@ -27,7 +27,7 @@ namespace Landis.Extension.Scrapple
 
         public InputParameterParser()
         {
-            Edu.Wisc.Forest.Flel.Util.Percentage p = new Edu.Wisc.Forest.Flel.Util.Percentage();
+            //Edu.Wisc.Forest.Flel.Util.Percentage p = new Edu.Wisc.Forest.Flel.Util.Percentage();
             // RegisterForInputValues();
             this.speciesDataset = PlugIn.ModelCore.Species;
             this.speciesLineNums = new Dictionary<string, int>();
@@ -58,29 +58,6 @@ namespace Landis.Extension.Scrapple
             //ReadVar(duration);
             //parameters.Duration = duration.Value;
 
-            //// Read SpringStart Parameter
-            //InputVar<int> springStart = new InputVar<int>("SpringStart");
-            //if (ReadOptionalVar(springStart))
-            //{
-            //    parameters.SpringStart = springStart.Value;
-            //}
-            //else
-            //{
-            //    // Set as Julian Days if not provided
-            //    parameters.SpringStart = 60;
-            //}
-
-            //// Read WinterStart Parameter
-            //InputVar<int> winterStart = new InputVar<int>("WinterStart");
-            //if (ReadOptionalVar(winterStart))
-            //{
-            //    parameters.WinterStart = winterStart.Value;
-            //}
-            //else
-            //{
-            //    // Set as Julian Days if not provided
-            //    parameters.WinterStart = 336;
-            //}
 
             //                   --------- Input files ---------
             //--------------------------------------------------------------------------
@@ -171,6 +148,7 @@ namespace Landis.Extension.Scrapple
                     IFireDamage damage = new FireDamage();
                     parameters.FireDamages_Severity1.Add(damage);
                     damage.DamageSpecies = species;
+                    damage.MinAge = previousMaxAge;
 
                     ReadValue(maxAge, currentLine);
                     damage.MaxAge = maxAge.Value;
