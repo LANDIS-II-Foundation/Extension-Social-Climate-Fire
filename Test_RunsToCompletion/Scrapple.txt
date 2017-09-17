@@ -20,6 +20,10 @@ RxFireIgnitionsB1 0.0
 AccidentalIgnitionsB0 0.0
 AccidentalIgnitionsB1 0.0
 
+FireIntensityClass_1_DamageTable
+>> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
+acersacc 50  0.9  100 0.5
+
 MapNames  fire/ignitions-{timestep}.img
 >> LogFile   dynamic-fire-test-log.csv
 >> SummaryLogFile fire/summary-log.csv

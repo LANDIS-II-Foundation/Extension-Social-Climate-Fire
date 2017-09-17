@@ -16,8 +16,10 @@ namespace Landis.Extension.Scrapple
         string ClimateConfigFile { get; set; }    
         double RelativeHumiditySlopeAdjustment { get; set; }   //does this go in the interface or below in the input parameters?
         //double SeverityCalibrate { get;set;}
-        List<IFireDamage> FireDamages{get;}
-        string MapNamesTemplate{get;set;}
+        List<IFireDamage> FireDamages_Severity1{get;}
+        List<IFireDamage> FireDamages_Severity2 { get; }
+        List<IFireDamage> FireDamages_Severity3 { get; }
+        string MapNamesTemplate {get;set;}
         //int Duration { get; set; }
         //int SpringStart { get; set; }
         //int WinterStart { get; set; }
@@ -43,15 +45,14 @@ namespace Landis.Extension.Scrapple
     {
         private int timestep;
         
-        private List<IFireDamage> damages;
+        private List<IFireDamage> damages_severity1;
+        private List<IFireDamage> damages_severity2;
+        private List<IFireDamage> damages_severity3;
         private string mapNamesTemplate;
         //private string logFileName;
         //private string summaryLogFileName;
         private string climateConfigFile;
         private double relativeHumiditySlopeAdjust;
-        //private int springStart;
-        //private int winterStart;
-        //private int duration;
         private string lighteningFireMap;
         private string accidentalFireMap;
         private string rxFireMap;
@@ -109,30 +110,6 @@ namespace Landis.Extension.Scrapple
         //        duration = value;
         //    }
         //}
-        ////---------------------------------------------------------------------
-        //public int WinterStart
-        //{
-        //    get
-        //    {
-        //        return winterStart;
-        //    }
-        //    set
-        //    {
-        //        winterStart = value;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-        //public int SpringStart
-        //{
-        //    get
-        //    {
-        //        return springStart;
-        //    }
-        //    set
-        //    {
-        //        springStart = value;
-        //    }
-        //}
         //---------------------------------------------------------------------
 
         public double RelativeHumiditySlopeAdjustment
@@ -150,13 +127,29 @@ namespace Landis.Extension.Scrapple
         }
 
         //---------------------------------------------------------------------
-        public List<IFireDamage> FireDamages
+        public List<IFireDamage> FireDamages_Severity1
         {
             get {
-                return damages;
+                return damages_severity1;
             }
         }
 
+        //---------------------------------------------------------------------
+        public List<IFireDamage> FireDamages_Severity2
+        {
+            get
+            {
+                return damages_severity2;
+            }
+        }
+        //---------------------------------------------------------------------
+        public List<IFireDamage> FireDamages_Severity3
+        {
+            get
+            {
+                return damages_severity3;
+            }
+        }
         //---------------------------------------------------------------------
 
         /// <summary>
@@ -319,7 +312,9 @@ namespace Landis.Extension.Scrapple
 
         public InputParameters()
         {
-            damages = new List<IFireDamage>();
+            damages_severity1 = new List<IFireDamage>();
+            damages_severity2 = new List<IFireDamage>();
+            damages_severity3 = new List<IFireDamage>();
         }
         //---------------------------------------------------------------------
 
