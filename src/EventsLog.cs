@@ -1,4 +1,6 @@
-﻿using System;
+﻿//  Authors:  Robert M. Scheller, Alec Kretchun, Vincent Schuster
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

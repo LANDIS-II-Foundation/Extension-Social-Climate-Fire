@@ -1,5 +1,4 @@
-//  Copyright 2005-2010 Portland State University, University of Wisconsin
-//  Authors:  Srinivas S., Robert M. Scheller, James B. Domingo
+//  Authors:  Robert M. Scheller, Alec Kretchun, Vincent Schuster
 
 using Landis.SpatialModeling;
 
