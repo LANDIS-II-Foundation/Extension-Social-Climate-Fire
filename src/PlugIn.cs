@@ -394,7 +394,7 @@ namespace Landis.Extension.Scrapple
             }
 
             int numIgnitions = 0;
-            double possibleIgnitions = Math.Pow(Math.E, (b0 * b1* fireWeatherIndex));
+            double possibleIgnitions = Math.Pow(Math.E, (b0 + b1* fireWeatherIndex));
             //if (possibleIgnitions >= 3.0)
             //{
             //    numIgnitions = 3;

@@ -32,7 +32,7 @@ namespace Landis.Extension.Scrapple
         private ActiveSite initiationSite;
         private Location originLocation;
         private int totalSitesDamaged;
-        private int spreadLength;
+        private int spreadDistance;
         
 
         private int cohortsKilled;
@@ -42,7 +42,7 @@ namespace Landis.Extension.Scrapple
         private double windDirection;
 
         private double fireWeatherIndex;
-        private Ignition ignitionType;
+        public Ignition IgnitionType;
         //private int numSpread;
 
         //---------------------------------------------------------------------
@@ -50,16 +50,18 @@ namespace Landis.Extension.Scrapple
         {
         }
 
-        public int SpreadLength
+        //---------------------------------------------------------------------
+        // Spreadlength is the distance that a fire can spread during a given day
+        public int SpreadDistance
         {
             get
             {
-                return spreadLength;
+                return spreadDistance;
             }
 
             set
             {
-                spreadLength = value;
+                spreadDistance = value;
             }
         }
         //---------------------------------------------------------------------
@@ -188,13 +190,51 @@ namespace Landis.Extension.Scrapple
         
 
         //---------------------------------------------------------------------
-        public static FireEvent Initiate(ActiveSite site, int timestep, int day, Ignition ignitionType, int spreadLength)
+        public static FireEvent Initiate(ActiveSite initiationSite, int timestep, int day, Ignition ignitionType, int spreadLength)
 
         {
-
-
             double randomNum = PlugIn.ModelCore.GenerateUniform();
 
+            //First, check for fire overlap:
+
+            if (!SiteVars.Disturbed[initiationSite])
+            {
+                // Randomly select neighbor to spread to
+                if (isDebugEnabled)
+                    PlugIn.ModelCore.UI.WriteLine("   Fire event started at {0} ...", initiationSite.Location);
+
+                FireEvent fireEvent = new FireEvent(initiationSite, day, ignitionType);
+                fireEvent.OriginLocation = fireEvent.initiationSite.Location;
+                fireEvent.IgnitionType = ignitionType;
+
+                // RMS TODO:  ADD OTHER FIRE EVENT PARAMETERS
+
+                PlugIn.LogEvent(PlugIn.ModelCore.CurrentTime, fireEvent);
+
+
+                List<Site> neighbors = Get4WeightedNeighbors(initiationSite);
+                neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor] || !neighbor.IsActive);
+
+                // if there are no neighbors already disturbed then nothing to do since it can't spread
+                if (neighbors.Count > 0)
+                {
+                    //VS: for now pick random site to spread to
+                    int r = rnd.Next(neighbors.Count);
+                    Site nextSite = neighbors[r];
+
+                    //Initiate a fireevent at that site
+                    //FireEvent spreadEvent = Initiate((ActiveSite)nextSite, currentTime, day, Ignition.Spread, (this.SpreadLength - 1));
+                    if (fireEvent.SpreadDistance > 0)
+                    {
+                        fireEvent.Spread(PlugIn.ModelCore.CurrentTime, day);
+                    }
+                }
+                return fireEvent;
+            }
+            else
+            {
+                return null;
+            }
             /*
              * VS: These were removed to being calculated once a year. 
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
@@ -202,7 +242,7 @@ namespace Landis.Extension.Scrapple
             AnnualFireWeather.CalculateAnnualFireWeather(ecoregion);
             */
             // FireEvent fireEvent = new FireEvent(site,/* fireSeason, fireSizeType, eco, */ day); 
-            FireEvent fireEvent = new FireEvent(site, day, ignitionType);
+            //FireEvent fireEvent = new FireEvent(site, day, ignitionType);
             //fireEvent.SpreadLength = spreadLength;
 
 
@@ -215,7 +255,6 @@ namespace Landis.Extension.Scrapple
                 //return null;
             }
             */
-            return fireEvent;
         }
 
         
@@ -223,34 +262,21 @@ namespace Landis.Extension.Scrapple
         //---------------------------------------------------------------------
         public void Spread(int currentTime, int day)
         {
-            //First, check for fire overlap:
-            
-            if (SiteVars.Disturbed[this.initiationSite])
-            {
-                // Randomly select neighbor to spread to
-                if (isDebugEnabled)
-                    PlugIn.ModelCore.UI.WriteLine("   Spreading fire event started at {0} ...", this.initiationSite.Location);
+            // First, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
+            //      load fwi
+            //      load wind speed velocity (in which case, NOT a fire event parameter)
+            //      load wind direction (in which case, NOT a fire event parameter)
+            //      load fine fuels
+            //      load uphill slope azimuth
+            //      wind speed = ALEC NEED FORMULA FOR MODIFICATION BY SPEED AND AZIMUTH
 
-                List<Site> neighbors = Get4WeightedNeighbors(this.initiationSite);
-                neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor] || !neighbor.IsActive);
+            // If severity > 0
+            //      if spread-distance > spread-distance-max, day = day + 1
+            //      spread to neighbors    
+            //      Cause mortality
+            //      map daily spread (doy)
+            //      map severity
 
-                // if there are no neighbors already disturbed then nothing to do since it can't spread
-                if (neighbors.Count > 0)
-                {
-                    //VS: for now pick random site to spread to
-                    int r = rnd.Next(neighbors.Count);
-                    Site nextSite = neighbors[r];
-
-                    //Initiate a fireevent at that site
-                    FireEvent spreadEvent = Initiate((ActiveSite)nextSite, currentTime, day, Ignition.Spread, (this.SpreadLength - 1));
-                    spreadEvent.OriginLocation = this.initiationSite.Location;
-                    PlugIn.LogEvent(currentTime, spreadEvent);
-                    if(spreadEvent.SpreadLength > 0)
-                    {
-                        spreadEvent.Spread(currentTime, day);
-                    }
-                }
-            }
         }
 
         //---------------------------------------------------------------------
