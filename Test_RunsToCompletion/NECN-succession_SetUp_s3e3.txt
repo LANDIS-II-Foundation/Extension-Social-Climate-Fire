@@ -1,0 +1,220 @@
+LandisData  "NECN Succession"
+
+
+>>------------------
+>> REQUIRED INPUTS
+>>------------------
+
+Timestep  			1
+
+SeedingAlgorithm  		WardSeedDispersal
+
+InitialCommunities      	./NECN-succession_InitialCommunities_s3e3.txt
+InitialCommunitiesMap   	./NECN-succession_InitialCommunities_s3e3.gis
+
+ClimateConfigFile		./NECN-succession_ClimateGenerator.txt
+
+CalibrateMode 			no
+
+SpinupMortalityFraction 	0.0002
+
+WaterDecayFunction 		Ratio <<Linear or Ratio
+
+ProbEstablishAdjust 		1.0
+
+
+
+>>----------------------------
+>> LIFE HISTORY PARAMETERS
+>>----------------------------
+
+AvailableLightBiomass
+
+>> Shade	Percent Max Biomass
+>> Class	by Ecoregions
+>> ----------	--------------------	
+	        MN101  MN102    
+	1	25%    	25%     
+	2	45%     45% 
+	3	56%     56% 
+	4	70%     70% 
+	5	90% 	90% 
+
+LightEstablishmentTable
+>> Spp Shade	Probability
+>> Class	by Actual Shade
+>> ----------	--------------------	
+>>		0	1	2	3	4	5
+	1	1.0	0.5	0.25	0.0	0.0	0.0
+	2	1.0	1.0	0.5	0.25	0.0	0.0
+	3	1.0	1.0	1.0	0.5	0.25	0.0
+	4	1.0	1.0	1.0	1.0	0.5	0.25
+	5	0.1	0.5	1.0	1.0	1.0	1.0
+
+SpeciesParameters
+
+>>Species	Leaf	Woody	Mortality Curve	Leaf				
+>>		Long	DecayR	Shape Parameter	Lignin%				
+>>----------------------------------------------								
+>> Species  Funct	N	GDD	GDD	Min	Max	Leaf	Epi-	Leaf	FRoot	Wood	CRoot	Leaf  FRoot Wood  CRoot Littr 	
+>>	    ional	Fixer	Min	Max	Jan	Drought	Long	cormic	Lign%	Lign%	Lign%	Lign%	CN    CN    CN    CN    CN	
+>> 	    Type				Temp			re-
+abiebals   	2	N	560	2386	-25	0.165	3	N	0.252	0.225	0.312	0.204	35.5	43	482	84	74
+acernegu	1	N	1260	6600	-18	0.23	1	N	0.183	0.334	0.125	0.312	28.2	26	248	50	55
+acerrubr   	1	N	1260	6600	-18	0.23	1	N	0.183	0.334	0.125	0.312	28.2	26	248	50	55
+acersacc   	1	N	1222	3100	-18	0.08	1	N	0.175	0.334	0.125	0.312	25.1	26	388	50	55
+acerspic	1	N	1260	6600	-18	0.23	1	N	0.183	0.334	0.125	0.312	28.2	26	600	50	55
+betualle   	4	N	1100	2500	-18	0.2	1	N	0.219	0.27	0.2018	0.251	21	26	365	50	65
+betupapy   	4	N	484	2036	-28	0.28	1	N	0.201	0.27	0.2018	0.251	23.3	26	384	50	65
+celtis		1	N	560	2500	-23	0.16	1	N	0.175	0.27	0.2	0.251	18.1	25	145	49	65
+fraxamer	1	N	1398	5993	-12	0.28	1	N	0.144	0.27	0.2018	0.251	22.9	26	189	50	65
+fraxnigr	1	N	1000	2261	-18	0.022	1	N	0.144	0.27	0.2018	0.251	22.9	26	189	50	65
+fraxpenn	1	N	1050	5482	-23	0.114	1	N	0.144	0.27	0.2018	0.251	22.9	26	189	50	65
+larilari	1	N	280	2260	-29	0.267	1	N	0.297	0.225	0.312	0.204	20.7	26	600	50	74
+ostrvirg	2	N	1278	5556	-18	0.28	1	N	0.211	0.27	0.2018	0.251	22.2	26	417	50	65
+piceglau   	1	N	280	1911	-30	0.309	3	N	0.249	0.258	0.4	0.234	45.8	43	500	84	55
+picemari	2	N	247	1911	-30	0.27	3	N	0.221	0.258	0.4	0.234	62.9	43	439	84	100
+pinubank   	2	N	830	2216	-30	0.411	2	N	0.266	0.225	0.4	0.204	48.7	43	600	84	55
+pinuresi   	2	N	1100	2035	-20	0.385	3	N	0.266	0.225	0.3104	0.204	48.7	43	600	84	55
+pinustro   	2	N	1100	3165	-20	0.31	2	N	0.263	0.225	0.3104	0.204	40.7	43	398	84	55
+popubals	2	N	555	2491	-30	0.267	1	N	0.261	0.225	0.2	0.204	22.2	25	336	49	65
+popudelt	4	N	555	2491	-30	0.267	1	N	0.261	0.346	0.2	0.318	22.2	25	271	49	65
+popugran	4	N	1100	3169	-18	0.267	1	N	0.261	0.346	0.2	0.318	22.2	25	450	49	65
+poputrem   	4	N	743	2461	-30	0.267	1	N	0.256	0.346	0.2	0.318	22.2	25	336	49	65
+prunpens	1	N	560	2500	-23	0.16	1	N	0.175	0.27	0.2	0.251	18.1	25	145	49	65
+prunsero	1	N	1200	5993	-17	0.3	1	N	0.175	0.27	0.2	0.251	18.1	25	108	49	65
+prunvirg	1	N	1200	5993	-17	0.3	1	N	0.175	0.27	0.2	0.251	18.1	25	108	49	65
+queralba	1	N	1200	5537	-14	0.33	1	N	0.176	0.334	0.225	0.303	18.5	58	298	113	32
+querelli   	1	N	2000	2234	-15	0.28	1	N	0.149	0.334	0.225	0.303	18.5	58	345	113	32
+quermacr	3	N	1000	5153	-20	0.35	1	N	0.249	0.334	0.225	0.303	18.5	58	345	113	32
+querrubr   	3	N	1100	4571	-17	0.225	1	N	0.249	0.334	0.225	0.303	18.5	58	345	113	32
+salix		3	N	1000	2138	-20	0.35	1	N	0.219	0.27	0.2	0.251	21	26	417	50	65
+thujocci 	1	N	1000	2138	-20	0.35	3	N	0.262	0.225	0.312	0.204	41.8	43	333	84	74
+tiliamer   	1	N	1400	3137	-17	0.2	1	N	0.17	0.334	0.2	0.31	17.3	26	417	50	35
+ulmuamer	2	N	1204	6960	-20	0.33	1	N	0.137	0.27	0.2	0.251	25.5	26	417	50	65
+ulmurubr	1	N	1204	6960	-20	0.33	1	N	0.137	0.27	0.312	0.251	25.5	26	417	50	65
+
+FunctionalGroupParameters  <<from tree.100									Age	Leaf
+>> Name	Index	PPDF1	PPDF2	PPDF3	PPDF4	FCFRAC	BTOLAI	KLAI	MAXLAI	PPRPTS2	PPRPTS3	Wood	Monthly	Mort	Drop   CRootFrac FRootFRac
+>> 		T-Mean	T-Max	T-shape	T-shape	leaf						DecayR	WoodMortShape	Month
+SMAPLE  1	32	42	1.2	1.5	0.35	-0.8	1700	10	1.0	0.8	0.51	0.003	15	9	0.25	  0.35
+WPINE  	2	25	40	1	3	0.48	-0.8	2000	5	1.0	0.8	0.6	0.004	15	10	0.25	  0.35
+HVFST	3	25	45	1	4	0.3	-0.8	700	7	1.0	0.8	0.6	0.004	15	9	0.25	  0.35
+ASPEN 	4	20	40	0.5	5	0.3	-0.8	650	6	1.0	0.8	0.6	0.004	15	9	0.25	  0.35
+
+>> Note:  The on-line Century guide and 
+>> default parameters suggest MaxLAI = 20.0
+
+InitialEcoregionParameters
+>> 	SOM1	SOM1	SOM1	SOM1	SOM2	SOM2	SOM3	SOM3	Minrl
+>> 	C	N	C	N	C	N	C	N	N
+>> 	surf	surf	soil	soil
+MN101	60.36	3.35	60.36	7.54	1307.69	42.18	643.79	25.75	26.7  <<Used ecoregion 404 because that's the most common region in 212N
+MN102	60.36	3.35	60.36	7.54	1307.69	42.18	643.79	25.75	26.7 
+	
+EcoregionParameters
+>>	Soil	Percent	Percent	Field	Wilt	StormF	BaseF	Drain	Atmos	Atmos	Lat-	Decay	Decay	Decay	Decay	Denit
+>>	Depth	Clay	Sand	Cap	Point	Fract	Fract		N	N	itude	Rate	Rate	Rate	Rate	Slope
+>>      cm					frac	frac		slope	inter		Surf	SOM1	SOM2	SOM3
+MN101	137	0.26	0.21	0.13	0.06	0.1	0.1	0.80	0.08	0.147	47.43	0.1	0.05	0.01	0.0001	0.001
+MN102	137	0.26	0.21	0.13	0.06	0.1	0.1	0.80	0.08	0.147	47.43	0.1	0.05	0.01	0.0001	0.001
+
+FireReductionParameters
+>>	Severity	Wood	Litter
+>>	Fire		Reduct	Reduct
+	1		0.0	0.5
+	2		0.05	0.75
+	3		0.2	1.0
+	4		0.5	1.0
+	5		0.8	1.0
+
+   
+MonthlyMaxNPP <<PRDX(3) from Century 4.0 (g Biomass / m2)
+
+>> Species      Ecoregions
+>> --------     ------------------
+		MN101	MN102
+abiebals   	357	357
+acernegu	141	141
+acerrubr   	141	141
+acersacc   	158	158
+acerspic	141	141
+betualle   	274	274
+betupapy   	279	279
+fraxamer   	256	256
+fraxnigr	253	253
+fraxpenn	256	256
+larilari	243	243
+ostrvirg	205	205
+piceglau   	453	453
+picemari	419	419
+pinubank   	235	235
+pinuresi   	295	295
+pinustro   	335	335
+popubals	323	323
+popudelt	323	323
+popugran	317	317
+poputrem   	323	323
+prunpens	354	354
+prunsero	354	354
+prunvirg	354	354
+queralba	316	316
+querelli   	316	316
+quermacr	335	335
+querrubr	315	315
+salix 		274	274
+thujocci   	243	243
+tiliamer   	205	205
+ulmuamer    	196	196
+ulmurubr	196	196
+	 	   
+MaxBiomass
+>> Species      Ecoregions
+>> --------     ------------------
+		MN101	MN102
+abiebals   	12300	12300
+acernegu	18000	18000
+acerrubr   	18000	18000
+acersacc   	32400	32400
+acerspic	18000	18000
+betualle   	24500	24500
+betupapy   	12500	12500
+fraxamer   	25100	25100
+fraxnigr	25100	25100
+fraxpenn	25100	25100
+larilari	7500	7500
+ostrvirg	18200	18200
+piceglau   	12500	12500
+picemari	10000	10000
+pinubank   	9000	9000
+pinuresi   	15000	15000
+pinustro   	15000	15000
+popubals	12500	12500
+popudelt	29900	29900
+popugran	29900	29900
+poputrem   	29900	29900
+prunsero	18900	18900
+prunvirg	18900	18900
+queralba	21100	21100
+querelli   	21100	21100
+quermacr	21100	21100
+querrubr	25000	25000
+salix 		20000	20000
+thujocci   	13000	13000	
+tiliamer   	37500	37500
+ulmuamer    	20000	20000
+	   
+	 
+AgeOnlyDisturbances:BiomassParameters    ./NECN-succession_StdBiomassReductions.txt
+
+
+>>------------------
+>> OUTPUTS
+>>------------------- 
+
+ANPPMapNames		necn/NECN-ag_anpp-{timestep}.gis
+ANPPMapFrequency	10
+ANEEMapNames		necn/NECN-nee-{timestep}.gis
+ANEEMapFrequency	10		 	 
+		 	 
+			
