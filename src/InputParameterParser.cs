@@ -77,11 +77,11 @@ namespace Landis.Extension.Scrapple
             ReadVar(rxIgnitionsMapFile);
             parameters.RxFireMap = rxIgnitionsMapFile.Value;
 
-            InputVar<double> lightningB0 = new InputVar<double>("LighteningIgnitionsB0");
+            InputVar<double> lightningB0 = new InputVar<double>("LightningIgnitionsB0");
             ReadVar(lightningB0);
             parameters.LightningIgnitionB0 = lightningB0.Value;
 
-            InputVar<double> lightningB1 = new InputVar<double>("LighteningIgnitionsB1");
+            InputVar<double> lightningB1 = new InputVar<double>("LightningIgnitionsB1");
             ReadVar(lightningB1);
             parameters.LightningIgnitionB1 = lightningB1.Value;
 

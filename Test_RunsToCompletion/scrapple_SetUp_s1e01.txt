@@ -10,8 +10,8 @@ HumanIgnitionsMapFile     ./Accidental_Ignition_Map.img
 LightningIgnitionsMapFile  ./Lightning_Ignition_Map.img
 RxIgnitionsMapFile  ./Lightning_Ignition_Map.img
 
-LigteningIgnitionsB0  0.0
-LigteningIgnitionsB1  0.0
+LightningIgnitionsB0  0.0
+LightningIgnitionsB1  0.0
 RxFireIgnitionsB0 0.0
 RxFireIgnitionsB1 0.0
 AccidentalIgnitionsB0 0.0
