@@ -1,17 +1,24 @@
 LandisData  "SCRAPPLE"
 
 >> Note:  All inputs are provided as examples only.  They are not intended to serve as default values.
->>     Parameter                      Value
->>----------------------------       -------
-  Timestep                            1
-  Duration                            50
+     Parameter                      Value
+----------------------------       -------
+Timestep                            1
+RelativeHumiditySlopeAdjust         77.68
 
-ClimateConfigFile   		./biomass-succession_ClimateGenerator.txt
-HumanIgnitionsMapFile		./Accidental_Ignition_Map.img
-LighteningIgnitionsMapFile	./Lightning_Ignition_Map.img
-RxIgnitionsMapFile		./Lightning_Ignition_Map.img
+HumanIgnitionsMapFile     ./Accidental_Ignition_Map.img
+LightningIgnitionsMapFile  ./Lightning_Ignition_Map.img
+RxIgnitionsMapFile  ./Lightning_Ignition_Map.img
 
-MapNames            fire/ignition-{timestep}.img
+LigteningIgnitionsB0  0.0
+LigteningIgnitionsB1  0.0
+RxFireIgnitionsB0 0.0
+RxFireIgnitionsB1 0.0
+AccidentalIgnitionsB0 0.0
+AccidentalIgnitionsB1 0.0
 
->> LogFile   dynamic-fire-test-log.csv
->> SummaryLogFile fire/summary-log.csv
+FireIntensityClass_1_DamageTable
+>> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
+acersacc 50  0.9  100 0.5
+
+MapNames  fire/ignitions-{timestep}.img

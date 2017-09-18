@@ -61,9 +61,9 @@ namespace Landis.Extension.Scrapple
 
             //                   --------- Input files ---------
             //--------------------------------------------------------------------------
-            InputVar<string> climateConfigFile = new InputVar<string>("ClimateConfigFile");
-            ReadVar(climateConfigFile);
-            parameters.ClimateConfigFile = climateConfigFile.Value;
+            //InputVar<string> climateConfigFile = new InputVar<string>("ClimateConfigFile");
+            //ReadVar(climateConfigFile);
+            //parameters.ClimateConfigFile = climateConfigFile.Value;
 
             InputVar<string> humanIgnitionsMapFile = new InputVar<string>("HumanIgnitionsMapFile");
             ReadVar(humanIgnitionsMapFile);

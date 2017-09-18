@@ -35,7 +35,7 @@ namespace Landis.Extension.Scrapple
         //private static int springStart;
         //private static int winterStart;
         //private int duration;
-        private string climateConfigFile;
+        //private string climateConfigFile;
         
 
         private string mapNameTemplate;
@@ -78,7 +78,7 @@ namespace Landis.Extension.Scrapple
             Timestep = 1;  // RMS:  Initially we will force annual time step. parameters.Timestep;
             RelativeHumiditySlopeAdjust = parameters.RelativeHumiditySlopeAdjustment;
             mapNameTemplate = parameters.MapNamesTemplate;
-            climateConfigFile = parameters.ClimateConfigFile;
+            //climateConfigFile = parameters.ClimateConfigFile;
             //severityCalibrate = parameters.SeverityCalibrate;
             //duration = parameters.Duration;
             //springStart = parameters.SpringStart;

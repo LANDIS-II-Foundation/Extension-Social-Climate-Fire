@@ -13,7 +13,7 @@ namespace Landis.Extension.Scrapple
     public interface IInputParameters
     {
         int Timestep{get;set;}
-        string ClimateConfigFile { get; set; }    
+        //string ClimateConfigFile { get; set; }    
         double RelativeHumiditySlopeAdjustment { get; set; }   //does this go in the interface or below in the input parameters?
         //double SeverityCalibrate { get;set;}
         List<IFireDamage> FireDamages_Severity1{get;}
@@ -51,7 +51,7 @@ namespace Landis.Extension.Scrapple
         private string mapNamesTemplate;
         //private string logFileName;
         //private string summaryLogFileName;
-        private string climateConfigFile;
+        //private string climateConfigFile;
         private double relativeHumiditySlopeAdjust;
         private string lighteningFireMap;
         private string accidentalFireMap;
@@ -83,21 +83,21 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public string ClimateConfigFile
-        {
-            get
-            {
-                return climateConfigFile;
-            }
-            set
-            {
-                if (value != null)
-                {
-                    ValidatePath(value);
-                }
-                climateConfigFile = value;
-            }
-        }
+        //public string ClimateConfigFile
+        //{
+        //    get
+        //    {
+        //        return climateConfigFile;
+        //    }
+        //    set
+        //    {
+        //        if (value != null)
+        //        {
+        //            ValidatePath(value);
+        //        }
+        //        climateConfigFile = value;
+        //    }
+        //}
         //---------------------------------------------------------------------
         //public int Duration
         //{
