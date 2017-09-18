@@ -175,6 +175,7 @@ namespace Landis.Extension.Scrapple
             // Get the active sites from the landscape and shuffle them 
             List<ActiveSite> activeSites = PlugIn.ModelCore.Landscape.ToList();
 
+            // Sites are weighted for ignition in the Shuffle method, based on the respective inputs maps.
             List<ActiveSite> shuffledAccidentalFireSites = Shuffle(activeSites, SiteVars.AccidentalFireWeight);
             activeSites = PlugIn.ModelCore.Landscape.ToList();
             List<ActiveSite> shuffledLightningFireSites = Shuffle(activeSites, SiteVars.LightningFireWeight);
@@ -205,11 +206,13 @@ namespace Landis.Extension.Scrapple
                     if (fireWeatherIndex >= .10)
                     {
                         numFires = NumberOfIgnitions(Ignition.Accidental, fireWeatherIndex);
-                        // Ignite Accidental Fires
+                        
+                        // Ignite Accidental Fires.
                         for (int i = 0; i < numFires; ++i)
                         {
                             Ignite(Ignition.Accidental, shuffledAccidentalFireSites, day, fireWeatherIndex);
                         }
+                        
                         // Ignite Lightning Fires
                         numFires = NumberOfIgnitions(Ignition.Lightning, fireWeatherIndex);
                         for (int i = 0; i < numFires; ++i)
@@ -319,7 +322,10 @@ namespace Landis.Extension.Scrapple
         }
         */
 
+        //---------------------------------------------------------------------
         // A helper function to shuffle a list of ActiveSties: Algorithm may be improved.
+        // Sites are weighted for ignition in the Shuffle method, based on the respective inputs maps.
+
         private static List<ActiveSite> Shuffle(List<ActiveSite> list, ISiteVar<double> weightedSiteVar)
         {
             List<ActiveSite> shuffledList = new List<ActiveSite>();
@@ -342,7 +348,7 @@ namespace Landis.Extension.Scrapple
         }
 
         //---------------------------------------------------------------------
-
+        // The random selection based on input map weights
         public static ActiveSite SelectRandomSite(List<ActiveSite> list, ISiteVar<double> weightedSiteVar, double totalWeight)
         {
             ActiveSite selectedSite = list.FirstOrDefault(); // currently selected element
