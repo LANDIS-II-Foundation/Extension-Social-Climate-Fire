@@ -3,13 +3,13 @@ LandisData "Climate Config"
 
 
 ClimateTimeSeries			Daily_AverageAllYears
-ClimateFile				LTB_1992_2010_fix.csv
+ClimateFile				LTB_1992_1995_fix.csv
 ClimateFileFormat			Daily_Temp-C_Precip-mmday
 
 
 
 SpinUpClimateTimeSeries			Daily_AverageAllYears
-SpinUpClimateFile			LTB_1992_2010_fix.csv
+SpinUpClimateFile			LTB_1992_1995_fix.csv
 SpinUpClimateFileFormat			Daily_Temp-C_Precip-mmday
 
 UsingFireClimate			yes

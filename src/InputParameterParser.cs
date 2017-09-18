@@ -69,7 +69,7 @@ namespace Landis.Extension.Scrapple
             ReadVar(humanIgnitionsMapFile);
             parameters.AccidentalFireMap = humanIgnitionsMapFile.Value;
 
-            InputVar<string> lighteningIgnitionsMapFile = new InputVar<string>("LighteningIgnitionsMapFile");
+            InputVar<string> lighteningIgnitionsMapFile = new InputVar<string>("LightningIgnitionsMapFile");
             ReadVar(lighteningIgnitionsMapFile);
             parameters.LighteningFireMap = lighteningIgnitionsMapFile.Value;
 
