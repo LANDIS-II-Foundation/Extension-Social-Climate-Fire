@@ -268,6 +268,9 @@ namespace Landis.Extension.Scrapple
             //      load fine fuels
             //      load uphill slope azimuth
             //      wind speed = ALEC NEED FORMULA FOR MODIFICATION BY SPEED AND AZIMUTH
+            //      Is spread to this site allowable?
+            //          Calculate P-spread based on fwi, adjusted wind speed, fine fuels, source intensity (or similar). (AK)
+            //          Adjust P-spread to account for suppression (RMS)
 
             // Next, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
             //      Severity a function of fwi, ladder fuels, other? (AK)
@@ -275,9 +278,6 @@ namespace Landis.Extension.Scrapple
             // If severity > 0
             //      Calculate spread-distance-max (AK)
             //      if spread-distance > spread-distance-max, day = day + 1
-            //      spread to neighbors    
-            //          Calculate P-spread based on fwi, adjusted wind speed, fine fuels, source intensity (or similar). (AK)
-            //          Adjust P-spread to account for suppression (RMS)
 
             //      Cause mortality
             //      map daily spread (doy) (add SiteVar)
