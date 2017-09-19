@@ -127,48 +127,116 @@ namespace Landis.Extension.Scrapple
             const string FireIntensityClass_2_DamageTable = "FireIntensityClass_2_DamageTable";
             const string FireIntensityClass_3_DamageTable = "FireIntensityClass_3_DamageTable";
 
-            ReadName(FireIntensityClass_1_DamageTable);
 
-            InputVar<ISpecies> spp = new InputVar<ISpecies>("Species Name");
+            InputVar<string> spp = new InputVar<string>("Species Name");
             InputVar<int> maxAge = new InputVar<int>("Max Interval Age");
+            InputVar<int> minAge = new InputVar<int>("Min Interval Age");
             InputVar<double> probMortality = new InputVar<double>("Probability of Mortality");
 
+            ReadName(FireIntensityClass_1_DamageTable);
             while (!AtEndOfInput && CurrentName != FireIntensityClass_2_DamageTable)
             {
-                int previousMaxAge = 0;
+                //int previousMaxAge = 0;
 
                 StringReader currentLine = new StringReader(CurrentLine);
 
-                ISpecies species = ReadSpecies(currentLine);
+                //ISpecies species = ReadSpecies(currentLine);
+                ReadValue(speciesName, currentLine);
+                ISpecies species = PlugIn.ModelCore.Species[speciesName.Value.Actual];
+                if (species == null)
+                    throw new InputValueException(speciesName.Value.String,
+                                                  "{0} is not a species name.",
+                                                  speciesName.Value.String);
+                //TextReader.SkipWhitespace(currentLine);
+                //while (currentLine.Peek() != -1)
+                //{
 
-                TextReader.SkipWhitespace(currentLine);
-                while (currentLine.Peek() != -1)
-                {
+                IFireDamage damage = new FireDamage();
+                parameters.FireDamages_Severity1.Add(damage);
+                damage.DamageSpecies = species;
 
-                    IFireDamage damage = new FireDamage();
-                    parameters.FireDamages_Severity1.Add(damage);
-                    damage.DamageSpecies = species;
-                    damage.MinAge = previousMaxAge;
+                ReadValue(minAge, currentLine);
+                damage.MinAge = minAge.Value;
 
-                    ReadValue(maxAge, currentLine);
-                    damage.MaxAge = maxAge.Value;
+                ReadValue(maxAge, currentLine);
+                damage.MaxAge = maxAge.Value;
 
-                    //  Maximum age for every damage must be > 
-                    //  maximum age of previous damage.
-                    if (maxAge.Value.Actual <= previousMaxAge)
-                    {
-                        throw new InputValueException(maxAge.Value.String,
-                            "MaxAge must > the maximum age ({0}) of the preceeding damage class",
-                            previousMaxAge);
-                    }
+                ////  Maximum age for every damage must be > 
+                ////  maximum age of previous damage.
+                //if (maxAge.Value.Actual <= previousMaxAge)
+                //{
+                //    throw new InputValueException(maxAge.Value.String,
+                //        "MaxAge must > the maximum age ({0}) of the preceeding damage class",
+                //        previousMaxAge);
+                //}
 
-                    previousMaxAge = maxAge.Value.Actual;
+                //previousMaxAge = maxAge.Value.Actual;
 
-                    ReadValue(probMortality, currentLine);
-                    damage.ProbablityMortality = probMortality.Value;
+                ReadValue(probMortality, currentLine);
+                damage.ProbablityMortality = probMortality.Value;
 
-                    TextReader.SkipWhitespace(currentLine);
-                }
+                //TextReader.SkipWhitespace(currentLine);
+                //}
+
+                GetNextLine();
+            }
+
+            ReadName(FireIntensityClass_2_DamageTable);
+            while (!AtEndOfInput && CurrentName != FireIntensityClass_3_DamageTable)
+            {
+                //int previousMaxAge = 0;
+
+                StringReader currentLine = new StringReader(CurrentLine);
+
+                //ISpecies species = ReadSpecies(currentLine);
+                ReadValue(speciesName, currentLine);
+                ISpecies species = PlugIn.ModelCore.Species[speciesName.Value.Actual];
+                if (species == null)
+                    throw new InputValueException(speciesName.Value.String,
+                                                  "{0} is not a species name.",
+                                                  speciesName.Value.String);
+
+                IFireDamage damage = new FireDamage();
+                parameters.FireDamages_Severity2.Add(damage);
+                damage.DamageSpecies = species;
+
+                ReadValue(minAge, currentLine);
+                damage.MinAge = minAge.Value;
+
+                ReadValue(maxAge, currentLine);
+                damage.MaxAge = maxAge.Value;
+
+                ReadValue(probMortality, currentLine);
+                damage.ProbablityMortality = probMortality.Value;
+
+                GetNextLine();
+            }
+
+            ReadName(FireIntensityClass_3_DamageTable);
+            while (!AtEndOfInput && CurrentName != MapNames) 
+            {
+
+                StringReader currentLine = new StringReader(CurrentLine);
+
+                //ISpecies species = ReadSpecies(currentLine);
+                ReadValue(speciesName, currentLine);
+                ISpecies species = PlugIn.ModelCore.Species[speciesName.Value.Actual];
+                if (species == null)
+                    throw new InputValueException(speciesName.Value.String,
+                                                  "{0} is not a species name.",
+                                                  speciesName.Value.String);
+                IFireDamage damage = new FireDamage();
+                parameters.FireDamages_Severity3.Add(damage);
+                damage.DamageSpecies = species;
+
+                ReadValue(minAge, currentLine);
+                damage.MinAge = minAge.Value;
+
+                ReadValue(maxAge, currentLine);
+                damage.MaxAge = maxAge.Value;
+
+                ReadValue(probMortality, currentLine);
+                damage.ProbablityMortality = probMortality.Value;
 
                 GetNextLine();
             }
@@ -176,13 +244,15 @@ namespace Landis.Extension.Scrapple
             // Next, read out the data to verify:
             PlugIn.ModelCore.UI.WriteLine("   Fire mortality data for severity class 1:");
             foreach (FireDamage damage in parameters.FireDamages_Severity1)
-            {
                 PlugIn.ModelCore.UI.WriteLine("      {0} : {1} : {2}", damage.DamageSpecies.Name, damage.MaxAge, damage.ProbablityMortality);
-            }
 
+            PlugIn.ModelCore.UI.WriteLine("   Fire mortality data for severity class 2:");
+            foreach (FireDamage damage in parameters.FireDamages_Severity2)
+                PlugIn.ModelCore.UI.WriteLine("      {0} : {1} : {2}", damage.DamageSpecies.Name, damage.MaxAge, damage.ProbablityMortality);
 
-            //if (parameters.FireDamages.Count == 0)
-            //    throw NewParseException("No damage classes defined.");
+            PlugIn.ModelCore.UI.WriteLine("   Fire mortality data for severity class 3:");
+            foreach (FireDamage damage in parameters.FireDamages_Severity3)
+                PlugIn.ModelCore.UI.WriteLine("      {0} : {1} : {2}", damage.DamageSpecies.Name, damage.MaxAge, damage.ProbablityMortality);
 
             InputVar<string> mapNames = new InputVar<string>(MapNames);
             ReadVar(mapNames);
@@ -231,22 +301,17 @@ namespace Landis.Extension.Scrapple
         /// <summary>
         /// Reads a species name from the current line, and verifies the name.
         /// </summary>
-        private ISpecies ReadSpecies(StringReader currentLine)
-        {
-            ReadValue(speciesName, currentLine);
-            ISpecies species = speciesDataset[speciesName.Value.Actual];
-            if (species == null)
-                throw new InputValueException(speciesName.Value.String,
-                                              "{0} is not a species name.",
-                                              speciesName.Value.String);
-            int lineNumber;
-            if (speciesLineNums.TryGetValue(species.Name, out lineNumber))
-                throw new InputValueException(speciesName.Value.String,
-                                              "The species {0} was previously used on line {1}",
-                                              speciesName.Value.String, lineNumber);
-            else
-                speciesLineNums[species.Name] = LineNumber;
-            return species;
-        }
+        //private ISpecies ReadSpecies(StringReader currentLine)
+        //{
+            
+        //    //int lineNumber;
+        //    //if (speciesLineNums.TryGetValue(species.Name, out lineNumber))
+        //    //    throw new InputValueException(speciesName.Value.String,
+        //    //                                  "The species {0} was previously used on line {1}",
+        //    //                                  speciesName.Value.String, lineNumber);
+        //    //else
+        //    //    speciesLineNums[species.Name] = LineNumber;
+        //    return species;
+        //}
     }
 }

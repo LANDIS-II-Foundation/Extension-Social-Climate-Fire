@@ -32,8 +32,6 @@ namespace Landis.Extension.Scrapple
         public static int FutureClimateBaseYear;
         public static int WeatherRandomizer = 0;
         private static double RelativeHumiditySlopeAdjust;
-        //private static int springStart;
-        //private static int winterStart;
         //private int duration;
         //private string climateConfigFile;
         
@@ -81,8 +79,6 @@ namespace Landis.Extension.Scrapple
             //climateConfigFile = parameters.ClimateConfigFile;
             //severityCalibrate = parameters.SeverityCalibrate;
             //duration = parameters.Duration;
-            //springStart = parameters.SpringStart;
-            //winterStart = parameters.WinterStart;
 
             ///******************** DEBUGGER LAUNCH *********************
             /// 
@@ -125,7 +121,7 @@ namespace Landis.Extension.Scrapple
         ///</summary>
         public override void Run()
         {
-            SiteVars.InitializeFuelType();
+            //SiteVars.InitializeFuelType();
             SiteVars.FireEvent.SiteValues = null;
             SiteVars.Disturbed.ActiveSiteValues = false;
             List<FireEvent> fireEvents = new List<FireEvent>();
@@ -206,7 +202,8 @@ namespace Landis.Extension.Scrapple
                     if (fireWeatherIndex >= .10)
                     {
                         numFires = NumberOfIgnitions(Ignition.Accidental, fireWeatherIndex);
-                        
+                        PlugIn.ModelCore.UI.WriteLine("   Ecoregion: {0}, Day: {1}: Number of Accidental Fires is {2}.", ecoregion.Name, day, numFires);
+
                         // Ignite Accidental Fires.
                         for (int i = 0; i < numFires; ++i)
                         {
@@ -215,6 +212,7 @@ namespace Landis.Extension.Scrapple
                         
                         // Ignite Lightning Fires
                         numFires = NumberOfIgnitions(Ignition.Lightning, fireWeatherIndex);
+                        PlugIn.ModelCore.UI.WriteLine("   Ecoregion: {0}, Day: {1}: Number of Lightning Fires is {2}.", ecoregion.Name, day, numFires);
                         for (int i = 0; i < numFires; ++i)
                         {
                             Ignite(Ignition.Lightning, shuffledLightningFireSites, day, fireWeatherIndex);
@@ -426,7 +424,7 @@ namespace Landis.Extension.Scrapple
         // Ignites and Spreads a fire
         private static void Ignite(Ignition ignitionType, List<ActiveSite> shuffledFireSites, int day, double fireWeatherIndex)
         {
-            
+            //int attempts = 0;
             while ( shuffledFireSites.Count() > 0 && SiteVars.Disturbed[shuffledFireSites.First()] == true )
             {
                 shuffledFireSites.Remove(shuffledFireSites.First());
@@ -435,8 +433,11 @@ namespace Landis.Extension.Scrapple
             {
                 FireEvent fireEvent = FireEvent.Initiate(shuffledFireSites.First(), modelCore.CurrentTime, day, ignitionType, SpreadLength(fireWeatherIndex));
                 LogEvent(modelCore.CurrentTime, fireEvent);
+                //attempts++;
                 // fireEvent.Spread(modelCore.CurrentTime, day);
             }
+            //if (attempts > 500)
+            //    break;
         }
 
         //---------------------------------------------------------------------

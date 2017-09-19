@@ -18,7 +18,18 @@ AccidentalIgnitionsB0 0.0
 AccidentalIgnitionsB1 0.0
 
 FireIntensityClass_1_DamageTable
->> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
-acersacc 50  0.9  100 0.5
+>> Format = species minAge maxAge Pmortality. Any missing data is 0.0
+acersacc 0 50  0.9  
+acersacc 51 100 0.5
+
+FireIntensityClass_2_DamageTable
+>> Format = species minAge maxAge Pmortality. Any missing data is 0.0
+acersacc 0 50  0.9  
+acersacc 51 100 0.5
+
+FireIntensityClass_3_DamageTable
+>> Format = species minAge maxAge Pmortality. Any missing data is 0.0
+acersacc 0 50  0.9  
+acersacc 51 100 0.5
 
 MapNames  fire/ignitions-{timestep}.img

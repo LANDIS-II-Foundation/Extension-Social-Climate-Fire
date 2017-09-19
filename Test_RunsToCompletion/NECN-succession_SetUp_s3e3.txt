@@ -5,7 +5,7 @@ LandisData  "NECN Succession"
 >> REQUIRED INPUTS
 >>------------------
 
-Timestep  			1
+Timestep  			5
 
 SeedingAlgorithm  		WardSeedDispersal
 

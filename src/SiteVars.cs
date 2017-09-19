@@ -9,9 +9,9 @@ namespace Landis.Extension.Scrapple
     {
         private static ISiteVar<FireEvent> eventVar;
         private static ISiteVar<int> timeOfLastFire;
-        private static ISiteVar<int> percentConifer;  //RMS: Maybe useful?
-        private static ISiteVar<int> percentHardwood; //RMS: Maybe useful?
-        private static ISiteVar<int> percentDeadFir;  //RMS: Maybe useful?
+        //private static ISiteVar<int> percentConifer;  //RMS: Maybe useful?
+        //private static ISiteVar<int> percentHardwood; //RMS: Maybe useful?
+        //private static ISiteVar<int> percentDeadFir;  //RMS: Maybe useful?
         //added for scrapple: ---
         private static ISiteVar<double> lightningFireWeight;
         private static ISiteVar<double> rxFireWeight;
@@ -39,7 +39,7 @@ namespace Landis.Extension.Scrapple
             
             eventVar             = PlugIn.ModelCore.Landscape.NewSiteVar<FireEvent>(InactiveSiteMode.DistinctValues);
             timeOfLastFire       = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
-            percentDeadFir       = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
+            //percentDeadFir       = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             lastSeverity         = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
             
             groundSlope          = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
@@ -75,23 +75,23 @@ namespace Landis.Extension.Scrapple
 
         //---------------------------------------------------------------------
 
-        public static void InitializeFuelType()
-        {
-            PlugIn.ModelCore.UI.WriteLine("   Initializing Fuel Type.");
+        //public static void InitializeFuelType()
+        //{
+        //    //PlugIn.ModelCore.UI.WriteLine("   Initializing Fuel Type.");
 
-            //cfsFuelType     = PlugIn.ModelCore.GetSiteVar<int>("Fuels.CFSFuelType");
-            //cfsFuelType2    = PlugIn.ModelCore.GetSiteVar<int>("Fuels.CFSFuelType");
-            //decidFuelType   = PlugIn.ModelCore.GetSiteVar<int>("Fuels.DecidFuelType");
-            percentConifer  = PlugIn.ModelCore.GetSiteVar<int>("Fuels.PercentConifer");
-            percentHardwood = PlugIn.ModelCore.GetSiteVar<int>("Fuels.PercentHardwood");
-            percentDeadFir  = PlugIn.ModelCore.GetSiteVar<int>("Fuels.PercentDeadFir");
+        //    //cfsFuelType     = PlugIn.ModelCore.GetSiteVar<int>("Fuels.CFSFuelType");
+        //    //cfsFuelType2    = PlugIn.ModelCore.GetSiteVar<int>("Fuels.CFSFuelType");
+        //    //decidFuelType   = PlugIn.ModelCore.GetSiteVar<int>("Fuels.DecidFuelType");
+        //    percentConifer  = PlugIn.ModelCore.GetSiteVar<int>("Fuels.PercentConifer");
+        //    //percentHardwood = PlugIn.ModelCore.GetSiteVar<int>("Fuels.PercentHardwood");
+        //    //percentDeadFir  = PlugIn.ModelCore.GetSiteVar<int>("Fuels.PercentDeadFir");
 
-            //if (SiteVars.CFSFuelType == null)
-            //    throw new System.ApplicationException("Error: CFS Fuel Type NOT Initialized.  Fuel extension MUST be active.");
+        //    //if (SiteVars.CFSFuelType == null)
+        //    //    throw new System.ApplicationException("Error: CFS Fuel Type NOT Initialized.  Fuel extension MUST be active.");
 
-            //SiteVars.PercentDeadFir.ActiveSiteValues = 0;
+        //    //SiteVars.PercentDeadFir.ActiveSiteValues = 0;
 
-        }
+        //}
         ////---------------------------------------------------------------------
         // Added for Scrapple:
         ////---------------------------------------------------------------------
@@ -156,29 +156,29 @@ namespace Landis.Extension.Scrapple
             }
         }
         
-        public static ISiteVar<int> PercentConifer
-        {
-            get {
-                return percentConifer;
-            }
-        }
+        //public static ISiteVar<int> PercentConifer
+        //{
+        //    get {
+        //        return percentConifer;
+        //    }
+        //}
 
-        //---------------------------------------------------------------------
+        ////---------------------------------------------------------------------
 
-        public static ISiteVar<int> PercentHardwood
-        {
-            get {
-                return percentHardwood;
-            }
-        }
-        //---------------------------------------------------------------------
+        //public static ISiteVar<int> PercentHardwood
+        //{
+        //    get {
+        //        return percentHardwood;
+        //    }
+        //}
+        ////---------------------------------------------------------------------
 
-        public static ISiteVar<int> PercentDeadFir
-        {
-            get {
-                return percentDeadFir;
-            }
-        }
+        //public static ISiteVar<int> PercentDeadFir
+        //{
+        //    get {
+        //        return percentDeadFir;
+        //    }
+        //}
 
         //---------------------------------------------------------------------
         public static ISiteVar<byte> LastSeverity
