@@ -294,17 +294,23 @@ namespace Landis.Extension.Scrapple
             //          Adjust P-spread to account for suppression (RMS)
             //          Compare P-spread-adj to random number
 
+            double Pspread_adjusted = 0.5;
 
-            // Next, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
-            //      Severity a function of fwi, ladder fuels, other? (AK)
+            if (Pspread_adjusted < PlugIn.ModelCore.GenerateUniform())
+            {
+                // Next, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
+                //      Severity a function of fwi, ladder fuels, other? (AK)
 
-            // If severity > 0
-            //      Calculate spread-area-max (AK)
-            //      if spread-area > spread-area-max, day = day + 1
+                // If severity > 0
+                //      Calculate spread-area-max (AK)
+                //      if spread-area > spread-area-max, day = day + 1
 
-            //      Cause mortality
-            //      map daily spread (doy) (add SiteVar)
-            //      map severity
+                //      Cause mortality
+                //      map daily spread (doy) (add SiteVar)
+                //      map severity
+            }
+
+
 
         }
 
