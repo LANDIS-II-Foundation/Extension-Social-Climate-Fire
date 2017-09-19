@@ -6,9 +6,12 @@ LandisData  "SCRAPPLE"
 Timestep                            1
 RelativeHumiditySlopeAdjust         77.68
 
-HumanIgnitionsMapFile     ./Accidental_Ignition_Map.img
-LightningIgnitionsMapFile  ./Lightning_Ignition_Map.img
-RxIgnitionsMapFile  ./Lightning_Ignition_Map.img
+HumanIgnitionsMap     ./Accidental_Ignition_Map.img
+LightningIgnitionsMap  ./Lightning_Ignition_Map.img
+RxIgnitionsMap  ./Lightning_Ignition_Map.img
+
+GroundSlopeMap GroundSlope.gis
+UphillSlopeAzimuthMap  UphillSlope.gis
 
 LightningIgnitionsB0  0.0
 LightningIgnitionsB1  0.0
@@ -18,18 +21,19 @@ AccidentalIgnitionsB0 0.0
 AccidentalIgnitionsB1 0.0
 
 FireIntensityClass_1_DamageTable
->> Format = species minAge maxAge Pmortality. Any missing data is 0.0
+>> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
 acersacc 0 50  0.9  
 acersacc 51 100 0.5
 
 FireIntensityClass_2_DamageTable
->> Format = species minAge maxAge Pmortality. Any missing data is 0.0
+>> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
 acersacc 0 50  0.9  
 acersacc 51 100 0.5
 
 FireIntensityClass_3_DamageTable
->> Format = species minAge maxAge Pmortality. Any missing data is 0.0
+>> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
 acersacc 0 50  0.9  
 acersacc 51 100 0.5
+
 
 MapNames  fire/ignitions-{timestep}.img

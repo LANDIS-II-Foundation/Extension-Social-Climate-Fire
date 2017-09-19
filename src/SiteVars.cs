@@ -12,14 +12,12 @@ namespace Landis.Extension.Scrapple
         //private static ISiteVar<int> percentConifer;  //RMS: Maybe useful?
         //private static ISiteVar<int> percentHardwood; //RMS: Maybe useful?
         //private static ISiteVar<int> percentDeadFir;  //RMS: Maybe useful?
-        //added for scrapple: ---
         private static ISiteVar<double> lightningFireWeight;
         private static ISiteVar<double> rxFireWeight;
         private static ISiteVar<double> accidentalFireWeight;
         private static ISiteVar<byte> typeOfIginition;
-        //private static ISiteVar<bool> burned;
-        private static ISiteVar<Site> originSite;
-        // --------------End addgit 
+        private static ISiteVar<bool> burned;
+        //private static ISiteVar<Site> originSite;
         private static ISiteVar<byte> lastSeverity;
         private static ISiteVar<bool> disturbed;
         private static ISiteVar<ushort> groundSlope;
@@ -52,7 +50,7 @@ namespace Landis.Extension.Scrapple
             rxFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             accidentalFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             typeOfIginition = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
-            originSite  = PlugIn.ModelCore.Landscape.NewSiteVar<Site>();
+            //originSite  = PlugIn.ModelCore.Landscape.NewSiteVar<Site>();
             disturbed = PlugIn.ModelCore.Landscape.NewSiteVar<bool>();
 
             //Also initialize topography, will be overwritten if optional parameters provided:
@@ -127,18 +125,18 @@ namespace Landis.Extension.Scrapple
             }
         }
 
-        public static ISiteVar<Site> OriginSite
-        {
-            get
-            {
-                return originSite;
-            }
+        //public static ISiteVar<Site> OriginSite
+        //{
+        //    get
+        //    {
+        //        return originSite;
+        //    }
 
-            set
-            {
-                originSite = value;
-            }
-        }
+        //    set
+        //    {
+        //        originSite = value;
+        //    }
+        //}
         // ------------ End addition
         
 

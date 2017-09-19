@@ -65,17 +65,32 @@ namespace Landis.Extension.Scrapple
             //ReadVar(climateConfigFile);
             //parameters.ClimateConfigFile = climateConfigFile.Value;
 
-            InputVar<string> humanIgnitionsMapFile = new InputVar<string>("HumanIgnitionsMapFile");
+            InputVar<string> humanIgnitionsMapFile = new InputVar<string>("HumanIgnitionsMap");
             ReadVar(humanIgnitionsMapFile);
             parameters.AccidentalFireMap = humanIgnitionsMapFile.Value;
 
-            InputVar<string> lighteningIgnitionsMapFile = new InputVar<string>("LightningIgnitionsMapFile");
+            InputVar<string> lighteningIgnitionsMapFile = new InputVar<string>("LightningIgnitionsMap");
             ReadVar(lighteningIgnitionsMapFile);
             parameters.LighteningFireMap = lighteningIgnitionsMapFile.Value;
 
-            InputVar<string> rxIgnitionsMapFile = new InputVar<string>("RxIgnitionsMapFile");
+            InputVar<string> rxIgnitionsMapFile = new InputVar<string>("RxIgnitionsMap");
             ReadVar(rxIgnitionsMapFile);
             parameters.RxFireMap = rxIgnitionsMapFile.Value;
+
+            // Load Ground Slope Data
+            //const string GroundSlopeFile = "GroundSlopeFile";
+            InputVar<string> groundSlopeFile = new InputVar<string>("GroundSlopeMap");
+            ReadVar(groundSlopeFile);
+
+            PlugIn.ModelCore.UI.WriteLine("   Loading Slope data...");
+            Topography.ReadGroundSlopeMap(groundSlopeFile.Value);
+
+            // Load Uphill Slope Azimuth Data
+            InputVar<string> uphillSlopeMap = new InputVar<string>("UphillSlopeAzimuthMap");
+            ReadVar(uphillSlopeMap);
+
+            PlugIn.ModelCore.UI.WriteLine("   Loading Azimuth data...");
+            Topography.ReadUphillSlopeAzimuthMap(uphillSlopeMap.Value);
 
             InputVar<double> lightningB0 = new InputVar<double>("LightningIgnitionsB0");
             ReadVar(lightningB0);
@@ -101,23 +116,7 @@ namespace Landis.Extension.Scrapple
             ReadVar(accidentalB1);
             parameters.LightningIgnitionB1 = accidentalB1.Value;
 
-            /*
-            // Load Ground Slope Data
-            const string GroundSlopeFile = "GroundSlopeFile";
-            InputVar<string> groundSlopeFile = new InputVar<string>("GroundSlopeFile");
-            ReadVar(groundSlopeFile);
             
-            PlugIn.ModelCore.UI.WriteLine("   Loading Slope data...");
-            Topography.ReadGroundSlopeMap(groundSlopeFile.Value);
-
-            // Load Uphill Slope Azimuth Data
-            InputVar<string> uphillSlopeMap = new InputVar<string>("UphillSlopeAzimuthMap");
-            ReadVar(uphillSlopeMap);
-
-            PlugIn.ModelCore.UI.WriteLine("   Loading Azimuth data...");
-            Topography.ReadUphillSlopeAzimuthMap(uphillSlopeMap.Value);
-
-            */
             //-------------------------------------------------------------------
             //  Read table of Fire Damage classes.
             //  Damages are in increasing order.
