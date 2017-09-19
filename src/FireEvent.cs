@@ -299,8 +299,8 @@ namespace Landis.Extension.Scrapple
             //      Severity a function of fwi, ladder fuels, other? (AK)
 
             // If severity > 0
-            //      Calculate spread-distance-max (AK)
-            //      if spread-distance > spread-distance-max, day = day + 1
+            //      Calculate spread-area-max (AK)
+            //      if spread-area > spread-area-max, day = day + 1
 
             //      Cause mortality
             //      map daily spread (doy) (add SiteVar)
