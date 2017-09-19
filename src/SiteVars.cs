@@ -16,17 +16,18 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<double> rxFireWeight;
         private static ISiteVar<double> accidentalFireWeight;
         private static ISiteVar<byte> typeOfIginition;
-        private static ISiteVar<bool> burned;
+        //private static ISiteVar<bool> burned;
         //private static ISiteVar<Site> originSite;
         private static ISiteVar<byte> lastSeverity;
         private static ISiteVar<bool> disturbed;
         private static ISiteVar<ushort> groundSlope;
         private static ISiteVar<ushort> uphillSlopeAzimuth;
 
-        private static ISiteVar<ushort> siteWindSpeed;  ////RMS: why?
-        private static ISiteVar<ushort> siteWindDirection;  //RMS: why? 
+        //private static ISiteVar<ushort> siteWindSpeed;  ////RMS: why?
+        //private static ISiteVar<ushort> siteWindDirection;  //RMS: why? 
 
         private static ISiteVar<ISiteCohorts> cohorts;
+        private static ISiteVar<double> fineFuels;
 
         //---------------------------------------------------------------------
 
@@ -34,16 +35,17 @@ namespace Landis.Extension.Scrapple
         {
 
             cohorts = PlugIn.ModelCore.GetSiteVar<ISiteCohorts>("Succession.AgeCohorts");
-            
-            eventVar             = PlugIn.ModelCore.Landscape.NewSiteVar<FireEvent>(InactiveSiteMode.DistinctValues);
+            fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.FineFuels");
+
+            eventVar = PlugIn.ModelCore.Landscape.NewSiteVar<FireEvent>(InactiveSiteMode.DistinctValues);
             timeOfLastFire       = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             //percentDeadFir       = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             lastSeverity         = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
             
             groundSlope          = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
             uphillSlopeAzimuth   = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
-            siteWindSpeed        = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
-            siteWindDirection    = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
+            //siteWindSpeed        = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
+            //siteWindDirection    = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
 
             // Added for scrapple:
             lightningFireWeight  = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
@@ -60,13 +62,11 @@ namespace Landis.Extension.Scrapple
             //Initialize TimeSinceLastFire to the maximum cohort age:
             foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
             {
-                ushort maxAge = GetMaxAge(site);
-                timeOfLastFire[site] = PlugIn.ModelCore.StartTime - maxAge;
+                //ushort maxAge = GetMaxAge(site);
+                timeOfLastFire[site] = 0; // PlugIn.ModelCore.StartTime - maxAge;
             }
 
 
-            //PlugIn.ModelCore.RegisterSiteVar(SiteVars.FireRegion, "Fire.FireRegion");
-            //PlugIn.ModelCore.RegisterSiteVar(SiteVars.FireRegion2, "Fire.FireRegion2");
             PlugIn.ModelCore.RegisterSiteVar(SiteVars.LastSeverity, "Fire.Severity");
             PlugIn.ModelCore.RegisterSiteVar(SiteVars.TimeOfLastFire, "Fire.TimeOfLastEvent");
         }
@@ -90,9 +90,7 @@ namespace Landis.Extension.Scrapple
         //    //SiteVars.PercentDeadFir.ActiveSiteValues = 0;
 
         //}
-        ////---------------------------------------------------------------------
-        // Added for Scrapple:
-        ////---------------------------------------------------------------------
+        //---------------------------------------------------------------------
         public static ISiteVar<double> LightningFireWeight
         {
             get
@@ -100,7 +98,7 @@ namespace Landis.Extension.Scrapple
                 return lightningFireWeight;
             }
         }
-        ////---------------------------------------------------------------------
+        //---------------------------------------------------------------------
         public static ISiteVar<double> RxFireWeight
         {
             get
@@ -108,7 +106,7 @@ namespace Landis.Extension.Scrapple
                 return rxFireWeight;
             }
         }
-        ////---------------------------------------------------------------------
+        //---------------------------------------------------------------------
         public static ISiteVar<double> AccidentalFireWeight
         {
             get
@@ -117,6 +115,15 @@ namespace Landis.Extension.Scrapple
             }
         }
 
+        //---------------------------------------------------------------------
+        public static ISiteVar<double> FineFuels
+        {
+            get
+            {
+                return fineFuels;
+            }
+        }
+        //---------------------------------------------------------------------
         public static ISiteVar<byte> TypeOfIginition
         {
             get
@@ -212,22 +219,22 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public static ISiteVar<ushort> SiteWindSpeed
-        {
-            get
-            {
-                return siteWindSpeed;
-            }
-        }
+        //public static ISiteVar<ushort> SiteWindSpeed
+        //{
+        //    get
+        //    {
+        //        return siteWindSpeed;
+        //    }
+        //}
 
-        //---------------------------------------------------------------------
-        public static ISiteVar<ushort> SiteWindDirection
-        {
-            get
-            {
-                return siteWindDirection;
-            }
-        }
+        ////---------------------------------------------------------------------
+        //public static ISiteVar<ushort> SiteWindDirection
+        //{
+        //    get
+        //    {
+        //        return siteWindDirection;
+        //    }
+        //}
 
         //---------------------------------------------------------------------
 
@@ -240,24 +247,24 @@ namespace Landis.Extension.Scrapple
         }
 
         //---------------------------------------------------------------------
-        public static ushort GetMaxAge(ActiveSite site)
-        {
-            if (SiteVars.Cohorts[site] == null)
-            {
-                PlugIn.ModelCore.UI.WriteLine("Cohort are null.");
-                return 0;
-            }
-            ushort max = 0;
+        //public static ushort GetMaxAge(ActiveSite site)
+        //{
+        //    if (SiteVars.Cohorts[site] == null)
+        //    {
+        //        PlugIn.ModelCore.UI.WriteLine("Cohort are null.");
+        //        return 0;
+        //    }
+        //    ushort max = 0;
 
-            foreach (ISpeciesCohorts speciesCohorts in SiteVars.Cohorts[site])
-            {
-                foreach (ICohort cohort in speciesCohorts)
-                {
-                    if (cohort.Age > max)
-                        max = cohort.Age;
-                }
-            }
-            return max;
-        }
+        //    foreach (ISpeciesCohorts speciesCohorts in SiteVars.Cohorts[site])
+        //    {
+        //        foreach (ICohort cohort in speciesCohorts)
+        //        {
+        //            if (cohort.Age > max)
+        //                max = cohort.Age;
+        //        }
+        //    }
+        //    return max;
+        //}
     }
 }

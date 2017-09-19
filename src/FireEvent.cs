@@ -287,11 +287,12 @@ namespace Landis.Extension.Scrapple
             }
             double windSpeed = Climate.Future_DailyData[currentTime][ecoregion.Index].DailyWindSpeed[day];
             double windDirection = Climate.Future_DailyData[currentTime][ecoregion.Index].DailyWindDirection[day];
-            // FINISH.  double fineFuels = SiteVars.FineFuels[site];
+            double fineFuels = SiteVars.FineFuels[site];
 
-            //      Is spread to this site allowable?
+            // Is spread to this site allowable?
             //          Calculate P-spread based on fwi, adjusted wind speed, fine fuels, source intensity (or similar). (AK)
             //          Adjust P-spread to account for suppression (RMS)
+            //          Compare P-spread-adj to random number
 
 
             // Next, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
