@@ -300,14 +300,19 @@ namespace Landis.Extension.Scrapple
             {
                 // Next, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
                 //      Severity a function of fwi, ladder fuels, other? (AK)
+                int severity = (int) Math.Ceiling(PlugIn.ModelCore.GenerateUniform() * 3.0);
 
-                // If severity > 0
+                if (severity > 0)
+                {
+
+                    //      Cause mortality
+                    //      map daily spread (doy) (add SiteVar)
+                    //      map severity
+                }
                 //      Calculate spread-area-max (AK)
                 //      if spread-area > spread-area-max, day = day + 1
+                //      Spread to neighbors
 
-                //      Cause mortality
-                //      map daily spread (doy) (add SiteVar)
-                //      map severity
             }
 
 
