@@ -131,24 +131,6 @@ namespace Landis.Extension.Scrapple
 
             modelCore.UI.WriteLine("   Processing landscape for Fire events ...");
 
-            // RMS:  foreach day-of-year loop
-            // {
-
-            // Estimate number of successful ignitions per day based on FWI using algorithm from AK
-            // double FWI = AnnualFireWeather.FireWeatherIndex
-            // Add minimum:  If < 0.10, skip it.
-            // if (AnnualFireWeather.FireWeatherIndex < 10)
-            // skip this day
-
-            // double numFires = fancy equation from AK
-            // if numFires > 1, then that's the number of fires to start (numFiresStarted)
-            // if numFires < 1, then:
-            // if (modelCore.GenerateUniform() <= numFires)
-            // numFiresStarted = 1;
-
-            // Next create a FireEvent and burn baby burn!
-            //}
-
             int actualYear = 0;
             try
             {

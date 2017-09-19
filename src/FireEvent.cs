@@ -224,7 +224,7 @@ namespace Landis.Extension.Scrapple
                     //FireEvent spreadEvent = Initiate((ActiveSite)nextSite, currentTime, day, Ignition.Spread, (this.SpreadLength - 1));
                     if (fireEvent.SpreadDistance > 0)
                     {
-                        fireEvent.Spread(PlugIn.ModelCore.CurrentTime, day);
+                        fireEvent.Spread(PlugIn.ModelCore.CurrentTime, day, (ActiveSite) nextSite);
                     }
                 }
                 return fireEvent;
@@ -258,28 +258,41 @@ namespace Landis.Extension.Scrapple
         
 
         //---------------------------------------------------------------------
-        public void Spread(int currentTime, int day)
+        public void Spread(int currentTime, int day, ActiveSite site)
         {
-
             // First, load necessary parameters
             //      load fwi
             //      load wind speed velocity (in which case, NOT a fire event parameter)
             //      load wind direction (in which case, NOT a fire event parameter)
             //      load fine fuels
             //      load uphill slope azimuth
-            //      wind speed = ALEC NEED FORMULA FOR MODIFICATION BY SPEED AND AZIMUTH
-            //      Is spread to this site allowable?
-            //          Calculate P-spread based on fwi, adjusted wind speed, fine fuels, source intensity (or similar). (AK)
-            //          Adjust P-spread to account for suppression (RMS)
-
+            //      wind speed = wind speed adjusted
             //AMK equations for wind speed/direction factor conversions from raw data 
             //Refer to design doc on Google Drive for questions or explanations
             //wsx = (wind_speed_velocity * sin(fire_azimuth)) + (wind_speed_velocity * sin(uphill_azimuth))
             //wsy = (wind_speed_velocity * cos(fire_azimuth)) + (wind_speed_velocity * cos(uphill_azimuth))
-
             //ws.factor = sqrt(wsx^2 + wsy^2) //wind speed factor
-
             //wd.factor = acos(wsy/ws.factor) //wind directior factor
+
+            IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
+
+            double fireWeatherIndex = 0.0;
+            try
+            {
+                fireWeatherIndex = Climate.Future_DailyData[currentTime][ecoregion.Index].DailyFireWeatherIndex[day];
+            }
+            catch
+            {
+                throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found \t year: {0}, day: {1} in ecoregion: {2} not found", currentTime, day, ecoregion.Name));
+            }
+            double windSpeed = Climate.Future_DailyData[currentTime][ecoregion.Index].DailyWindSpeed[day];
+            double windDirection = Climate.Future_DailyData[currentTime][ecoregion.Index].DailyWindDirection[day];
+            // FINISH.  double fineFuels = SiteVars.FineFuels[site];
+
+            //      Is spread to this site allowable?
+            //          Calculate P-spread based on fwi, adjusted wind speed, fine fuels, source intensity (or similar). (AK)
+            //          Adjust P-spread to account for suppression (RMS)
+
 
             // Next, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
             //      Severity a function of fwi, ladder fuels, other? (AK)
