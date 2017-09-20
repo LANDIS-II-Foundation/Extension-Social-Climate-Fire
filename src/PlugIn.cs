@@ -30,11 +30,15 @@ namespace Landis.Extension.Scrapple
         public static MetadataTable<SummaryLog> summaryLog;
         
         public static int FutureClimateBaseYear;
-        public static int WeatherRandomizer = 0;
+        //public static int WeatherRandomizer = 0;
         private static double RelativeHumiditySlopeAdjust;
+
+        public static List<IFireDamage> FireDamages_Severity1;
+        public static List<IFireDamage> FireDamages_Severity2;
+        public static List<IFireDamage> FireDamages_Severity3;
         //private int duration;
         //private string climateConfigFile;
-        
+
 
         private string mapNameTemplate;
         //private double severityCalibrate;
@@ -76,6 +80,9 @@ namespace Landis.Extension.Scrapple
             Timestep = 1;  // RMS:  Initially we will force annual time step. parameters.Timestep;
             RelativeHumiditySlopeAdjust = parameters.RelativeHumiditySlopeAdjustment;
             mapNameTemplate = parameters.MapNamesTemplate;
+            FireDamages_Severity1 = parameters.FireDamages_Severity1;
+            FireDamages_Severity2 = parameters.FireDamages_Severity2;
+            FireDamages_Severity3 = parameters.FireDamages_Severity3;
             //climateConfigFile = parameters.ClimateConfigFile;
             //severityCalibrate = parameters.SeverityCalibrate;
             //duration = parameters.Duration;

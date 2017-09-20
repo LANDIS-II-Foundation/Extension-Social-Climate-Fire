@@ -363,33 +363,37 @@ namespace Landis.Extension.Scrapple
         bool ICohortDisturbance.MarkCohortForDeath(ICohort cohort)
         {
             bool killCohort = false;
-                        
+            int siteSeverity = 1;
 
             //Fire Severity 5 kills all cohorts:
-            /*
-            if (siteSeverity == 5)
-            {
-                killCohort = true;
-            }
-            else {
-                //Otherwise, use damage table to calculate damage.
-                //Read table backwards; most severe first.
-                float ageAsPercent = (float) cohort.Age / (float) cohort.Species.Longevity;
-                foreach(IFireDamage damage in damages)
-                //for (int i = damages.Length-1; i >= 0; --i)
-                {
-                    //IFireDamage damage = damages[i];
-                    if (siteSeverity - cohort.Species.FireTolerance >= damage.SeverTolerDifference)
-                    {
-                        if (damage.MaxAge >= ageAsPercent)
-                        {
-                            killCohort = true;
 
-                            break;  // No need to search further in th
-                    }
+            //if (siteSeverity == 5)
+            //{
+            //    killCohort = true;
+            //}
+            //else {
+
+            //Otherwise, use damage table to calculate damage.
+            //Read table backwards; most severe first.
+            //float ageAsPercent = (float) cohort.Age / (float) cohort.Species.Longevity;
+
+            List<IFireDamage> fireDamages = null;
+            if (siteSeverity == 1)
+                fireDamages = PlugIn.FireDamages_Severity1;
+            if (siteSeverity == 2)
+                fireDamages = PlugIn.FireDamages_Severity2;
+            if (siteSeverity == 3)
+                fireDamages = PlugIn.FireDamages_Severity3;
+
+            foreach (IFireDamage damage in fireDamages)
+            {
+                if(cohort.Species == damage.DamageSpecies && cohort.Age >= damage.MinAge && cohort.Age < damage.MaxAge)
+                {
+                    killCohort = true;
+                    break;  // No need to search further in th
+
                 }
             }
-            */
 
             if (killCohort) {
                 this.cohortsKilled++;
