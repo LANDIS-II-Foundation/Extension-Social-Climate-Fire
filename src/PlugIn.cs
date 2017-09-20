@@ -269,7 +269,7 @@ namespace Landis.Extension.Scrapple
             el.InitColumn = fireEvent.StartLocation.Column;
             //el.WindSpeed = fireEvent.WindSpeed;
             //el.WindDirection = fireEvent.WindDirection;
-            el.FireWeatherIndex = fireEvent.FireWeatherIndex;
+            el.FireWeatherIndex = fireEvent.InitiationFireWeatherIndex;
             el.CohortsKilled = fireEvent.CohortsKilled;
             el.MeanSeverity = fireEvent.EventSeverity;
 
@@ -403,10 +403,10 @@ namespace Landis.Extension.Scrapple
         //---------------------------------------------------------------------
 
         // Detemines the number of cells a given ignition can spread to
-        private static int SpreadLength(double fireWeatherIndex)
-        {
-            return 5;
-        }
+        //private static int SpreadLength(double fireWeatherIndex)
+        //{
+        //    return 5;
+        //}
 
         //---------------------------------------------------------------------
 
@@ -420,7 +420,7 @@ namespace Landis.Extension.Scrapple
             }
             if (shuffledFireSites.Count() > 0)
             {
-                FireEvent fireEvent = FireEvent.Initiate(shuffledFireSites.First(), modelCore.CurrentTime, day, ignitionType, SpreadLength(fireWeatherIndex));
+                FireEvent fireEvent = FireEvent.Initiate(shuffledFireSites.First(), modelCore.CurrentTime, day, ignitionType);
                 LogEvent(modelCore.CurrentTime, fireEvent);
                 //attempts++;
                 // fireEvent.Spread(modelCore.CurrentTime, day);

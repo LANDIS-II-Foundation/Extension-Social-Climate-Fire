@@ -35,12 +35,13 @@ namespace Landis.Extension.Scrapple
         private int cohortsKilled;
         private double eventSeverity;
         
-        private double windSpeed;  
-        private double windDirection;
+        //private double windSpeed;  
+        //private double windDirection;
 
         private double fireWeatherIndex;
         public Ignition IgnitionType;
         public Dictionary<int,int> spreadArea;
+        AnnualClimate_Daily annualWeatherData;
         //private int numSpread;
 
         //---------------------------------------------------------------------
@@ -64,7 +65,7 @@ namespace Landis.Extension.Scrapple
         //}
         //---------------------------------------------------------------------
 
-        public double FireWeatherIndex
+        public double InitiationFireWeatherIndex
         {
             get
             {
@@ -169,7 +170,7 @@ namespace Landis.Extension.Scrapple
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[initiationSite];
 
             int actualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_DailyData.First().Key;
-            AnnualClimate_Daily annualWeatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
+            this.annualWeatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
             SiteVars.TypeOfIginition[initiationSite] = (byte)ignitionType;
             SiteVars.Disturbed[initiationSite] = true;
             
@@ -178,17 +179,19 @@ namespace Landis.Extension.Scrapple
             this.totalSitesDamaged = 0;
             
             this.fireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
-            this.windSpeed = annualWeatherData.DailyWindSpeed[day];
-            this.windDirection = annualWeatherData.DailyWindDirection[day];
+            //this.windSpeed = annualWeatherData.DailyWindSpeed[day];
+            //this.windDirection = annualWeatherData.DailyWindDirection[day];
             this.originLocation = initiationSite.Location;
             this.initiationSite = initiationSite;
+            this.spreadArea = new Dictionary<int, int>();
         }
         
 
         //---------------------------------------------------------------------
-        public static FireEvent Initiate(ActiveSite initiationSite, int timestep, int day, Ignition ignitionType, int spreadLength)
+        public static FireEvent Initiate(ActiveSite initiationSite, int timestep, int day, Ignition ignitionType)
 
         {
+            PlugIn.ModelCore.UI.WriteLine("  Fire Event initiated.  Day = {0}, IgnitionType = {1}.", day, ignitionType);
             double randomNum = PlugIn.ModelCore.GenerateUniform();
 
             //First, check for fire overlap:
@@ -214,26 +217,6 @@ namespace Landis.Extension.Scrapple
             {
                 return null;
             }
-            /*
-             * VS: These were removed to being calculated once a year. 
-            IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
-
-            AnnualFireWeather.CalculateAnnualFireWeather(ecoregion);
-            */
-            // FireEvent fireEvent = new FireEvent(site,/* fireSeason, fireSizeType, eco, */ day); 
-            //FireEvent fireEvent = new FireEvent(site, day, ignitionType);
-            //fireEvent.SpreadLength = spreadLength;
-
-
-            // Test that adequate weather data was retrieved:-
-            /*
-            if (fireEvent.windSpeed == 0)
-            {
-            // throw an error //RMS
-                throw new Exception("Inadequate weasther data retrieved");
-                //return null;
-            }
-            */
         }
 
         
@@ -260,24 +243,25 @@ namespace Landis.Extension.Scrapple
             double fireWeatherIndex = 0.0;
             try
             {
-                fireWeatherIndex = Climate.Future_DailyData[currentTime][ecoregion.Index].DailyFireWeatherIndex[day];
+                fireWeatherIndex = this.annualWeatherData.DailyFireWeatherIndex[day]; //Climate.Future_DailyData[currentTime][ecoregion.Index].DailyFireWeatherIndex[day];
             }
             catch
             {
                 throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found \t year: {0}, day: {1} in ecoregion: {2} not found", currentTime, day, ecoregion.Name));
             }
-            double windSpeed = Climate.Future_DailyData[currentTime][ecoregion.Index].DailyWindSpeed[day];
-            double windDirection = Climate.Future_DailyData[currentTime][ecoregion.Index].DailyWindDirection[day];
-            double fineFuels = SiteVars.FineFuels[site];
+            double windSpeed = this.annualWeatherData.DailyWindSpeed[day];
+            double windDirection = this.annualWeatherData.DailyWindDirection[day];
+            // double fineFuels = SiteVars.FineFuels[site];  // NEED TO FIX NECN-Hydro installer
+            PlugIn.ModelCore.UI.WriteLine("  Fire spreading.  Day = {0}, FWI = {1}, windSpeed = {2}, windDirection = {3}.", day, fireWeatherIndex, windSpeed, windDirection);
 
             // Is spread to this site allowable?
             //          Calculate P-spread based on fwi, adjusted wind speed, fine fuels, source intensity (or similar). (AK)
             //          Adjust P-spread to account for suppression (RMS)
             //          Compare P-spread-adj to random number
 
-            double Pspread_adjusted = 0.5;
+            double Pspread_adjusted = 0.05;
 
-            if (Pspread_adjusted < PlugIn.ModelCore.GenerateUniform())
+            if (Pspread_adjusted > PlugIn.ModelCore.GenerateUniform())
             {
                 SiteVars.Disturbed[site] = true;  // set to true, regardless of severity
                 if(!spreadArea.ContainsKey(day))
@@ -308,7 +292,7 @@ namespace Landis.Extension.Scrapple
                 }
 
                 //      Calculate spread-area-max (AK)  TODO
-                int spreadAreaMax = 20;
+                int spreadAreaMax = 3;
 
                 //      Spread to neighbors
                 List<Site> neighbors = Get4ActiveNeighbors(initiationSite);
@@ -417,6 +401,7 @@ namespace Landis.Extension.Scrapple
             {
                 if(cohort.Species == damage.DamageSpecies && cohort.Age >= damage.MinAge && cohort.Age < damage.MaxAge)
                 {
+                    // NEED TO ADD RANDOM NUMBER COMPARISON
                     killCohort = true;
                     break;  // No need to search further in th
 
