@@ -129,7 +129,7 @@ namespace Landis.Extension.Scrapple
         public override void Run()
         {
             //SiteVars.InitializeFuelType();
-            SiteVars.FireEvent.SiteValues = null;
+            //SiteVars.FireEvent.SiteValues = null;
             SiteVars.Disturbed.ActiveSiteValues = false;
             List<FireEvent> fireEvents = new List<FireEvent>();
             AnnualClimate_Daily weatherData = null;
@@ -220,7 +220,7 @@ namespace Landis.Extension.Scrapple
                 
             //}
 
-            WriteYearlyIgnitionsMap(PlugIn.ModelCore.CurrentTime);
+            WriteMaps(PlugIn.ModelCore.CurrentTime);
 
             WriteSummaryLog(modelCore.CurrentTime);
 
@@ -231,7 +231,7 @@ namespace Landis.Extension.Scrapple
 
         //---------------------------------------------------------------------
 
-        private void WriteYearlyIgnitionsMap(int currentTime)
+        private void WriteMaps(int currentTime)
         {
             string path = MapNames.ReplaceTemplateVars(mapNameTemplate, currentTime);
 
@@ -255,8 +255,52 @@ namespace Landis.Extension.Scrapple
                     outputRaster.WriteBufferPixel();
                 }
             }
+
+            path = MapNames.ReplaceTemplateVars("fire/severity-{timestep}.img", currentTime);
+            using (IOutputRaster<BytePixel> outputRaster = modelCore.CreateRaster<BytePixel>(path, modelCore.Landscape.Dimensions))
+            {
+                BytePixel pixel = outputRaster.BufferPixel;
+                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                {
+                    if (site.IsActive)
+                    {
+                        if (SiteVars.Disturbed[site])
+                            pixel.MapCode.Value = (SiteVars.Severity[site]);
+                        else
+                            pixel.MapCode.Value = 0;
+                    }
+                    else
+                    {
+                        //  Inactive site
+                        pixel.MapCode.Value = 0;
+                    }
+                    outputRaster.WriteBufferPixel();
+                }
+            }
+
+            path = MapNames.ReplaceTemplateVars("fire/day-of-fire-{timestep}.img", currentTime);
+            using (IOutputRaster<BytePixel> outputRaster = modelCore.CreateRaster<BytePixel>(path, modelCore.Landscape.Dimensions))
+            {
+                BytePixel pixel = outputRaster.BufferPixel;
+                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                {
+                    if (site.IsActive)
+                    {
+                        if (SiteVars.Disturbed[site])
+                            pixel.MapCode.Value = (SiteVars.DayOfFire[site]);
+                        else
+                            pixel.MapCode.Value = 0;
+                    }
+                    else
+                    {
+                        //  Inactive site
+                        pixel.MapCode.Value = 0;
+                    }
+                    outputRaster.WriteBufferPixel();
+                }
+            }
         }
-        
+
         //---------------------------------------------------------------------
 
         public static void LogEvent(int currentTime, FireEvent fireEvent)

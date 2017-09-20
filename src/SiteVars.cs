@@ -9,23 +9,15 @@ namespace Landis.Extension.Scrapple
     {
         private static ISiteVar<FireEvent> eventVar;
         private static ISiteVar<int> timeOfLastFire;
-        //private static ISiteVar<int> percentConifer;  //RMS: Maybe useful?
-        //private static ISiteVar<int> percentHardwood; //RMS: Maybe useful?
-        //private static ISiteVar<int> percentDeadFir;  //RMS: Maybe useful?
         private static ISiteVar<double> lightningFireWeight;
         private static ISiteVar<double> rxFireWeight;
         private static ISiteVar<double> accidentalFireWeight;
         private static ISiteVar<byte> typeOfIginition;
-        //private static ISiteVar<bool> burned;
-        //private static ISiteVar<Site> originSite;
-        private static ISiteVar<byte> lastSeverity;
+        private static ISiteVar<byte> severity;
+        private static ISiteVar<byte> dayOfFire;
         private static ISiteVar<bool> disturbed;
         private static ISiteVar<ushort> groundSlope;
         private static ISiteVar<ushort> uphillSlopeAzimuth;
-
-        //private static ISiteVar<ushort> siteWindSpeed;  ////RMS: why?
-        //private static ISiteVar<ushort> siteWindDirection;  //RMS: why? 
-
         private static ISiteVar<ISiteCohorts> cohorts;
         private static ISiteVar<double> fineFuels;
 
@@ -39,20 +31,15 @@ namespace Landis.Extension.Scrapple
 
             eventVar = PlugIn.ModelCore.Landscape.NewSiteVar<FireEvent>(InactiveSiteMode.DistinctValues);
             timeOfLastFire       = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
-            //percentDeadFir       = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
-            lastSeverity         = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
-            
+            severity         = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
+            dayOfFire = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
+
             groundSlope          = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
             uphillSlopeAzimuth   = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
-            //siteWindSpeed        = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
-            //siteWindDirection    = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
-
-            // Added for scrapple:
             lightningFireWeight  = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             rxFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             accidentalFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             typeOfIginition = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
-            //originSite  = PlugIn.ModelCore.Landscape.NewSiteVar<Site>();
             disturbed = PlugIn.ModelCore.Landscape.NewSiteVar<bool>();
 
             //Also initialize topography, will be overwritten if optional parameters provided:
@@ -67,29 +54,11 @@ namespace Landis.Extension.Scrapple
             }
 
 
-            PlugIn.ModelCore.RegisterSiteVar(SiteVars.LastSeverity, "Fire.Severity");
+            PlugIn.ModelCore.RegisterSiteVar(SiteVars.Severity, "Fire.Severity");
             PlugIn.ModelCore.RegisterSiteVar(SiteVars.TimeOfLastFire, "Fire.TimeOfLastEvent");
         }
 
-        //---------------------------------------------------------------------
-
-        //public static void InitializeFuelType()
-        //{
-        //    //PlugIn.ModelCore.UI.WriteLine("   Initializing Fuel Type.");
-
-        //    //cfsFuelType     = PlugIn.ModelCore.GetSiteVar<int>("Fuels.CFSFuelType");
-        //    //cfsFuelType2    = PlugIn.ModelCore.GetSiteVar<int>("Fuels.CFSFuelType");
-        //    //decidFuelType   = PlugIn.ModelCore.GetSiteVar<int>("Fuels.DecidFuelType");
-        //    percentConifer  = PlugIn.ModelCore.GetSiteVar<int>("Fuels.PercentConifer");
-        //    //percentHardwood = PlugIn.ModelCore.GetSiteVar<int>("Fuels.PercentHardwood");
-        //    //percentDeadFir  = PlugIn.ModelCore.GetSiteVar<int>("Fuels.PercentDeadFir");
-
-        //    //if (SiteVars.CFSFuelType == null)
-        //    //    throw new System.ApplicationException("Error: CFS Fuel Type NOT Initialized.  Fuel extension MUST be active.");
-
-        //    //SiteVars.PercentDeadFir.ActiveSiteValues = 0;
-
-        //}
+        
         //---------------------------------------------------------------------
         public static ISiteVar<double> LightningFireWeight
         {
@@ -154,12 +123,12 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public static ISiteVar<FireEvent> FireEvent
-        {
-            get {
-                return eventVar;
-            }
-        }
+        //public static ISiteVar<FireEvent> FireEvent
+        //{
+        //    get {
+        //        return eventVar;
+        //    }
+        //}
         
         //public static ISiteVar<int> PercentConifer
         //{
@@ -186,14 +155,22 @@ namespace Landis.Extension.Scrapple
         //}
 
         //---------------------------------------------------------------------
-        public static ISiteVar<byte> LastSeverity
+        public static ISiteVar<byte> Severity
         {
             get
             {
-                return lastSeverity;
+                return severity;
             }
         }
 
+        //---------------------------------------------------------------------
+        public static ISiteVar<byte> DayOfFire
+        {
+            get
+            {
+                return dayOfFire;
+            }
+        }
         //---------------------------------------------------------------------
 
         public static ISiteVar<bool> Disturbed

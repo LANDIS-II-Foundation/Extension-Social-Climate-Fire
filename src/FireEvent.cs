@@ -259,23 +259,20 @@ namespace Landis.Extension.Scrapple
             //          Adjust P-spread to account for suppression (RMS)
             //          Compare P-spread-adj to random number
 
+            // ********* TEMP ****************************************
             double Pspread_adjusted = 0.05;
+            // ********* TEMP ****************************************
 
             if (Pspread_adjusted > PlugIn.ModelCore.GenerateUniform())
             {
                 SiteVars.Disturbed[site] = true;  // set to true, regardless of severity
-                if(!spreadArea.ContainsKey(day))
-                {
-                    spreadArea.Add(day, 1);  // second int is the cell count, later turned into area
-                } else
-                {
-                    spreadArea[day]++;
-                }
 
 
                 // Next, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
                 //      Severity a function of fwi, ladder fuels, other? (AK)
+                // ********* TEMP ****************************************
                 int severity = (int) Math.Ceiling(PlugIn.ModelCore.GenerateUniform() * 3.0);
+                // ********* TEMP ****************************************
                 int siteCohortsKilled = 0;
 
                 if (severity > 0)
@@ -286,13 +283,23 @@ namespace Landis.Extension.Scrapple
                     {
                         totalSitesDamaged++;
                     }
-
-                    //      map daily spread (doy) (add SiteVar) TODO
-                    //      map severity TODO
+                    SiteVars.TypeOfIginition[site] = (byte)this.IgnitionType;
+                    SiteVars.Severity[site] = (byte) severity;
+                    SiteVars.DayOfFire[site] = (byte) day;
                 }
 
                 //      Calculate spread-area-max (AK)  TODO
+                // ********* TEMP ****************************************
                 int spreadAreaMax = 3;
+                // ********* TEMP ****************************************
+                if (!spreadArea.ContainsKey(day))
+                {
+                    spreadArea.Add(day, 1);  // second int is the cell count, later turned into area
+                }
+                else
+                {
+                    spreadArea[day]++;
+                }
 
                 //      Spread to neighbors
                 List<Site> neighbors = Get4ActiveNeighbors(initiationSite);
@@ -377,18 +384,6 @@ namespace Landis.Extension.Scrapple
             bool killCohort = false;
             int siteSeverity = 1;
 
-            //Fire Severity 5 kills all cohorts:
-
-            //if (siteSeverity == 5)
-            //{
-            //    killCohort = true;
-            //}
-            //else {
-
-            //Otherwise, use damage table to calculate damage.
-            //Read table backwards; most severe first.
-            //float ageAsPercent = (float) cohort.Age / (float) cohort.Species.Longevity;
-
             List<IFireDamage> fireDamages = null;
             if (siteSeverity == 1)
                 fireDamages = PlugIn.FireDamages_Severity1;
@@ -401,9 +396,11 @@ namespace Landis.Extension.Scrapple
             {
                 if(cohort.Species == damage.DamageSpecies && cohort.Age >= damage.MinAge && cohort.Age < damage.MaxAge)
                 {
-                    // NEED TO ADD RANDOM NUMBER COMPARISON
-                    killCohort = true;
-                    break;  // No need to search further in th
+                    if (damage.ProbablityMortality > PlugIn.ModelCore.GenerateUniform())
+                    {
+                        killCohort = true;
+                    }
+                    break;  // No need to search further
 
                 }
             }
