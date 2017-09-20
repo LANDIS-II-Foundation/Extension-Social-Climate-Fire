@@ -30,8 +30,7 @@ namespace Landis.Extension.Scrapple
         private ActiveSite initiationSite;
         private Location originLocation;
         private int totalSitesDamaged;
-        private int spreadDistance;
-        
+        //private int spreadDistance;
 
         private int cohortsKilled;
         private double eventSeverity;
@@ -41,6 +40,7 @@ namespace Landis.Extension.Scrapple
 
         private double fireWeatherIndex;
         public Ignition IgnitionType;
+        public Dictionary<int,int> spreadArea;
         //private int numSpread;
 
         //---------------------------------------------------------------------
@@ -48,20 +48,20 @@ namespace Landis.Extension.Scrapple
         {
         }
 
-        //---------------------------------------------------------------------
-        // Spreadlength is the distance that a fire can spread during a given day
-        public int SpreadDistance
-        {
-            get
-            {
-                return spreadDistance;
-            }
+        ////---------------------------------------------------------------------
+        //// SpreadArea is the area that a fire can spread during a given day
+        //public int SpreadDistance
+        //{
+        //    get
+        //    {
+        //        return spreadDistance;
+        //    }
 
-            set
-            {
-                spreadDistance = value;
-            }
-        }
+        //    set
+        //    {
+        //        spreadDistance = value;
+        //    }
+        //}
         //---------------------------------------------------------------------
 
         public double FireWeatherIndex
@@ -153,8 +153,6 @@ namespace Landis.Extension.Scrapple
             }
         }
 
-
-
         //---------------------------------------------------------------------
         ActiveSite IDisturbance.CurrentSite
         {
@@ -209,24 +207,7 @@ namespace Landis.Extension.Scrapple
 
                 PlugIn.LogEvent(PlugIn.ModelCore.CurrentTime, fireEvent);
 
-
-                List<Site> neighbors = Get4WeightedNeighbors(initiationSite);
-                neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor] || !neighbor.IsActive);
-
-                // if there are no neighbors already disturbed then nothing to do since it can't spread
-                if (neighbors.Count > 0)
-                {
-                    //VS: for now pick random site to spread to
-                    int r = rnd.Next(neighbors.Count);
-                    Site nextSite = neighbors[r];
-
-                    //Initiate a fireevent at that site
-                    //FireEvent spreadEvent = Initiate((ActiveSite)nextSite, currentTime, day, Ignition.Spread, (this.SpreadLength - 1));
-                    if (fireEvent.SpreadDistance > 0)
-                    {
-                        fireEvent.Spread(PlugIn.ModelCore.CurrentTime, day, (ActiveSite) nextSite);
-                    }
-                }
+                fireEvent.Spread(PlugIn.ModelCore.CurrentTime, day, (ActiveSite) initiationSite);
                 return fireEvent;
             }
             else
@@ -298,6 +279,16 @@ namespace Landis.Extension.Scrapple
 
             if (Pspread_adjusted < PlugIn.ModelCore.GenerateUniform())
             {
+                SiteVars.Disturbed[site] = true;  // set to true, regardless of severity
+                if(!spreadArea.ContainsKey(day))
+                {
+                    spreadArea.Add(day, 1);  // second int is the cell count, later turned into area
+                } else
+                {
+                    spreadArea[day]++;
+                }
+
+
                 // Next, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
                 //      Severity a function of fwi, ladder fuels, other? (AK)
                 int severity = (int) Math.Ceiling(PlugIn.ModelCore.GenerateUniform() * 3.0);
@@ -309,9 +300,40 @@ namespace Landis.Extension.Scrapple
                     //      map daily spread (doy) (add SiteVar)
                     //      map severity
                 }
-                //      Calculate spread-area-max (AK)
-                //      if spread-area > spread-area-max, day = day + 1
+
+                //      Calculate spread-area-max (AK)  TODO
+                int spreadAreaMax = 20;
+
                 //      Spread to neighbors
+                List<Site> neighbors = Get4WeightedNeighbors(initiationSite);
+                neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor] || !neighbor.IsActive);
+                int neighborDay = day;
+
+
+                foreach (Site neighborSite in neighbors)
+                {
+                    //  if spread-area > spread-area-max, day = day + 1
+                    if (spreadArea[day] > spreadAreaMax)
+                        neighborDay = day+1;
+                    this.Spread(PlugIn.ModelCore.CurrentTime, neighborDay, (ActiveSite)initiationSite);
+                }
+
+                // if there are no neighbors already disturbed then nothing to do since it can't spread
+                //if (neighbors.Count > 0)
+                //{
+                //    // VS: for now pick random site to spread to
+                //    // RMS TODO:  Spread to all neighbors
+                //    int r = rnd.Next(neighbors.Count);
+                //    Site nextSite = neighbors[r];
+
+                //    //Initiate a fireevent at that site
+                //    //FireEvent spreadEvent = Initiate((ActiveSite)nextSite, currentTime, day, Ignition.Spread, (this.SpreadLength - 1));
+                //    //if (fireEvent.SpreadDistance > 0)
+                //    //{
+
+                //    //}
+                //}
+
 
             }
 
