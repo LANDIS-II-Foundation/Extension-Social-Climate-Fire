@@ -292,20 +292,26 @@ namespace Landis.Extension.Scrapple
                 // Next, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
                 //      Severity a function of fwi, ladder fuels, other? (AK)
                 int severity = (int) Math.Ceiling(PlugIn.ModelCore.GenerateUniform() * 3.0);
+                int siteCohortsKilled = 0;
 
                 if (severity > 0)
                 {
-
                     //      Cause mortality
-                    //      map daily spread (doy) (add SiteVar)
-                    //      map severity
+                    siteCohortsKilled = Damage(site);
+                    if (siteCohortsKilled > 0)
+                    {
+                        totalSitesDamaged++;
+                    }
+
+                    //      map daily spread (doy) (add SiteVar) TODO
+                    //      map severity TODO
                 }
 
                 //      Calculate spread-area-max (AK)  TODO
                 int spreadAreaMax = 20;
 
                 //      Spread to neighbors
-                List<Site> neighbors = Get4WeightedNeighbors(initiationSite);
+                List<Site> neighbors = Get4ActiveNeighbors(initiationSite);
                 neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor] || !neighbor.IsActive);
                 int neighborDay = day;
 
@@ -342,7 +348,7 @@ namespace Landis.Extension.Scrapple
         }
 
         //---------------------------------------------------------------------
-        private static List<Site> Get4WeightedNeighbors(Site srcSite)
+        private static List<Site> Get4ActiveNeighbors(Site srcSite)
         {
             if (!srcSite.IsActive)
                 throw new ApplicationException("Source site is not active.");
