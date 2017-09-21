@@ -20,9 +20,6 @@ namespace Landis.Extension.Scrapple
         List<IFireDamage> FireDamages_Severity2 { get; }
         List<IFireDamage> FireDamages_Severity3 { get; }
         string MapNamesTemplate {get;set;}
-        //int Duration { get; set; }
-        //int SpringStart { get; set; }
-        //int WinterStart { get; set; }
         string LighteningFireMap { get; set; }
         string RxFireMap { get; set; }
         string AccidentalFireMap { get; set; }
@@ -32,6 +29,7 @@ namespace Landis.Extension.Scrapple
         double RxFireIgnitionB1 { get; set; }
         double AccidentalFireIgnitionB0 { get; set; }
         double AccidentalFireIgnitionB1 { get; set; }
+        double MaxFineFuels { get; set; }
     }
 }
 
@@ -62,6 +60,7 @@ namespace Landis.Extension.Scrapple
         private double rxFireIgnitionB1;
         private double accidentalFireIgnitionB0;
         private double accidentalFireIgnitionB1;
+        private double maxFineFuels;
 
 
 
@@ -96,18 +95,6 @@ namespace Landis.Extension.Scrapple
         //            ValidatePath(value);
         //        }
         //        climateConfigFile = value;
-        //    }
-        //}
-        //---------------------------------------------------------------------
-        //public int Duration
-        //{
-        //    get
-        //    {
-        //        return duration;
-        //    }
-        //    set
-        //    {
-        //        duration = value;
         //    }
         //}
         //---------------------------------------------------------------------
@@ -278,36 +265,19 @@ namespace Landis.Extension.Scrapple
                 accidentalFireIgnitionB1 = value;
             }
         }
-        ////---------------------------------------------------------------------
 
-        ///// <summary>
-        ///// Weather input file
-        ///// </summary>
-        //public string InitialWeatherPath
-        //{
-        //    get {
-        //        return initialWeatherPath;
-        //    }
-        //    set {
-        //            // FIXME: check for null or empty path (value);
-        //        initialWeatherPath = value;
-        //    }
-        //}
-        /// <summary>
-        /// Wind input file
-        /// </summary>
-        //public string WindInputPath
-        //{
-        //    get
-        //    {
-        //        return windInputPath;
-        //    }
-        //    set
-        //    {
-        //        // FIXME: check for null or empty path (value);
-        //        windInputPath = value;
-        //    }
-        //}
+        //---------------------------------------------------------------------
+        public double MaxFineFuels
+        {
+            get
+            {
+                return maxFineFuels;
+            }
+            set
+            {
+                maxFineFuels = value;
+            }
+        }
         //---------------------------------------------------------------------
 
         public InputParameters()

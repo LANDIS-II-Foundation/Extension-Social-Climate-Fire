@@ -116,7 +116,10 @@ namespace Landis.Extension.Scrapple
             ReadVar(accidentalB1);
             parameters.LightningIgnitionB1 = accidentalB1.Value;
 
-            
+            InputVar<double> maxFF = new InputVar<double>("MaximumFineFuels");
+            ReadVar(maxFF);
+            parameters.MaxFineFuels = maxFF.Value;
+
             //-------------------------------------------------------------------
             //  Read table of Fire Damage classes.
             //  Damages are in increasing order.

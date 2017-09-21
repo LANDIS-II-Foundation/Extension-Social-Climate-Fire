@@ -19,6 +19,7 @@ RxFireIgnitionsB0 0.0
 RxFireIgnitionsB1 0.0
 AccidentalIgnitionsB0 0.0
 AccidentalIgnitionsB1 0.0
+MaximumFineFuels 60.0
 
 FireIntensityClass_1_DamageTable
 >> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
