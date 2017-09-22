@@ -29,10 +29,14 @@ namespace Landis.Extension.Scrapple
         public static MetadataTable<EventsLog> eventLog;
         public static MetadataTable<SummaryLog> summaryLog;
         public static MetadataTable<IgnitionsLog> ignitionsLog;
+        // Get the active sites from the landscape and shuffle them 
+        public List<ActiveSite> activeRxSites; // = PlugIn.ModelCore.Landscape.ToList();
+        public List<ActiveSite> activeAccidentalSites;
+        public List<ActiveSite> activeLightningSites;
 
         public static int FutureClimateBaseYear;
         //public static int WeatherRandomizer = 0;
-        private static double RelativeHumiditySlopeAdjust;
+        //private static double RelativeHumiditySlopeAdjust;
 
         public static List<IFireDamage> FireDamages_Severity1;
         public static List<IFireDamage> FireDamages_Severity2;
@@ -85,14 +89,27 @@ namespace Landis.Extension.Scrapple
         public override void Initialize()
         {
             Timestep = 1;  // RMS:  Initially we will force annual time step. parameters.Timestep;
-            RelativeHumiditySlopeAdjust = parameters.RelativeHumiditySlopeAdjustment;
+            //RelativeHumiditySlopeAdjust = parameters.RelativeHumiditySlopeAdjustment;
             mapNameTemplate = parameters.MapNamesTemplate;
             FireDamages_Severity1 = parameters.FireDamages_Severity1;
             FireDamages_Severity2 = parameters.FireDamages_Severity2;
             FireDamages_Severity3 = parameters.FireDamages_Severity3;
-            //climateConfigFile = parameters.ClimateConfigFile;
-            //severityCalibrate = parameters.SeverityCalibrate;
-            //duration = parameters.Duration;
+
+            // Later, if maps are dynamic, this process will need to be repeated every time the maps are updated.
+            activeAccidentalSites = PlugIn.ModelCore.Landscape.ToList();
+            foreach (ActiveSite site in activeAccidentalSites)
+            if (SiteVars.AccidentalFireWeight[site] <= 0.0)
+                    activeAccidentalSites.Remove(site);
+
+            activeRxSites = PlugIn.ModelCore.Landscape.ToList();
+            foreach (ActiveSite site in activeRxSites)
+                if (SiteVars.RxFireWeight[site] <= 0.0)
+                    activeRxSites.Remove(site);
+
+            activeLightningSites = PlugIn.ModelCore.Landscape.ToList();
+            foreach (ActiveSite site in activeLightningSites)
+                if (SiteVars.LightningFireWeight[site] <= 0.0)
+                    activeLightningSites.Remove(site);
 
             ///******************** DEBUGGER LAUNCH *********************
             /// 
@@ -172,14 +189,14 @@ namespace Landis.Extension.Scrapple
             double fireWeatherIndex = 0.0;
             
             // Get the active sites from the landscape and shuffle them 
-            List<ActiveSite> activeSites = PlugIn.ModelCore.Landscape.ToList();
+            //List<ActiveSite> activeSites = PlugIn.ModelCore.Landscape.ToList();
 
             // Sites are weighted for ignition in the Shuffle method, based on the respective inputs maps.
-            List<ActiveSite> shuffledAccidentalFireSites = Shuffle(activeSites, SiteVars.AccidentalFireWeight);
-            activeSites = PlugIn.ModelCore.Landscape.ToList();
-            List<ActiveSite> shuffledLightningFireSites = Shuffle(activeSites, SiteVars.LightningFireWeight);
-            activeSites = PlugIn.ModelCore.Landscape.ToList();
-            List<ActiveSite> shuffledRxFireSites = Shuffle(activeSites, SiteVars.RxFireWeight);
+            List<ActiveSite> shuffledAccidentalFireSites = Shuffle(activeAccidentalSites, SiteVars.AccidentalFireWeight);
+            //activeSites = PlugIn.ModelCore.Landscape.ToList();
+            List<ActiveSite> shuffledLightningFireSites = Shuffle(activeLightningSites, SiteVars.LightningFireWeight);
+            //activeSites = PlugIn.ModelCore.Landscape.ToList();
+            List<ActiveSite> shuffledRxFireSites = Shuffle(activeRxSites, SiteVars.RxFireWeight);
 
             foreach(IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
             {
@@ -321,7 +338,7 @@ namespace Landis.Extension.Scrapple
         public static ActiveSite SelectRandomSite(List<ActiveSite> list, ISiteVar<double> weightedSiteVar, double totalWeight)
         {
             ActiveSite selectedSite = list.FirstOrDefault(); // currently selected element
-            
+
             int randomNum = FireEvent.rnd.Next((int)totalWeight);
             while (randomNum > totalWeight)
             {

@@ -47,11 +47,11 @@ namespace Landis.Extension.Scrapple
             ReadVar(timestep);
             parameters.Timestep = timestep.Value;
             
-            InputVar<double> rha = new InputVar<double>("RelativeHumiditySlopeAdjust");
-            if (ReadOptionalVar(rha))
-                parameters.RelativeHumiditySlopeAdjustment = rha.Value;
-            else
-                parameters.RelativeHumiditySlopeAdjustment = 1.0;
+            //InputVar<double> rha = new InputVar<double>("RelativeHumiditySlopeAdjust");
+            //if (ReadOptionalVar(rha))
+            //    parameters.RelativeHumiditySlopeAdjustment = rha.Value;
+            //else
+            //    parameters.RelativeHumiditySlopeAdjustment = 1.0;
 
             // VS: Needed to spin up climate file
             //InputVar<int> duration = new InputVar<int>("Duration");

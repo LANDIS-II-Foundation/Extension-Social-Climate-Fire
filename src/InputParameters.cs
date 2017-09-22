@@ -14,7 +14,7 @@ namespace Landis.Extension.Scrapple
     {
         int Timestep{get;set;}
         //string ClimateConfigFile { get; set; }    
-        double RelativeHumiditySlopeAdjustment { get; set; }   //does this go in the interface or below in the input parameters?
+        //double RelativeHumiditySlopeAdjustment { get; set; }   //does this go in the interface or below in the input parameters?
         //double SeverityCalibrate { get;set;}
         List<IFireDamage> FireDamages_Severity1{get;}
         List<IFireDamage> FireDamages_Severity2 { get; }
@@ -50,7 +50,7 @@ namespace Landis.Extension.Scrapple
         //private string logFileName;
         //private string summaryLogFileName;
         //private string climateConfigFile;
-        private double relativeHumiditySlopeAdjust;
+        //private double relativeHumiditySlopeAdjust;
         private string lighteningFireMap;
         private string accidentalFireMap;
         private string rxFireMap;
@@ -99,19 +99,19 @@ namespace Landis.Extension.Scrapple
         //}
         //---------------------------------------------------------------------
 
-        public double RelativeHumiditySlopeAdjustment
-        {
-            get
-            {
-                return relativeHumiditySlopeAdjust;
-            }
-            set
-            {
-                if (value < 0.0 || value > 100.0)
-                    throw new InputValueException(value.ToString(), "Relative Humidity Slope Adjustment must be > 0.0 and < 50");
-                relativeHumiditySlopeAdjust = value;
-            }
-        }
+        //public double RelativeHumiditySlopeAdjustment
+        //{
+        //    get
+        //    {
+        //        return relativeHumiditySlopeAdjust;
+        //    }
+        //    set
+        //    {
+        //        if (value < 0.0 || value > 100.0)
+        //            throw new InputValueException(value.ToString(), "Relative Humidity Slope Adjustment must be > 0.0 and < 50");
+        //        relativeHumiditySlopeAdjust = value;
+        //    }
+        //}
 
         //---------------------------------------------------------------------
         public List<IFireDamage> FireDamages_Severity1
