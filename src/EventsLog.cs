@@ -53,13 +53,13 @@ namespace Landis.Extension.Scrapple
         [DataFieldAttribute(Desc = "Mortality Biomass")]
         public double TotalBiomassMortality { set; get; }
 
-        [DataFieldAttribute(Desc = "Number of Cells Severity 1")]
+        [DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cells Severity 1")]
         public double NumberCellsSeverity1 { set; get; }
 
-        [DataFieldAttribute(Desc = "Number of Cells Severity 2")]
+        [DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cells Severity 2")]
         public double NumberCellsSeverity2 { set; get; }
 
-        [DataFieldAttribute(Desc = "Number of Cells Severity 3")]
+        [DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cells Severity 3")]
         public double NumberCellsSeverity3 { set; get; }
     }
 }

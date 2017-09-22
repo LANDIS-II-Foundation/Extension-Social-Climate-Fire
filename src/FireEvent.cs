@@ -54,8 +54,6 @@ namespace Landis.Extension.Scrapple
         static FireEvent()
         {
         }
-
-        
         //---------------------------------------------------------------------
 
         public int TotalSitesDamaged
@@ -143,7 +141,8 @@ namespace Landis.Extension.Scrapple
                 FireEvent fireEvent = new FireEvent(initiationSite, day, ignitionType);
 
                 fireEvent.Spread(PlugIn.ModelCore.CurrentTime, day, (ActiveSite) initiationSite);
-                LogEvent(PlugIn.ModelCore.CurrentTime, fireEvent);
+                if(fireEvent.CohortsKilled > 0)
+                    LogEvent(PlugIn.ModelCore.CurrentTime, fireEvent);
 
                 return fireEvent;
 

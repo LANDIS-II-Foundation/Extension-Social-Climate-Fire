@@ -39,6 +39,12 @@ namespace Landis.Extension.Scrapple
         public static List<IFireDamage> FireDamages_Severity3;
         //private int duration;
         //private string climateConfigFile;
+        private static int totalBurnedSites;
+        private static int numberOfFire;
+        private static int totalBiomassMortality;
+        private static int numCellsSeverity1;
+        private static int numCellsSeverity2;
+        private static int numCellsSeverity3;
 
 
         private string mapNameTemplate;
@@ -136,10 +142,14 @@ namespace Landis.Extension.Scrapple
             //SiteVars.InitializeFuelType();
             //SiteVars.FireEvent.SiteValues = null;
             SiteVars.Disturbed.ActiveSiteValues = false;
-            List<FireEvent> fireEvents = new List<FireEvent>();
+            //List<FireEvent> fireEvents = new List<FireEvent>();
             AnnualClimate_Daily weatherData = null;
-
-
+            totalBurnedSites = 0;
+            numberOfFire = 0;
+            totalBiomassMortality = 0;
+            numCellsSeverity1 = 0;
+            numCellsSeverity2 = 0;
+            numCellsSeverity3 = 0;
 
             modelCore.UI.WriteLine("   Processing landscape for Fire events ...");
 
@@ -301,80 +311,6 @@ namespace Landis.Extension.Scrapple
             }
         }
 
-        //---------------------------------------------------------------------
-
-        public static void LogIgnition(int currentTime, ActiveSite site, int doy, double fwi, string type)
-        {
-
-            ignitionsLog.Clear();
-            IgnitionsLog ign = new IgnitionsLog();
-            ign.SimulationYear = currentTime;
-            ign.InitRow = site.Location.Row;
-            ign.InitColumn = site.Location.Column;
-            ign.DayOfYear = doy;
-            ign.FireWeatherIndex = fwi;
-            ign.IgnitionType = type;
-
-            ignitionsLog.AddObject(ign);
-            ignitionsLog.WriteToFile();
-
-        }
-
-
-        //---------------------------------------------------------------------
-
-        private void WriteSummaryLog(int currentTime)
-        {
-                summaryLog.Clear();
-                SummaryLog sl = new SummaryLog();
-                sl.Time = currentTime;
-                //sl.FireRegion = fire_region.Name;
-                //sl.TotalBurnedSites = summaryFireRegionSiteCount[fire_region.Index];
-                //sl.NumberFires = summaryFireRegionEventCount[fire_region.Index];
-
-                summaryLog.AddObject(sl);
-                summaryLog.WriteToFile();
-        }
-
-        //---------------------------------------------------------------------
-
-        /*
-         * VS:: THIS MAY BE NEEDED
-         * 
-        private static List<ActiveSite> Sort<T>(List<ActiveSite> list, ISiteVar<T> type)
-        {
-            List<ActiveSite> sortedList = new List<ActiveSite>();
-            foreach(ActiveSite site in list)
-            {
-                type[site] 
-            }
-        }
-        */
-
-        //---------------------------------------------------------------------
-        // A helper function to shuffle a list of ActiveSties: Algorithm may be improved.
-        // Sites are weighted for ignition in the Shuffle method, based on the respective inputs maps.
-
-        private static List<ActiveSite> Shuffle(List<ActiveSite> list, ISiteVar<double> weightedSiteVar)
-        {
-            List<ActiveSite> shuffledList = new List<ActiveSite>();
-            double totalWeight = 0;
-            foreach(ActiveSite site in list)
-            {
-                totalWeight += weightedSiteVar[site];
-            }
-            
-            while (list.Count > 0)
-            {
-                ActiveSite toAdd;
-                toAdd = SelectRandomSite(list, weightedSiteVar, totalWeight);
-                shuffledList.Add(toAdd);
-                totalWeight -= weightedSiteVar[toAdd];
-                list.Remove(toAdd);
-            }
-
-            return shuffledList;
-        }
 
         //---------------------------------------------------------------------
         // The random selection based on input map weights
@@ -456,13 +392,20 @@ namespace Landis.Extension.Scrapple
             {
                 FireEvent fireEvent = FireEvent.Initiate(shuffledFireSites.First(), modelCore.CurrentTime, day, ignitionType);
 
+                if (fireEvent.CohortsKilled > 0)
+                {
+                    totalBurnedSites = fireEvent.TotalSitesDamaged;
+                    numberOfFire++;
+                    totalBiomassMortality = (int) fireEvent.TotalBiomassMortality;
+                    numCellsSeverity1 = fireEvent.NumberCellsSeverity1;
+                    numCellsSeverity2 = fireEvent.NumberCellsSeverity2;
+                    numCellsSeverity3 = fireEvent.NumberCellsSeverity3;
+
+                }
 
 
-                // RMS TODO:  ADD OTHER FIRE EVENT PARAMETERS
 
-                //LogEvent(modelCore.CurrentTime, fireEvent);
                 //attempts++;
-                // fireEvent.Spread(modelCore.CurrentTime, day);
             }
             //if (attempts > 500)
             //    break;
@@ -476,6 +419,85 @@ namespace Landis.Extension.Scrapple
         {
             return false;
         }
+
+        //---------------------------------------------------------------------
+
+        public static void LogIgnition(int currentTime, ActiveSite site, int doy, double fwi, string type)
+        {
+
+            ignitionsLog.Clear();
+            IgnitionsLog ign = new IgnitionsLog();
+            ign.SimulationYear = currentTime;
+            ign.InitRow = site.Location.Row;
+            ign.InitColumn = site.Location.Column;
+            ign.DayOfYear = doy;
+            ign.FireWeatherIndex = fwi;
+            ign.IgnitionType = type;
+
+            ignitionsLog.AddObject(ign);
+            ignitionsLog.WriteToFile();
+
+        }
+
+
+        //---------------------------------------------------------------------
+        // A helper function to shuffle a list of ActiveSties: Algorithm may be improved.
+        // Sites are weighted for ignition in the Shuffle method, based on the respective inputs maps.
+
+        private static List<ActiveSite> Shuffle(List<ActiveSite> list, ISiteVar<double> weightedSiteVar)
+        {
+            List<ActiveSite> shuffledList = new List<ActiveSite>();
+            double totalWeight = 0;
+            foreach (ActiveSite site in list)
+            {
+                totalWeight += weightedSiteVar[site];
+            }
+
+            while (list.Count > 0)
+            {
+                ActiveSite toAdd;
+                toAdd = SelectRandomSite(list, weightedSiteVar, totalWeight);
+                shuffledList.Add(toAdd);
+                totalWeight -= weightedSiteVar[toAdd];
+                list.Remove(toAdd);
+            }
+
+            return shuffledList;
+        }
+
+        //---------------------------------------------------------------------
+
+        private void WriteSummaryLog(int currentTime)
+        {
+            summaryLog.Clear();
+            SummaryLog sl = new SummaryLog();
+            sl.SimulationYear = currentTime;
+            sl.TotalBurnedSites = totalBurnedSites; 
+            sl.NumberFires = numberOfFire;
+            sl.TotalBiomassMortality = totalBiomassMortality;
+            sl.NumberCellsSeverity1 = numCellsSeverity1;
+            sl.NumberCellsSeverity2 = numCellsSeverity2;
+            sl.NumberCellsSeverity3 = numCellsSeverity3;
+
+
+            summaryLog.AddObject(sl);
+            summaryLog.WriteToFile();
+        }
+
+        //---------------------------------------------------------------------
+
+        /*
+         * VS:: THIS MAY BE NEEDED
+         * 
+        private static List<ActiveSite> Sort<T>(List<ActiveSite> list, ISiteVar<T> type)
+        {
+            List<ActiveSite> sortedList = new List<ActiveSite>();
+            foreach(ActiveSite site in list)
+            {
+                type[site] 
+            }
+        }
+        */
 
     }
 }
