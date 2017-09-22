@@ -14,16 +14,13 @@ namespace Landis.Extension.Scrapple
         [DataFieldAttribute(Unit = FieldUnits.Year, Desc = "Simulation Year")]
         public int SimulationYear {set; get;}
 
-        [DataFieldAttribute(Desc = "Initiation Row")]
-        public int InitRow { set; get; }
-
-        [DataFieldAttribute(Desc = "Initiation Column")]
-        public int InitColumn { set; get; }
-
         [DataFieldAttribute(Desc = "Day of Year")]
         public int DayOfYear { set; get; }
 
-        [DataFieldAttribute(Desc = "Fire Weather Index")]
+        [DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Ignitions")]
+        public int AttemptedNumberIgnitions { set; get; }
+
+        [DataFieldAttribute(Desc = "Annual Fire Weather Index")]
         public double FireWeatherIndex { set; get; }
 
         [DataFieldAttribute(Desc = "Ignition Type")]

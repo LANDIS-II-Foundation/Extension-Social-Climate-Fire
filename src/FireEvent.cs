@@ -1,6 +1,7 @@
 //  Authors:  Robert M. Scheller, Alec Kretchun, Vincent Schuster
 
-using Landis.Library.AgeOnlyCohorts;
+//using Landis.Library.AgeOnlyCohorts;
+using Landis.Library.BiomassCohorts;
 using Landis.SpatialModeling;
 using Landis.Core;
 using Landis.Library.Climate;
@@ -22,7 +23,7 @@ namespace Landis.Extension.Scrapple
     }
 
     public class FireEvent
-        : ICohortDisturbance
+        : IDisturbance//ICohortDisturbance
     {
         private static readonly bool isDebugEnabled = false; //debugLog.IsDebugEnabled;
         public static Random rnd = new Random();
@@ -106,7 +107,7 @@ namespace Landis.Extension.Scrapple
             this.totalSitesDamaged = 0;
             this.InitiationFireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
             this.spreadArea = new Dictionary<int, int>();
-            this.NumberOfDays = 0;
+            this.NumberOfDays = 1;
             this.MeanSeverity = 0.0;
             this.MeanWindDirection = 0.0;
             this.MeanWindSpeed = 0.0;
@@ -127,8 +128,7 @@ namespace Landis.Extension.Scrapple
     public static FireEvent Initiate(ActiveSite initiationSite, int timestep, int day, Ignition ignitionType)
 
         {
-            PlugIn.ModelCore.UI.WriteLine("  Fire Event initiated.  Day = {0}, IgnitionType = {1}.", day, ignitionType);
-            //double randomNum = PlugIn.ModelCore.GenerateUniform();
+            //PlugIn.ModelCore.UI.WriteLine("  Fire Event initiated.  Day = {0}, IgnitionType = {1}.", day, ignitionType);
             
             //First, check for fire overlap (NECESSARY??):
 
@@ -195,7 +195,8 @@ namespace Landis.Extension.Scrapple
             this.MeanWindDirection += windDirection;
             this.MeanWindSpeed += windSpeed;
             //double fineFuels = SiteVars.FineFuels[site];  // NEED TO FIX NECN-Hydro installer
-            PlugIn.ModelCore.UI.WriteLine("  Fire spreading.  Day = {0}, FWI = {1}, windSpeed = {2}, windDirection = {3}.", day, fireWeatherIndex, windSpeed, windDirection);
+            
+            //PlugIn.ModelCore.UI.WriteLine("  Fire spreading.  Day = {0}, FWI = {1}, windSpeed = {2}, windDirection = {3}.", day, fireWeatherIndex, windSpeed, windDirection);
 
             // Is spread to this site allowable?
             //          Calculate P-spread based on fwi, adjusted wind speed, fine fuels, source intensity (or similar). (AK)
@@ -268,22 +269,6 @@ namespace Landis.Extension.Scrapple
                     this.Spread(PlugIn.ModelCore.CurrentTime, neighborDay, (ActiveSite)initiationSite);
                 }
 
-                // if there are no neighbors already disturbed then nothing to do since it can't spread
-                //if (neighbors.Count > 0)
-                //{
-                //    // VS: for now pick random site to spread to
-                //    // RMS TODO:  Spread to all neighbors
-                //    int r = rnd.Next(neighbors.Count);
-                //    Site nextSite = neighbors[r];
-
-                //    //Initiate a fireevent at that site
-                //    //FireEvent spreadEvent = Initiate((ActiveSite)nextSite, currentTime, day, Ignition.Spread, (this.SpreadLength - 1));
-                //    //if (fireEvent.SpreadDistance > 0)
-                //    //{
-
-                //    //}
-                //}
-
 
             }
 
@@ -324,15 +309,15 @@ namespace Landis.Extension.Scrapple
         private int Damage(ActiveSite site)
         {
             int previousCohortsKilled = this.cohortsKilled;
-            SiteVars.Cohorts[site].RemoveMarkedCohorts(this);
+            SiteVars.Cohorts[site].ReduceOrKillBiomassCohorts(this); //.RemoveMarkedCohorts(this);
             return this.cohortsKilled - previousCohortsKilled;
         }
 
         //---------------------------------------------------------------------
 
         //  A filter to determine which cohorts are removed.
-
-        bool ICohortDisturbance.MarkCohortForDeath(ICohort cohort)
+        int IDisturbance.ReduceOrKillMarkedCohort(ICohort cohort)
+        //bool ICohortDisturbance.MarkCohortForDeath(ICohort cohort)
         {
             bool killCohort = false;
             int siteSeverity = 1;
@@ -352,7 +337,7 @@ namespace Landis.Extension.Scrapple
                     if (damage.ProbablityMortality > PlugIn.ModelCore.GenerateUniform())
                     {
                         killCohort = true;
-                        // this.TotalBiomassMortality += cohort.Biomass;  RMS TODO Convert to biomass cohorts
+                        this.TotalBiomassMortality += cohort.Biomass;  
                     }
                     break;  // No need to search further
 
@@ -362,7 +347,7 @@ namespace Landis.Extension.Scrapple
             if (killCohort) {
                 this.cohortsKilled++;
             }
-            return killCohort;
+            return cohort.Biomass; // killCohort;
         }
 
         //---------------------------------------------------------------------

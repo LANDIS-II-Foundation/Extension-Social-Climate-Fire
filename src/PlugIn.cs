@@ -139,7 +139,6 @@ namespace Landis.Extension.Scrapple
             if (PlugIn.ModelCore.CurrentTime > 0)
                 SiteVars.InitializeDisturbances();
 
-            //SiteVars.InitializeFuelType();
             //SiteVars.FireEvent.SiteValues = null;
             SiteVars.Disturbed.ActiveSiteValues = false;
             //List<FireEvent> fireEvents = new List<FireEvent>();
@@ -206,26 +205,31 @@ namespace Landis.Extension.Scrapple
                     if (fireWeatherIndex >= .10)
                     {
                         numFires = NumberOfIgnitions(Ignition.Accidental, fireWeatherIndex);
-                        PlugIn.ModelCore.UI.WriteLine("   Ecoregion: {0}, Day: {1}: Number of Accidental Fires is {2}.", ecoregion.Name, day, numFires);
 
                         // Ignite Accidental Fires.
                         for (int i = 0; i < numFires; ++i)
                         {
                             Ignite(Ignition.Accidental, shuffledAccidentalFireSites, day, fireWeatherIndex);
                         }
-                        
+
+                        LogIgnition(ModelCore.CurrentTime, fireWeatherIndex, Ignition.Accidental.ToString(), numFires, day);
+
                         // Ignite Lightning Fires
                         numFires = NumberOfIgnitions(Ignition.Lightning, fireWeatherIndex);
-                        PlugIn.ModelCore.UI.WriteLine("   Ecoregion: {0}, Day: {1}: Number of Lightning Fires is {2}.", ecoregion.Name, day, numFires);
                         for (int i = 0; i < numFires; ++i)
                         {
                             Ignite(Ignition.Lightning, shuffledLightningFireSites, day, fireWeatherIndex);
+                            LogIgnition(ModelCore.CurrentTime, fireWeatherIndex, Ignition.Lightning.ToString(), numFires, day);
                         }
                     }
                     if ( AllowRxFire(day, fireWeatherIndex) )
                     {
                         numFires = NumberOfIgnitions(Ignition.Rx, fireWeatherIndex);
-                        Ignite(Ignition.Rx, shuffledRxFireSites, day, fireWeatherIndex);
+                        for (int i = 0; i < numFires; ++i)
+                        {
+                            Ignite(Ignition.Rx, shuffledRxFireSites, day, fireWeatherIndex);
+                            LogIgnition(ModelCore.CurrentTime, fireWeatherIndex, Ignition.Rx.ToString(), numFires, day);
+                        }
                     }
                 }
             }
@@ -422,14 +426,15 @@ namespace Landis.Extension.Scrapple
 
         //---------------------------------------------------------------------
 
-        public static void LogIgnition(int currentTime, ActiveSite site, int doy, double fwi, string type)
+        public static void LogIgnition(int currentTime, double fwi, string type, int numIgns, int doy)
         {
 
             ignitionsLog.Clear();
             IgnitionsLog ign = new IgnitionsLog();
             ign.SimulationYear = currentTime;
-            ign.InitRow = site.Location.Row;
-            ign.InitColumn = site.Location.Column;
+            ign.AttemptedNumberIgnitions = numIgns;
+            //ign.InitRow = site.Location.Row;
+            //ign.InitColumn = site.Location.Column;
             ign.DayOfYear = doy;
             ign.FireWeatherIndex = fwi;
             ign.IgnitionType = type;

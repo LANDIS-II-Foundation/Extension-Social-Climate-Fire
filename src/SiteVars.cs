@@ -1,7 +1,8 @@
 //  Authors:  Robert M. Scheller, Alec Kretchun, Vincent Schuster
 
-using Landis.Library.AgeOnlyCohorts;
+//using Landis.Library.AgeOnlyCohorts;
 using Landis.SpatialModeling;
+using Landis.Library.BiomassCohorts;
 
 namespace Landis.Extension.Scrapple
 {
@@ -26,7 +27,7 @@ namespace Landis.Extension.Scrapple
         public static void Initialize()
         {
 
-            cohorts = PlugIn.ModelCore.GetSiteVar<ISiteCohorts>("Succession.AgeCohorts");
+            cohorts = PlugIn.ModelCore.GetSiteVar<ISiteCohorts>("Succession.BiomassCohorts");
             fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.FineFuels");
 
             eventVar = PlugIn.ModelCore.Landscape.NewSiteVar<FireEvent>(InactiveSiteMode.DistinctValues);
