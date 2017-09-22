@@ -1,0 +1,40 @@
+LandisData  "SCRAPPLE"
+
+>> Note:  All inputs are provided as examples only.  They are not intended to serve as default values.
+>>     Parameter                      Value
+>> ----------------------------       -------
+Timestep                            1
+RelativeHumiditySlopeAdjust         77.68
+
+HumanIgnitionsMap     ./Accidental_Ignition_Map.img
+LightningIgnitionsMap  ./Lightning_Ignition_Map.img
+RxIgnitionsMap  ./Lightning_Ignition_Map.img
+
+GroundSlopeMap GroundSlope.gis
+UphillSlopeAzimuthMap  UphillSlope.gis
+
+LightningIgnitionsB0  0.0
+LightningIgnitionsB1  0.0
+RxFireIgnitionsB0 0.0
+RxFireIgnitionsB1 0.0
+AccidentalIgnitionsB0 0.0
+AccidentalIgnitionsB1 0.0
+MaximumFineFuels 60.0
+
+FireIntensityClass_1_DamageTable
+>> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
+PinuJeff 0 50  0.9  
+PinuJeff 51 100 0.5
+
+FireIntensityClass_2_DamageTable
+>> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
+PinuJeff 0 50  0.9  
+PinuJeff 51 100 0.5
+
+FireIntensityClass_3_DamageTable
+>> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
+PinuJeff 0 50  0.9  
+PinuJeff 51 100 0.5
+
+
+MapNames  fire/ignitions-{timestep}.img
