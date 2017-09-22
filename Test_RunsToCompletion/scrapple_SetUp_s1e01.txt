@@ -4,7 +4,7 @@ LandisData  "SCRAPPLE"
 >>     Parameter                      Value
 >> ----------------------------       -------
 Timestep                            1
-RelativeHumiditySlopeAdjust         77.68
+>>RelativeHumiditySlopeAdjust         77.68
 
 HumanIgnitionsMap     ./Accidental_Ignition_Map.img
 LightningIgnitionsMap  ./Lightning_Ignition_Map.img
