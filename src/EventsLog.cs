@@ -12,7 +12,7 @@ namespace Landis.Extension.Scrapple
     {
 
         [DataFieldAttribute(Unit = FieldUnits.Year, Desc = "...")]
-        public int Time {set; get;}
+        public int SimulationYear {set; get;}
 
         [DataFieldAttribute(Desc = "Initiation Row")]
         public int InitRow { set; get; }
@@ -20,26 +20,46 @@ namespace Landis.Extension.Scrapple
         [DataFieldAttribute(Desc = "Initiation Column")]
         public int InitColumn { set; get; }
 
-        [DataFieldAttribute(Desc = "Initiation Percent Conifer")]
-        public double InitPercentConifer { set; get; }
-
-        [DataFieldAttribute(Unit = FieldUnits.m_second, Desc = "Wind Speed")]
-        public double WindSpeed { set; get; }
-
-        [DataFieldAttribute(Desc = "Wind Direction")]
-        public double WindDirection { set; get; }
-        
         [DataFieldAttribute(Desc = "Fire Weather Index")]
-        public double FireWeatherIndex { set; get; }
+        public double InitialFireWeatherIndex { set; get; }
+
+        [DataFieldAttribute(Desc = "Day of Year")]
+        public int InitialDayOfYear { set; get; }
+
+        [DataFieldAttribute(Desc = "Ignition Type")]
+        public string IgnitionType { set; get; }
+
+        [DataFieldAttribute(Desc = "Number of Days Burning")]
+        public int NumberOfDays { set; get; }
 
         [DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Total Number of Sites in Event")]
-        public int TotalSites { set; get; }
+        public int TotalSitesBurned { set; get; }
 
         [DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cohorts Killed")]
         public int CohortsKilled { set; get; }
 
-        [DataFieldAttribute(Unit = FieldUnits.Severity_Rank, Desc = "Mean Severity (1-5)", Format="0.00")]
+        [DataFieldAttribute(Unit = FieldUnits.Severity_Rank, Desc = "Mean Severity (1-5)", Format = "0.00")]
         public double MeanSeverity { set; get; }
 
+        [DataFieldAttribute(Desc = "Average Wind Speed")]
+        public double MeanWindSpeed { set; get; }
+
+        [DataFieldAttribute(Desc = "Average Wind Direction")]
+        public double MeanWindDirection { set; get; }
+
+        [DataFieldAttribute(Desc = "Average Suppression")]
+        public double MeanSuppression { set; get; }
+
+        [DataFieldAttribute(Desc = "Mortality Biomass")]
+        public double TotalBiomassMortality { set; get; }
+
+        [DataFieldAttribute(Desc = "Number of Cells Severity 1")]
+        public double NumberCellsSeverity1 { set; get; }
+
+        [DataFieldAttribute(Desc = "Number of Cells Severity 2")]
+        public double NumberCellsSeverity2 { set; get; }
+
+        [DataFieldAttribute(Desc = "Number of Cells Severity 3")]
+        public double NumberCellsSeverity3 { set; get; }
     }
 }

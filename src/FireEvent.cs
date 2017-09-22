@@ -28,57 +28,33 @@ namespace Landis.Extension.Scrapple
         public static Random rnd = new Random();
 
         private ActiveSite initiationSite;
-        private Location originLocation;
         private int totalSitesDamaged;
-        //private int spreadDistance;
 
         private int cohortsKilled;
-        private double eventSeverity;
+//        private double eventSeverity;
         
-        //private double windSpeed;  
-        //private double windDirection;
-
-        private double fireWeatherIndex;
+        public double InitiationFireWeatherIndex;
         public Ignition IgnitionType;
-        public Dictionary<int,int> spreadArea;
         AnnualClimate_Daily annualWeatherData;
-        //private int numSpread;
+        public int NumberOfDays;
+        public double MeanSeverity;
+        public double MeanWindDirection;
+        public double MeanWindSpeed;
+        public double MeanSuppression;
+        public double TotalBiomassMortality;
+        public int NumberCellsSeverity1;
+        public int NumberCellsSeverity2;
+        public int NumberCellsSeverity3;
+
+        public Dictionary<int, int> spreadArea;
+
+        public int maxDay;
 
         //---------------------------------------------------------------------
         static FireEvent()
         {
         }
 
-        ////---------------------------------------------------------------------
-        //// SpreadArea is the area that a fire can spread during a given day
-        //public int SpreadDistance
-        //{
-        //    get
-        //    {
-        //        return spreadDistance;
-        //    }
-
-        //    set
-        //    {
-        //        spreadDistance = value;
-        //    }
-        //}
-        //---------------------------------------------------------------------
-
-        public double InitiationFireWeatherIndex
-        {
-            get
-            {
-                return fireWeatherIndex;
-            }
-        }
-
-        public Location StartLocation
-        {
-            get {
-                return initiationSite.Location;
-            }
-        }
         
         //---------------------------------------------------------------------
 
@@ -99,41 +75,6 @@ namespace Landis.Extension.Scrapple
 
         //---------------------------------------------------------------------
 
-        public double EventSeverity
-        {
-            get {
-                return eventSeverity;
-            }
-        }
-
-        //---------------------------------------------------------------------
-
-        //public double WindSpeed
-        //{
-        //    get
-        //    {
-        //        return windSpeed;
-        //    }
-        //    set
-        //    {
-        //        windSpeed = value;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public double WindDirection
-        //{
-        //    get
-        //    {
-        //        return windDirection;
-        //    }
-        //    set
-        //    {
-        //        windDirection = value;
-        //    }
-        //}
-        //---------------------------------------------------------------------
-
         ExtensionType IDisturbance.Type
         {
             get {
@@ -141,18 +82,6 @@ namespace Landis.Extension.Scrapple
             }
         }
 
-        //---------------------------------------------------------------------
-
-        public Location OriginLocation
-        {
-            get {
-                return originLocation;
-            }
-            set
-            {
-                value = originLocation;
-            }
-        }
 
         //---------------------------------------------------------------------
         ActiveSite IDisturbance.CurrentSite
@@ -167,34 +96,43 @@ namespace Landis.Extension.Scrapple
         public FireEvent(ActiveSite initiationSite, int day, Ignition ignitionType)
         {
             this.initiationSite = initiationSite;
+            this.IgnitionType = ignitionType;
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[initiationSite];
 
             int actualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_DailyData.First().Key;
             this.annualWeatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
             SiteVars.TypeOfIginition[initiationSite] = (byte)ignitionType;
             SiteVars.Disturbed[initiationSite] = true;
-            
-            this.cohortsKilled = 0;
-            this.eventSeverity = 0;
-            this.totalSitesDamaged = 0;
-            
-            this.fireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
-            //this.windSpeed = annualWeatherData.DailyWindSpeed[day];
-            //this.windDirection = annualWeatherData.DailyWindDirection[day];
-            this.originLocation = initiationSite.Location;
-            this.initiationSite = initiationSite;
-            this.spreadArea = new Dictionary<int, int>();
-        }
-        
 
-        //---------------------------------------------------------------------
-        public static FireEvent Initiate(ActiveSite initiationSite, int timestep, int day, Ignition ignitionType)
+            this.cohortsKilled = 0;
+            this.totalSitesDamaged = 0;
+            this.InitiationFireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
+            this.spreadArea = new Dictionary<int, int>();
+            this.NumberOfDays = 0;
+            this.MeanSeverity = 0.0;
+            this.MeanWindDirection = 0.0;
+            this.MeanWindSpeed = 0.0;
+            this.MeanSuppression = 0.0;
+            this.TotalBiomassMortality = 0.0;
+            this.NumberCellsSeverity1 = 0;
+            this.NumberCellsSeverity2 = 0;
+            this.NumberCellsSeverity3 = 0;
+            this.maxDay = day;
+
+        //this.windSpeed = annualWeatherData.DailyWindSpeed[day];
+        //this.windDirection = annualWeatherData.DailyWindDirection[day];
+        //this.originLocation = initiationSite.Location;
+    }
+
+
+    //---------------------------------------------------------------------
+    public static FireEvent Initiate(ActiveSite initiationSite, int timestep, int day, Ignition ignitionType)
 
         {
             PlugIn.ModelCore.UI.WriteLine("  Fire Event initiated.  Day = {0}, IgnitionType = {1}.", day, ignitionType);
-            double randomNum = PlugIn.ModelCore.GenerateUniform();
-
-            //First, check for fire overlap:
+            //double randomNum = PlugIn.ModelCore.GenerateUniform();
+            
+            //First, check for fire overlap (NECESSARY??):
 
             if (!SiteVars.Disturbed[initiationSite])
             {
@@ -203,15 +141,13 @@ namespace Landis.Extension.Scrapple
                     PlugIn.ModelCore.UI.WriteLine("   Fire event started at {0} ...", initiationSite.Location);
 
                 FireEvent fireEvent = new FireEvent(initiationSite, day, ignitionType);
-                fireEvent.OriginLocation = fireEvent.initiationSite.Location;
-                fireEvent.IgnitionType = ignitionType;
-
-                // RMS TODO:  ADD OTHER FIRE EVENT PARAMETERS
-
-                PlugIn.LogEvent(PlugIn.ModelCore.CurrentTime, fireEvent);
 
                 fireEvent.Spread(PlugIn.ModelCore.CurrentTime, day, (ActiveSite) initiationSite);
+                LogEvent(PlugIn.ModelCore.CurrentTime, fireEvent);
+
                 return fireEvent;
+
+
             }
             else
             {
@@ -238,12 +174,18 @@ namespace Landis.Extension.Scrapple
             //ws.factor = sqrt(wsx^2 + wsy^2) //wind speed factor
             //wd.factor = acos(wsy/ws.factor) //wind directior factor
 
+            if (day > maxDay)
+            {
+                maxDay = day;
+                NumberOfDays++;
+            }
+
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
 
             double fireWeatherIndex = 0.0;
             try
             {
-                fireWeatherIndex = this.annualWeatherData.DailyFireWeatherIndex[day]; //Climate.Future_DailyData[currentTime][ecoregion.Index].DailyFireWeatherIndex[day];
+                fireWeatherIndex = this.annualWeatherData.DailyFireWeatherIndex[day]; 
             }
             catch
             {
@@ -251,7 +193,9 @@ namespace Landis.Extension.Scrapple
             }
             double windSpeed = this.annualWeatherData.DailyWindSpeed[day];
             double windDirection = this.annualWeatherData.DailyWindDirection[day];
-            // double fineFuels = SiteVars.FineFuels[site];  // NEED TO FIX NECN-Hydro installer
+            this.MeanWindDirection += windDirection;
+            this.MeanWindSpeed += windSpeed;
+            //double fineFuels = SiteVars.FineFuels[site];  // NEED TO FIX NECN-Hydro installer
             PlugIn.ModelCore.UI.WriteLine("  Fire spreading.  Day = {0}, FWI = {1}, windSpeed = {2}, windDirection = {3}.", day, fireWeatherIndex, windSpeed, windDirection);
 
             // Is spread to this site allowable?
@@ -281,11 +225,21 @@ namespace Landis.Extension.Scrapple
                     siteCohortsKilled = Damage(site);
                     if (siteCohortsKilled > 0)
                     {
-                        totalSitesDamaged++;
+                        this.totalSitesDamaged++;
                     }
+
+                    // Log information
                     SiteVars.TypeOfIginition[site] = (byte)this.IgnitionType;
                     SiteVars.Severity[site] = (byte) severity;
                     SiteVars.DayOfFire[site] = (byte) day;
+                    this.MeanSeverity += severity;
+                    if (severity == 1)
+                        this.NumberCellsSeverity1++;
+                    if (severity == 2)
+                        this.NumberCellsSeverity2++;
+                    if (severity == 3)
+                        this.NumberCellsSeverity3++;
+
                 }
 
                 //      Calculate spread-area-max (AK)  TODO
@@ -399,6 +353,7 @@ namespace Landis.Extension.Scrapple
                     if (damage.ProbablityMortality > PlugIn.ModelCore.GenerateUniform())
                     {
                         killCohort = true;
+                        // this.TotalBiomassMortality += cohort.Biomass;  RMS TODO Convert to biomass cohorts
                     }
                     break;  // No need to search further
 
@@ -409,6 +364,35 @@ namespace Landis.Extension.Scrapple
                 this.cohortsKilled++;
             }
             return killCohort;
+        }
+
+        //---------------------------------------------------------------------
+
+        public static void LogEvent(int currentTime, FireEvent fireEvent)
+        {
+
+            PlugIn.eventLog.Clear();
+            EventsLog el = new EventsLog();
+            el.SimulationYear = currentTime;
+            el.InitRow = fireEvent.initiationSite.Location.Row;
+            el.InitColumn = fireEvent.initiationSite.Location.Column;
+            el.InitialFireWeatherIndex = fireEvent.InitiationFireWeatherIndex;
+            el.IgnitionType = fireEvent.IgnitionType.ToString();
+            el.NumberOfDays = fireEvent.NumberOfDays;
+            el.TotalSitesBurned = fireEvent.TotalSitesDamaged;
+            el.CohortsKilled = fireEvent.CohortsKilled;
+            el.MeanSeverity = fireEvent.MeanSeverity / (double) fireEvent.TotalSitesDamaged;
+            el.MeanWindDirection = fireEvent.MeanWindDirection / (double)fireEvent.TotalSitesDamaged;
+            el.MeanWindSpeed = fireEvent.MeanWindSpeed / (double)fireEvent.TotalSitesDamaged;
+            el.MeanSuppression = fireEvent.MeanSuppression / (double)fireEvent.TotalSitesDamaged;
+            el.TotalBiomassMortality = fireEvent.TotalBiomassMortality;
+            el.NumberCellsSeverity1 = fireEvent.NumberCellsSeverity1;
+            el.NumberCellsSeverity2 = fireEvent.NumberCellsSeverity2;
+            el.NumberCellsSeverity3 = fireEvent.NumberCellsSeverity3;
+
+            PlugIn.eventLog.AddObject(el);
+            PlugIn.eventLog.WriteToFile();
+
         }
 
         //---------------------------------------------------------------------

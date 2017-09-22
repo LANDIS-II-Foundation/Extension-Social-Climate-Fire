@@ -35,7 +35,8 @@ CellLength  	100 << meters, 100 x 100 m = 1 ha
 
 >> 	Succession Extension     Initialization File
 >> 	--------------------     -------------------
-"NECN Succession"		NECN-succession_SetUp_s3e3.txt
+>> "NECN_Hydro Succession"		NECN_H_succession_landscape.txt
+"NECN Succession" NECN-succession_setup_s3e3.txt
 
 
 

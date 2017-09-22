@@ -79,6 +79,7 @@
     <Compile Include="EventsLog.cs" />
     <Compile Include="FireDamages.cs" />
     <Compile Include="FireRegion.cs" />
+    <Compile Include="IgnitionsLog.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

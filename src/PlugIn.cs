@@ -28,7 +28,8 @@ namespace Landis.Extension.Scrapple
         public static readonly string ExtensionName = "SCRAPPLE";
         public static MetadataTable<EventsLog> eventLog;
         public static MetadataTable<SummaryLog> summaryLog;
-        
+        public static MetadataTable<IgnitionsLog> ignitionsLog;
+
         public static int FutureClimateBaseYear;
         //public static int WeatherRandomizer = 0;
         private static double RelativeHumiditySlopeAdjust;
@@ -128,6 +129,10 @@ namespace Landis.Extension.Scrapple
         ///</summary>
         public override void Run()
         {
+
+            if (PlugIn.ModelCore.CurrentTime > 0)
+                SiteVars.InitializeDisturbances();
+
             //SiteVars.InitializeFuelType();
             //SiteVars.FireEvent.SiteValues = null;
             SiteVars.Disturbed.ActiveSiteValues = false;
@@ -214,11 +219,6 @@ namespace Landis.Extension.Scrapple
                     }
                 }
             }
-            // VS: not sure why i created this.. Useful? what is it to do?
-            //foreach (IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
-            //{
-                
-            //}
 
             WriteMaps(PlugIn.ModelCore.CurrentTime);
 
@@ -303,25 +303,23 @@ namespace Landis.Extension.Scrapple
 
         //---------------------------------------------------------------------
 
-        public static void LogEvent(int currentTime, FireEvent fireEvent)
+        public static void LogIgnition(int currentTime, ActiveSite site, int doy, double fwi, string type)
         {
 
-            eventLog.Clear();
-            EventsLog el = new EventsLog();
-            el.Time = currentTime;
-            el.InitRow = fireEvent.StartLocation.Row;
-            el.InitColumn = fireEvent.StartLocation.Column;
-            //el.WindSpeed = fireEvent.WindSpeed;
-            //el.WindDirection = fireEvent.WindDirection;
-            el.FireWeatherIndex = fireEvent.InitiationFireWeatherIndex;
-            el.CohortsKilled = fireEvent.CohortsKilled;
-            el.MeanSeverity = fireEvent.EventSeverity;
+            ignitionsLog.Clear();
+            IgnitionsLog ign = new IgnitionsLog();
+            ign.SimulationYear = currentTime;
+            ign.InitRow = site.Location.Row;
+            ign.InitColumn = site.Location.Column;
+            ign.DayOfYear = doy;
+            ign.FireWeatherIndex = fwi;
+            ign.IgnitionType = type;
 
-
-            eventLog.AddObject(el);
-            eventLog.WriteToFile();
+            ignitionsLog.AddObject(ign);
+            ignitionsLog.WriteToFile();
 
         }
+
 
         //---------------------------------------------------------------------
 
@@ -446,14 +444,6 @@ namespace Landis.Extension.Scrapple
 
         //---------------------------------------------------------------------
 
-        // Detemines the number of cells a given ignition can spread to
-        //private static int SpreadLength(double fireWeatherIndex)
-        //{
-        //    return 5;
-        //}
-
-        //---------------------------------------------------------------------
-
         // Ignites and Spreads a fire
         private static void Ignite(Ignition ignitionType, List<ActiveSite> shuffledFireSites, int day, double fireWeatherIndex)
         {
@@ -465,7 +455,12 @@ namespace Landis.Extension.Scrapple
             if (shuffledFireSites.Count() > 0)
             {
                 FireEvent fireEvent = FireEvent.Initiate(shuffledFireSites.First(), modelCore.CurrentTime, day, ignitionType);
-                LogEvent(modelCore.CurrentTime, fireEvent);
+
+
+
+                // RMS TODO:  ADD OTHER FIRE EVENT PARAMETERS
+
+                //LogEvent(modelCore.CurrentTime, fireEvent);
                 //attempts++;
                 // fireEvent.Spread(modelCore.CurrentTime, day);
             }
@@ -476,6 +471,7 @@ namespace Landis.Extension.Scrapple
         //---------------------------------------------------------------------
 
         // Determines if an Rx Fire will start on the given day
+        // RMS TODO
         private bool AllowRxFire(int day, double fireWeatherIndex)
         {
             return false;

@@ -19,7 +19,7 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<ushort> groundSlope;
         private static ISiteVar<ushort> uphillSlopeAzimuth;
         private static ISiteVar<ISiteCohorts> cohorts;
-        private static ISiteVar<double> fineFuels;
+        public static ISiteVar<double> fineFuels;
 
         //---------------------------------------------------------------------
 
@@ -58,7 +58,17 @@ namespace Landis.Extension.Scrapple
             PlugIn.ModelCore.RegisterSiteVar(SiteVars.TimeOfLastFire, "Fire.TimeOfLastEvent");
         }
 
-        
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Initializes for disturbances.
+        /// </summary>
+        public static void InitializeDisturbances()
+        {
+            fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.FineFuels");
+
+        }
+
         //---------------------------------------------------------------------
         public static ISiteVar<double> LightningFireWeight
         {
@@ -84,7 +94,7 @@ namespace Landis.Extension.Scrapple
             }
         }
 
-        //---------------------------------------------------------------------
+        ////---------------------------------------------------------------------
         public static ISiteVar<double> FineFuels
         {
             get

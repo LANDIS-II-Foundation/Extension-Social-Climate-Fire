@@ -33,24 +33,36 @@ namespace Landis.Extension.Scrapple
             //          table outputs:   
             //---------------------------------------
 
-             PlugIn.eventLog = new MetadataTable<EventsLog>("dynamic-fire-events-log.csv");
+            PlugIn.ignitionsLog = new MetadataTable<IgnitionsLog>("climate-ignitions-log.csv");
+
+            OutputMetadata tblOut_igns = new OutputMetadata()
+            {
+                Type = OutputType.Table,
+                Name = "ClimateFireIgnitionsLog",
+                FilePath = PlugIn.ignitionsLog.FilePath,
+                Visualize = false,
+            };
+            tblOut_igns.RetriveFields(typeof(IgnitionsLog));
+            Extension.OutputMetadatas.Add(tblOut_igns);
+
+            PlugIn.eventLog = new MetadataTable<EventsLog>("climate-fire-events-log.csv");
 
             OutputMetadata tblOut_events = new OutputMetadata()
             {
                 Type = OutputType.Table,
-                Name = "DynamicFireLog",
+                Name = "ClimateFireEventsLog",
                 FilePath = PlugIn.eventLog.FilePath,
                 Visualize = false,
             };
             tblOut_events.RetriveFields(typeof(EventsLog));
             Extension.OutputMetadatas.Add(tblOut_events);
 
-            PlugIn.summaryLog = new MetadataTable<SummaryLog>("dynamic-fire-summary-log.csv");
+            PlugIn.summaryLog = new MetadataTable<SummaryLog>("climate-fire-summary-log.csv");
 
             OutputMetadata tblSummaryOut_events = new OutputMetadata()
             {
                 Type = OutputType.Table,
-                Name = "DynamicFireSummaryLog",
+                Name = "ClimateFireSummaryLog",
                 FilePath = PlugIn.summaryLog.FilePath,
                 Visualize = false,
             };
