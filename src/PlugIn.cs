@@ -89,27 +89,26 @@ namespace Landis.Extension.Scrapple
         public override void Initialize()
         {
             Timestep = 1;  // RMS:  Initially we will force annual time step. parameters.Timestep;
-            //RelativeHumiditySlopeAdjust = parameters.RelativeHumiditySlopeAdjustment;
             mapNameTemplate = parameters.MapNamesTemplate;
             FireDamages_Severity1 = parameters.FireDamages_Severity1;
             FireDamages_Severity2 = parameters.FireDamages_Severity2;
             FireDamages_Severity3 = parameters.FireDamages_Severity3;
 
             // Later, if maps are dynamic, this process will need to be repeated every time the maps are updated.
-            activeAccidentalSites = PlugIn.ModelCore.Landscape.ToList();
-            foreach (ActiveSite site in activeAccidentalSites)
-            if (SiteVars.AccidentalFireWeight[site] <= 0.0)
-                    activeAccidentalSites.Remove(site);
+            activeAccidentalSites = new List<ActiveSite>();
+            foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
+            if (SiteVars.AccidentalFireWeight[site] > 0.0)
+                    activeAccidentalSites.Add(site);
 
-            activeRxSites = PlugIn.ModelCore.Landscape.ToList();
-            foreach (ActiveSite site in activeRxSites)
-                if (SiteVars.RxFireWeight[site] <= 0.0)
-                    activeRxSites.Remove(site);
+            activeRxSites = new List<ActiveSite>();
+            foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
+                if (SiteVars.RxFireWeight[site] > 0.0)
+                    activeRxSites.Add(site);
 
-            activeLightningSites = PlugIn.ModelCore.Landscape.ToList();
-            foreach (ActiveSite site in activeLightningSites)
-                if (SiteVars.LightningFireWeight[site] <= 0.0)
-                    activeLightningSites.Remove(site);
+            activeLightningSites = new List<ActiveSite>();
+            foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
+                if (SiteVars.LightningFireWeight[site] > 0.0)
+                    activeLightningSites.Add(site);
 
             ///******************** DEBUGGER LAUNCH *********************
             /// 
@@ -132,7 +131,8 @@ namespace Landis.Extension.Scrapple
 
             // Initilize the FireRegions Maps
             modelCore.UI.WriteLine("   Initializing Fire Region Maps...");
-            FireRegions.Initilize(parameters.LighteningFireMap, parameters.AccidentalFireMap, parameters.RxFireMap);
+            MapUtility.Initilize(parameters.LighteningFireMap, parameters.AccidentalFireMap, parameters.RxFireMap,
+                                 parameters.LighteningSuppressionMap, parameters.AccidentalSuppressionMap, parameters.RxSuppressionMap);
             MetadataHandler.InitializeMetadata(parameters.Timestep, parameters.MapNamesTemplate, ModelCore);
 
             modelCore.UI.WriteLine("   Initializing Fire Events...");

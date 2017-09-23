@@ -13,16 +13,19 @@ namespace Landis.Extension.Scrapple
     public interface IInputParameters
     {
         int Timestep{get;set;}
-        //string ClimateConfigFile { get; set; }    
-        //double RelativeHumiditySlopeAdjustment { get; set; }   //does this go in the interface or below in the input parameters?
-        //double SeverityCalibrate { get;set;}
         List<IFireDamage> FireDamages_Severity1{get;}
         List<IFireDamage> FireDamages_Severity2 { get; }
         List<IFireDamage> FireDamages_Severity3 { get; }
         string MapNamesTemplate {get;set;}
+
         string LighteningFireMap { get; set; }
         string RxFireMap { get; set; }
         string AccidentalFireMap { get; set; }
+
+        string LighteningSuppressionMap { get; set; }
+        string RxSuppressionMap { get; set; }
+        string AccidentalSuppressionMap { get; set; }
+
         double LightningIgnitionB0 { get; set; }
         double LightningIgnitionB1 { get; set; }
         double RxFireIgnitionB0 { get; set; }
@@ -47,13 +50,14 @@ namespace Landis.Extension.Scrapple
         private List<IFireDamage> damages_severity2;
         private List<IFireDamage> damages_severity3;
         private string mapNamesTemplate;
-        //private string logFileName;
-        //private string summaryLogFileName;
-        //private string climateConfigFile;
-        //private double relativeHumiditySlopeAdjust;
         private string lighteningFireMap;
         private string accidentalFireMap;
         private string rxFireMap;
+
+        private string lighteningSuppressionMap;
+        private string accidentalSuppressionMap;
+        private string rxSuppressionMap;
+
         private double lightningIgnitionB0;
         private double lightningIgnitionB1;
         private double rxFireIgnitionB0;
@@ -187,6 +191,43 @@ namespace Landis.Extension.Scrapple
             set
             {
                 accidentalFireMap = value;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        public string LighteningSuppressionMap
+        {
+            get
+            {
+                return lighteningSuppressionMap;
+            }
+            set
+            {
+                lighteningSuppressionMap = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public string RxSuppressionMap
+        {
+            get
+            {
+                return rxSuppressionMap;
+            }
+            set
+            {
+                rxSuppressionMap = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public string AccidentalSuppressionMap
+        {
+            get
+            {
+                return accidentalSuppressionMap;
+            }
+            set
+            {
+                accidentalSuppressionMap = value;
             }
         }
 

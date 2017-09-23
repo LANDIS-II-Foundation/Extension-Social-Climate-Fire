@@ -65,7 +65,7 @@ namespace Landis.Extension.Scrapple
             //ReadVar(climateConfigFile);
             //parameters.ClimateConfigFile = climateConfigFile.Value;
 
-            InputVar<string> humanIgnitionsMapFile = new InputVar<string>("HumanIgnitionsMap");
+            InputVar<string> humanIgnitionsMapFile = new InputVar<string>("AccidentalIgnitionsMap");
             ReadVar(humanIgnitionsMapFile);
             parameters.AccidentalFireMap = humanIgnitionsMapFile.Value;
 
@@ -76,6 +76,19 @@ namespace Landis.Extension.Scrapple
             InputVar<string> rxIgnitionsMapFile = new InputVar<string>("RxIgnitionsMap");
             ReadVar(rxIgnitionsMapFile);
             parameters.RxFireMap = rxIgnitionsMapFile.Value;
+
+            InputVar<string> humanSuppressionMapFile = new InputVar<string>("AccidentalSuppressionMap");
+            ReadVar(humanSuppressionMapFile);
+            parameters.AccidentalFireMap = humanSuppressionMapFile.Value;
+
+            InputVar<string> lighteningSuppressionMapFile = new InputVar<string>("LightningSuppressionMap");
+            ReadVar(lighteningSuppressionMapFile);
+            parameters.LighteningFireMap = lighteningSuppressionMapFile.Value;
+
+            InputVar<string> rxSuppressionMapFile = new InputVar<string>("RxSuppressionMap");
+            ReadVar(rxSuppressionMapFile);
+            parameters.RxFireMap = rxSuppressionMapFile.Value;
+            
 
             // Load Ground Slope Data
             //const string GroundSlopeFile = "GroundSlopeFile";

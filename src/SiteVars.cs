@@ -22,6 +22,9 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<ISiteCohorts> cohorts;
         public static ISiteVar<double> fineFuels;
 
+        private static ISiteVar<double> lightningSuppressionIndex;
+        private static ISiteVar<double> rxSuppressionIndex;
+        private static ISiteVar<double> accidentalSuppressionIndex;
         //---------------------------------------------------------------------
 
         public static void Initialize()
@@ -40,6 +43,10 @@ namespace Landis.Extension.Scrapple
             lightningFireWeight  = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             rxFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             accidentalFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
+
+            lightningSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
+            rxSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
+            accidentalSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             typeOfIginition = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
             disturbed = PlugIn.ModelCore.Landscape.NewSiteVar<bool>();
 
@@ -95,6 +102,30 @@ namespace Landis.Extension.Scrapple
             }
         }
 
+        //---------------------------------------------------------------------
+        public static ISiteVar<double> LightningSuppressionIndex
+        {
+            get
+            {
+                return lightningSuppressionIndex;
+            }
+        }
+        //---------------------------------------------------------------------
+        public static ISiteVar<double> RxSuppressionIndex
+        {
+            get
+            {
+                return rxSuppressionIndex;
+            }
+        }
+        //---------------------------------------------------------------------
+        public static ISiteVar<double> AccidentalSuppressionIndex
+        {
+            get
+            {
+                return accidentalSuppressionIndex;
+            }
+        }
         ////---------------------------------------------------------------------
         public static ISiteVar<double> FineFuels
         {

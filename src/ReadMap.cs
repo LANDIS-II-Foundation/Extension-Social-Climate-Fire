@@ -7,13 +7,19 @@ using System.Collections.Generic;
 
 namespace Landis.Extension.Scrapple
 {
-    public static class FireRegions
+    public static class MapUtility
     {
-        public static void Initilize(string lightningFireMap, string rxFireMap, string accidentalFireMap)
+        public static void Initilize(string lightningFireMap, string accidentalFireMap, string rxFireMap,  //LAR
+                                    string lightningSuppressionMap, string accidentalSuppressionMap, string rxSuppressionMap)  //LAR
         {
             ReadMap(lightningFireMap, SiteVars.LightningFireWeight);
             ReadMap(rxFireMap, SiteVars.RxFireWeight);
             ReadMap(accidentalFireMap, SiteVars.AccidentalFireWeight);
+
+            //ReadMap(lightningSuppressionMap, SiteVars.LightningSuppressionIndex);
+            //ReadMap(rxSuppressionMap, SiteVars.RxSuppressionIndex);
+            //ReadMap(accidentalSuppressionMap, SiteVars.AccidentalSuppressionIndex);
+
         }
 
         //---------------------------------------------------------------------
