@@ -206,6 +206,66 @@ namespace Landis.Extension.Scrapple
             // ********* TEMP ****************************************
             double Pspread_adjusted = 0.05;
             // ********* TEMP ****************************************
+            double suppressEffect = 1.0;
+            if (this.IgnitionType == Ignition.Accidental)
+            {
+                switch (SiteVars.AccidentalSuppressionIndex[site])
+                {
+                    case 1:
+                        suppressEffect = 0.5;  // Need input values
+                        break;
+                    case 2:
+                        suppressEffect = 0.25;
+                        break;
+                    case 3:
+                        suppressEffect = 0.05;
+                        break;
+                    default:
+                        suppressEffect = 1.0;
+                        break;
+
+                }
+            }
+            if (this.IgnitionType == Ignition.Lightning)
+            {
+                switch (SiteVars.LightningSuppressionIndex[site])
+                {
+                    case 1:
+                        suppressEffect = 0.5;  // Need input values
+                        break;
+                    case 2:
+                        suppressEffect = 0.25;
+                        break;
+                    case 3:
+                        suppressEffect = 0.05;
+                        break;
+                    default:
+                        suppressEffect = 1.0;
+                        break;
+
+                }
+            }
+            if (this.IgnitionType == Ignition.Rx)
+            {
+                switch (SiteVars.RxSuppressionIndex[site])
+                {
+                    case 1:
+                        suppressEffect = 0.5;  // Need input values
+                        break;
+                    case 2:
+                        suppressEffect = 0.25;
+                        break;
+                    case 3:
+                        suppressEffect = 0.05;
+                        break;
+                    default:
+                        suppressEffect = 1.0;
+                        break;
+
+                }
+            }
+            Pspread_adjusted *= suppressEffect;
+                //SiteVars.LightningSuppressionIndex[site] == 1)
 
             if (Pspread_adjusted > PlugIn.ModelCore.GenerateUniform())
             {

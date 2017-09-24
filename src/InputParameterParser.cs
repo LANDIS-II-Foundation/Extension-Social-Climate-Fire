@@ -38,7 +38,7 @@ namespace Landis.Extension.Scrapple
 
         protected override IInputParameters Parse()
         {
-            const string MapNames = "MapNames";
+            //const string MapNames = "MapNames";
             ReadLandisDataVar();
 
             InputParameters parameters = new InputParameters();
@@ -47,24 +47,6 @@ namespace Landis.Extension.Scrapple
             ReadVar(timestep);
             parameters.Timestep = timestep.Value;
             
-            //InputVar<double> rha = new InputVar<double>("RelativeHumiditySlopeAdjust");
-            //if (ReadOptionalVar(rha))
-            //    parameters.RelativeHumiditySlopeAdjustment = rha.Value;
-            //else
-            //    parameters.RelativeHumiditySlopeAdjustment = 1.0;
-
-            // VS: Needed to spin up climate file
-            //InputVar<int> duration = new InputVar<int>("Duration");
-            //ReadVar(duration);
-            //parameters.Duration = duration.Value;
-
-
-            //                   --------- Input files ---------
-            //--------------------------------------------------------------------------
-            //InputVar<string> climateConfigFile = new InputVar<string>("ClimateConfigFile");
-            //ReadVar(climateConfigFile);
-            //parameters.ClimateConfigFile = climateConfigFile.Value;
-
             InputVar<string> humanIgnitionsMapFile = new InputVar<string>("AccidentalIgnitionsMap");
             ReadVar(humanIgnitionsMapFile);
             parameters.AccidentalFireMap = humanIgnitionsMapFile.Value;
@@ -132,6 +114,14 @@ namespace Landis.Extension.Scrapple
             InputVar<double> maxFF = new InputVar<double>("MaximumFineFuels");
             ReadVar(maxFF);
             parameters.MaxFineFuels = maxFF.Value;
+
+            InputVar<double> maxRxWS = new InputVar<double>("MaximumRxWindSpeed");
+            ReadVar(maxRxWS);
+            parameters.MaxRxWindSpeed = maxRxWS.Value;
+
+            InputVar<double> maxRxFWI = new InputVar<double>("MaximumRxFireWeatherIndex");
+            ReadVar(maxRxFWI);
+            parameters.MaxRxFireWeatherIndex = maxRxFWI.Value;
 
             //-------------------------------------------------------------------
             //  Read table of Fire Damage classes.
@@ -228,7 +218,7 @@ namespace Landis.Extension.Scrapple
             }
 
             ReadName(FireIntensityClass_3_DamageTable);
-            while (!AtEndOfInput && CurrentName != MapNames) 
+            while (!AtEndOfInput)// && CurrentName != MapNames) 
             {
 
                 StringReader currentLine = new StringReader(CurrentLine);
@@ -269,9 +259,9 @@ namespace Landis.Extension.Scrapple
             foreach (FireDamage damage in parameters.FireDamages_Severity3)
                 PlugIn.ModelCore.UI.WriteLine("      {0} : {1} : {2}", damage.DamageSpecies.Name, damage.MaxAge, damage.ProbablityMortality);
 
-            InputVar<string> mapNames = new InputVar<string>(MapNames);
-            ReadVar(mapNames);
-            parameters.MapNamesTemplate = mapNames.Value;
+            //InputVar<string> mapNames = new InputVar<string>(MapNames);
+            //ReadVar(mapNames);
+            //parameters.MapNamesTemplate = mapNames.Value;
 
             return parameters; 
         }

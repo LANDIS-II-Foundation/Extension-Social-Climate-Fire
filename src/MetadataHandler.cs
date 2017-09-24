@@ -15,7 +15,7 @@ namespace Landis.Extension.Scrapple
         
         public static ExtensionMetadata Extension {get; set;}
 
-        public static void InitializeMetadata(int Timestep, string MapFileName, ICore mCore)
+        public static void InitializeMetadata(int Timestep, ICore mCore)
         {
             ScenarioReplicationMetadata scenRep = new ScenarioReplicationMetadata() {
                 RasterOutCellArea = PlugIn.ModelCore.CellArea,
@@ -72,12 +72,12 @@ namespace Landis.Extension.Scrapple
             //---------------------------------------            
             //          map outputs:         
             //---------------------------------------
-
+            string severityMapFileName = "climate-fire-severity.img";
             OutputMetadata mapOut_Severity = new OutputMetadata()
             {
                 Type = OutputType.Map,
                 Name = "Severity",
-                FilePath = @MapFileName,
+                FilePath = @severityMapFileName,
                 Map_DataType = MapDataType.Ordinal,
                 Map_Unit = FieldUnits.Severity_Rank,
                 Visualize = true,

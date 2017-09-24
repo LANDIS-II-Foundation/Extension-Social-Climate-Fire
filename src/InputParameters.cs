@@ -16,7 +16,7 @@ namespace Landis.Extension.Scrapple
         List<IFireDamage> FireDamages_Severity1{get;}
         List<IFireDamage> FireDamages_Severity2 { get; }
         List<IFireDamage> FireDamages_Severity3 { get; }
-        string MapNamesTemplate {get;set;}
+        //string MapNamesTemplate {get;set;}
 
         string LighteningFireMap { get; set; }
         string RxFireMap { get; set; }
@@ -33,6 +33,8 @@ namespace Landis.Extension.Scrapple
         double AccidentalFireIgnitionB0 { get; set; }
         double AccidentalFireIgnitionB1 { get; set; }
         double MaxFineFuels { get; set; }
+        double MaxRxWindSpeed { get; set; }
+        double MaxRxFireWeatherIndex { get; set; }
     }
 }
 
@@ -49,7 +51,7 @@ namespace Landis.Extension.Scrapple
         private List<IFireDamage> damages_severity1;
         private List<IFireDamage> damages_severity2;
         private List<IFireDamage> damages_severity3;
-        private string mapNamesTemplate;
+        //private string mapNamesTemplate;
         private string lighteningFireMap;
         private string accidentalFireMap;
         private string rxFireMap;
@@ -65,6 +67,8 @@ namespace Landis.Extension.Scrapple
         private double accidentalFireIgnitionB0;
         private double accidentalFireIgnitionB1;
         private double maxFineFuels;
+        private double maxRxWindSpeed;
+        private double maxRxFireWeatherIndex;
 
 
 
@@ -85,38 +89,6 @@ namespace Landis.Extension.Scrapple
                 timestep = value;
             }
         }
-        //---------------------------------------------------------------------
-        //public string ClimateConfigFile
-        //{
-        //    get
-        //    {
-        //        return climateConfigFile;
-        //    }
-        //    set
-        //    {
-        //        if (value != null)
-        //        {
-        //            ValidatePath(value);
-        //        }
-        //        climateConfigFile = value;
-        //    }
-        //}
-        //---------------------------------------------------------------------
-
-        //public double RelativeHumiditySlopeAdjustment
-        //{
-        //    get
-        //    {
-        //        return relativeHumiditySlopeAdjust;
-        //    }
-        //    set
-        //    {
-        //        if (value < 0.0 || value > 100.0)
-        //            throw new InputValueException(value.ToString(), "Relative Humidity Slope Adjustment must be > 0.0 and < 50");
-        //        relativeHumiditySlopeAdjust = value;
-        //    }
-        //}
-
         //---------------------------------------------------------------------
         public List<IFireDamage> FireDamages_Severity1
         {
@@ -146,16 +118,16 @@ namespace Landis.Extension.Scrapple
         /// <summary>
         /// Template for the filenames for output maps.
         /// </summary>
-        public string MapNamesTemplate
-        {
-            get {
-                return mapNamesTemplate;
-            }
-            set {
-                    MapNames.CheckTemplateVars(value);
-                mapNamesTemplate = value;
-            }
-        }
+        //public string MapNamesTemplate
+        //{
+        //    get {
+        //        return mapNamesTemplate;
+        //    }
+        //    set {
+        //            MapNames.CheckTemplateVars(value);
+        //        mapNamesTemplate = value;
+        //    }
+        //}
 
         //---------------------------------------------------------------------
         public string LighteningFireMap
@@ -317,6 +289,30 @@ namespace Landis.Extension.Scrapple
             set
             {
                 maxFineFuels = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public double MaxRxWindSpeed
+        {
+            get
+            {
+                return maxRxWindSpeed;
+            }
+            set
+            {
+                maxRxWindSpeed = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public double MaxRxFireWeatherIndex
+        {
+            get
+            {
+                return maxRxFireWeatherIndex;
+            }
+            set
+            {
+                maxRxFireWeatherIndex = value;
             }
         }
         //---------------------------------------------------------------------

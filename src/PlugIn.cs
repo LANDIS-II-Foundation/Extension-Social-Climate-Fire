@@ -51,7 +51,7 @@ namespace Landis.Extension.Scrapple
         private static int numCellsSeverity3;
 
 
-        private string mapNameTemplate;
+        //private string mapNameTemplate;
         //private double severityCalibrate;
         private static IInputParameters parameters;
         private static ICore modelCore;
@@ -89,7 +89,7 @@ namespace Landis.Extension.Scrapple
         public override void Initialize()
         {
             Timestep = 1;  // RMS:  Initially we will force annual time step. parameters.Timestep;
-            mapNameTemplate = parameters.MapNamesTemplate;
+            //mapNameTemplate = parameters.MapNamesTemplate;
             FireDamages_Severity1 = parameters.FireDamages_Severity1;
             FireDamages_Severity2 = parameters.FireDamages_Severity2;
             FireDamages_Severity3 = parameters.FireDamages_Severity3;
@@ -133,7 +133,7 @@ namespace Landis.Extension.Scrapple
             modelCore.UI.WriteLine("   Initializing Fire Region Maps...");
             MapUtility.Initilize(parameters.LighteningFireMap, parameters.AccidentalFireMap, parameters.RxFireMap,
                                  parameters.LighteningSuppressionMap, parameters.AccidentalSuppressionMap, parameters.RxSuppressionMap);
-            MetadataHandler.InitializeMetadata(parameters.Timestep, parameters.MapNamesTemplate, ModelCore);
+            MetadataHandler.InitializeMetadata(parameters.Timestep, ModelCore);
 
             modelCore.UI.WriteLine("   Initializing Fire Events...");
             //FireEvent.Initialize(parameters.FireDamages);
@@ -264,7 +264,7 @@ namespace Landis.Extension.Scrapple
 
         private void WriteMaps(int currentTime)
         {
-            string path = MapNames.ReplaceTemplateVars(mapNameTemplate, currentTime);
+            string path = MapNames.ReplaceTemplateVars("fire/ignition-type-{timestep}.img", currentTime);
 
             using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
             {
