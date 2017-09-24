@@ -35,6 +35,15 @@ namespace Landis.Extension.Scrapple
         double MaxFineFuels { get; set; }
         double MaxRxWindSpeed { get; set; }
         double MaxRxFireWeatherIndex { get; set; }
+        int LightningSuppressEffectivenss_low { get; set; }
+        int LightningSuppressEffectivenss_medium { get; set; }
+        int LightningSuppressEffectivenss_high { get; set; }
+        int RxSuppressEffectivenss_low { get; set; }
+        int RxSuppressEffectivenss_medium { get; set; }
+        int RxSuppressEffectivenss_high { get; set; }
+        int AccidentalSuppressEffectivenss_low { get; set; }
+        int AccidentalSuppressEffectivenss_medium { get; set; }
+        int AccidentalSuppressEffectivenss_high { get; set; }
     }
 }
 
@@ -69,6 +78,16 @@ namespace Landis.Extension.Scrapple
         private double maxFineFuels;
         private double maxRxWindSpeed;
         private double maxRxFireWeatherIndex;
+
+        private int lightningSuppressEffectivenss_low;
+        private int lightningSuppressEffectivenss_medium;
+        private int lightningSuppressEffectivenss_high;
+        private int rxSuppressEffectivenss_low;
+        private int rxSuppressEffectivenss_medium;
+        private int rxSuppressEffectivenss_high;
+        private int accidentalSuppressEffectivenss_low;
+        private int accidentalSuppressEffectivenss_medium;
+        private int accidentalSuppressEffectivenss_high;
 
 
 
@@ -314,6 +333,52 @@ namespace Landis.Extension.Scrapple
             {
                 maxRxFireWeatherIndex = value;
             }
+        }
+
+        public int LightningSuppressEffectivenss_low
+        {
+            get { return lightningSuppressEffectivenss_low; }
+            set { lightningSuppressEffectivenss_low = value; }
+        }
+        public int LightningSuppressEffectivenss_medium
+        {
+            get { return lightningSuppressEffectivenss_medium; }
+            set { lightningSuppressEffectivenss_medium = value; }
+        }
+        public int LightningSuppressEffectivenss_high
+        {
+            get { return lightningSuppressEffectivenss_high; }
+            set { lightningSuppressEffectivenss_high = value; }
+        }
+        public int RxSuppressEffectivenss_low
+        {
+            get { return rxSuppressEffectivenss_low; }
+            set { rxSuppressEffectivenss_low = value; }
+        }
+        public int RxSuppressEffectivenss_medium
+        {
+            get { return rxSuppressEffectivenss_medium; }
+            set { rxSuppressEffectivenss_medium = value; }
+        }
+        public int RxSuppressEffectivenss_high
+        {
+            get { return rxSuppressEffectivenss_high; }
+            set { rxSuppressEffectivenss_high = value; }
+        }
+        public int AccidentalSuppressEffectivenss_low
+        {
+            get { return accidentalSuppressEffectivenss_low; }
+            set { accidentalSuppressEffectivenss_low = value; }
+        }
+        public int AccidentalSuppressEffectivenss_medium
+        {
+            get { return accidentalSuppressEffectivenss_medium; }
+            set { accidentalSuppressEffectivenss_medium = value; }
+        }
+        public int AccidentalSuppressEffectivenss_high
+        {
+            get { return accidentalSuppressEffectivenss_high; }
+            set { accidentalSuppressEffectivenss_high = value; }
         }
         //---------------------------------------------------------------------
 

@@ -123,6 +123,42 @@ namespace Landis.Extension.Scrapple
             ReadVar(maxRxFWI);
             parameters.MaxRxFireWeatherIndex = maxRxFWI.Value;
 
+            InputVar<int> lso = new InputVar<int>("SuppressionEffectiveness:LightningLow");
+            ReadVar(lso);
+            parameters.LightningSuppressEffectivenss_low = lso.Value;
+
+            InputVar<int> lsm = new InputVar<int>("SuppressionEffectiveness:LightningMedium");
+            ReadVar(lsm);
+            parameters.LightningSuppressEffectivenss_medium = lsm.Value;
+
+            InputVar<int> lsh = new InputVar<int>("SuppressionEffectiveness:LightningHigh");
+            ReadVar(lsh);
+            parameters.LightningSuppressEffectivenss_high = lsh.Value;
+
+            InputVar<int> rso = new InputVar<int>("SuppressionEffectiveness:RxLow");
+            ReadVar(rso);
+            parameters.RxSuppressEffectivenss_low = rso.Value;
+
+            InputVar<int> rsm = new InputVar<int>("SuppressionEffectiveness:RxMedium");
+            ReadVar(rsm);
+            parameters.RxSuppressEffectivenss_medium = rsm.Value;
+
+            InputVar<int> rsh = new InputVar<int>("SuppressionEffectiveness:RxHigh");
+            ReadVar(rsh);
+            parameters.RxSuppressEffectivenss_high = rsh.Value;
+
+            InputVar<int> aso = new InputVar<int>("SuppressionEffectiveness:AccidentalLow");
+            ReadVar(aso);
+            parameters.AccidentalSuppressEffectivenss_low = aso.Value;
+
+            InputVar<int> asm = new InputVar<int>("SuppressionEffectiveness:AccidentalMedium");
+            ReadVar(asm);
+            parameters.AccidentalSuppressEffectivenss_medium = asm.Value;
+
+            InputVar<int> ash = new InputVar<int>("SuppressionEffectiveness:AccidentalHigh");
+            ReadVar(ash);
+            parameters.AccidentalSuppressEffectivenss_high = ash.Value;
+
             //-------------------------------------------------------------------
             //  Read table of Fire Damage classes.
             //  Damages are in increasing order.
@@ -141,21 +177,14 @@ namespace Landis.Extension.Scrapple
             ReadName(FireIntensityClass_1_DamageTable);
             while (!AtEndOfInput && CurrentName != FireIntensityClass_2_DamageTable)
             {
-                //int previousMaxAge = 0;
-
                 StringReader currentLine = new StringReader(CurrentLine);
 
-                //ISpecies species = ReadSpecies(currentLine);
                 ReadValue(speciesName, currentLine);
                 ISpecies species = PlugIn.ModelCore.Species[speciesName.Value.Actual];
                 if (species == null)
                     throw new InputValueException(speciesName.Value.String,
                                                   "{0} is not a species name.",
                                                   speciesName.Value.String);
-                //TextReader.SkipWhitespace(currentLine);
-                //while (currentLine.Peek() != -1)
-                //{
-
                 IFireDamage damage = new FireDamage();
                 parameters.FireDamages_Severity1.Add(damage);
                 damage.DamageSpecies = species;
