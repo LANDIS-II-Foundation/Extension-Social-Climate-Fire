@@ -2,6 +2,7 @@
 
 using Edu.Wisc.Forest.Flel.Util;
 using System.Collections.Generic;
+using Landis.Core;
 
 namespace Landis.Extension.Scrapple
 {
@@ -44,6 +45,8 @@ namespace Landis.Extension.Scrapple
         int AccidentalSuppressEffectivenss_low { get; set; }
         int AccidentalSuppressEffectivenss_medium { get; set; }
         int AccidentalSuppressEffectivenss_high { get; set; }
+
+        List<ISpecies> LadderFuelSpeciesList { get; }
     }
 }
 
@@ -89,6 +92,8 @@ namespace Landis.Extension.Scrapple
         private int accidentalSuppressEffectivenss_medium;
         private int accidentalSuppressEffectivenss_high;
 
+        private List<ISpecies> ladderFuelSpeciesList;
+
 
 
         //---------------------------------------------------------------------
@@ -132,6 +137,15 @@ namespace Landis.Extension.Scrapple
                 return damages_severity3;
             }
         }
+        //---------------------------------------------------------------------
+        public List<ISpecies> LadderFuelSpeciesList
+        {
+            get
+            {
+                return ladderFuelSpeciesList;
+            }
+        }
+
         //---------------------------------------------------------------------
 
         /// <summary>
@@ -387,6 +401,7 @@ namespace Landis.Extension.Scrapple
             damages_severity1 = new List<IFireDamage>();
             damages_severity2 = new List<IFireDamage>();
             damages_severity3 = new List<IFireDamage>();
+            ladderFuelSpeciesList = new List<ISpecies>();
         }
         //---------------------------------------------------------------------
 

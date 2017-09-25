@@ -167,6 +167,7 @@ namespace Landis.Extension.Scrapple
             const string FireIntensityClass_1_DamageTable = "FireIntensityClass_1_DamageTable";
             const string FireIntensityClass_2_DamageTable = "FireIntensityClass_2_DamageTable";
             const string FireIntensityClass_3_DamageTable = "FireIntensityClass_3_DamageTable";
+            const string LadderFuelSpeciesList = "LadderFuelSpeciesList";
 
 
             InputVar<string> spp = new InputVar<string>("Species Name");
@@ -247,7 +248,7 @@ namespace Landis.Extension.Scrapple
             }
 
             ReadName(FireIntensityClass_3_DamageTable);
-            while (!AtEndOfInput)// && CurrentName != MapNames) 
+            while (!AtEndOfInput && CurrentName != LadderFuelSpeciesList) 
             {
 
                 StringReader currentLine = new StringReader(CurrentLine);
@@ -288,11 +289,43 @@ namespace Landis.Extension.Scrapple
             foreach (FireDamage damage in parameters.FireDamages_Severity3)
                 PlugIn.ModelCore.UI.WriteLine("      {0} : {1} : {2}", damage.DamageSpecies.Name, damage.MaxAge, damage.ProbablityMortality);
 
-            //InputVar<string> mapNames = new InputVar<string>(MapNames);
-            //ReadVar(mapNames);
-            //parameters.MapNamesTemplate = mapNames.Value;
+            //  Read the species list for ladderfuels:
+            List<string> speciesNames = new List<string>();
 
+            ReadName(LadderFuelSpeciesList);
+
+            while (!AtEndOfInput)
+            {
+                StringReader currentLine = new StringReader(CurrentLine);
+                TextReader.SkipWhitespace(currentLine);
+                while (currentLine.Peek() != -1)
+                {
+                    ReadValue(speciesName, currentLine);
+                    string name = speciesName.Value.Actual;
+
+                    if (speciesNames.Contains(name))
+                        throw NewParseException("The species {0} appears more than once.", name);
+                    speciesNames.Add(name);
+
+                    ISpecies species = GetSpecies(new InputValue<string>(name, speciesName.Value.String));
+                    parameters.LadderFuelSpeciesList.Add(species);
+
+                    TextReader.SkipWhitespace(currentLine);
+                }
+                GetNextLine();
+            }
             return parameters; 
+        }
+        //---------------------------------------------------------------------
+
+        protected ISpecies GetSpecies(InputValue<string> name)
+        {
+            ISpecies species = PlugIn.ModelCore.Species[name.Actual];
+            if (species == null)
+                throw new InputValueException(name.String,
+                                              "{0} is not a species name.",
+                                              name.String);
+            return species;
         }
         //---------------------------------------------------------------------
 
