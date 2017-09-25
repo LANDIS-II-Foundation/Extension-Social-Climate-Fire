@@ -159,6 +159,10 @@ namespace Landis.Extension.Scrapple
             ReadVar(ash);
             parameters.AccidentalSuppressEffectivenss_high = ash.Value;
 
+            InputVar<int> lfma = new InputVar<int>("LadderFuelMaxAge");
+            ReadVar(lfma);
+            parameters.LadderFuelMaxAge = lfma.Value;
+
             //-------------------------------------------------------------------
             //  Read table of Fire Damage classes.
             //  Damages are in increasing order.
@@ -314,6 +318,9 @@ namespace Landis.Extension.Scrapple
                 }
                 GetNextLine();
             }
+            foreach (ISpecies ladder_spp in parameters.LadderFuelSpeciesList)
+                PlugIn.ModelCore.UI.WriteLine("    Ladder fuel species: {0}", ladder_spp.Name);
+
             return parameters; 
         }
         //---------------------------------------------------------------------

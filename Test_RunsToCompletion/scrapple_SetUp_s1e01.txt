@@ -34,6 +34,8 @@ SuppressionEffectiveness:AccidentalLow		5
 SuppressionEffectiveness:AccidentalMedium	50
 SuppressionEffectiveness:AccidentalHigh		75
 
+LadderFuelMaxAge 30
+
 FireIntensityClass_1_DamageTable
 >> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
 acersacc 0 50  0.9  

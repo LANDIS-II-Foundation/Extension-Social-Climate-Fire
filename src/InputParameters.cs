@@ -47,6 +47,7 @@ namespace Landis.Extension.Scrapple
         int AccidentalSuppressEffectivenss_high { get; set; }
 
         List<ISpecies> LadderFuelSpeciesList { get; }
+        int LadderFuelMaxAge { get; set; }
     }
 }
 
@@ -93,6 +94,7 @@ namespace Landis.Extension.Scrapple
         private int accidentalSuppressEffectivenss_high;
 
         private List<ISpecies> ladderFuelSpeciesList;
+        private int ladderFuelMaxAge;
 
 
 
@@ -348,6 +350,19 @@ namespace Landis.Extension.Scrapple
                 maxRxFireWeatherIndex = value;
             }
         }
+        //---------------------------------------------------------------------
+        public int LadderFuelMaxAge
+        {
+            get
+            {
+                return ladderFuelMaxAge;
+            }
+            set
+            {
+                ladderFuelMaxAge = value;
+            }
+        }
+        //---------------------------------------------------------------------
 
         public int LightningSuppressEffectivenss_low
         {
