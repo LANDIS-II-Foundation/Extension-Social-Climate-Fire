@@ -1,0 +1,9 @@
+LandisData  "Output Max Species Age"
+
+Timestep   5
+
+MapNames   max-spp-age/{species}-{timestep}.img
+
+Species    PinuJeff
+		   AbieConc
+	   

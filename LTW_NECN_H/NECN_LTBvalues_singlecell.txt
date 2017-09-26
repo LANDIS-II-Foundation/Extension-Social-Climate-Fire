@@ -1,0 +1,120 @@
+LandisData	"Century Succession"
+
+Timestep  1
+
+SeedingAlgorithm  WardSeedDispersal
+
+InitialCommunities      	"./initial-communities_LTBselect.txt"
+InitialCommunitiesMap   	"./single_cell_3.img"
+ClimateConfigFile		climate-generator-baseline.txt
+AgeOnlyDisturbances:BiomassParameters  bio-reductions-standard.txt
+
+SoilDepthMapName		100singlecell.img <<100
+SoilDrainMapName		point75singlecell.img <<.691
+SoilBaseFlowMapName		point4singlecell.img <<0.4
+SoilStormFlowMapName		point4singlecell.img <<0.4
+SoilFieldCapacityMapName	point1singlecell.img <<.109
+SoilWiltingPointMapName		point05singlecell.img <<0.055
+SoilPercentSandMapName		point75singlecell.img <<0.714
+SoilPercentClayMapName		point1singlecell.img <<0.070
+InitialSOM1CsurfMapName		singlecell_110.img <<75
+InitialSOM1NsurfMapName		singlecell_9.img <<3
+InitialSOM1CsoilMapName		singlecell_110.img <<100
+InitialSOM1NsoilMapName		singlecell_9.img <<10
+InitialSOM2CMapName		singlecell_3000.img <<3000
+InitialSOM2NMapName		singlecell_50.img <<50
+InitialSOM3CMapName		singlecell_300.img <<300
+InitialSOM3NMapName		singlecell_15.img <<15
+InitialDeadWoodSurfaceMapName	singlecell_110.img <<New
+InitialDeadWoodSoilMapName	singlecell_50.img <<New
+
+CalibrateMode 	yes
+WaterDecayFunction Ratio <<Linear or Ratio
+
+ProbabilityEstablishAdjust 	1.0
+InitialMineralN			3.0
+AtmosphericNSlope		0.08
+AtmosphericNIntercept	0.005
+Latitude				39.02
+DenitrificationRate		0.5
+DecayRateSurf			0.4
+DecayRateSOM1			1.0
+DecayRateSOM2			0.02
+DecayRateSOM3			0.0002
+
+MaximumLAI
+
+>> Shade	Max LAI
+>> Class	
+>> ----------	--------------------	
+	1	1 
+	2	2.5 
+	3	3.5 
+	4	6
+	5	8
+		
+
+LightEstablishmentTable	
+					
+>>	Spp Shade	Probability					
+>>	Class		by Actual Shade					
+>>	 ----------	--------------------					
+>>		0	1	2	3	4	5
+	1	1.0	0.5	0.02	0.0	0.0	0.0
+	2	0.6	1.0	0.5	0.02	0.0	0.0
+	3	0.01	0.6	1.0	0.5	0.02	0.0
+	4	0.0	0.01	0.6	1.0	0.5	0.02
+	5	0.0	0.0	0.01	0.5	1.0	1.0
+		
+SpeciesParameters << some data from Sarah, some arbitrary
+			
+>>Species	Leaf	Woody	Mortality Curve	Leaf				
+>>		Long	DecayR	Shape Parameter	Lignin%				
+>>----------------------------------------------								
+>> Species  Funct	N-fix?	GDD	GDD		Min		Max		Leaf	Epi-	Leaf	FRoot	Wood	CRoot	Leaf  	FRoot 	Wood  	CRoot 	Littr 	MaxANPP MaxAGB
+>>	    	ional			Min	Max		Jan		Drought	Long	cormic	Lign%	Lign%	Lign%	Lign%	CN    	CN    	CN    	CN    	CN	
+>> 	   		Type						Temp					re-
+>>          													sprout        		
+PinuJeff	1		N		555	2149	-5		0.94	6.00	N		0.28	0.2		0.25	0.25	48		48		250		167		100 	200     30000	
+PinuLamb	1		N		815	2866	-5		0.90	2.50	N		0.17	0.2		0.25	0.25	53		53		278		185		100 	150	 	40000	
+CaloDecu	1		N		837	2938	-18		0.99	4.00	N		0.1		0.2		0.25	0.25	48		48		500		333		100     150	 	24000	
+AbieConc	1		N		540	2670	-10		0.93	8.00	N		0.17	0.2		0.25	0.25	30		30		333		222		100 	150	 	41000	
+AbieMagn	1		N		483	1257	-10		0.87	8.00	N		0.17	0.2		0.25	0.25	30		30		250		167		100 	150	 	20000	
+PinuCont	1		N		276	1230	-18		0.87	3.50	N		0.25	0.2		0.25	0.25	48		48		500		333		100 	150	 	12000	
+PinuMont	1		N		155	1220	-18		0.82	7.00	N		0.31	0.2		0.25	0.25	37		37		500		333		100 	150	 	32000	
+TsugMert	1		N		235	1200	-18		0.80	4.50	Y		0.24	0.2		0.25	0.25	80		80		333		222		100 	150	 	12000	
+PinuAlbi	1		N		230	1205	-18		0.90	5.50	Y		0.27	0.2		0.25	0.25	80		80		333		222		100 	150	 	12000	
+PopuTrem	2		N		600	3000	-10		0.82	1.00	Y		0.18	0.2		0.25	0.25	62		62		333		222		100 	150	 	12000	
+NonnResp	3		N		400	4000	-10		0.99	1.50	Y		0.25	0.2		0.25	0.25	56		56		333		222		100 	75	 	2750	
+NonnSeed	3		N		400	4000	-10		0.97	1.50	N		0.25	0.2		0.25	0.25	59		59		333		222		100 	75	 	2700	
+FixnResp	3		Y		400	4000	-10		0.97	1.50	Y		0.25	0.2		0.25	0.25	20		28		333		222		50  	75	 	2900	
+FixnSeed	3		Y		400	4000	-10		0.99	1.50	N		0.25	0.2		0.25	0.25	20		30		333		222		50  	75	 	2400	
+
+
+>> old PinuJeff GDD = 570 1929	
+									
+FunctionalGroupParameters << -  estimates from fhmem_century_succession.txt
+	
+>> Name		Index	PPDF1	PPDF2	PPDF3	PPDF4	FCFRAC	BTOLAI	KLAI	MAXLAI	PPRPTS2	PPRPTS3	Wood	Month	Age		Leaf 
+>>	 				T-Mean	T-Max	T-shape	T-shape	leaf											DecayR	Wood	Mort	Drop
+>>																									Mort	Shape			Month CRFrac	FRFrac
+
+Conifers	1		23.0	40.0	0.05	6.0		0.2		-0.8	10000		10		0.2		0.1		1.0		0.002	10		9		0.1		0.1
+Hardwoods	2		23.0	35.0	0.05	7.0		0.3		-0.8	5000			20		0.2		0.1		1.0		0.002	10		9		0.1		0.1	
+Shrub		3		23.0	38.0	0.05	8.0		0.3		-0.8	500			5		0.2		0.1		1.0		0.002	10		9		0.1		0.1
+
+FireReductionParameters
+
+>>	Severity 	Wood	Litter <<  from fhmem_century_succession.txt								
+>>	Number		Reduc	Reduc												
+>>	-------	------	-----												
+	1		0.0	0.5
+	2		0.05	0.75
+	3		0.2	1.0
+	4		0.5	1.0
+	5		0.8	1.0
+
+
+
+
+
