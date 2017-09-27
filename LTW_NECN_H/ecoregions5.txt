@@ -1,0 +1,11 @@
+LandisData  Ecoregions
+
+>>         Map
+>> Active  Code  Name   Description
+>> ------  ----  -----  -----------
+      yes    1   eco1	"Jeffrey Pine/Mixed Conifer"
+      yes    2   eco2	"Red fire-white fire/western white pine"
+      yes    3   eco3   "Lodgepole pine/Subalpine"
+      yes    4   eco4   "Shrub - chaparral/sage"
+      yes    5   eco5	"Aspen/Riparian vegetation"
+      no     0   Other  "Water/Urban/Rock/Outside LTB"

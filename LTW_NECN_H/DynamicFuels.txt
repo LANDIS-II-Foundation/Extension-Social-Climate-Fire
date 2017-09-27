@@ -1,0 +1,67 @@
+LandisData  "Dynamic Fuel System"
+
+>> from the SN work, removed the sequoia fuel types (10-12) and 'brush' fuel types (16-18), 
+>>   adjusted the rest based on spp. comp. at LTB
+
+Timestep  1
+
+>> 		 Fuel 
+>> Species 	 Coefficient 
+>> -------- 	----------- 
+
+CaloDecu	0.75
+
+>> Optional Percent Hardwood Value (%)
+
+HardwoodMaximum 15
+
+DeadFirMaxAge 10
+
+
+FuelTypes
+>> Fuel Type 	BaseType	Age Range	Species
+>> ---------	---------	---------	----------
+
+	1	Conifer		0 to 50		PinuJeff	AbieConc	PinuLamb	CaloDecu	-PinuCont	-TsugMert	-AbieMagn	<<	young	mixed	conifer
+	2	Conifer		51 to 100	PinuJeff	AbieConc	PinuLamb	CaloDecu	-PinuCont	-TsugMert	-AbieMagn	<<	mid-aged	mixed	conifer,
+	3	Conifer		100 to 1000	PinuJeff	AbieConc	PinuLamb	CaloDecu	-PinuCont	-TsugMert	-AbieMagn	<<	old	mixed	conifer
+														
+	4	Conifer		0 to 50		PinuLamb	PinuJeff	PinuMont	PinuAlbi	AbieConc	-PinuCont	-TsugMert	-AbieMagn			
+	5	Conifer		51 to 100	PinuLamb	PinuJeff	PinuMont	PinuAlbi	AbieConc	-PinuCont	-TsugMert	-AbieMagn	<<	immature	pine/fir
+	6	Conifer		100 to 1000	PinuLamb	PinuJeff	PinuMont	PinuAlbi	AbieConc	-PinuCont	-TsugMert	-AbieMagn	<<	old	pine/fir,
+														
+	7	Conifer		0 to 50		AbieMagn										
+	8	Conifer		51 to 100	AbieMagn	<<	mid-aged	red	fir						
+	9	Conifer		100 to 1000	AbieMagn	<<	old	red	fir
+
+
+>> 	10		Conifer		0 to 50		sequgiga
+>>   	11		Conifer		51 to 100	sequgiga   << mid-aged sequoia, check species inclusions
+>>   	12		Conifer		101 to 3000	sequgiga   << old sequoia						
+														
+	13	Conifer		0 to 50		PinuCont	TsugMert									
+	14	Conifer		51 to 100	PinuCont	TsugMert	<<	mid-aged	lodgepole,	check	species	inclusions			
+	15	Conifer		100 to 1000	PinuCont	TsugMert	<<	old	lodgepole						
+														
+	16	Conifer		0 to 50		NonnResp	NonnSeed	FixnResp	FixnSeed	<<	young	chaparral
+	17	Conifer		51 to 100	NonnResp	NonnSeed	FixnResp	FixnSeed	<<	mid-aged	chaparral
+	18	Conifer		100 to 1000	NonnResp	NonnSeed	FixnResp	FixnSeed	<<	old	chaparral
+																		
+	19	Deciduous	0 to 50		PopuTrem		<<	young	deciduous,						
+	20	Deciduous	51 to 1000	PopuTrem		<<	immature	to	old	deciduous,				
+
+
+DisturbanceConversionTable << fuel types in Dynamic Fire file
+
+>> FuelType	Duration       Prescription
+>> ---------	---------	--------
+
+   91		10		FireRisk-LightThinning
+   91		15		FireRisk-ModerateThinning
+   90		10		MidSeralThinning
+
+
+MapFileNames		DFFS-output/FuelType-{timestep}.img  
+PctConiferFileName	DFFS-output/PctConifer-{timestep}.img 
+PctDeadFirFileName	DFFS-output/PctDeadFir-{timestep}.img 
+
