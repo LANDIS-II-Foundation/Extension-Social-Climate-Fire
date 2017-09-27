@@ -8,8 +8,8 @@ LightningIgnitionsMap  ./Lightning_Ignition_Map.img
 RxIgnitionsMap  ./Lightning_Ignition_Map.img
 
 AccidentalSuppressionMap	./test_suppress.img
-LightningSuppressionMap	./test_suppress.img
-RxSuppressionMap	./test_suppress.img
+LightningSuppressionMap		./test_suppress.img
+RxSuppressionMap		./test_suppress.img
 
 GroundSlopeMap GroundSlope.gis
 UphillSlopeAzimuthMap  UphillSlope.gis

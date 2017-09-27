@@ -16,9 +16,9 @@ namespace Landis.Extension.Scrapple
             ReadMap(rxFireMap, SiteVars.RxFireWeight);
             ReadMap(accidentalFireMap, SiteVars.AccidentalFireWeight);
 
-            //ReadMap(lightningSuppressionMap, SiteVars.LightningSuppressionIndex);
-            //ReadMap(rxSuppressionMap, SiteVars.RxSuppressionIndex);
-            //ReadMap(accidentalSuppressionMap, SiteVars.AccidentalSuppressionIndex);
+            ReadMap(lightningSuppressionMap, SiteVars.LightningSuppressionIndex);
+            ReadMap(rxSuppressionMap, SiteVars.RxSuppressionIndex);
+            ReadMap(accidentalSuppressionMap, SiteVars.AccidentalSuppressionIndex);
 
         }
 
@@ -49,7 +49,7 @@ namespace Landis.Extension.Scrapple
                 foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
                 {
                     map.ReadBufferPixel();
-                    double mapCode = pixel.MapCode.Value;
+                    double mapCode = (int)  pixel.MapCode.Value;
 
                     if (site.IsActive)
                     {

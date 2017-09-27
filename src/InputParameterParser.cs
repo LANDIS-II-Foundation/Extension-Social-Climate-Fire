@@ -61,15 +61,15 @@ namespace Landis.Extension.Scrapple
 
             InputVar<string> humanSuppressionMapFile = new InputVar<string>("AccidentalSuppressionMap");
             ReadVar(humanSuppressionMapFile);
-            parameters.AccidentalFireMap = humanSuppressionMapFile.Value;
+            parameters.AccidentalSuppressionMap = humanSuppressionMapFile.Value;
 
             InputVar<string> lighteningSuppressionMapFile = new InputVar<string>("LightningSuppressionMap");
             ReadVar(lighteningSuppressionMapFile);
-            parameters.LighteningFireMap = lighteningSuppressionMapFile.Value;
+            parameters.LighteningSuppressionMap = lighteningSuppressionMapFile.Value;
 
             InputVar<string> rxSuppressionMapFile = new InputVar<string>("RxSuppressionMap");
             ReadVar(rxSuppressionMapFile);
-            parameters.RxFireMap = rxSuppressionMapFile.Value;
+            parameters.RxSuppressionMap = rxSuppressionMapFile.Value;
             
 
             // Load Ground Slope Data
