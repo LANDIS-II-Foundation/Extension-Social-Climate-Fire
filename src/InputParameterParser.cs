@@ -131,6 +131,18 @@ namespace Landis.Extension.Scrapple
             ReadVar(nrxf);
             parameters.NumberRxAnnualFires = nrxf.Value;
 
+            InputVar<double> maxSA0 = new InputVar<double>("MaximumSpreadAreaB0");
+            ReadVar(maxSA0);
+            parameters.MaximumSpreadAreaB0 = maxSA0.Value;
+
+            InputVar<double> maxSA1 = new InputVar<double>("MaximumSpreadAreaB1");
+            ReadVar(maxSA1);
+            parameters.MaximumSpreadAreaB0 = maxSA1.Value;
+
+            InputVar<double> maxSA2 = new InputVar<double>("MaximumSpreadAreaB2");
+            ReadVar(maxSA2);
+            parameters.MaximumSpreadAreaB0 = maxSA2.Value;
+
             InputVar<int> lfma = new InputVar<int>("LadderFuelMaxAge");
             ReadVar(lfma);
             parameters.LadderFuelMaxAge = lfma.Value;

@@ -39,6 +39,13 @@ namespace Landis.Extension.Scrapple
         double MinRxFireWeatherIndex { get; set; }
         int NumberRxAnnualFires { get; set; }
 
+        double MaximumSpreadAreaB0 { get; set; }
+        double MaximumSpreadAreaB1 { get; set; }
+        double MaximumSpreadAreaB2 { get; set; }
+
+        int LadderFuelMaxAge { get; set; }
+
+
         int LightningSuppressEffectivenss_low { get; set; }
         int LightningSuppressEffectivenss_medium { get; set; }
         int LightningSuppressEffectivenss_high { get; set; }
@@ -50,7 +57,6 @@ namespace Landis.Extension.Scrapple
         int AccidentalSuppressEffectivenss_high { get; set; }
 
         List<ISpecies> LadderFuelSpeciesList { get; }
-        int LadderFuelMaxAge { get; set; }
     }
 }
 
@@ -88,6 +94,13 @@ namespace Landis.Extension.Scrapple
         private double minRxFireWeatherIndex;
         private int numberRxAnnualFires;
 
+        private double maximumSpreadAreaB0;
+        private double maximumSpreadAreaB1;
+        private double maximumSpreadAreaB2;
+
+        private int ladderFuelMaxAge;
+
+
         private int lightningSuppressEffectivenss_low;
         private int lightningSuppressEffectivenss_medium;
         private int lightningSuppressEffectivenss_high;
@@ -99,7 +112,6 @@ namespace Landis.Extension.Scrapple
         private int accidentalSuppressEffectivenss_high;
 
         private List<ISpecies> ladderFuelSpeciesList;
-        private int ladderFuelMaxAge;
 
 
 
@@ -380,6 +392,42 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
+        public double MaximumSpreadAreaB0
+        {
+            get
+            {
+                return maximumSpreadAreaB0;
+            }
+            set
+            {
+                maximumSpreadAreaB0 = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public double MaximumSpreadAreaB1
+        {
+            get
+            {
+                return maximumSpreadAreaB1;
+            }
+            set
+            {
+                maximumSpreadAreaB1 = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public double MaximumSpreadAreaB2
+        {
+            get
+            {
+                return maximumSpreadAreaB2;
+            }
+            set
+            {
+                maximumSpreadAreaB2 = value;
+            }
+        }
+        //---------------------------------------------------------------------
         public int LadderFuelMaxAge
         {
             get
@@ -391,6 +439,8 @@ namespace Landis.Extension.Scrapple
                 ladderFuelMaxAge = value;
             }
         }
+
+
         //---------------------------------------------------------------------
 
         public int LightningSuppressEffectivenss_low

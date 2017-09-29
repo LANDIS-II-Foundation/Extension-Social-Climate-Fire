@@ -302,10 +302,10 @@ namespace Landis.Extension.Scrapple
 
                 }
 
-                //      Calculate spread-area-max (AK)  TODO
-                // ********* TEMP ****************************************
-                int spreadAreaMax = 3;
-                // ********* TEMP ****************************************
+                //      Calculate spread-area-max 
+                double spreadAreaMax = PlugIn.MaximumSpreadAreaB0 + PlugIn.MaximumSpreadAreaB1*fireWeatherIndex + PlugIn.MaximumSpreadAreaB2*windSpeed;
+                // What are the units??  Maybe need to do conversion??
+
                 if (!spreadArea.ContainsKey(day))
                 {
                     spreadArea.Add(day, 1);  // second int is the cell count, later turned into area

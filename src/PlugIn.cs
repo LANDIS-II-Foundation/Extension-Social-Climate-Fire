@@ -29,20 +29,17 @@ namespace Landis.Extension.Scrapple
         public static MetadataTable<EventsLog> eventLog;
         public static MetadataTable<SummaryLog> summaryLog;
         public static MetadataTable<IgnitionsLog> ignitionsLog;
+        
         // Get the active sites from the landscape and shuffle them 
-        public List<ActiveSite> activeRxSites; // = PlugIn.ModelCore.Landscape.ToList();
+        public List<ActiveSite> activeRxSites; 
         public List<ActiveSite> activeAccidentalSites;
         public List<ActiveSite> activeLightningSites;
 
         public static int FutureClimateBaseYear;
-        //public static int WeatherRandomizer = 0;
-        //private static double RelativeHumiditySlopeAdjust;
 
         public static List<IFireDamage> FireDamages_Severity1;
         public static List<IFireDamage> FireDamages_Severity2;
         public static List<IFireDamage> FireDamages_Severity3;
-        //private int duration;
-        //private string climateConfigFile;
         private static int totalBurnedSites;
         private static int numberOfFire;
         private static int totalBiomassMortality;
@@ -50,11 +47,12 @@ namespace Landis.Extension.Scrapple
         private static int numCellsSeverity2;
         private static int numCellsSeverity3;
 
-
-        //private string mapNameTemplate;
-        //private double severityCalibrate;
         private static IInputParameters parameters;
         private static ICore modelCore;
+
+        public static double MaximumSpreadAreaB0;
+        public static double MaximumSpreadAreaB1;
+        public static double MaximumSpreadAreaB2;
 
         //---------------------------------------------------------------------
 
@@ -89,10 +87,12 @@ namespace Landis.Extension.Scrapple
         public override void Initialize()
         {
             Timestep = 1;  // RMS:  Initially we will force annual time step. parameters.Timestep;
-            //mapNameTemplate = parameters.MapNamesTemplate;
             FireDamages_Severity1 = parameters.FireDamages_Severity1;
             FireDamages_Severity2 = parameters.FireDamages_Severity2;
             FireDamages_Severity3 = parameters.FireDamages_Severity3;
+            MaximumSpreadAreaB0 = parameters.MaximumSpreadAreaB0;
+            MaximumSpreadAreaB1 = parameters.MaximumSpreadAreaB1;
+            MaximumSpreadAreaB2 = parameters.MaximumSpreadAreaB2;
 
             // Later, if maps are dynamic, this process will need to be repeated every time the maps are updated.
             activeAccidentalSites = new List<ActiveSite>();
@@ -193,9 +193,7 @@ namespace Landis.Extension.Scrapple
 
             // Sites are weighted for ignition in the Shuffle method, based on the respective inputs maps.
             List<ActiveSite> shuffledAccidentalFireSites = Shuffle(activeAccidentalSites, SiteVars.AccidentalFireWeight);
-            //activeSites = PlugIn.ModelCore.Landscape.ToList();
             List<ActiveSite> shuffledLightningFireSites = Shuffle(activeLightningSites, SiteVars.LightningFireWeight);
-            //activeSites = PlugIn.ModelCore.Landscape.ToList();
             List<ActiveSite> shuffledRxFireSites = Shuffle(activeRxSites, SiteVars.RxFireWeight);
 
             foreach(IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
