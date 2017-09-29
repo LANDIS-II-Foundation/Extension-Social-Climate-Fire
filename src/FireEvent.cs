@@ -303,9 +303,8 @@ namespace Landis.Extension.Scrapple
                 }
 
                 //      Calculate spread-area-max 
-                double spreadAreaMax = PlugIn.MaximumSpreadAreaB0 + PlugIn.MaximumSpreadAreaB1*fireWeatherIndex + PlugIn.MaximumSpreadAreaB2*windSpeed;
-                // What are the units??  Maybe need to do conversion??
-
+                double spreadAreaMaxHectares = PlugIn.MaximumSpreadAreaB0 + PlugIn.MaximumSpreadAreaB1*fireWeatherIndex + PlugIn.MaximumSpreadAreaB2*windSpeed;
+                
                 if (!spreadArea.ContainsKey(day))
                 {
                     spreadArea.Add(day, 1);  // second int is the cell count, later turned into area
@@ -324,7 +323,11 @@ namespace Landis.Extension.Scrapple
                 foreach (Site neighborSite in neighbors)
                 {
                     //  if spread-area > spread-area-max, day = day + 1
-                    if (spreadArea[day] > spreadAreaMax)
+                    // Assuming that spreadAreaMax units are hectares:
+                    double dailySpreadAreaHectares = spreadArea[day] * PlugIn.ModelCore.CellArea / 10000; // convert to Ha
+
+
+                    if (dailySpreadAreaHectares > spreadAreaMaxHectares)
                         neighborDay = day+1;
                     this.Spread(PlugIn.ModelCore.CurrentTime, neighborDay, (ActiveSite)initiationSite);
                 }
