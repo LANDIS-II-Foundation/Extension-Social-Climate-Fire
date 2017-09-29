@@ -36,6 +36,9 @@ namespace Landis.Extension.Scrapple
         double MaxFineFuels { get; set; }
         double MaxRxWindSpeed { get; set; }
         double MaxRxFireWeatherIndex { get; set; }
+        double MinRxFireWeatherIndex { get; set; }
+        int NumberRxAnnualFires { get; set; }
+
         int LightningSuppressEffectivenss_low { get; set; }
         int LightningSuppressEffectivenss_medium { get; set; }
         int LightningSuppressEffectivenss_high { get; set; }
@@ -82,6 +85,8 @@ namespace Landis.Extension.Scrapple
         private double maxFineFuels;
         private double maxRxWindSpeed;
         private double maxRxFireWeatherIndex;
+        private double minRxFireWeatherIndex;
+        private int numberRxAnnualFires;
 
         private int lightningSuppressEffectivenss_low;
         private int lightningSuppressEffectivenss_medium;
@@ -348,6 +353,30 @@ namespace Landis.Extension.Scrapple
             set
             {
                 maxRxFireWeatherIndex = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public double MinRxFireWeatherIndex
+        {
+            get
+            {
+                return minRxFireWeatherIndex;
+            }
+            set
+            {
+                minRxFireWeatherIndex = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public int NumberRxAnnualFires
+        {
+            get
+            {
+                return numberRxAnnualFires;
+            }
+            set
+            {
+                numberRxAnnualFires = value;
             }
         }
         //---------------------------------------------------------------------

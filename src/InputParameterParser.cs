@@ -123,6 +123,18 @@ namespace Landis.Extension.Scrapple
             ReadVar(maxRxFWI);
             parameters.MaxRxFireWeatherIndex = maxRxFWI.Value;
 
+            InputVar<double> minRxFWI = new InputVar<double>("MinimumRxFireWeatherIndex");
+            ReadVar(minRxFWI);
+            parameters.MinRxFireWeatherIndex = minRxFWI.Value;
+
+            InputVar<int> nrxf = new InputVar<int>("NumberRxAnnualFires");
+            ReadVar(nrxf);
+            parameters.NumberRxAnnualFires = nrxf.Value;
+
+            InputVar<int> lfma = new InputVar<int>("LadderFuelMaxAge");
+            ReadVar(lfma);
+            parameters.LadderFuelMaxAge = lfma.Value;
+
             InputVar<int> lso = new InputVar<int>("SuppressionEffectiveness:LightningLow");
             ReadVar(lso);
             parameters.LightningSuppressEffectivenss_low = lso.Value;
@@ -158,10 +170,6 @@ namespace Landis.Extension.Scrapple
             InputVar<int> ash = new InputVar<int>("SuppressionEffectiveness:AccidentalHigh");
             ReadVar(ash);
             parameters.AccidentalSuppressEffectivenss_high = ash.Value;
-
-            InputVar<int> lfma = new InputVar<int>("LadderFuelMaxAge");
-            ReadVar(lfma);
-            parameters.LadderFuelMaxAge = lfma.Value;
 
             //-------------------------------------------------------------------
             //  Read table of Fire Damage classes.

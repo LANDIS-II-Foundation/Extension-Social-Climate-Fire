@@ -23,6 +23,9 @@ AccidentalIgnitionsB1 0.0
 MaximumFineFuels 60.0
 MaximumRxWindSpeed 4.0
 MaximumRxFireWeatherIndex 30.0
+MinimumRxFireWeatherIndex 15.0
+NumberRxAnnualFires 5
+LadderFuelMaxAge 30
 
 SuppressionEffectiveness:LightningLow		5
 SuppressionEffectiveness:LightningMedium	50
@@ -34,7 +37,6 @@ SuppressionEffectiveness:AccidentalLow		5
 SuppressionEffectiveness:AccidentalMedium	50
 SuppressionEffectiveness:AccidentalHigh		75
 
-LadderFuelMaxAge 30
 
 FireIntensityClass_1_DamageTable
 >> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0

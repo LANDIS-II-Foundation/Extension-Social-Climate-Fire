@@ -208,6 +208,8 @@ namespace Landis.Extension.Scrapple
                 {
                     throw new UninitializedClimateData(string.Format("Climate data could not be found \t year: {0} in ecoregion: {1}", actualYear, ecoregion.Name));
                 }
+
+                int numRxFires = parameters.NumberRxAnnualFires;
                 for (int day = 0; day < daysPerYear; ++day)
                 {
                     try
@@ -227,9 +229,8 @@ namespace Landis.Extension.Scrapple
                         for (int i = 0; i < numFires; ++i)
                         {
                             Ignite(Ignition.Accidental, shuffledAccidentalFireSites, day, fireWeatherIndex);
+                            LogIgnition(ModelCore.CurrentTime, fireWeatherIndex, Ignition.Accidental.ToString(), numFires, day);
                         }
-
-                        LogIgnition(ModelCore.CurrentTime, fireWeatherIndex, Ignition.Accidental.ToString(), numFires, day);
 
                         // Ignite Lightning Fires
                         numFires = NumberOfIgnitions(Ignition.Lightning, fireWeatherIndex);
@@ -238,14 +239,16 @@ namespace Landis.Extension.Scrapple
                             Ignite(Ignition.Lightning, shuffledLightningFireSites, day, fireWeatherIndex);
                             LogIgnition(ModelCore.CurrentTime, fireWeatherIndex, Ignition.Lightning.ToString(), numFires, day);
                         }
-                    }
-                    if ( AllowRxFire(day, fireWeatherIndex) )
-                    {
-                        numFires = NumberOfIgnitions(Ignition.Rx, fireWeatherIndex);
-                        for (int i = 0; i < numFires; ++i)
+
+                        // Ignite a single Rx fire per day
+                        if (numRxFires > 0 && 
+                            fireWeatherIndex > parameters.MinRxFireWeatherIndex && 
+                            fireWeatherIndex < parameters.MaxRxFireWeatherIndex &&
+                            weatherData.DailyWindSpeed[day] < parameters.MaxRxWindSpeed)
                         {
                             Ignite(Ignition.Rx, shuffledRxFireSites, day, fireWeatherIndex);
                             LogIgnition(ModelCore.CurrentTime, fireWeatherIndex, Ignition.Rx.ToString(), numFires, day);
+                            numRxFires--;
                         }
                     }
                 }
