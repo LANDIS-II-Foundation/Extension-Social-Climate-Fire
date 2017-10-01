@@ -198,6 +198,9 @@ namespace Landis.Extension.Scrapple
 
             foreach(IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
             {
+                if (!ecoregion.Active)
+                    continue;
+
                 try
                 {
                     weatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
