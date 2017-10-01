@@ -95,21 +95,21 @@ namespace Landis.Extension.Scrapple
             ReadVar(lightningB1);
             parameters.LightningIgnitionB1 = lightningB1.Value;
 
-            InputVar<double> rxB0 = new InputVar<double>("RxFireIgnitionsB0");
-            ReadVar(rxB0);
-            parameters.LightningIgnitionB0 = rxB0.Value;
+            //InputVar<double> rxB0 = new InputVar<double>("RxFireIgnitionsB0");
+            //ReadVar(rxB0);
+            //parameters.LightningIgnitionB0 = rxB0.Value;
 
-            InputVar<double> rxB1 = new InputVar<double>("RxFireIgnitionsB1");
-            ReadVar(rxB1);
-            parameters.LightningIgnitionB1 = rxB1.Value;
+            //InputVar<double> rxB1 = new InputVar<double>("RxFireIgnitionsB1");
+            //ReadVar(rxB1);
+            //parameters.LightningIgnitionB1 = rxB1.Value;
 
             InputVar<double> accidentalB0 = new InputVar<double>("AccidentalIgnitionsB0");
             ReadVar(accidentalB0);
-            parameters.LightningIgnitionB0 = accidentalB0.Value;
+            parameters.AccidentalFireIgnitionB0 = accidentalB0.Value;
 
             InputVar<double> accidentalB1 = new InputVar<double>("AccidentalIgnitionsB1");
             ReadVar(accidentalB1);
-            parameters.LightningIgnitionB1 = accidentalB1.Value;
+            parameters.AccidentalFireIgnitionB1 = accidentalB1.Value;
 
             InputVar<double> maxFF = new InputVar<double>("MaximumFineFuels");
             ReadVar(maxFF);

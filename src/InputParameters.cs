@@ -29,8 +29,8 @@ namespace Landis.Extension.Scrapple
 
         double LightningIgnitionB0 { get; set; }
         double LightningIgnitionB1 { get; set; }
-        double RxFireIgnitionB0 { get; set; }
-        double RxFireIgnitionB1 { get; set; }
+        //double RxFireIgnitionB0 { get; set; }
+        //double RxFireIgnitionB1 { get; set; }
         double AccidentalFireIgnitionB0 { get; set; }
         double AccidentalFireIgnitionB1 { get; set; }
         double MaxFineFuels { get; set; }
@@ -84,8 +84,8 @@ namespace Landis.Extension.Scrapple
 
         private double lightningIgnitionB0;
         private double lightningIgnitionB1;
-        private double rxFireIgnitionB0;
-        private double rxFireIgnitionB1;
+        //private double rxFireIgnitionB0;
+        //private double rxFireIgnitionB1;
         private double accidentalFireIgnitionB0;
         private double accidentalFireIgnitionB1;
         private double maxFineFuels;
@@ -281,30 +281,30 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public double RxFireIgnitionB0
-        {
-            get
-            {
-                return rxFireIgnitionB0;
-            }
-            set
-            {
-                rxFireIgnitionB0 = value;
-            }
-        }
+        //public double RxFireIgnitionB0
+        //{
+        //    get
+        //    {
+        //        return rxFireIgnitionB0;
+        //    }
+        //    set
+        //    {
+        //        rxFireIgnitionB0 = value;
+        //    }
+        //}
 
-        //---------------------------------------------------------------------
-        public double RxFireIgnitionB1
-        {
-            get
-            {
-                return rxFireIgnitionB1;
-            }
-            set
-            {
-                rxFireIgnitionB1 = value;
-            }
-        }
+        ////---------------------------------------------------------------------
+        //public double RxFireIgnitionB1
+        //{
+        //    get
+        //    {
+        //        return rxFireIgnitionB1;
+        //    }
+        //    set
+        //    {
+        //        rxFireIgnitionB1 = value;
+        //    }
+        //}
         //---------------------------------------------------------------------
         public double AccidentalFireIgnitionB0
         {

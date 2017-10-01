@@ -374,11 +374,11 @@ namespace Landis.Extension.Scrapple
                 b0 = parameters.LightningIgnitionB0;
                 b1 = parameters.LightningIgnitionB1;
             }
-            if (ignitionType == Ignition.Rx)
-            {
-                b0 = parameters.RxFireIgnitionB0;
-                b1 = parameters.RxFireIgnitionB1;
-            }
+            //if (ignitionType == Ignition.Rx)
+            //{
+            //    b0 = parameters.RxFireIgnitionB0;
+            //    b1 = parameters.RxFireIgnitionB1;
+            //}
             if (ignitionType == Ignition.Accidental)
             {
                 b0 = parameters.AccidentalFireIgnitionB0;

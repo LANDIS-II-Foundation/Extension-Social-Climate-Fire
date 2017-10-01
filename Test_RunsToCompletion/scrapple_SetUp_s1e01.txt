@@ -16,8 +16,8 @@ UphillSlopeAzimuthMap  UphillSlope.gis
 
 LightningIgnitionsB0  0.0
 LightningIgnitionsB1  0.0
-RxFireIgnitionsB0 0.0
-RxFireIgnitionsB1 0.0
+>> RxFireIgnitionsB0 0.0
+>> RxFireIgnitionsB1 0.0
 AccidentalIgnitionsB0 0.0
 AccidentalIgnitionsB1 0.0
 MaximumFineFuels 60.0

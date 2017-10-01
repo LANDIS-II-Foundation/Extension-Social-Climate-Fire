@@ -279,7 +279,7 @@ namespace Landis.Extension.Scrapple
 
                     // Log information
                     SiteVars.TypeOfIginition[site] = (ushort) this.IgnitionType;
-                    SiteVars.Severity[site] = (ushort) severity;
+                    SiteVars.Severity[site] = (byte) severity;
                     SiteVars.DayOfFire[site] = (ushort) day;
                     this.MeanSeverity += severity;
                     if (severity == 1)
