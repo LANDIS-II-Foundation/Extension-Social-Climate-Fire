@@ -143,9 +143,17 @@ namespace Landis.Extension.Scrapple
             ReadVar(maxSA2);
             parameters.MaximumSpreadAreaB0 = maxSA2.Value;
 
-            InputVar<int> lfma = new InputVar<int>("LadderFuelMaxAge");
+            InputVar<int> lfma = new InputVar<int>("SeverityFactor:LadderFuelMaxAge");
             ReadVar(lfma);
             parameters.LadderFuelMaxAge = lfma.Value;
+
+            InputVar<double> sf_lf = new InputVar<double>("SeverityFactor:LadderFuelBiomass");
+            ReadVar(sf_lf);
+            parameters.SeverityFactor_LadderFuelPercentage = sf_lf.Value;
+
+            InputVar<double> sf_ff = new InputVar<double>("SeverityFactor:FineFuelBiomass");
+            ReadVar(sf_ff);
+            parameters.SeverityFactor_FineFuelPercentage = sf_ff.Value;
 
             InputVar<int> lso = new InputVar<int>("SuppressionEffectiveness:LightningLow");
             ReadVar(lso);

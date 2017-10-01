@@ -21,9 +21,9 @@ LightningIgnitionsB1  0.0
 AccidentalIgnitionsB0 0.0
 AccidentalIgnitionsB1 0.0
 MaximumFineFuels 60.0
-MaximumRxWindSpeed 4.0
+MaximumRxWindSpeed 10.0
 MaximumRxFireWeatherIndex 30.0
-MinimumRxFireWeatherIndex 15.0
+MinimumRxFireWeatherIndex 5.0
 NumberRxAnnualFires 5
 
 MaximumSpreadAreaB0	3.1
@@ -31,7 +31,9 @@ MaximumSpreadAreaB1	0.0
 MaximumSpreadAreaB2	0.0
 
 
-LadderFuelMaxAge 30
+SeverityFactor:LadderFuelMaxAge 5
+SeverityFactor:LadderFuelBiomass 2.0
+SeverityFactor:FineFuelBiomass  1.0
 
 SuppressionEffectiveness:LightningLow		5
 SuppressionEffectiveness:LightningMedium	50

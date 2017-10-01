@@ -50,6 +50,7 @@ namespace Landis.Extension.Scrapple
         public Dictionary<int, int> spreadArea;
 
         public int maxDay;
+        public int siteSeverity;
 
         //---------------------------------------------------------------------
         static FireEvent()
@@ -131,7 +132,6 @@ namespace Landis.Extension.Scrapple
             //PlugIn.ModelCore.UI.WriteLine("  Fire Event initiated.  Day = {0}, IgnitionType = {1}.", day, ignitionType);
             
             //First, check for fire overlap (NECESSARY??):
-
             if (!SiteVars.Disturbed[initiationSite])
             {
                 // Randomly select neighbor to spread to
@@ -141,7 +141,7 @@ namespace Landis.Extension.Scrapple
                 FireEvent fireEvent = new FireEvent(initiationSite, day, ignitionType);
 
                 fireEvent.Spread(PlugIn.ModelCore.CurrentTime, day, (ActiveSite) initiationSite);
-                if(fireEvent.CohortsKilled > 0)
+                //if(fireEvent.CohortsKilled > 0)
                     LogEvent(PlugIn.ModelCore.CurrentTime, fireEvent);
 
                 return fireEvent;
@@ -183,7 +183,12 @@ namespace Landis.Extension.Scrapple
             double windDirection = this.annualWeatherData.DailyWindDirection[day];
             this.MeanWindDirection += windDirection;
             this.MeanWindSpeed += windSpeed;
-            //double fineFuels = SiteVars.FineFuels[site];  // NEED TO FIX NECN-Hydro installer
+            double fineFuels = 10.0; //SiteVars.FineFuels[site];  // NEED TO FIX NECN-Hydro installer
+            double ladderFuelBiomass = 0.0;
+            foreach (ISpeciesCohorts speciesCohorts in SiteVars.Cohorts[site])
+                foreach (ICohort cohort in speciesCohorts)
+                    if (PlugIn.Parameters.LadderFuelSpeciesList.Contains(cohort.Species) && cohort.Age <= PlugIn.Parameters.LadderFuelMaxAge)
+                        ladderFuelBiomass += cohort.Biomass;
             
             //PlugIn.ModelCore.UI.WriteLine("  Fire spreading.  Day = {0}, FWI = {1}, windSpeed = {2}, windDirection = {3}.", day, fireWeatherIndex, windSpeed, windDirection);
 
@@ -201,16 +206,16 @@ namespace Landis.Extension.Scrapple
                 switch (SiteVars.AccidentalSuppressionIndex[site])
                 {
                     case 1:
-                        suppressEffect = 0.5;  // Need input values
+                        suppressEffect = (double)PlugIn.Parameters.AccidentalSuppressEffectivenss_low / 100.0;
                         break;
                     case 2:
-                        suppressEffect = 0.25;
+                        suppressEffect = (double)PlugIn.Parameters.AccidentalSuppressEffectivenss_medium / 100.0;
                         break;
                     case 3:
-                        suppressEffect = 0.05;
+                        suppressEffect = (double)PlugIn.Parameters.AccidentalSuppressEffectivenss_high / 100.0;
                         break;
                     default:
-                        suppressEffect = 1.0;
+                        suppressEffect = 1.0;  // None
                         break;
 
                 }
@@ -220,13 +225,13 @@ namespace Landis.Extension.Scrapple
                 switch (SiteVars.LightningSuppressionIndex[site])
                 {
                     case 1:
-                        suppressEffect = 0.5;  // Need input values
+                        suppressEffect = (double) PlugIn.Parameters.LightningSuppressEffectivenss_low / 100.0;
                         break;
                     case 2:
-                        suppressEffect = 0.25;
+                        suppressEffect = (double)PlugIn.Parameters.LightningSuppressEffectivenss_medium / 100.0;
                         break;
                     case 3:
-                        suppressEffect = 0.05;
+                        suppressEffect = (double)PlugIn.Parameters.LightningSuppressEffectivenss_high / 100.0;
                         break;
                     default:
                         suppressEffect = 1.0;
@@ -239,13 +244,13 @@ namespace Landis.Extension.Scrapple
                 switch (SiteVars.RxSuppressionIndex[site])
                 {
                     case 1:
-                        suppressEffect = 0.5;  // Need input values
+                        suppressEffect = (double)PlugIn.Parameters.RxSuppressEffectivenss_low / 100.0;
                         break;
                     case 2:
-                        suppressEffect = 0.25;
+                        suppressEffect = (double)PlugIn.Parameters.RxSuppressEffectivenss_medium / 100.0;
                         break;
                     case 3:
-                        suppressEffect = 0.05;
+                        suppressEffect = (double)PlugIn.Parameters.RxSuppressEffectivenss_high / 100.0;
                         break;
                     default:
                         suppressEffect = 1.0;
@@ -262,13 +267,25 @@ namespace Landis.Extension.Scrapple
 
 
                 // Next, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
-                //      Severity a function of fwi, ladder fuels, other? (AK)
-                // ********* TEMP ****************************************
-                int severity = (int) Math.Ceiling(PlugIn.ModelCore.GenerateUniform() * 3.0);
-                // ********* TEMP ****************************************
+                // Severity a function of ladder fuels, fine fuels, source spread intensity.
+                siteSeverity = 1;
+                int highSeverityRiskFactors = 0;
+                if (fineFuels > PlugIn.Parameters.SeverityFactor_FineFuelPercentage)
+                    highSeverityRiskFactors++;
+                if (ladderFuelBiomass > PlugIn.Parameters.SeverityFactor_LadderFuelPercentage)
+                    highSeverityRiskFactors++;
+                if(SiteVars.Severity[initiationSite] > 2)
+                    highSeverityRiskFactors++;
+
+                if (highSeverityRiskFactors == 1)
+                    siteSeverity = 2;
+                if (highSeverityRiskFactors > 1)
+                    siteSeverity = 3;
+                // End SEVERITY calculation
+
                 int siteCohortsKilled = 0;
 
-                if (severity > 0)
+                if (siteSeverity > 0)
                 {
                     //      Cause mortality
                     siteCohortsKilled = Damage(site);
@@ -279,20 +296,22 @@ namespace Landis.Extension.Scrapple
 
                     // Log information
                     SiteVars.TypeOfIginition[site] = (ushort) this.IgnitionType;
-                    SiteVars.Severity[site] = (byte) severity;
+                    SiteVars.Severity[site] = (byte)siteSeverity;
                     SiteVars.DayOfFire[site] = (ushort) day;
-                    this.MeanSeverity += severity;
-                    if (severity == 1)
+                    this.MeanSeverity += siteSeverity;
+                    if (siteSeverity == 1)
                         this.NumberCellsSeverity1++;
-                    if (severity == 2)
+                    if (siteSeverity == 2)
                         this.NumberCellsSeverity2++;
-                    if (severity == 3)
+                    if (siteSeverity == 3)
                         this.NumberCellsSeverity3++;
 
                 }
 
                 //      Calculate spread-area-max 
-                double spreadAreaMaxHectares = PlugIn.MaximumSpreadAreaB0 + PlugIn.MaximumSpreadAreaB1*fireWeatherIndex + PlugIn.MaximumSpreadAreaB2*windSpeed;
+                double spreadAreaMaxHectares = PlugIn.Parameters.MaximumSpreadAreaB0 + 
+                    PlugIn.Parameters.MaximumSpreadAreaB1*fireWeatherIndex + 
+                    PlugIn.Parameters.MaximumSpreadAreaB2*windSpeed;
                 
                 if (!spreadArea.ContainsKey(day))
                 {
@@ -372,15 +391,15 @@ namespace Landis.Extension.Scrapple
         //bool ICohortDisturbance.MarkCohortForDeath(ICohort cohort)
         {
             bool killCohort = false;
-            int siteSeverity = 1;
+            //int siteSeverity = 1;
 
             List<IFireDamage> fireDamages = null;
             if (siteSeverity == 1)
-                fireDamages = PlugIn.FireDamages_Severity1;
+                fireDamages = PlugIn.Parameters.FireDamages_Severity1;
             if (siteSeverity == 2)
-                fireDamages = PlugIn.FireDamages_Severity2;
+                fireDamages = PlugIn.Parameters.FireDamages_Severity2;
             if (siteSeverity == 3)
-                fireDamages = PlugIn.FireDamages_Severity3;
+                fireDamages = PlugIn.Parameters.FireDamages_Severity3;
 
             foreach (IFireDamage damage in fireDamages)
             {

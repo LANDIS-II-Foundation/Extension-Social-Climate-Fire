@@ -37,9 +37,9 @@ namespace Landis.Extension.Scrapple
 
         public static int FutureClimateBaseYear;
 
-        public static List<IFireDamage> FireDamages_Severity1;
-        public static List<IFireDamage> FireDamages_Severity2;
-        public static List<IFireDamage> FireDamages_Severity3;
+        //public static List<IFireDamage> FireDamages_Severity1;
+        //public static List<IFireDamage> FireDamages_Severity2;
+        //public static List<IFireDamage> FireDamages_Severity3;
         private static int totalBurnedSites;
         private static int numberOfFire;
         private static int totalBiomassMortality;
@@ -47,7 +47,7 @@ namespace Landis.Extension.Scrapple
         private static int numCellsSeverity2;
         private static int numCellsSeverity3;
 
-        private static IInputParameters parameters;
+        public static IInputParameters Parameters;
         private static ICore modelCore;
 
         public static double MaximumSpreadAreaB0;
@@ -79,7 +79,7 @@ namespace Landis.Extension.Scrapple
             modelCore = mCore;
             SiteVars.Initialize();
             InputParameterParser parser = new InputParameterParser();
-            parameters = Landis.Data.Load<IInputParameters>(dataFile, parser);
+            Parameters = Landis.Data.Load<IInputParameters>(dataFile, parser);
         }
 
         //---------------------------------------------------------------------
@@ -87,12 +87,12 @@ namespace Landis.Extension.Scrapple
         public override void Initialize()
         {
             Timestep = 1;  // RMS:  Initially we will force annual time step. parameters.Timestep;
-            FireDamages_Severity1 = parameters.FireDamages_Severity1;
-            FireDamages_Severity2 = parameters.FireDamages_Severity2;
-            FireDamages_Severity3 = parameters.FireDamages_Severity3;
-            MaximumSpreadAreaB0 = parameters.MaximumSpreadAreaB0;
-            MaximumSpreadAreaB1 = parameters.MaximumSpreadAreaB1;
-            MaximumSpreadAreaB2 = parameters.MaximumSpreadAreaB2;
+            //FireDamages_Severity1 = parameters.FireDamages_Severity1;
+            //FireDamages_Severity2 = parameters.FireDamages_Severity2;
+            //FireDamages_Severity3 = parameters.FireDamages_Severity3;
+            //MaximumSpreadAreaB0 = parameters.MaximumSpreadAreaB0;
+            //MaximumSpreadAreaB1 = parameters.MaximumSpreadAreaB1;
+            //MaximumSpreadAreaB2 = parameters.MaximumSpreadAreaB2;
 
             // Later, if maps are dynamic, this process will need to be repeated every time the maps are updated.
             activeAccidentalSites = new List<ActiveSite>();
@@ -131,9 +131,9 @@ namespace Landis.Extension.Scrapple
 
             // Initilize the FireRegions Maps
             modelCore.UI.WriteLine("   Initializing Fire Region Maps...");
-            MapUtility.Initilize(parameters.LighteningFireMap, parameters.AccidentalFireMap, parameters.RxFireMap,
-                                 parameters.LighteningSuppressionMap, parameters.AccidentalSuppressionMap, parameters.RxSuppressionMap);
-            MetadataHandler.InitializeMetadata(parameters.Timestep, ModelCore);
+            MapUtility.Initilize(Parameters.LighteningFireMap, Parameters.AccidentalFireMap, Parameters.RxFireMap,
+                                 Parameters.LighteningSuppressionMap, Parameters.AccidentalSuppressionMap, Parameters.RxSuppressionMap);
+            MetadataHandler.InitializeMetadata(Parameters.Timestep, ModelCore);
 
             modelCore.UI.WriteLine("   Initializing Fire Events...");
             //FireEvent.Initialize(parameters.FireDamages);
@@ -210,7 +210,7 @@ namespace Landis.Extension.Scrapple
                     throw new UninitializedClimateData(string.Format("Climate data could not be found \t year: {0} in ecoregion: {1}", actualYear, ecoregion.Name));
                 }
 
-                int numRxFires = parameters.NumberRxAnnualFires;
+                int numRxFires = Parameters.NumberRxAnnualFires;
                 for (int day = 0; day < daysPerYear; ++day)
                 {
                     try
@@ -243,12 +243,12 @@ namespace Landis.Extension.Scrapple
 
                         // Ignite a single Rx fire per day
                         if (numRxFires > 0 && 
-                            fireWeatherIndex > parameters.MinRxFireWeatherIndex && 
-                            fireWeatherIndex < parameters.MaxRxFireWeatherIndex &&
-                            weatherData.DailyWindSpeed[day] < parameters.MaxRxWindSpeed)
+                            fireWeatherIndex > Parameters.MinRxFireWeatherIndex && 
+                            fireWeatherIndex < Parameters.MaxRxFireWeatherIndex &&
+                            weatherData.DailyWindSpeed[day] < Parameters.MaxRxWindSpeed)
                         {
                             Ignite(Ignition.Rx, shuffledRxFireSites, day, fireWeatherIndex);
-                            LogIgnition(ModelCore.CurrentTime, fireWeatherIndex, Ignition.Rx.ToString(), numRxFires, day);
+                            LogIgnition(ModelCore.CurrentTime, fireWeatherIndex, Ignition.Rx.ToString(), 1, day);
                             numRxFires--;
                         }
                     }
@@ -374,8 +374,8 @@ namespace Landis.Extension.Scrapple
             double b1 = 0.0;
             if(ignitionType == Ignition.Lightning)
             {
-                b0 = parameters.LightningIgnitionB0;
-                b1 = parameters.LightningIgnitionB1;
+                b0 = Parameters.LightningIgnitionB0;
+                b1 = Parameters.LightningIgnitionB1;
             }
             //if (ignitionType == Ignition.Rx)
             //{
@@ -384,23 +384,15 @@ namespace Landis.Extension.Scrapple
             //}
             if (ignitionType == Ignition.Accidental)
             {
-                b0 = parameters.AccidentalFireIgnitionB0;
-                b1 = parameters.AccidentalFireIgnitionB1;
+                b0 = Parameters.AccidentalFireIgnitionB0;
+                b1 = Parameters.AccidentalFireIgnitionB1;
             }
 
             int numIgnitions = 0;
             double possibleIgnitions = Math.Pow(Math.E, (b0 + (b1* fireWeatherIndex)));
-            possibleIgnitions = (int)Math.Floor(possibleIgnitions);
-            //if (possibleIgnitions >= 3.0)
-            //{
-            //    numIgnitions = 3;
-            //}
-            //else
-            //{
-            //int floorPossibleIginitions = (int)Math.Floor(possibleIgnitions);
-            //    numIgnitions +=  floorPossibleIginitions;
-            //    numIgnitions += (modelCore.GenerateUniform() >= (possibleIgnitions - (double)floorPossibleIginitions) ? 1 : 0);
-            //}
+            int floorPossibleIginitions = (int)Math.Floor(possibleIgnitions);
+            numIgnitions +=  floorPossibleIginitions;
+            numIgnitions += (modelCore.GenerateUniform() >= (possibleIgnitions - (double)floorPossibleIginitions) ? 1 : 0);
             return numIgnitions;
         }
 

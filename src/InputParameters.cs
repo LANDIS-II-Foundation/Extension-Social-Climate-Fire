@@ -44,7 +44,8 @@ namespace Landis.Extension.Scrapple
         double MaximumSpreadAreaB2 { get; set; }
 
         int LadderFuelMaxAge { get; set; }
-
+        double SeverityFactor_LadderFuelPercentage { get; set; }
+        double SeverityFactor_FineFuelPercentage { get; set; }
 
         int LightningSuppressEffectivenss_low { get; set; }
         int LightningSuppressEffectivenss_medium { get; set; }
@@ -99,7 +100,8 @@ namespace Landis.Extension.Scrapple
         private double maximumSpreadAreaB2;
 
         private int ladderFuelMaxAge;
-
+        private double severityFactor_LadderFuelPercentage;
+        private double severityFactor_FineFuelPercentage;
 
         private int lightningSuppressEffectivenss_low;
         private int lightningSuppressEffectivenss_medium;
@@ -437,6 +439,30 @@ namespace Landis.Extension.Scrapple
             set
             {
                 ladderFuelMaxAge = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public double SeverityFactor_LadderFuelPercentage
+        {
+            get
+            {
+                return severityFactor_LadderFuelPercentage;
+            }
+            set
+            {
+                severityFactor_LadderFuelPercentage = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public double SeverityFactor_FineFuelPercentage
+        {
+            get
+            {
+                return severityFactor_FineFuelPercentage;
+            }
+            set
+            {
+                severityFactor_FineFuelPercentage = value;
             }
         }
 
