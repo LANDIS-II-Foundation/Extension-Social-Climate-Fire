@@ -33,7 +33,7 @@ namespace Landis.Extension.Scrapple
             //          table outputs:   
             //---------------------------------------
 
-            PlugIn.ignitionsLog = new MetadataTable<IgnitionsLog>("climate-ignitions-log.csv");
+            PlugIn.ignitionsLog = new MetadataTable<IgnitionsLog>("climate-fire-ignitions-log.csv");
 
             OutputMetadata tblOut_igns = new OutputMetadata()
             {

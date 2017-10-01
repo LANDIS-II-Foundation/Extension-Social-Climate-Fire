@@ -14,7 +14,7 @@ using System.Linq;
 namespace Landis.Extension.Scrapple
 {
 
-    public enum Ignition
+    public enum Ignition : int
     {
         Accidental,
         Lightning,
@@ -100,8 +100,8 @@ namespace Landis.Extension.Scrapple
 
             int actualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_DailyData.First().Key;
             this.annualWeatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
-            SiteVars.TypeOfIginition[initiationSite] = (byte)ignitionType;
-            SiteVars.Disturbed[initiationSite] = true;
+            //SiteVars.TypeOfIginition[initiationSite] = (ushort) ignitionType;
+            //SiteVars.Disturbed[initiationSite] = true;
 
             this.cohortsKilled = 0;
             this.totalSitesDamaged = 0;
@@ -160,18 +160,7 @@ namespace Landis.Extension.Scrapple
         public void Spread(int currentTime, int day, ActiveSite site)
         {
             // First, load necessary parameters
-            //      load fwi
-            //      load wind speed velocity (in which case, NOT a fire event parameter)
-            //      load wind direction (in which case, NOT a fire event parameter)
-            //      load fine fuels
-            //      load uphill slope azimuth
-            //      wind speed = wind speed adjusted
-            //AMK equations for wind speed/direction factor conversions from raw data 
-            //Refer to design doc on Google Drive for questions or explanations
-            //wsx = (wind_speed_velocity * sin(fire_azimuth)) + (wind_speed_velocity * sin(uphill_azimuth))
-            //wsy = (wind_speed_velocity * cos(fire_azimuth)) + (wind_speed_velocity * cos(uphill_azimuth))
-            //ws.factor = sqrt(wsx^2 + wsy^2) //wind speed factor
-            //wd.factor = acos(wsy/ws.factor) //wind directior factor
+            // Refer to design doc on Google Drive for questions or explanations
 
             if (day > maxDay)
             {
@@ -289,9 +278,9 @@ namespace Landis.Extension.Scrapple
                     }
 
                     // Log information
-                    SiteVars.TypeOfIginition[site] = (byte)this.IgnitionType;
-                    SiteVars.Severity[site] = (byte) severity;
-                    SiteVars.DayOfFire[site] = (byte) day;
+                    SiteVars.TypeOfIginition[site] = (ushort) this.IgnitionType;
+                    SiteVars.Severity[site] = (ushort) severity;
+                    SiteVars.DayOfFire[site] = (ushort) day;
                     this.MeanSeverity += severity;
                     if (severity == 1)
                         this.NumberCellsSeverity1++;

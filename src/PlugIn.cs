@@ -245,7 +245,7 @@ namespace Landis.Extension.Scrapple
                             weatherData.DailyWindSpeed[day] < parameters.MaxRxWindSpeed)
                         {
                             Ignite(Ignition.Rx, shuffledRxFireSites, day, fireWeatherIndex);
-                            LogIgnition(ModelCore.CurrentTime, fireWeatherIndex, Ignition.Rx.ToString(), numFires, day);
+                            LogIgnition(ModelCore.CurrentTime, fireWeatherIndex, Ignition.Rx.ToString(), numRxFires, day);
                             numRxFires--;
                         }
                     }
@@ -275,7 +275,7 @@ namespace Landis.Extension.Scrapple
                     if (site.IsActive)
                     {
                         if (SiteVars.Disturbed[site])
-                            pixel.MapCode.Value = (short)(SiteVars.TypeOfIginition[site]);
+                            pixel.MapCode.Value = (short) (SiteVars.TypeOfIginition[site] + 1);
                         else
                             pixel.MapCode.Value = 0;
                     }
@@ -289,15 +289,15 @@ namespace Landis.Extension.Scrapple
             }
 
             path = MapNames.ReplaceTemplateVars("fire/severity-{timestep}.img", currentTime);
-            using (IOutputRaster<BytePixel> outputRaster = modelCore.CreateRaster<BytePixel>(path, modelCore.Landscape.Dimensions))
+            using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
             {
-                BytePixel pixel = outputRaster.BufferPixel;
+                ShortPixel pixel = outputRaster.BufferPixel;
                 foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
                 {
                     if (site.IsActive)
                     {
                         if (SiteVars.Disturbed[site])
-                            pixel.MapCode.Value = (SiteVars.Severity[site]);
+                            pixel.MapCode.Value = (short) (SiteVars.Severity[site]);
                         else
                             pixel.MapCode.Value = 0;
                     }
@@ -311,15 +311,15 @@ namespace Landis.Extension.Scrapple
             }
 
             path = MapNames.ReplaceTemplateVars("fire/day-of-fire-{timestep}.img", currentTime);
-            using (IOutputRaster<BytePixel> outputRaster = modelCore.CreateRaster<BytePixel>(path, modelCore.Landscape.Dimensions))
+            using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
             {
-                BytePixel pixel = outputRaster.BufferPixel;
+                ShortPixel pixel = outputRaster.BufferPixel;
                 foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
                 {
                     if (site.IsActive)
                     {
                         if (SiteVars.Disturbed[site])
-                            pixel.MapCode.Value = (SiteVars.DayOfFire[site]);
+                            pixel.MapCode.Value = (short) (SiteVars.DayOfFire[site]);
                         else
                             pixel.MapCode.Value = 0;
                     }
@@ -387,15 +387,16 @@ namespace Landis.Extension.Scrapple
 
             int numIgnitions = 0;
             double possibleIgnitions = Math.Pow(Math.E, (b0 + (b1* fireWeatherIndex)));
+            possibleIgnitions = (int)Math.Floor(possibleIgnitions);
             //if (possibleIgnitions >= 3.0)
             //{
             //    numIgnitions = 3;
             //}
             //else
             //{
-                int floorPossibleIginitions = (int)Math.Floor(possibleIgnitions);
-                numIgnitions +=  floorPossibleIginitions;
-                numIgnitions += (modelCore.GenerateUniform() >= (possibleIgnitions - (double)floorPossibleIginitions) ? 1 : 0);
+            //int floorPossibleIginitions = (int)Math.Floor(possibleIgnitions);
+            //    numIgnitions +=  floorPossibleIginitions;
+            //    numIgnitions += (modelCore.GenerateUniform() >= (possibleIgnitions - (double)floorPossibleIginitions) ? 1 : 0);
             //}
             return numIgnitions;
         }
