@@ -181,7 +181,7 @@ namespace Landis.Extension.Scrapple
             }
             // EFFECTIVE WIND SPEED ************************
             double windSpeed = this.annualWeatherData.DailyWindSpeed[day];
-            double windDirection = this.annualWeatherData.DailyWindDirection[day];
+            double windDirection = this.annualWeatherData.DailyWindDirection[day];// / 180 * Math.PI;
             double combustionBuoyancy = 0;
             if (SiteVars.Severity[sourceSite] == 1)
                 combustionBuoyancy = 2.5;
@@ -191,15 +191,16 @@ namespace Landis.Extension.Scrapple
                 combustionBuoyancy = 10.0;
             double UaUb = windSpeed / combustionBuoyancy;
             double slopeDegrees = SiteVars.GroundSlope[site] / 180 * Math.PI; //convert from Radians to Degrees
-            double slopeAngle = SiteVars.UphillSlopeAzimuth[site] / 180 * Math.PI; // convert from Radians to Degrees
-            windDirection = windDirection / 180 * Math.PI;
-            double relativeWindDirection = windDirection - slopeAngle; 
+            double slopeAngle = SiteVars.UphillSlopeAzimuth[site];// / 180 * Math.PI; // convert from Radians to Degrees
+            //windDirection = windDirection / 180 * Math.PI;
+            double relativeWindDirection = (windDirection - slopeAngle) / 180 * Math.PI; 
             
             // From R.M. Nelson Intl J Wildland Fire, 2002
             double effectiveWindSpeed = combustionBuoyancy * Math.Pow(Math.Pow(UaUb, 2.0) + (2.0 * (UaUb)) * Math.Sin(slopeDegrees) * Math.Cos(relativeWindDirection) + Math.Pow(Math.Sin(slopeDegrees), 2.0), 0.5);
             this.MeanWindDirection += windDirection;
             this.MeanWindSpeed += windSpeed;
             this.MeanEffectiveWindSpeed += effectiveWindSpeed;
+            PlugIn.ModelCore.UI.WriteLine("  Slope degree={0}, slope angle={1}, wind direction={2}.", SiteVars.GroundSlope[site], slopeAngle, windDirection);
             // EFFECTIVE WIND SPEED ************************
 
             double fineFuelBiomass = 0.5; //SiteVars.FineFuels[site];  // NEED TO FIX NECN-Hydro installer
