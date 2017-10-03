@@ -29,7 +29,7 @@ namespace Landis.Extension.Scrapple
         public static Random rnd = new Random();
 
         private ActiveSite initiationSite;
-        private int totalSitesDamaged;
+        public int TotalSitesDamaged;
 
         private int cohortsKilled;
 //        private double eventSeverity;
@@ -61,12 +61,12 @@ namespace Landis.Extension.Scrapple
         }
         //---------------------------------------------------------------------
 
-        public int TotalSitesDamaged
-        {
-            get {
-                return totalSitesDamaged;
-            }
-        }
+        //public int TotalSitesDamaged
+        //{
+        //    get {
+        //        return totalSitesDamaged;
+        //    }
+        //}
         //---------------------------------------------------------------------
 
         public int CohortsKilled
@@ -109,7 +109,7 @@ namespace Landis.Extension.Scrapple
             SiteVars.Disturbed[initiationSite] = true;
 
             this.cohortsKilled = 0;
-            this.totalSitesDamaged = 1;  // minimum 1 for the ignition cell
+            this.TotalSitesDamaged = 0;  // minimum 1 for the ignition cell
             this.InitiationFireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
             this.spreadArea = new Dictionary<int, int>();
             this.NumberOfDays = 1;
@@ -167,6 +167,7 @@ namespace Landis.Extension.Scrapple
             SiteVars.TypeOfIginition[site] = (short) this.IgnitionType;
             SiteVars.DayOfFire[site] = (ushort)day;
             SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
+            this.TotalSitesDamaged++;
 
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
 
@@ -182,7 +183,7 @@ namespace Landis.Extension.Scrapple
             // EFFECTIVE WIND SPEED ************************
             double windSpeed = this.annualWeatherData.DailyWindSpeed[day];
             double windDirection = this.annualWeatherData.DailyWindDirection[day];// / 180 * Math.PI;
-            double combustionBuoyancy = 10.0;  // Cannot be zero, also very insensitive when UaUb > 5.
+            double combustionBuoyancy = 100.0;  // Cannot be zero, also very insensitive when UaUb > 5.
             if (SiteVars.Severity[sourceSite] == 1)
                 combustionBuoyancy = 10.0;
             if (SiteVars.Severity[sourceSite] == 2)
@@ -286,14 +287,12 @@ namespace Landis.Extension.Scrapple
             double spreadB2 = PlugIn.Parameters.SpreadProbabilityB2;
             double spreadB3 = PlugIn.Parameters.SpreadProbabilityB3;
 
-            double Pspread = Math.Pow(Math.E, spreadB0 + (spreadB1 * fireWeatherIndex) + (spreadB2 * fineFuelBiomass));// + (spreadB3*effectiveWindSpeed);
+            double Pspread = Math.Pow(Math.E, spreadB0 + (spreadB1 * fireWeatherIndex) + (spreadB2 * fineFuelBiomass) + (spreadB3*effectiveWindSpeed));
 
             this.MeanSpreadProbability += Pspread;
             double Pspread_adjusted = Pspread * suppressEffect;
             // End PROBABILITY OF SPREAD calculation **************************
 
-            if (Pspread_adjusted > PlugIn.ModelCore.GenerateUniform())
-            {
 
                 // SEVERITY calculation **************************
                 // Next, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
@@ -319,10 +318,10 @@ namespace Landis.Extension.Scrapple
                 {
                     //      Cause mortality
                     siteCohortsKilled = Damage(site);
-                    if (siteCohortsKilled > 0)
-                    {
-                        this.totalSitesDamaged++;
-                    }
+                    //if (siteCohortsKilled > 0)
+                    //{
+                    //    this.totalSitesDamaged++;
+                    //}
 
                     SiteVars.Severity[site] = (byte)siteSeverity;
                     this.MeanSeverity += siteSeverity;
@@ -349,6 +348,8 @@ namespace Landis.Extension.Scrapple
                     spreadArea[day]++;
                 }
 
+            if (Pspread_adjusted > PlugIn.ModelCore.GenerateUniform())
+            {
                 //      Spread to neighbors
                 List<Site> neighbors = Get4ActiveNeighbors(site);
                 neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor] || !neighbor.IsActive);

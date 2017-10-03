@@ -28,14 +28,14 @@ MaximumSpreadAreaB0	3.1
 MaximumSpreadAreaB1	0.0
 MaximumSpreadAreaB2	0.0
 
-SpreadProbabilityB0 -6.0
+SpreadProbabilityB0 -1.0
 SpreadProbabilityB1 0.085  <<FWI
-SpreadProbabilityB2 0.0  << fine fuels
+SpreadProbabilityB2 -0.005  << fine fuels
 SpreadProbabilityB3 -0.33  << wind speed
 
 SeverityFactor:LadderFuelMaxAge 50
-SeverityFactor:LadderFuelBiomass 2.0
-SeverityFactor:FineFuelBiomass  0.5
+SeverityFactor:LadderFuelBiomass -1.0
+SeverityFactor:FineFuelBiomass  0.0
 
 SuppressionEffectiveness:LightningLow		5
 SuppressionEffectiveness:LightningMedium	50
