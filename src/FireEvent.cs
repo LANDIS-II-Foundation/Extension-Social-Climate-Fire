@@ -44,6 +44,7 @@ namespace Landis.Extension.Scrapple
         public double MeanWindSpeed;
         public double MeanEffectiveWindSpeed;
         public double MeanSuppression;
+        public double MeanSpreadProbability;
         public double TotalBiomassMortality;
         public int NumberCellsSeverity1;
         public int NumberCellsSeverity2;
@@ -210,14 +211,6 @@ namespace Landis.Extension.Scrapple
                         ladderFuelBiomass += cohort.Biomass;
             // LADDER FUELS ************************
 
-            // Is spread to this site allowable?
-            //          Calculate P-spread based on fwi, adjusted wind speed, fine fuels, source intensity (or similar). (AK)
-            //          Adjust P-spread to account for suppression (RMS)
-            //          Compare P-spread-adj to random number
-
-            // ********* TEMP ****************************************
-            double Pspread_adjusted = 1.0;
-            // ********* TEMP ****************************************
 
             // SUPPRESSION ************************
             double suppressEffect = 1.0;
@@ -279,12 +272,28 @@ namespace Landis.Extension.Scrapple
                 }
             }
             this.MeanSuppression += suppressEffect;
-            // SUPPRESSION ************************
-            Pspread_adjusted *= suppressEffect;
+            // End SUPPRESSION ************************
+
+            // PROBABILITY OF SPREAD calculation **************************
+            // Is spread to this site allowable?
+            //          Calculate P-spread based on fwi, adjusted wind speed, fine fuels, source intensity (or similar). (AK)
+            //          Adjust P-spread to account for suppression (RMS)
+            //          Compare P-spread-adj to random number
+            double spreadB0 = PlugIn.Parameters.SpreadProbabilityB0;
+            double spreadB1 = PlugIn.Parameters.SpreadProbabilityB1;
+            double spreadB2 = PlugIn.Parameters.SpreadProbabilityB2;
+            double spreadB3 = PlugIn.Parameters.SpreadProbabilityB3;
+
+            double Pspread = spreadB0 + (spreadB1 * fireWeatherIndex) + (spreadB2*fineFuelBiomass)+(spreadB3*effectiveWindSpeed);
+
+            this.MeanSpreadProbability += Pspread;
+            double Pspread_adjusted = Pspread * suppressEffect;
+            // End PROBABILITY OF SPREAD calculation **************************
 
             if (Pspread_adjusted > PlugIn.ModelCore.GenerateUniform())
             {
 
+                // SEVERITY calculation **************************
                 // Next, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
                 // Severity a function of ladder fuels, fine fuels, source spread intensity.
                 siteSeverity = 1;
@@ -300,7 +309,7 @@ namespace Landis.Extension.Scrapple
                     siteSeverity = 2;
                 if (highSeverityRiskFactors > 1)
                     siteSeverity = 3;
-                // End SEVERITY calculation
+                // End SEVERITY calculation **************************
 
                 int siteCohortsKilled = 0;
 
@@ -451,6 +460,7 @@ namespace Landis.Extension.Scrapple
             el.IgnitionType = fireEvent.IgnitionType.ToString();
             el.InitialDayOfYear = fireEvent.IgnitionDay;
             el.NumberOfDays = fireEvent.NumberOfDays;
+            el.MeanSpreadProbability = fireEvent.MeanSpreadProbability / (double)fireEvent.TotalSitesDamaged;
             el.TotalSitesBurned = fireEvent.TotalSitesDamaged;
             el.CohortsKilled = fireEvent.CohortsKilled;
             el.MeanSeverity = fireEvent.MeanSeverity / (double) fireEvent.TotalSitesDamaged;

@@ -38,9 +38,6 @@ namespace Landis.Extension.Scrapple
         [DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cohorts Killed")]
         public int CohortsKilled { set; get; }
 
-        [DataFieldAttribute(Unit = FieldUnits.Severity_Rank, Desc = "Mean Severity (1-5)", Format = "0.00")]
-        public double MeanSeverity { set; get; }
-
         [DataFieldAttribute(Desc = "Average Wind Speed")]
         public double MeanWindSpeed { set; get; }
 
@@ -52,6 +49,12 @@ namespace Landis.Extension.Scrapple
 
         [DataFieldAttribute(Desc = "Average Suppression")]
         public double MeanSuppression { set; get; }
+
+        [DataFieldAttribute(Desc = "Mean Spread Probability")]
+        public double MeanSpreadProbability { set; get; }
+
+        [DataFieldAttribute(Unit = FieldUnits.Severity_Rank, Desc = "Mean Severity (1-5)", Format = "0.00")]
+        public double MeanSeverity { set; get; }
 
         [DataFieldAttribute(Desc = "Mortality Biomass")]
         public double TotalBiomassMortality { set; get; }
