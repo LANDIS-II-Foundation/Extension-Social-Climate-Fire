@@ -86,20 +86,20 @@ namespace Landis.Extension.Scrapple
             Timestep = 1;  // RMS:  Initially we will force annual time step. parameters.Timestep;
 
             // Later, if maps are dynamic, this process will need to be repeated every time the maps are updated.
-            //activeAccidentalSites = new List<ActiveSite>();
-            //foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
-            //if (SiteVars.AccidentalFireWeight[site] > 0.0)
-            //        activeAccidentalSites.Add(site);
+            activeAccidentalSites = new List<ActiveSite>();
+            foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
+                //if (SiteVars.AccidentalFireWeight[site] > 0.0)
+                    activeAccidentalSites.Add(site);
 
-            //activeRxSites = new List<ActiveSite>();
-            //foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
-            //    if (SiteVars.RxFireWeight[site] > 0.0)
-            //        activeRxSites.Add(site);
+            activeRxSites = new List<ActiveSite>();
+            foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
+                //if (SiteVars.RxFireWeight[site] > 0.0)
+                    activeRxSites.Add(site);
 
-            //activeLightningSites = new List<ActiveSite>();
-            //foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
-            //    if (SiteVars.LightningFireWeight[site] > 0.0)
-            //        activeLightningSites.Add(site);
+            activeLightningSites = new List<ActiveSite>();
+            foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
+                //if (SiteVars.LightningFireWeight[site] > 0.0)
+                    activeLightningSites.Add(site);
 
             ///******************** DEBUGGER LAUNCH *********************
             /// 
@@ -121,16 +121,15 @@ namespace Landis.Extension.Scrapple
             ///******************** DEBUGGER END *********************
 
             // Initilize the FireRegions Maps
-            modelCore.UI.WriteLine("   Initializing Fire Region Maps...");
+            modelCore.UI.WriteLine("   Initializing Fire...");
             MapUtility.Initilize(Parameters.LighteningFireMap, Parameters.AccidentalFireMap, Parameters.RxFireMap,
                                  Parameters.LighteningSuppressionMap, Parameters.AccidentalSuppressionMap, Parameters.RxSuppressionMap);
             MetadataHandler.InitializeMetadata(Parameters.Timestep, ModelCore);
 
-            modelCore.UI.WriteLine("   Initializing Fire Events...");
             //FireEvent.Initialize(parameters.FireDamages);
 
-            if (isDebugEnabled)
-                modelCore.UI.WriteLine("Initialization done");
+            //if (isDebugEnabled)
+            //    modelCore.UI.WriteLine("Initialization done");
         }
 
         
@@ -173,77 +172,80 @@ namespace Landis.Extension.Scrapple
             // VS: hasn't been properly integrated into Climate Library.
             //int daysPerYear = (AnnualClimate.IsLeapYear(actualYear) ? true : false) ? 366 : 365;
 
-            // number of fires get initilized to 0 every timestep
-            int numFires = 0;
-            double fireWeatherIndex = 0.0;
-            
+
             // Get the active sites from the landscape and shuffle them 
             // Potential area for future optimization
             //List<ActiveSite> activeSites = PlugIn.ModelCore.Landscape.ToList();
 
             // Sites are weighted for ignition in the Shuffle method, based on the respective inputs maps.
-            //List<ActiveSite> shuffledAccidentalFireSites = Shuffle(activeAccidentalSites, SiteVars.AccidentalFireWeight);
-            //List<ActiveSite> shuffledLightningFireSites = Shuffle(activeLightningSites, SiteVars.LightningFireWeight);
-            //List<ActiveSite> shuffledRxFireSites = Shuffle(activeRxSites, SiteVars.RxFireWeight);
+            List<ActiveSite> shuffledAccidentalFireSites = Shuffle(activeAccidentalSites, SiteVars.AccidentalFireWeight);
+            List<ActiveSite> shuffledLightningFireSites = Shuffle(activeLightningSites, SiteVars.LightningFireWeight);
+            List<ActiveSite> shuffledRxFireSites = Shuffle(activeRxSites, SiteVars.RxFireWeight);
 
-            foreach(IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
+            int numRxFires = Parameters.NumberRxAnnualFires;
+            for (int day = 0; day < daysPerYear; ++day)
             {
-                if (!ecoregion.Active)
-                    continue;
+                double landscapeAverageFireWeatherIndex = 0.0;
+                // number of fires get initilized to 0 every timestep
+                int numFires = 0;
 
-                try
+                foreach (IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
                 {
-                    weatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
-                }
-                catch
-                {
-                    throw new UninitializedClimateData(string.Format("Climate data could not be found \t year: {0} in ecoregion: {1}", actualYear, ecoregion.Name));
-                }
+                    if (!ecoregion.Active)
+                        continue;
 
-                int numRxFires = Parameters.NumberRxAnnualFires;
-                for (int day = 0; day < daysPerYear; ++day)
-                {
                     try
                     {
-                        fireWeatherIndex = weatherData.DailyFireWeatherIndex[day];
+                        weatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
+                    }
+                    catch
+                    {
+                        throw new UninitializedClimateData(string.Format("Climate data could not be found \t year: {0} in ecoregion: {1}", actualYear, ecoregion.Name));
+                    }
+
+                    try
+                    {
+                        landscapeAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day];
                     }
                     catch
                     {
                         throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found \t year: {0}, day: {1} in ecoregion: {2} not found", actualYear, day, ecoregion.Name));
                     }
-                    // FWI must be > .10 
-                    if (fireWeatherIndex >= .10)
+                }
+
+                landscapeAverageFireWeatherIndex /= ModelCore.Ecoregions.Count;  // THIS IS NOT CORRECTLY WEIGHTED - ALSO DOES NOT DISCOUNT INACTIVE
+                // FWI must be > .10 
+                if (landscapeAverageFireWeatherIndex >= 0.10)
+                {
+                    //List<ActiveSite> shuffledAccidentalFireSites = Shuffle(ModelCore.Landscape.ActiveSites.ToList(), SiteVars.AccidentalFireWeight);
+                    numFires = NumberOfIgnitions(Ignition.Accidental, landscapeAverageFireWeatherIndex);
+
+                    // Ignite Accidental Fires.
+                    for (int i = 0; i < numFires; ++i)
                     {
-                        List<ActiveSite> shuffledAccidentalFireSites = Shuffle(ModelCore.Landscape.ActiveSites.ToList(), SiteVars.AccidentalFireWeight);
-                        numFires = NumberOfIgnitions(Ignition.Accidental, fireWeatherIndex);
+                        Ignite(Ignition.Accidental, shuffledAccidentalFireSites, day, landscapeAverageFireWeatherIndex);
+                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Accidental.ToString(), numFires, day);
+                    }
 
-                        // Ignite Accidental Fires.
-                        for (int i = 0; i < numFires; ++i)
-                        {
-                            Ignite(Ignition.Accidental, shuffledAccidentalFireSites, day, fireWeatherIndex);
-                            LogIgnition(ModelCore.CurrentTime, fireWeatherIndex, Ignition.Accidental.ToString(), numFires, day);
-                        }
+                    // Ignite Lightning Fires
+                    //List<ActiveSite> shuffledLightningFireSites = Shuffle(ModelCore.Landscape.ActiveSites.ToList(), SiteVars.LightningFireWeight);
+                    numFires = NumberOfIgnitions(Ignition.Lightning, landscapeAverageFireWeatherIndex);
+                    for (int i = 0; i < numFires; ++i)
+                    {
+                        Ignite(Ignition.Lightning, shuffledLightningFireSites, day, landscapeAverageFireWeatherIndex);
+                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Lightning.ToString(), numFires, day);
+                    }
 
-                        // Ignite Lightning Fires
-                        List<ActiveSite> shuffledLightningFireSites = Shuffle(ModelCore.Landscape.ActiveSites.ToList(), SiteVars.LightningFireWeight);
-                        numFires = NumberOfIgnitions(Ignition.Lightning, fireWeatherIndex);
-                        for (int i = 0; i < numFires; ++i)
-                        {
-                            Ignite(Ignition.Lightning, shuffledLightningFireSites, day, fireWeatherIndex);
-                            LogIgnition(ModelCore.CurrentTime, fireWeatherIndex, Ignition.Lightning.ToString(), numFires, day);
-                        }
-
-                        List<ActiveSite> shuffledRxFireSites = Shuffle(ModelCore.Landscape.ActiveSites.ToList(), SiteVars.RxFireWeight);
-                        // Ignite a single Rx fire per day
-                        if (numRxFires > 0 && 
-                            fireWeatherIndex > Parameters.MinRxFireWeatherIndex && 
-                            fireWeatherIndex < Parameters.MaxRxFireWeatherIndex &&
-                            weatherData.DailyWindSpeed[day] < Parameters.MaxRxWindSpeed)
-                        {
-                            Ignite(Ignition.Rx, shuffledRxFireSites, day, fireWeatherIndex);
-                            LogIgnition(ModelCore.CurrentTime, fireWeatherIndex, Ignition.Rx.ToString(), 1, day);
-                            numRxFires--;
-                        }
+                    //List<ActiveSite> shuffledRxFireSites = Shuffle(ModelCore.Landscape.ActiveSites.ToList(), SiteVars.RxFireWeight);
+                    // Ignite a single Rx fire per day
+                    if (numRxFires > 0 &&
+                        landscapeAverageFireWeatherIndex > Parameters.MinRxFireWeatherIndex &&
+                        landscapeAverageFireWeatherIndex < Parameters.MaxRxFireWeatherIndex &&
+                        weatherData.DailyWindSpeed[day] < Parameters.MaxRxWindSpeed)
+                    {
+                        Ignite(Ignition.Rx, shuffledRxFireSites, day, landscapeAverageFireWeatherIndex);
+                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Rx.ToString(), 1, day);
+                        numRxFires--;
                     }
                 }
             }
@@ -385,7 +387,7 @@ namespace Landis.Extension.Scrapple
             double possibleIgnitions = Math.Pow(Math.E, (b0 + (b1* fireWeatherIndex)));
             int floorPossibleIginitions = (int)Math.Floor(possibleIgnitions);
             numIgnitions +=  floorPossibleIginitions;
-            numIgnitions += (modelCore.GenerateUniform() >= (possibleIgnitions - (double)floorPossibleIginitions) ? 1 : 0);
+            numIgnitions += (modelCore.GenerateUniform() <= (possibleIgnitions - (double)floorPossibleIginitions) ? 1 : 0);
             return numIgnitions;
         }
 
@@ -395,10 +397,11 @@ namespace Landis.Extension.Scrapple
         private static void Ignite(Ignition ignitionType, List<ActiveSite> shuffledFireSites, int day, double fireWeatherIndex)
         {
             //int attempts = 0;
-            while ( shuffledFireSites.Count() > 0 && SiteVars.Disturbed[shuffledFireSites.First()] == true )
-            {
-                shuffledFireSites.Remove(shuffledFireSites.First());
-            }
+            // TESTING REMOVING THIS AS IT IS VERY SLOW
+            //while ( shuffledFireSites.Count() > 0 && SiteVars.Disturbed[shuffledFireSites.First()] == true )
+            //{
+            //    shuffledFireSites.Remove(shuffledFireSites.First());
+            //}
             if (shuffledFireSites.Count() > 0)
             {
                 FireEvent fireEvent = FireEvent.Initiate(shuffledFireSites.First(), modelCore.CurrentTime, day, ignitionType);

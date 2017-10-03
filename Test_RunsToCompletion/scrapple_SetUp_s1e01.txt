@@ -14,19 +14,20 @@ RxSuppressionMap		./test_suppress.img
 GroundSlopeMap GroundSlope.gis
 UphillSlopeAzimuthMap  UphillSlope.gis
 
-LightningIgnitionsB0  0.0
-LightningIgnitionsB1  0.0
+LightningIgnitionsB0  -5.0
+LightningIgnitionsB1  0.005
 >> RxFireIgnitionsB0 0.0
 >> RxFireIgnitionsB1 0.0
-AccidentalIgnitionsB0 0.0
-AccidentalIgnitionsB1 0.0
+AccidentalIgnitionsB0 -5.0
+AccidentalIgnitionsB1 0.005
+
 MaximumFineFuels 60.0
 MaximumRxWindSpeed 10.0
 MaximumRxFireWeatherIndex 30.0
 MinimumRxFireWeatherIndex 5.0
 NumberRxAnnualFires 5
 
-MaximumSpreadAreaB0	3.1
+MaximumSpreadAreaB0	6.1
 MaximumSpreadAreaB1	0.0
 MaximumSpreadAreaB2	0.0
 

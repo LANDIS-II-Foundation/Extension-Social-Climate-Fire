@@ -38,6 +38,7 @@ namespace Landis.Extension.Scrapple
         public Ignition IgnitionType;
         AnnualClimate_Daily annualWeatherData;
         public int NumberOfDays;
+        public int IgnitionDay;
         public double MeanSeverity;
         public double MeanWindDirection;
         public double MeanWindSpeed;
@@ -97,6 +98,7 @@ namespace Landis.Extension.Scrapple
         public FireEvent(ActiveSite initiationSite, int day, Ignition ignitionType)
         {
             this.initiationSite = initiationSite;
+            this.IgnitionDay = day;
             this.IgnitionType = ignitionType;
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[initiationSite];
 
@@ -106,7 +108,7 @@ namespace Landis.Extension.Scrapple
             SiteVars.Disturbed[initiationSite] = true;
 
             this.cohortsKilled = 0;
-            this.totalSitesDamaged = 0;
+            this.totalSitesDamaged = 1;  // minimum 1 for the ignition cell
             this.InitiationFireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
             this.spreadArea = new Dictionary<int, int>();
             this.NumberOfDays = 1;
@@ -162,6 +164,7 @@ namespace Landis.Extension.Scrapple
 
             SiteVars.TypeOfIginition[site] = (ushort)this.IgnitionType;
             SiteVars.DayOfFire[site] = (ushort)day;
+            SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
 
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
 
@@ -187,9 +190,11 @@ namespace Landis.Extension.Scrapple
             double UaUb = windSpeed / combustionBuoyancy;
             double slopeDegrees = SiteVars.GroundSlope[site] / 180 * Math.PI; //convert from Radians to Degrees
             double slopeAngle = SiteVars.UphillSlopeAzimuth[site] / 180 * Math.PI; // convert from Radians to Degrees
+            windDirection = windDirection / 180 * Math.PI;
+            double relativeWindDirection = windDirection - slopeAngle; 
             
             // From R.M. Nelson Intl J Wildland Fire, 2002
-            double effectiveWindSpeed = combustionBuoyancy * Math.Pow(Math.Pow(UaUb, 2.0) + (2.0 * (UaUb)) * Math.Sin(slopeDegrees) * Math.Cos(slopeDegrees) + Math.Pow(Math.Sin(slopeAngle), 2.0), 0.5);
+            double effectiveWindSpeed = combustionBuoyancy * Math.Pow(Math.Pow(UaUb, 2.0) + (2.0 * (UaUb)) * Math.Sin(slopeDegrees) * Math.Cos(relativeWindDirection) + Math.Pow(Math.Sin(slopeDegrees), 2.0), 0.5);
             this.MeanWindDirection += windDirection;
             this.MeanWindSpeed += windSpeed;
             this.MeanEffectiveWindSpeed += effectiveWindSpeed;
@@ -211,7 +216,7 @@ namespace Landis.Extension.Scrapple
             //          Compare P-spread-adj to random number
 
             // ********* TEMP ****************************************
-            double Pspread_adjusted = 0.05;
+            double Pspread_adjusted = 1.0;
             // ********* TEMP ****************************************
 
             // SUPPRESSION ************************
@@ -279,8 +284,6 @@ namespace Landis.Extension.Scrapple
 
             if (Pspread_adjusted > PlugIn.ModelCore.GenerateUniform())
             {
-                SiteVars.Disturbed[site] = true;  // set to true, regardless of severity
-
 
                 // Next, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
                 // Severity a function of ladder fuels, fine fuels, source spread intensity.
@@ -446,6 +449,7 @@ namespace Landis.Extension.Scrapple
             el.InitColumn = fireEvent.initiationSite.Location.Column;
             el.InitialFireWeatherIndex = fireEvent.InitiationFireWeatherIndex;
             el.IgnitionType = fireEvent.IgnitionType.ToString();
+            el.InitialDayOfYear = fireEvent.IgnitionDay;
             el.NumberOfDays = fireEvent.NumberOfDays;
             el.TotalSitesBurned = fireEvent.TotalSitesDamaged;
             el.CohortsKilled = fireEvent.CohortsKilled;
