@@ -14,7 +14,7 @@ using System.Linq;
 namespace Landis.Extension.Scrapple
 {
 
-    public enum Ignition : int
+    public enum Ignition : short
     {
         Accidental,
         Lightning,
@@ -164,7 +164,7 @@ namespace Landis.Extension.Scrapple
                 NumberOfDays++;
             }
 
-            SiteVars.TypeOfIginition[site] = (ushort)this.IgnitionType;
+            SiteVars.TypeOfIginition[site] = (short)this.IgnitionType;
             SiteVars.DayOfFire[site] = (ushort)day;
             SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
 

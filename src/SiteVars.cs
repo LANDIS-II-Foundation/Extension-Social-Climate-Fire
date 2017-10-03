@@ -13,7 +13,7 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<double> lightningFireWeight;
         private static ISiteVar<double> rxFireWeight;
         private static ISiteVar<double> accidentalFireWeight;
-        private static ISiteVar<ushort> typeOfIginition;
+        private static ISiteVar<short> typeOfIginition;
         private static ISiteVar<byte> severity;
         private static ISiteVar<ushort> dayOfFire;
         private static ISiteVar<bool> disturbed;
@@ -47,7 +47,7 @@ namespace Landis.Extension.Scrapple
             lightningSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             rxSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             accidentalSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
-            typeOfIginition = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
+            typeOfIginition = PlugIn.ModelCore.Landscape.NewSiteVar<short>();
             disturbed = PlugIn.ModelCore.Landscape.NewSiteVar<bool>();
 
             //Also initialize topography, will be overwritten if optional parameters provided:
@@ -135,7 +135,7 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public static ISiteVar<ushort> TypeOfIginition
+        public static ISiteVar<short> TypeOfIginition
         {
             get
             {

@@ -147,6 +147,10 @@ namespace Landis.Extension.Scrapple
                 SiteVars.InitializeDisturbances();
 
             SiteVars.Disturbed.ActiveSiteValues = false;
+            SiteVars.Severity.ActiveSiteValues = 0;
+            SiteVars.DayOfFire.ActiveSiteValues = 0;
+            SiteVars.TypeOfIginition.ActiveSiteValues = 0;
+
             AnnualClimate_Daily weatherData = null;
             totalBurnedSites = 0;
             numberOfFire = 0;
