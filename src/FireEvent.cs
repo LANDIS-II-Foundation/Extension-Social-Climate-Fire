@@ -200,7 +200,7 @@ namespace Landis.Extension.Scrapple
             this.MeanWindDirection += windDirection;
             this.MeanWindSpeed += windSpeed;
             this.MeanEffectiveWindSpeed += effectiveWindSpeed;
-            PlugIn.ModelCore.UI.WriteLine("  Slope degree={0}, slope angle={1}, wind direction={2}.", SiteVars.GroundSlope[site], slopeAngle, windDirection);
+            //PlugIn.ModelCore.UI.WriteLine("  Slope degree={0}, slope angle={1}, wind direction={2}.", SiteVars.GroundSlope[site], slopeAngle, windDirection);
             // EFFECTIVE WIND SPEED ************************
 
             double fineFuelBiomass = 0.5; //SiteVars.FineFuels[site];  // NEED TO FIX NECN-Hydro installer
