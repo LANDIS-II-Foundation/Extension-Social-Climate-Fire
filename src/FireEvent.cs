@@ -103,7 +103,7 @@ namespace Landis.Extension.Scrapple
             int actualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_DailyData.First().Key;
             this.annualWeatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
             //SiteVars.TypeOfIginition[initiationSite] = (ushort) ignitionType;
-            //SiteVars.Disturbed[initiationSite] = true;
+            SiteVars.Disturbed[initiationSite] = true;
 
             this.cohortsKilled = 0;
             this.totalSitesDamaged = 0;
@@ -124,39 +124,29 @@ namespace Landis.Extension.Scrapple
         //this.windSpeed = annualWeatherData.DailyWindSpeed[day];
         //this.windDirection = annualWeatherData.DailyWindDirection[day];
         //this.originLocation = initiationSite.Location;
-    }
-
-
-    //---------------------------------------------------------------------
-    public static FireEvent Initiate(ActiveSite initiationSite, int timestep, int day, Ignition ignitionType)
-
-        {
-            //PlugIn.ModelCore.UI.WriteLine("  Fire Event initiated.  Day = {0}, IgnitionType = {1}.", day, ignitionType);
-            
-            //First, check for fire overlap (NECESSARY??):
-            if (!SiteVars.Disturbed[initiationSite])
-            {
-                // Randomly select neighbor to spread to
-                if (isDebugEnabled)
-                    PlugIn.ModelCore.UI.WriteLine("   Fire event started at {0} ...", initiationSite.Location);
-
-                FireEvent fireEvent = new FireEvent(initiationSite, day, ignitionType);
-
-                // desitination and source are the same for ignition site
-                fireEvent.Spread(PlugIn.ModelCore.CurrentTime, day, (ActiveSite) initiationSite, (ActiveSite)initiationSite);  
-                LogEvent(PlugIn.ModelCore.CurrentTime, fireEvent);
-
-                return fireEvent;
-
-
-            }
-            else
-            {
-                return null;
-            }
         }
 
-        
+        //---------------------------------------------------------------------
+        public static FireEvent Initiate(ActiveSite initiationSite, int timestep, int day, Ignition ignitionType)
+        {
+            //PlugIn.ModelCore.UI.WriteLine("  Fire Event initiated.  Day = {0}, IgnitionType = {1}.", day, ignitionType);
+
+            // Randomly select neighbor to spread to
+            if (isDebugEnabled)
+                PlugIn.ModelCore.UI.WriteLine("   Fire event started at {0} ...", initiationSite.Location);
+
+            FireEvent fireEvent = new FireEvent(initiationSite, day, ignitionType);
+
+            // desitination and source are the same for ignition site
+            fireEvent.Spread(PlugIn.ModelCore.CurrentTime, day, (ActiveSite)initiationSite, (ActiveSite)initiationSite);
+
+            LogEvent(PlugIn.ModelCore.CurrentTime, fireEvent);
+
+            return fireEvent;
+        }
+
+
+
 
         //---------------------------------------------------------------------
         public void Spread(int currentTime, int day, ActiveSite site, ActiveSite sourceSite)
