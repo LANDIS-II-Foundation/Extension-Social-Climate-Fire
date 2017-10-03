@@ -164,7 +164,7 @@ namespace Landis.Extension.Scrapple
                 NumberOfDays++;
             }
 
-            SiteVars.TypeOfIginition[site] = (short)this.IgnitionType;
+            SiteVars.TypeOfIginition[site] = (short) this.IgnitionType;
             SiteVars.DayOfFire[site] = (ushort)day;
             SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
 
@@ -182,13 +182,13 @@ namespace Landis.Extension.Scrapple
             // EFFECTIVE WIND SPEED ************************
             double windSpeed = this.annualWeatherData.DailyWindSpeed[day];
             double windDirection = this.annualWeatherData.DailyWindDirection[day];// / 180 * Math.PI;
-            double combustionBuoyancy = 0;
+            double combustionBuoyancy = 10.0;  // Cannot be zero, also very insensitive when UaUb > 5.
             if (SiteVars.Severity[sourceSite] == 1)
-                combustionBuoyancy = 2.5;
-            if (SiteVars.Severity[sourceSite] == 2)
-                combustionBuoyancy = 5.0;
-            if (SiteVars.Severity[sourceSite] == 3)
                 combustionBuoyancy = 10.0;
+            if (SiteVars.Severity[sourceSite] == 2)
+                combustionBuoyancy = 25.0;
+            if (SiteVars.Severity[sourceSite] == 3)
+                combustionBuoyancy = 50.0;
             double UaUb = windSpeed / combustionBuoyancy;
             double slopeDegrees = SiteVars.GroundSlope[site] / 180 * Math.PI; //convert from Radians to Degrees
             double slopeAngle = SiteVars.UphillSlopeAzimuth[site];// / 180 * Math.PI; // convert from Radians to Degrees
@@ -201,7 +201,7 @@ namespace Landis.Extension.Scrapple
             this.MeanWindSpeed += windSpeed;
             this.MeanEffectiveWindSpeed += effectiveWindSpeed;
             //PlugIn.ModelCore.UI.WriteLine("  Slope degree={0}, slope angle={1}, wind direction={2}.", SiteVars.GroundSlope[site], slopeAngle, windDirection);
-            // EFFECTIVE WIND SPEED ************************
+            // End EFFECTIVE WIND SPEED ************************
 
             double fineFuelBiomass = 0.5; //SiteVars.FineFuels[site];  // NEED TO FIX NECN-Hydro installer
 
@@ -211,7 +211,7 @@ namespace Landis.Extension.Scrapple
                 foreach (ICohort cohort in speciesCohorts)
                     if (PlugIn.Parameters.LadderFuelSpeciesList.Contains(cohort.Species) && cohort.Age <= PlugIn.Parameters.LadderFuelMaxAge)
                         ladderFuelBiomass += cohort.Biomass;
-            // LADDER FUELS ************************
+            // End LADDER FUELS ************************
 
 
             // SUPPRESSION ************************
@@ -286,7 +286,7 @@ namespace Landis.Extension.Scrapple
             double spreadB2 = PlugIn.Parameters.SpreadProbabilityB2;
             double spreadB3 = PlugIn.Parameters.SpreadProbabilityB3;
 
-            double Pspread = spreadB0 + (spreadB1 * fireWeatherIndex) + (spreadB2 * fineFuelBiomass);// + (spreadB3*effectiveWindSpeed);
+            double Pspread = Math.Pow(Math.E, spreadB0 + (spreadB1 * fireWeatherIndex) + (spreadB2 * fineFuelBiomass));// + (spreadB3*effectiveWindSpeed);
 
             this.MeanSpreadProbability += Pspread;
             double Pspread_adjusted = Pspread * suppressEffect;

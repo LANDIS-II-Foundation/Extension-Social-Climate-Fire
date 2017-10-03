@@ -28,10 +28,10 @@ MaximumSpreadAreaB0	3.1
 MaximumSpreadAreaB1	0.0
 MaximumSpreadAreaB2	0.0
 
-SpreadProbabilityB0 0.5
-SpreadProbabilityB1 0.0
-SpreadProbabilityB2 0.0
-SpreadProbabilityB3 0.0
+SpreadProbabilityB0 -6.0
+SpreadProbabilityB1 0.085  <<FWI
+SpreadProbabilityB2 0.0  << fine fuels
+SpreadProbabilityB3 -0.33  << wind speed
 
 SeverityFactor:LadderFuelMaxAge 50
 SeverityFactor:LadderFuelBiomass 2.0
