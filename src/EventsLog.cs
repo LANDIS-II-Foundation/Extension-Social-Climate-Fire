@@ -44,6 +44,9 @@ namespace Landis.Extension.Scrapple
         [DataFieldAttribute(Desc = "Average Wind Speed")]
         public double MeanWindSpeed { set; get; }
 
+        [DataFieldAttribute(Desc = "Average Effective Wind Speed")]
+        public double MeanEffectiveWindSpeed { set; get; }
+
         [DataFieldAttribute(Desc = "Average Wind Direction")]
         public double MeanWindDirection { set; get; }
 

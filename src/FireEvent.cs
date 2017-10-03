@@ -41,6 +41,7 @@ namespace Landis.Extension.Scrapple
         public double MeanSeverity;
         public double MeanWindDirection;
         public double MeanWindSpeed;
+        public double MeanEffectiveWindSpeed;
         public double MeanSuppression;
         public double TotalBiomassMortality;
         public int NumberCellsSeverity1;
@@ -112,6 +113,7 @@ namespace Landis.Extension.Scrapple
             this.MeanSeverity = 0.0;
             this.MeanWindDirection = 0.0;
             this.MeanWindSpeed = 0.0;
+            this.MeanEffectiveWindSpeed = 0.0;
             this.MeanSuppression = 0.0;
             this.TotalBiomassMortality = 0.0;
             this.NumberCellsSeverity1 = 0;
@@ -140,9 +142,9 @@ namespace Landis.Extension.Scrapple
 
                 FireEvent fireEvent = new FireEvent(initiationSite, day, ignitionType);
 
-                fireEvent.Spread(PlugIn.ModelCore.CurrentTime, day, (ActiveSite) initiationSite);
-                //if(fireEvent.CohortsKilled > 0)
-                    LogEvent(PlugIn.ModelCore.CurrentTime, fireEvent);
+                // desitination and source are the same for ignition site
+                fireEvent.Spread(PlugIn.ModelCore.CurrentTime, day, (ActiveSite) initiationSite, (ActiveSite)initiationSite);  
+                LogEvent(PlugIn.ModelCore.CurrentTime, fireEvent);
 
                 return fireEvent;
 
@@ -157,7 +159,7 @@ namespace Landis.Extension.Scrapple
         
 
         //---------------------------------------------------------------------
-        public void Spread(int currentTime, int day, ActiveSite site)
+        public void Spread(int currentTime, int day, ActiveSite site, ActiveSite sourceSite)
         {
             // First, load necessary parameters
             // Refer to design doc on Google Drive for questions or explanations
@@ -182,10 +184,27 @@ namespace Landis.Extension.Scrapple
             {
                 throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found \t year: {0}, day: {1} in ecoregion: {2} not found", currentTime, day, ecoregion.Name));
             }
+            // EFFECTIVE WIND SPEED ************************
             double windSpeed = this.annualWeatherData.DailyWindSpeed[day];
             double windDirection = this.annualWeatherData.DailyWindDirection[day];
+            double combustionBuoyancy = 0;
+            if (SiteVars.Severity[sourceSite] == 1)
+                combustionBuoyancy = 2.5;
+            if (SiteVars.Severity[sourceSite] == 2)
+                combustionBuoyancy = 5.0;
+            if (SiteVars.Severity[sourceSite] == 3)
+                combustionBuoyancy = 10.0;
+            double UaUb = windSpeed / combustionBuoyancy;
+            double slopeDegrees = SiteVars.GroundSlope[site] / 180 * Math.PI; //convert from Radians to Degrees
+            double slopeAngle = SiteVars.UphillSlopeAzimuth[site] / 180 * Math.PI; // convert from Radians to Degrees
+            
+            // From R.M. Nelson Intl J Wildland Fire, 2002
+            double effectiveWindSpeed = combustionBuoyancy * Math.Pow(Math.Pow(UaUb, 2.0) + (2.0 * (UaUb)) * Math.Sin(slopeDegrees) * Math.Cos(slopeDegrees) + Math.Pow(Math.Sin(slopeAngle), 2.0), 0.5);
             this.MeanWindDirection += windDirection;
             this.MeanWindSpeed += windSpeed;
+            this.MeanEffectiveWindSpeed += effectiveWindSpeed;
+            // EFFECTIVE WIND SPEED ************************
+
             double fineFuelBiomass = 0.5; //SiteVars.FineFuels[site];  // NEED TO FIX NECN-Hydro installer
 
             // LADDER FUELS ************************
@@ -196,8 +215,6 @@ namespace Landis.Extension.Scrapple
                         ladderFuelBiomass += cohort.Biomass;
             // LADDER FUELS ************************
 
-            //PlugIn.ModelCore.UI.WriteLine("  Fire spreading.  Day = {0}, FWI = {1}, windSpeed = {2}, windDirection = {3}.", day, fireWeatherIndex, windSpeed, windDirection);
-
             // Is spread to this site allowable?
             //          Calculate P-spread based on fwi, adjusted wind speed, fine fuels, source intensity (or similar). (AK)
             //          Adjust P-spread to account for suppression (RMS)
@@ -206,6 +223,8 @@ namespace Landis.Extension.Scrapple
             // ********* TEMP ****************************************
             double Pspread_adjusted = 0.05;
             // ********* TEMP ****************************************
+
+            // SUPPRESSION ************************
             double suppressEffect = 1.0;
             if (this.IgnitionType == Ignition.Accidental)
             {
@@ -264,6 +283,8 @@ namespace Landis.Extension.Scrapple
 
                 }
             }
+            this.MeanSuppression += suppressEffect;
+            // SUPPRESSION ************************
             Pspread_adjusted *= suppressEffect;
 
             if (Pspread_adjusted > PlugIn.ModelCore.GenerateUniform())
@@ -279,7 +300,7 @@ namespace Landis.Extension.Scrapple
                     highSeverityRiskFactors++;
                 if (ladderFuelBiomass > PlugIn.Parameters.SeverityFactor_LadderFuelBiomass)
                     highSeverityRiskFactors++;
-                if(SiteVars.Severity[initiationSite] > 2)
+                if(SiteVars.Severity[sourceSite] > 2)
                     highSeverityRiskFactors++;
 
                 if (highSeverityRiskFactors == 1)
@@ -325,7 +346,7 @@ namespace Landis.Extension.Scrapple
                 }
 
                 //      Spread to neighbors
-                List<Site> neighbors = Get4ActiveNeighbors(initiationSite);
+                List<Site> neighbors = Get4ActiveNeighbors(site);
                 neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor] || !neighbor.IsActive);
                 int neighborDay = day;
 
@@ -339,7 +360,7 @@ namespace Landis.Extension.Scrapple
 
                     if (dailySpreadAreaHectares > spreadAreaMaxHectares)
                         neighborDay = day+1;
-                    this.Spread(PlugIn.ModelCore.CurrentTime, neighborDay, (ActiveSite)initiationSite);
+                    this.Spread(PlugIn.ModelCore.CurrentTime, neighborDay, (ActiveSite) neighborSite, (ActiveSite) site);
                 }
 
 
@@ -441,6 +462,7 @@ namespace Landis.Extension.Scrapple
             el.MeanSeverity = fireEvent.MeanSeverity / (double) fireEvent.TotalSitesDamaged;
             el.MeanWindDirection = fireEvent.MeanWindDirection / (double)fireEvent.TotalSitesDamaged;
             el.MeanWindSpeed = fireEvent.MeanWindSpeed / (double)fireEvent.TotalSitesDamaged;
+            el.MeanEffectiveWindSpeed = fireEvent.MeanEffectiveWindSpeed / (double)fireEvent.TotalSitesDamaged;
             el.MeanSuppression = fireEvent.MeanSuppression / (double)fireEvent.TotalSitesDamaged;
             el.TotalBiomassMortality = fireEvent.TotalBiomassMortality;
             el.NumberCellsSeverity1 = fireEvent.NumberCellsSeverity1;
