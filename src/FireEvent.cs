@@ -117,6 +117,7 @@ namespace Landis.Extension.Scrapple
             this.MeanWindDirection = 0.0;
             this.MeanWindSpeed = 0.0;
             this.MeanEffectiveWindSpeed = 0.0;
+            this.MeanSpreadProbability = 0.0;
             this.MeanSuppression = 0.0;
             this.TotalBiomassMortality = 0.0;
             this.NumberCellsSeverity1 = 0;
@@ -284,7 +285,7 @@ namespace Landis.Extension.Scrapple
             double spreadB2 = PlugIn.Parameters.SpreadProbabilityB2;
             double spreadB3 = PlugIn.Parameters.SpreadProbabilityB3;
 
-            double Pspread = spreadB0 + (spreadB1 * fireWeatherIndex) + (spreadB2*fineFuelBiomass)+(spreadB3*effectiveWindSpeed);
+            double Pspread = spreadB0 + (spreadB1 * fireWeatherIndex) + (spreadB2 * fineFuelBiomass);// + (spreadB3*effectiveWindSpeed);
 
             this.MeanSpreadProbability += Pspread;
             double Pspread_adjusted = Pspread * suppressEffect;

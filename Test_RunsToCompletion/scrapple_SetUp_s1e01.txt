@@ -29,7 +29,7 @@ MaximumSpreadAreaB1	0.0
 MaximumSpreadAreaB2	0.0
 
 SpreadProbabilityB0 0.5
-SpreadProbabilityB1 1.0
+SpreadProbabilityB1 0.0
 SpreadProbabilityB2 0.0
 SpreadProbabilityB3 0.0
 
