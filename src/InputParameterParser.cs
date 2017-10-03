@@ -143,6 +143,22 @@ namespace Landis.Extension.Scrapple
             ReadVar(maxSA2);
             parameters.MaximumSpreadAreaB0 = maxSA2.Value;
 
+            InputVar<double> sp0 = new InputVar<double>("SpreadProbabilityB0");
+            ReadVar(sp0);
+            parameters.SpreadProbabilityB0 = sp0.Value;
+
+            InputVar<double> sp1 = new InputVar<double>("SpreadProbabilityB1");
+            ReadVar(sp1);
+            parameters.SpreadProbabilityB1 = sp1.Value;
+
+            InputVar<double> sp2 = new InputVar<double>("SpreadProbabilityB2");
+            ReadVar(sp2);
+            parameters.SpreadProbabilityB2 = sp2.Value;
+
+            InputVar<double> sp3 = new InputVar<double>("SpreadProbabilityB3");
+            ReadVar(sp3);
+            parameters.SpreadProbabilityB3 = sp3.Value;
+
             InputVar<int> lfma = new InputVar<int>("SeverityFactor:LadderFuelMaxAge");
             ReadVar(lfma);
             parameters.LadderFuelMaxAge = lfma.Value;

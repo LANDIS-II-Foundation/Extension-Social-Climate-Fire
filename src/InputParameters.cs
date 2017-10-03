@@ -43,6 +43,11 @@ namespace Landis.Extension.Scrapple
         double MaximumSpreadAreaB1 { get; set; }
         double MaximumSpreadAreaB2 { get; set; }
 
+        double SpreadProbabilityB0 { get; set; }
+        double SpreadProbabilityB1 { get; set; }
+        double SpreadProbabilityB2 { get; set; }
+        double SpreadProbabilityB3 { get; set; }
+
         int LadderFuelMaxAge { get; set; }
         double SeverityFactor_LadderFuelBiomass { get; set; }
         double SeverityFactor_FineFuelBiomass { get; set; }
@@ -74,7 +79,7 @@ namespace Landis.Extension.Scrapple
         private List<IFireDamage> damages_severity1;
         private List<IFireDamage> damages_severity2;
         private List<IFireDamage> damages_severity3;
-        //private string mapNamesTemplate;
+
         private string lighteningFireMap;
         private string accidentalFireMap;
         private string rxFireMap;
@@ -85,8 +90,6 @@ namespace Landis.Extension.Scrapple
 
         private double lightningIgnitionB0;
         private double lightningIgnitionB1;
-        //private double rxFireIgnitionB0;
-        //private double rxFireIgnitionB1;
         private double accidentalFireIgnitionB0;
         private double accidentalFireIgnitionB1;
         private double maxFineFuels;
@@ -98,6 +101,11 @@ namespace Landis.Extension.Scrapple
         private double maximumSpreadAreaB0;
         private double maximumSpreadAreaB1;
         private double maximumSpreadAreaB2;
+
+        private double spreadProbabilityB0;
+        private double spreadProbabilityB1;
+        private double spreadProbabilityB2;
+        private double spreadProbabilityB3;
 
         private int ladderFuelMaxAge;
         private double severityFactor_LadderFuelBiomass;
@@ -166,22 +174,6 @@ namespace Landis.Extension.Scrapple
                 return ladderFuelSpeciesList;
             }
         }
-
-        //---------------------------------------------------------------------
-
-        /// <summary>
-        /// Template for the filenames for output maps.
-        /// </summary>
-        //public string MapNamesTemplate
-        //{
-        //    get {
-        //        return mapNamesTemplate;
-        //    }
-        //    set {
-        //            MapNames.CheckTemplateVars(value);
-        //        mapNamesTemplate = value;
-        //    }
-        //}
 
         //---------------------------------------------------------------------
         public string LighteningFireMap
@@ -427,6 +419,54 @@ namespace Landis.Extension.Scrapple
             set
             {
                 maximumSpreadAreaB2 = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public double SpreadProbabilityB0
+        {
+            get
+            {
+                return spreadProbabilityB0;
+            }
+            set
+            {
+                spreadProbabilityB0 = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public double SpreadProbabilityB1
+        {
+            get
+            {
+                return spreadProbabilityB1;
+            }
+            set
+            {
+                spreadProbabilityB1 = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public double SpreadProbabilityB2
+        {
+            get
+            {
+                return spreadProbabilityB2;
+            }
+            set
+            {
+                spreadProbabilityB2 = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public double SpreadProbabilityB3
+        {
+            get
+            {
+                return spreadProbabilityB3;
+            }
+            set
+            {
+                spreadProbabilityB3 = value;
             }
         }
         //---------------------------------------------------------------------
