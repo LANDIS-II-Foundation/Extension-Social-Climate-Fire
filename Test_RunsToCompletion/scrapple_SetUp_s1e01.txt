@@ -31,9 +31,9 @@ MaximumSpreadAreaB1	0.0
 MaximumSpreadAreaB2	0.0
 
 
-SeverityFactor:LadderFuelMaxAge 5
+SeverityFactor:LadderFuelMaxAge 50
 SeverityFactor:LadderFuelBiomass 2.0
-SeverityFactor:FineFuelBiomass  1.0
+SeverityFactor:FineFuelBiomass  0.5
 
 SuppressionEffectiveness:LightningLow		5
 SuppressionEffectiveness:LightningMedium	50

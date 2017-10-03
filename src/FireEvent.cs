@@ -168,6 +168,9 @@ namespace Landis.Extension.Scrapple
                 NumberOfDays++;
             }
 
+            SiteVars.TypeOfIginition[site] = (ushort)this.IgnitionType;
+            SiteVars.DayOfFire[site] = (ushort)day;
+
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
 
             double fireWeatherIndex = 0.0;
@@ -183,13 +186,16 @@ namespace Landis.Extension.Scrapple
             double windDirection = this.annualWeatherData.DailyWindDirection[day];
             this.MeanWindDirection += windDirection;
             this.MeanWindSpeed += windSpeed;
-            double fineFuels = 10.0; //SiteVars.FineFuels[site];  // NEED TO FIX NECN-Hydro installer
+            double fineFuelBiomass = 0.5; //SiteVars.FineFuels[site];  // NEED TO FIX NECN-Hydro installer
+
+            // LADDER FUELS ************************
             double ladderFuelBiomass = 0.0;
             foreach (ISpeciesCohorts speciesCohorts in SiteVars.Cohorts[site])
                 foreach (ICohort cohort in speciesCohorts)
                     if (PlugIn.Parameters.LadderFuelSpeciesList.Contains(cohort.Species) && cohort.Age <= PlugIn.Parameters.LadderFuelMaxAge)
                         ladderFuelBiomass += cohort.Biomass;
-            
+            // LADDER FUELS ************************
+
             //PlugIn.ModelCore.UI.WriteLine("  Fire spreading.  Day = {0}, FWI = {1}, windSpeed = {2}, windDirection = {3}.", day, fireWeatherIndex, windSpeed, windDirection);
 
             // Is spread to this site allowable?
@@ -206,13 +212,13 @@ namespace Landis.Extension.Scrapple
                 switch (SiteVars.AccidentalSuppressionIndex[site])
                 {
                     case 1:
-                        suppressEffect = (double)PlugIn.Parameters.AccidentalSuppressEffectivenss_low / 100.0;
+                        suppressEffect = 1.0 - ((double)PlugIn.Parameters.AccidentalSuppressEffectivenss_low / 100.0);
                         break;
                     case 2:
-                        suppressEffect = (double)PlugIn.Parameters.AccidentalSuppressEffectivenss_medium / 100.0;
+                        suppressEffect = 1.0 - ((double)PlugIn.Parameters.AccidentalSuppressEffectivenss_medium / 100.0);
                         break;
                     case 3:
-                        suppressEffect = (double)PlugIn.Parameters.AccidentalSuppressEffectivenss_high / 100.0;
+                        suppressEffect = 1.0 - ((double)PlugIn.Parameters.AccidentalSuppressEffectivenss_high / 100.0);
                         break;
                     default:
                         suppressEffect = 1.0;  // None
@@ -225,13 +231,13 @@ namespace Landis.Extension.Scrapple
                 switch (SiteVars.LightningSuppressionIndex[site])
                 {
                     case 1:
-                        suppressEffect = (double) PlugIn.Parameters.LightningSuppressEffectivenss_low / 100.0;
+                        suppressEffect = 1.0 - ((double) PlugIn.Parameters.LightningSuppressEffectivenss_low / 100.0);
                         break;
                     case 2:
-                        suppressEffect = (double)PlugIn.Parameters.LightningSuppressEffectivenss_medium / 100.0;
+                        suppressEffect = 1.0 - ((double) PlugIn.Parameters.LightningSuppressEffectivenss_medium / 100.0);
                         break;
                     case 3:
-                        suppressEffect = (double)PlugIn.Parameters.LightningSuppressEffectivenss_high / 100.0;
+                        suppressEffect = 1.0 - ((double) PlugIn.Parameters.LightningSuppressEffectivenss_high / 100.0);
                         break;
                     default:
                         suppressEffect = 1.0;
@@ -244,13 +250,13 @@ namespace Landis.Extension.Scrapple
                 switch (SiteVars.RxSuppressionIndex[site])
                 {
                     case 1:
-                        suppressEffect = (double)PlugIn.Parameters.RxSuppressEffectivenss_low / 100.0;
+                        suppressEffect = 1.0 - ((double) PlugIn.Parameters.RxSuppressEffectivenss_low / 100.0);
                         break;
                     case 2:
-                        suppressEffect = (double)PlugIn.Parameters.RxSuppressEffectivenss_medium / 100.0;
+                        suppressEffect = 1.0 - ((double)PlugIn.Parameters.RxSuppressEffectivenss_medium / 100.0);
                         break;
                     case 3:
-                        suppressEffect = (double)PlugIn.Parameters.RxSuppressEffectivenss_high / 100.0;
+                        suppressEffect = 1.0 - ((double)PlugIn.Parameters.RxSuppressEffectivenss_high / 100.0);
                         break;
                     default:
                         suppressEffect = 1.0;
@@ -259,7 +265,6 @@ namespace Landis.Extension.Scrapple
                 }
             }
             Pspread_adjusted *= suppressEffect;
-                //SiteVars.LightningSuppressionIndex[site] == 1)
 
             if (Pspread_adjusted > PlugIn.ModelCore.GenerateUniform())
             {
@@ -270,9 +275,9 @@ namespace Landis.Extension.Scrapple
                 // Severity a function of ladder fuels, fine fuels, source spread intensity.
                 siteSeverity = 1;
                 int highSeverityRiskFactors = 0;
-                if (fineFuels > PlugIn.Parameters.SeverityFactor_FineFuelPercentage)
+                if (fineFuelBiomass > PlugIn.Parameters.SeverityFactor_FineFuelBiomass)
                     highSeverityRiskFactors++;
-                if (ladderFuelBiomass > PlugIn.Parameters.SeverityFactor_LadderFuelPercentage)
+                if (ladderFuelBiomass > PlugIn.Parameters.SeverityFactor_LadderFuelBiomass)
                     highSeverityRiskFactors++;
                 if(SiteVars.Severity[initiationSite] > 2)
                     highSeverityRiskFactors++;
@@ -294,10 +299,7 @@ namespace Landis.Extension.Scrapple
                         this.totalSitesDamaged++;
                     }
 
-                    // Log information
-                    SiteVars.TypeOfIginition[site] = (ushort) this.IgnitionType;
                     SiteVars.Severity[site] = (byte)siteSeverity;
-                    SiteVars.DayOfFire[site] = (ushort) day;
                     this.MeanSeverity += siteSeverity;
                     if (siteSeverity == 1)
                         this.NumberCellsSeverity1++;

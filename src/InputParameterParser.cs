@@ -149,11 +149,11 @@ namespace Landis.Extension.Scrapple
 
             InputVar<double> sf_lf = new InputVar<double>("SeverityFactor:LadderFuelBiomass");
             ReadVar(sf_lf);
-            parameters.SeverityFactor_LadderFuelPercentage = sf_lf.Value;
+            parameters.SeverityFactor_LadderFuelBiomass = sf_lf.Value;
 
             InputVar<double> sf_ff = new InputVar<double>("SeverityFactor:FineFuelBiomass");
             ReadVar(sf_ff);
-            parameters.SeverityFactor_FineFuelPercentage = sf_ff.Value;
+            parameters.SeverityFactor_FineFuelBiomass = sf_ff.Value;
 
             InputVar<int> lso = new InputVar<int>("SuppressionEffectiveness:LightningLow");
             ReadVar(lso);

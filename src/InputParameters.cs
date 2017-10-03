@@ -44,8 +44,8 @@ namespace Landis.Extension.Scrapple
         double MaximumSpreadAreaB2 { get; set; }
 
         int LadderFuelMaxAge { get; set; }
-        double SeverityFactor_LadderFuelPercentage { get; set; }
-        double SeverityFactor_FineFuelPercentage { get; set; }
+        double SeverityFactor_LadderFuelBiomass { get; set; }
+        double SeverityFactor_FineFuelBiomass { get; set; }
 
         int LightningSuppressEffectivenss_low { get; set; }
         int LightningSuppressEffectivenss_medium { get; set; }
@@ -100,8 +100,8 @@ namespace Landis.Extension.Scrapple
         private double maximumSpreadAreaB2;
 
         private int ladderFuelMaxAge;
-        private double severityFactor_LadderFuelPercentage;
-        private double severityFactor_FineFuelPercentage;
+        private double severityFactor_LadderFuelBiomass;
+        private double severityFactor_FineFuelBiomass;
 
         private int lightningSuppressEffectivenss_low;
         private int lightningSuppressEffectivenss_medium;
@@ -442,27 +442,27 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public double SeverityFactor_LadderFuelPercentage
+        public double SeverityFactor_LadderFuelBiomass
         {
             get
             {
-                return severityFactor_LadderFuelPercentage;
+                return severityFactor_LadderFuelBiomass;
             }
             set
             {
-                severityFactor_LadderFuelPercentage = value;
+                severityFactor_LadderFuelBiomass = value;
             }
         }
         //---------------------------------------------------------------------
-        public double SeverityFactor_FineFuelPercentage
+        public double SeverityFactor_FineFuelBiomass
         {
             get
             {
-                return severityFactor_FineFuelPercentage;
+                return severityFactor_FineFuelBiomass;
             }
             set
             {
-                severityFactor_FineFuelPercentage = value;
+                severityFactor_FineFuelBiomass = value;
             }
         }
 
