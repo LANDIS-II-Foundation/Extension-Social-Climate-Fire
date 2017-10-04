@@ -275,8 +275,8 @@ namespace Landis.Extension.Scrapple
 
             // PROBABILITY OF SPREAD calculation **************************
             // Is spread to this site allowable?
-            //          Calculate P-spread based on fwi, adjusted wind speed, fine fuels, source intensity (or similar). (AK)
-            //          Adjust P-spread to account for suppression (RMS)
+            //          Calculate P-spread based on fwi, adjusted wind speed, fine fuels, source intensity (or similar).
+            //          Adjust P-spread to account for suppression
             //          Compare P-spread-adj to random number
             double spreadB0 = PlugIn.Parameters.SpreadProbabilityB0;
             double spreadB1 = PlugIn.Parameters.SpreadProbabilityB1;
