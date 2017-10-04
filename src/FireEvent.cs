@@ -170,34 +170,36 @@ namespace Landis.Extension.Scrapple
             double fireWeatherIndex = 0.0;
             try
             {
-                fireWeatherIndex = this.annualWeatherData.DailyFireWeatherIndex[day]; 
+                fireWeatherIndex = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyFireWeatherIndex[day]; 
             }
             catch
             {
                 throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found \t year: {0}, day: {1} in ecoregion: {2} not found", currentTime, day, ecoregion.Name));
             }
             // EFFECTIVE WIND SPEED ************************
-            double windSpeed = this.annualWeatherData.DailyWindSpeed[day];
-            double windDirection = this.annualWeatherData.DailyWindDirection[day];// / 180 * Math.PI;
-            double combustionBuoyancy = 100.0;  // Cannot be zero, also very insensitive when UaUb > 5.
+            double windSpeed = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyWindSpeed[day];
+            double windDirection = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyWindDirection[day];// / 180 * Math.PI;
+            this.MeanWindDirection += windDirection;
+            this.MeanWindSpeed += windSpeed;
+
+            double combustionBuoyancy = 10.0;  // Cannot be zero, also very insensitive when UaUb > 5.
             if (SiteVars.Severity[sourceSite] == 1)
                 combustionBuoyancy = 10.0;
             if (SiteVars.Severity[sourceSite] == 2)
                 combustionBuoyancy = 25.0;
             if (SiteVars.Severity[sourceSite] == 3)
                 combustionBuoyancy = 50.0;
+
             double UaUb = windSpeed / combustionBuoyancy;
-            double slopeDegrees = SiteVars.GroundSlope[site] / 180 * Math.PI; //convert from Radians to Degrees
-            double slopeAngle = SiteVars.UphillSlopeAzimuth[site];// / 180 * Math.PI; // convert from Radians to Degrees
+            double slopeDegrees = (double) SiteVars.GroundSlope[site] / 180.0 * Math.PI; //convert from Radians to Degrees
+            double slopeAngle = (double) SiteVars.UphillSlopeAzimuth[site];// / 180 * Math.PI; // convert from Radians to Degrees
             //windDirection = windDirection / 180 * Math.PI;
-            double relativeWindDirection = (windDirection - slopeAngle) / 180 * Math.PI; 
-            
+            double relativeWindDirection = (windDirection - slopeAngle) / 180.0 * Math.PI;
+
             // From R.M. Nelson Intl J Wildland Fire, 2002
-            double effectiveWindSpeed = combustionBuoyancy * Math.Pow(Math.Pow(UaUb, 2.0) + (2.0 * (UaUb) * Math.Sin(slopeDegrees) * Math.Cos(relativeWindDirection)) + Math.Pow(Math.Sin(slopeDegrees), 2.0), 0.5);
-            this.MeanWindDirection += windDirection;
-            this.MeanWindSpeed += windSpeed;
+            double effectiveWindSpeed = combustionBuoyancy * (Math.Pow(Math.Pow(UaUb, 2.0) + (2.0 * (UaUb) * Math.Sin(slopeDegrees) * Math.Cos(relativeWindDirection)) + Math.Pow(Math.Sin(slopeDegrees), 2.0), 0.5));
             this.MeanEffectiveWindSpeed += effectiveWindSpeed;
-            //PlugIn.ModelCore.UI.WriteLine("  Slope degree={0}, slope angle={1}, wind direction={2}.", SiteVars.GroundSlope[site], slopeAngle, windDirection);
+            //PlugIn.ModelCore.UI.WriteLine("  wind speed={0}, effective_ws={1}.", windSpeed, effectiveWindSpeed);
             // End EFFECTIVE WIND SPEED ************************
 
             double fineFuelBiomass = 0.5; //SiteVars.FineFuels[site];  // NEED TO FIX NECN-Hydro installer
@@ -287,7 +289,9 @@ namespace Landis.Extension.Scrapple
 
             this.MeanSpreadProbability += Pspread;
             double Pspread_adjusted = Pspread * suppressEffect;
-            // End PROBABILITY OF SPREAD calculation **************************
+            if (Pspread_adjusted > PlugIn.ModelCore.GenerateUniform())
+            {
+                // End PROBABILITY OF SPREAD calculation **************************
 
 
                 // SEVERITY calculation **************************
@@ -314,12 +318,8 @@ namespace Landis.Extension.Scrapple
                 {
                     //      Cause mortality
                     siteCohortsKilled = Damage(site);
-                    //if (siteCohortsKilled > 0)
-                    //{
-                    //    this.totalSitesDamaged++;
-                    //}
 
-                    SiteVars.Severity[site] = (byte)siteSeverity;
+                SiteVars.Severity[site] = (byte)siteSeverity;
                     this.MeanSeverity += siteSeverity;
                     if (siteSeverity == 1)
                         this.NumberCellsSeverity1++;
@@ -344,8 +344,6 @@ namespace Landis.Extension.Scrapple
                     spreadArea[day]++;
                 }
 
-            if (Pspread_adjusted > PlugIn.ModelCore.GenerateUniform())
-            {
                 //      Spread to neighbors
                 List<Site> neighbors = Get4ActiveNeighbors(site);
                 neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor] || !neighbor.IsActive);

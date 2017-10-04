@@ -37,6 +37,7 @@ namespace Landis.Extension.Scrapple
 
         public static int FutureClimateBaseYear;
         public static Dictionary<int, int> sitesPerEcoregions;
+        public static int ActualYear;
 
         private static int totalBurnedSites;
         private static int numberOfFire;
@@ -171,10 +172,10 @@ namespace Landis.Extension.Scrapple
 
             modelCore.UI.WriteLine("   Processing landscape for Fire events ...");
 
-            int actualYear = 0;
+            ActualYear = 0;
             try
             {
-                actualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_AllData.First().Key;
+                ActualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_AllData.First().Key;
             }
             catch
             {
@@ -209,11 +210,11 @@ namespace Landis.Extension.Scrapple
 
                     try
                     {
-                        weatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
+                        weatherData = Climate.Future_DailyData[ActualYear][ecoregion.Index];
                     }
                     catch
                     {
-                        throw new UninitializedClimateData(string.Format("Climate data could not be found \t year: {0} in ecoregion: {1}", actualYear, ecoregion.Name));
+                        throw new UninitializedClimateData(string.Format("Climate data could not be found \t year: {0} in ecoregion: {1}", ActualYear, ecoregion.Name));
                     }
 
                     try
@@ -222,7 +223,7 @@ namespace Landis.Extension.Scrapple
                     }
                     catch
                     {
-                        throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found \t year: {0}, day: {1} in ecoregion: {2} not found", actualYear, day, ecoregion.Name));
+                        throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found \t year: {0}, day: {1} in ecoregion: {2} not found", PlugIn.ActualYear, day, ecoregion.Name));
                     }
                 }
 
