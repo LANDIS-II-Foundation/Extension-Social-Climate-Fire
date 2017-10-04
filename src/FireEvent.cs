@@ -31,7 +31,7 @@ namespace Landis.Extension.Scrapple
         private ActiveSite initiationSite;
         public int TotalSitesDamaged;
 
-        private int cohortsKilled;
+        public int CohortsKilled;
 //        private double eventSeverity;
         
         public double InitiationFireWeatherIndex;
@@ -69,12 +69,12 @@ namespace Landis.Extension.Scrapple
         //}
         //---------------------------------------------------------------------
 
-        public int CohortsKilled
-        {
-            get {
-                return cohortsKilled;
-            }
-        }
+        //public int CohortsKilled
+        //{
+        //    get {
+        //        return cohortsKilled;
+        //    }
+        //}
 
         //---------------------------------------------------------------------
 
@@ -108,7 +108,7 @@ namespace Landis.Extension.Scrapple
             //SiteVars.TypeOfIginition[initiationSite] = (ushort) ignitionType;
             SiteVars.Disturbed[initiationSite] = true;
 
-            this.cohortsKilled = 0;
+            this.CohortsKilled = 0;
             this.TotalSitesDamaged = 0;  // minimum 1 for the ignition cell
             this.InitiationFireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
             this.spreadArea = new Dictionary<int, int>();
@@ -125,9 +125,6 @@ namespace Landis.Extension.Scrapple
             this.NumberCellsSeverity3 = 0;
             this.maxDay = day;
 
-        //this.windSpeed = annualWeatherData.DailyWindSpeed[day];
-        //this.windDirection = annualWeatherData.DailyWindDirection[day];
-        //this.originLocation = initiationSite.Location;
         }
 
         //---------------------------------------------------------------------
@@ -135,7 +132,6 @@ namespace Landis.Extension.Scrapple
         {
             //PlugIn.ModelCore.UI.WriteLine("  Fire Event initiated.  Day = {0}, IgnitionType = {1}.", day, ignitionType);
 
-            // Randomly select neighbor to spread to
             if (isDebugEnabled)
                 PlugIn.ModelCore.UI.WriteLine("   Fire event started at {0} ...", initiationSite.Location);
 
@@ -197,7 +193,7 @@ namespace Landis.Extension.Scrapple
             double relativeWindDirection = (windDirection - slopeAngle) / 180 * Math.PI; 
             
             // From R.M. Nelson Intl J Wildland Fire, 2002
-            double effectiveWindSpeed = combustionBuoyancy * Math.Pow(Math.Pow(UaUb, 2.0) + (2.0 * (UaUb)) * Math.Sin(slopeDegrees) * Math.Cos(relativeWindDirection) + Math.Pow(Math.Sin(slopeDegrees), 2.0), 0.5);
+            double effectiveWindSpeed = combustionBuoyancy * Math.Pow(Math.Pow(UaUb, 2.0) + (2.0 * (UaUb) * Math.Sin(slopeDegrees) * Math.Cos(relativeWindDirection)) + Math.Pow(Math.Sin(slopeDegrees), 2.0), 0.5);
             this.MeanWindDirection += windDirection;
             this.MeanWindSpeed += windSpeed;
             this.MeanEffectiveWindSpeed += effectiveWindSpeed;
@@ -407,9 +403,9 @@ namespace Landis.Extension.Scrapple
 
         private int Damage(ActiveSite site)
         {
-            int previousCohortsKilled = this.cohortsKilled;
+            int previousCohortsKilled = this.CohortsKilled;
             SiteVars.Cohorts[site].ReduceOrKillBiomassCohorts(this); //.RemoveMarkedCohorts(this);
-            return this.cohortsKilled - previousCohortsKilled;
+            return this.CohortsKilled - previousCohortsKilled;
         }
 
         //---------------------------------------------------------------------
@@ -444,9 +440,9 @@ namespace Landis.Extension.Scrapple
             }
 
             if (killCohort) {
-                this.cohortsKilled++;
+                this.CohortsKilled++;
             }
-            return cohort.Biomass; // killCohort;
+            return cohort.Biomass; 
         }
 
         //---------------------------------------------------------------------

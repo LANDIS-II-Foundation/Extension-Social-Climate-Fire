@@ -179,12 +179,12 @@ namespace Landis.Extension.Scrapple
 
             // Get the active sites from the landscape and shuffle them 
             // Potential area for future optimization
-            //List<ActiveSite> activeSites = PlugIn.ModelCore.Landscape.ToList();
+            List<ActiveSite> activeSites = PlugIn.ModelCore.Landscape.ToList();
 
             // Sites are weighted for ignition in the Shuffle method, based on the respective inputs maps.
-            List<ActiveSite> shuffledAccidentalFireSites = Shuffle(activeAccidentalSites, SiteVars.AccidentalFireWeight);
-            List<ActiveSite> shuffledLightningFireSites = Shuffle(activeLightningSites, SiteVars.LightningFireWeight);
-            List<ActiveSite> shuffledRxFireSites = Shuffle(activeRxSites, SiteVars.RxFireWeight);
+            List<ActiveSite> shuffledAccidentalFireSites = Shuffle(activeSites, SiteVars.AccidentalFireWeight);
+            List<ActiveSite> shuffledLightningFireSites = Shuffle(activeSites, SiteVars.LightningFireWeight);
+            List<ActiveSite> shuffledRxFireSites = Shuffle(activeSites, SiteVars.RxFireWeight);
 
             int numRxFires = Parameters.NumberRxAnnualFires;
             for (int day = 0; day < daysPerYear; ++day)
@@ -218,6 +218,8 @@ namespace Landis.Extension.Scrapple
                 }
 
                 landscapeAverageFireWeatherIndex /= ModelCore.Ecoregions.Count;  // THIS IS NOT CORRECTLY WEIGHTED - ALSO DOES NOT DISCOUNT INACTIVE
+                //modelCore.UI.WriteLine("   Processing landscape for Fire events.  Day={0}, FWI={1}", day, landscapeAverageFireWeatherIndex);
+
                 // FWI must be > .10 
                 if (landscapeAverageFireWeatherIndex >= 0.10)
                 {
@@ -402,27 +404,24 @@ namespace Landis.Extension.Scrapple
         {
             //int attempts = 0;
             // TESTING REMOVING THIS AS IT IS VERY SLOW
-            //while ( shuffledFireSites.Count() > 0 && SiteVars.Disturbed[shuffledFireSites.First()] == true )
-            //{
-            //    shuffledFireSites.Remove(shuffledFireSites.First());
-            //}
+            while (shuffledFireSites.Count() > 0 && SiteVars.Disturbed[shuffledFireSites.First()] == true)
+            {
+                shuffledFireSites.Remove(shuffledFireSites.First());
+            }
             if (shuffledFireSites.Count() > 0)
             {
                 FireEvent fireEvent = FireEvent.Initiate(shuffledFireSites.First(), modelCore.CurrentTime, day, ignitionType);
 
-                if (fireEvent.CohortsKilled > 0)
-                {
-                    totalBurnedSites = fireEvent.TotalSitesDamaged;
+                //if (fireEvent.CohortsKilled > 0)
+                //{
+                    totalBurnedSites += fireEvent.TotalSitesDamaged;
                     numberOfFire++;
-                    totalBiomassMortality = (int) fireEvent.TotalBiomassMortality;
-                    numCellsSeverity1 = fireEvent.NumberCellsSeverity1;
-                    numCellsSeverity2 = fireEvent.NumberCellsSeverity2;
-                    numCellsSeverity3 = fireEvent.NumberCellsSeverity3;
+                    totalBiomassMortality += (int) fireEvent.TotalBiomassMortality;
+                    numCellsSeverity1 += fireEvent.NumberCellsSeverity1;
+                    numCellsSeverity2 += fireEvent.NumberCellsSeverity2;
+                    numCellsSeverity3 += fireEvent.NumberCellsSeverity3;
 
-                }
-
-
-
+                //}
                 //attempts++;
             }
             //if (attempts > 500)
