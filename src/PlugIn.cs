@@ -36,6 +36,7 @@ namespace Landis.Extension.Scrapple
         public List<ActiveSite> activeLightningSites;
 
         public static int FutureClimateBaseYear;
+        public static Dictionary<int, int> sitesPerEcoregions;
 
         private static int totalBurnedSites;
         private static int numberOfFire;
@@ -86,20 +87,20 @@ namespace Landis.Extension.Scrapple
             Timestep = 1;  // RMS:  Initially we will force annual time step. parameters.Timestep;
 
             // Later, if maps are dynamic, this process will need to be repeated every time the maps are updated.
-            activeAccidentalSites = new List<ActiveSite>();
-            foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
-                //if (SiteVars.AccidentalFireWeight[site] > 0.0)
-                    activeAccidentalSites.Add(site);
+            //activeAccidentalSites = new List<ActiveSite>();
+            //foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
+            //    //if (SiteVars.AccidentalFireWeight[site] > 0.0)
+            //        activeAccidentalSites.Add(site);
 
-            activeRxSites = new List<ActiveSite>();
-            foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
-                //if (SiteVars.RxFireWeight[site] > 0.0)
-                    activeRxSites.Add(site);
+            //activeRxSites = new List<ActiveSite>();
+            //foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
+            //    //if (SiteVars.RxFireWeight[site] > 0.0)
+            //        activeRxSites.Add(site);
 
-            activeLightningSites = new List<ActiveSite>();
-            foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
-                //if (SiteVars.LightningFireWeight[site] > 0.0)
-                    activeLightningSites.Add(site);
+            //activeLightningSites = new List<ActiveSite>();
+            //foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
+            //    //if (SiteVars.LightningFireWeight[site] > 0.0)
+            //        activeLightningSites.Add(site);
 
             ///******************** DEBUGGER LAUNCH *********************
             /// 
@@ -126,13 +127,22 @@ namespace Landis.Extension.Scrapple
                                  Parameters.LighteningSuppressionMap, Parameters.AccidentalSuppressionMap, Parameters.RxSuppressionMap);
             MetadataHandler.InitializeMetadata(Parameters.Timestep, ModelCore);
 
-            //FireEvent.Initialize(parameters.FireDamages);
+            sitesPerEcoregions = new Dictionary<int, int>();
 
-            //if (isDebugEnabled)
-            //    modelCore.UI.WriteLine("Initialization done");
+            foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
+            {
+                IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
+                if (!sitesPerEcoregions.ContainsKey(ecoregion.Index))
+                    sitesPerEcoregions.Add(ecoregion.Index, 1);
+                else
+                    sitesPerEcoregions[ecoregion.Index]++;
+
+            }
+
+
         }
 
-        
+
 
 
         //---------------------------------------------------------------------
@@ -189,7 +199,7 @@ namespace Landis.Extension.Scrapple
             int numRxFires = Parameters.NumberRxAnnualFires;
             for (int day = 0; day < daysPerYear; ++day)
             {
-                double landscapeAverageFireWeatherIndex = 0.0;
+                double ecoregionAverageFireWeatherIndex = 0.0;
                 // number of fires get initilized to 0 every timestep
                 int numFires = 0;
 
@@ -209,7 +219,7 @@ namespace Landis.Extension.Scrapple
 
                     try
                     {
-                        landscapeAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day];
+                        ecoregionAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * (double) sitesPerEcoregions[ecoregion.Index];
                     }
                     catch
                     {
@@ -217,7 +227,7 @@ namespace Landis.Extension.Scrapple
                     }
                 }
 
-                landscapeAverageFireWeatherIndex /= ModelCore.Ecoregions.Count;  // THIS IS NOT CORRECTLY WEIGHTED - ALSO DOES NOT DISCOUNT INACTIVE
+                double landscapeAverageFireWeatherIndex = ecoregionAverageFireWeatherIndex / (double) modelCore.Landscape.ActiveSiteCount;  
                 //modelCore.UI.WriteLine("   Processing landscape for Fire events.  Day={0}, FWI={1}", day, landscapeAverageFireWeatherIndex);
 
                 // FWI must be > .10 
