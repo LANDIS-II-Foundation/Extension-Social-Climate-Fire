@@ -179,7 +179,7 @@ namespace Landis.Extension.Scrapple
             }
             catch
             {
-                throw new UninitializedClimateData("Could not initilize the actual year from climate data");
+                throw new UninitializedClimateData(string.Format("Could not initilize the actual year {0} from climate data", ActualYear));
             }
             
            
