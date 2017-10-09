@@ -39,9 +39,9 @@ namespace Landis.Extension.Scrapple
         public static Dictionary<int, int> sitesPerEcoregions;
         public static int ActualYear;
 
-        private static int totalBurnedSites;
-        private static int numberOfFire;
-        private static int totalBiomassMortality;
+        private static int[] totalBurnedSites;
+        private static int[] numberOfFire;
+        private static int[] totalBiomassMortality;
         private static int numCellsSeverity1;
         private static int numCellsSeverity2;
         private static int numCellsSeverity3;
@@ -87,21 +87,6 @@ namespace Landis.Extension.Scrapple
         {
             Timestep = 1;  // RMS:  Initially we will force annual time step. parameters.Timestep;
 
-            // Later, if maps are dynamic, this process will need to be repeated every time the maps are updated.
-            //activeAccidentalSites = new List<ActiveSite>();
-            //foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
-            //    //if (SiteVars.AccidentalFireWeight[site] > 0.0)
-            //        activeAccidentalSites.Add(site);
-
-            //activeRxSites = new List<ActiveSite>();
-            //foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
-            //    //if (SiteVars.RxFireWeight[site] > 0.0)
-            //        activeRxSites.Add(site);
-
-            //activeLightningSites = new List<ActiveSite>();
-            //foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
-            //    //if (SiteVars.LightningFireWeight[site] > 0.0)
-            //        activeLightningSites.Add(site);
 
             ///******************** DEBUGGER LAUNCH *********************
             /// 
@@ -163,9 +148,9 @@ namespace Landis.Extension.Scrapple
             SiteVars.TypeOfIginition.ActiveSiteValues = 0;
 
             AnnualClimate_Daily weatherData = null;
-            totalBurnedSites = 0;
-            numberOfFire = 0;
-            totalBiomassMortality = 0;
+            totalBurnedSites = new int[3];
+            numberOfFire = new int[3];
+            totalBiomassMortality = new int[3];
             numCellsSeverity1 = 0;
             numCellsSeverity2 = 0;
             numCellsSeverity3 = 0;
@@ -420,9 +405,9 @@ namespace Landis.Extension.Scrapple
             {
                 FireEvent fireEvent = FireEvent.Initiate(shuffledFireSites.First(), modelCore.CurrentTime, day, ignitionType);
 
-                totalBurnedSites += fireEvent.TotalSitesDamaged;
-                numberOfFire++;
-                totalBiomassMortality += (int)fireEvent.TotalBiomassMortality;
+                totalBurnedSites[(int) ignitionType] += fireEvent.TotalSitesDamaged;
+                numberOfFire[(int)ignitionType]++;
+                totalBiomassMortality[(int)ignitionType] += (int)fireEvent.TotalBiomassMortality;
                 numCellsSeverity1 += fireEvent.NumberCellsSeverity1;
                 numCellsSeverity2 += fireEvent.NumberCellsSeverity2;
                 numCellsSeverity3 += fireEvent.NumberCellsSeverity3;
@@ -491,9 +476,15 @@ namespace Landis.Extension.Scrapple
             summaryLog.Clear();
             SummaryLog sl = new SummaryLog();
             sl.SimulationYear = currentTime;
-            sl.TotalBurnedSites = totalBurnedSites; 
-            sl.NumberFires = numberOfFire;
-            sl.TotalBiomassMortality = totalBiomassMortality;
+            sl.TotalBurnedSitesAccidental = totalBurnedSites[0];
+            sl.TotalBurnedSitesLightning = totalBurnedSites[1];
+            sl.TotalBurnedSitesRx = totalBurnedSites[2];
+            sl.NumberFiresAccidental = numberOfFire[0];
+            sl.NumberFiresLightning = numberOfFire[1];
+            sl.NumberFiresRx = numberOfFire[2];
+            sl.TotalBiomassMortalityAccidental = totalBiomassMortality[0];
+            sl.TotalBiomassMortalityLightning = totalBiomassMortality[1];
+            sl.TotalBiomassMortalityRx = totalBiomassMortality[2];
             sl.NumberCellsSeverity1 = numCellsSeverity1;
             sl.NumberCellsSeverity2 = numCellsSeverity2;
             sl.NumberCellsSeverity3 = numCellsSeverity3;

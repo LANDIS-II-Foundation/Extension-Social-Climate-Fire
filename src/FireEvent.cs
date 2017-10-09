@@ -18,8 +18,7 @@ namespace Landis.Extension.Scrapple
     {
         Accidental,
         Lightning,
-        Rx,
-        Spread
+        Rx
     }
 
     public class FireEvent
@@ -45,6 +44,7 @@ namespace Landis.Extension.Scrapple
         public double MeanEffectiveWindSpeed;
         public double MeanSuppression;
         public double MeanSpreadProbability;
+        public double MeanFWI;
         public double TotalBiomassMortality;
         public int NumberCellsSeverity1;
         public int NumberCellsSeverity2;
@@ -59,23 +59,6 @@ namespace Landis.Extension.Scrapple
         static FireEvent()
         {
         }
-        //---------------------------------------------------------------------
-
-        //public int TotalSitesDamaged
-        //{
-        //    get {
-        //        return totalSitesDamaged;
-        //    }
-        //}
-        //---------------------------------------------------------------------
-
-        //public int CohortsKilled
-        //{
-        //    get {
-        //        return cohortsKilled;
-        //    }
-        //}
-
         //---------------------------------------------------------------------
 
         ExtensionType IDisturbance.Type
@@ -119,6 +102,7 @@ namespace Landis.Extension.Scrapple
             this.MeanEffectiveWindSpeed = 0.0;
             this.MeanSpreadProbability = 0.0;
             this.MeanSuppression = 0.0;
+            this.MeanFWI = 0.0;
             this.TotalBiomassMortality = 0.0;
             this.NumberCellsSeverity1 = 0;
             this.NumberCellsSeverity2 = 0;
@@ -181,6 +165,7 @@ namespace Landis.Extension.Scrapple
             double windDirection = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyWindDirection[day];// / 180 * Math.PI;
             this.MeanWindDirection += windDirection;
             this.MeanWindSpeed += windSpeed;
+            this.MeanFWI += fireWeatherIndex;
 
             double combustionBuoyancy = 10.0;  // Cannot be zero, also very insensitive when UaUb > 5.
             if (SiteVars.Severity[sourceSite] == 1)
@@ -459,6 +444,7 @@ namespace Landis.Extension.Scrapple
             el.InitialDayOfYear = fireEvent.IgnitionDay;
             el.NumberOfDays = fireEvent.NumberOfDays;
             el.MeanSpreadProbability = fireEvent.MeanSpreadProbability / (double)fireEvent.TotalSitesDamaged;
+            el.MeanFWI = fireEvent.MeanFWI / (double)fireEvent.TotalSitesDamaged;
             el.TotalSitesBurned = fireEvent.TotalSitesDamaged;
             el.CohortsKilled = fireEvent.CohortsKilled;
             el.MeanSeverity = fireEvent.MeanSeverity / (double) fireEvent.TotalSitesDamaged;
