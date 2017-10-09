@@ -432,8 +432,6 @@ namespace Landis.Extension.Scrapple
             IgnitionsLog ign = new IgnitionsLog();
             ign.SimulationYear = currentTime;
             ign.AttemptedNumberIgnitions = numIgns;
-            //ign.InitRow = site.Location.Row;
-            //ign.InitColumn = site.Location.Column;
             ign.DayOfYear = doy;
             ign.FireWeatherIndex = fwi;
             ign.IgnitionType = type;
