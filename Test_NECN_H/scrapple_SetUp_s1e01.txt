@@ -4,22 +4,52 @@ LandisData  "SCRAPPLE"
 >>     Parameter                      Value
 >> ----------------------------       -------
 Timestep                            1
-RelativeHumiditySlopeAdjust         77.68
 
-HumanIgnitionsMap     ./Accidental_Ignition_Map.img
+AccidentalIgnitionsMap     ./Accidental_Ignition_Map.img
 LightningIgnitionsMap  ./Lightning_Ignition_Map.img
 RxIgnitionsMap  ./Lightning_Ignition_Map.img
+
+AccidentalSuppressionMap	./test_suppress.img
+LightningSuppressionMap		./test_suppress.img
+RxSuppressionMap		./test_suppress.img
 
 GroundSlopeMap GroundSlope.gis
 UphillSlopeAzimuthMap  UphillSlope.gis
 
-LightningIgnitionsB0  0.0
-LightningIgnitionsB1  0.0
-RxFireIgnitionsB0 0.0
-RxFireIgnitionsB1 0.0
-AccidentalIgnitionsB0 0.0
-AccidentalIgnitionsB1 0.0
+LightningIgnitionsB0  -3.0
+LightningIgnitionsB1  0.005
+AccidentalIgnitionsB0 -3.0
+AccidentalIgnitionsB1 0.005
 MaximumFineFuels 60.0
+MaximumRxWindSpeed 10.0
+MaximumRxFireWeatherIndex 30.0
+MinimumRxFireWeatherIndex 5.0
+NumberRxAnnualFires 5
+
+MaximumSpreadAreaB0	3.1
+MaximumSpreadAreaB1	0.0
+MaximumSpreadAreaB2	0.0
+
+SpreadProbabilityB0 -1.0
+SpreadProbabilityB1 0.085  <<FWI
+SpreadProbabilityB2 -0.005  << fine fuels
+SpreadProbabilityB3 -0.33  << wind speed
+
+SeverityFactor:LadderFuelMaxAge 50
+SeverityFactor:LadderFuelBiomass -1.0
+SeverityFactor:FineFuelBiomass  0.0
+
+SuppressionEffectiveness:LightningLow		5
+SuppressionEffectiveness:LightningMedium	50
+SuppressionEffectiveness:LightningHigh		75
+SuppressionEffectiveness:RxLow			5
+SuppressionEffectiveness:RxMedium		50
+SuppressionEffectiveness:RxHigh			75
+SuppressionEffectiveness:AccidentalLow		5
+SuppressionEffectiveness:AccidentalMedium	50
+SuppressionEffectiveness:AccidentalHigh		75
+
+
 
 FireIntensityClass_1_DamageTable
 >> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
@@ -36,5 +66,6 @@ FireIntensityClass_3_DamageTable
 PinuJeff 0 50  0.9  
 PinuJeff 51 100 0.5
 
+LadderFuelSpeciesList 
+PinuJeff
 
-MapNames  fire/ignitions-{timestep}.img

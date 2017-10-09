@@ -2,7 +2,7 @@
 
 LandisData Scenario
 
-Duration 100
+Duration 5
 
 Species 		"./species.txt"
 
@@ -19,9 +19,7 @@ CellLength 100 << meters, so cell area = 1 ha
 >> Disturbance Extensions Initialization File
 >> ---------------------- -------------------
 
->>"Dynamic Fuel System"	"./DynamicFuels.txt"
->>"Dynamic Fire System"		"./DynamicFire-base-lower-ign.txt"
->>"Leaf Biomass Harvest"		"./fuel-treatments-Continuous-15RP.txt"
+>>"Biomass Harvest"		"./fuel-treatments-Continuous-15RP.txt"
 >>"Base BDA"                      "./base-BDA-input.txt"
 
 DisturbancesRandomOrder no

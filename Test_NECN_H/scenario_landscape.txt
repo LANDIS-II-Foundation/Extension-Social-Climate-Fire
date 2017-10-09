@@ -21,7 +21,7 @@ CellLength  100 << meters, 100 x 100 m = 1 hectare
 
 >> Disturbance Extensions   Initialization File
 >> ----------------------   -------------------
->>	"SCRAPPLE"              scrapple_SetUp_s1e01.txt
+	"SCRAPPLE"              scrapple_SetUp_s1e01.txt
 
 >>   DisturbancesRandomOrder  yes  << optional parameter; default = no
 
