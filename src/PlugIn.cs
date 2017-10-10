@@ -204,7 +204,6 @@ namespace Landis.Extension.Scrapple
                         try
                         {
                             ecoregionAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * (double)sitesPerEcoregions[ecoregion.Index];
-                            //ecoregionAverageFireWeatherIndex += weatherData.DailyWindSpeed[day] * (double)sitesPerEcoregions[ecoregion.Index];
                         }
                         catch
                         {
@@ -217,7 +216,7 @@ namespace Landis.Extension.Scrapple
                 //modelCore.UI.WriteLine("   Processing landscape for Fire events.  Day={0}, FWI={1}", day, landscapeAverageFireWeatherIndex);
 
                 // FWI must be > .10 
-                if (landscapeAverageFireWeatherIndex >= 0.10)
+                if (landscapeAverageFireWeatherIndex >= 10.0)
                 {
                     //List<ActiveSite> shuffledAccidentalFireSites = Shuffle(ModelCore.Landscape.ActiveSites.ToList(), SiteVars.AccidentalFireWeight);
                     int numLFires = NumberOfIgnitions(Ignition.Accidental, landscapeAverageFireWeatherIndex);
