@@ -50,7 +50,7 @@ namespace Landis.Extension.Scrapple
         [DataFieldAttribute(Desc = "Average Suppression")]
         public double MeanSuppression { set; get; }
 
-        [DataFieldAttribute(Desc = "Mean FWI")]
+        [DataFieldAttribute(Desc = "Mean FWI", Format = "0.00")]
         public double MeanFWI { set; get; }
 
         [DataFieldAttribute(Desc = "Mean Spread Probability")]

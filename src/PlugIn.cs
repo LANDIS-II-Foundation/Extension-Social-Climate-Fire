@@ -190,25 +190,26 @@ namespace Landis.Extension.Scrapple
 
                 foreach (IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
                 {
-                    if (!ecoregion.Active)
-                        continue;
+                    if (ecoregion.Active)
+                    {
+                        try
+                        {
+                            weatherData = Climate.Future_DailyData[ActualYear][ecoregion.Index];
+                        }
+                        catch
+                        {
+                            throw new UninitializedClimateData(string.Format("Climate data could not be found. Year: {0} in ecoregion: {1}", ActualYear, ecoregion.Name));
+                        }
 
-                    try
-                    {
-                        weatherData = Climate.Future_DailyData[ActualYear][ecoregion.Index];
-                    }
-                    catch
-                    {
-                        throw new UninitializedClimateData(string.Format("Climate data could not be found \t year: {0} in ecoregion: {1}", ActualYear, ecoregion.Name));
-                    }
-
-                    try
-                    {
-                        ecoregionAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * (double) sitesPerEcoregions[ecoregion.Index];
-                    }
-                    catch
-                    {
-                        throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found \t year: {0}, day: {1} in ecoregion: {2} not found", PlugIn.ActualYear, day, ecoregion.Name));
+                        try
+                        {
+                            ecoregionAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * (double)sitesPerEcoregions[ecoregion.Index];
+                            //ecoregionAverageFireWeatherIndex += weatherData.DailyWindSpeed[day] * (double)sitesPerEcoregions[ecoregion.Index];
+                        }
+                        catch
+                        {
+                            throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found. Year: {0}, day: {1}, ecoregion: {2}", ActualYear, day, ecoregion.Name));
+                        }
                     }
                 }
 

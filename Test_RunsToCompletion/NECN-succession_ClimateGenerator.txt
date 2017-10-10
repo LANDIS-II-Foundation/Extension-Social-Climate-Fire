@@ -2,7 +2,7 @@ LandisData "Climate Config"
 		
 
 
-ClimateTimeSeries			Daily_AverageAllYears
+ClimateTimeSeries			Daily_RandomYears << Daily_AverageAllYears
 ClimateFile				LTB_1992_1995_fix.csv
 ClimateFileFormat			Daily_Temp-C_Precip-mmday
 

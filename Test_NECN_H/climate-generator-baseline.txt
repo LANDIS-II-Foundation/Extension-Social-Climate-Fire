@@ -1,7 +1,7 @@
 LandisData "Climate Config"				
 		
 ClimateTimeSeries			Daily_RandomYears
-ClimateFile				LTB_daily_historic.csv
+ClimateFile				LTB_daily_historic_fixed.csv
 ClimateFileFormat			Daily_Temp-C_Precip-mmDay
 
 SpinUpClimateTimeSeries			Daily_AverageAllYears
