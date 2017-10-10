@@ -186,12 +186,16 @@ namespace Landis.Extension.Scrapple
             for (int day = 0; day < daysPerYear; ++day)
             {
                 double ecoregionAverageFireWeatherIndex = 0.0;
+                double ecoregionNumSites = 0.0;
                 // number of fires get initilized to 0 every timestep
 
                 foreach (IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
                 {
                     if (ecoregion.Active)
                     {
+                        if (sitesPerEcoregions.ContainsKey(ecoregion.Index))
+                            ecoregionNumSites = (double)sitesPerEcoregions[ecoregion.Index];
+
                         try
                         {
                             weatherData = Climate.Future_DailyData[ActualYear][ecoregion.Index];
@@ -203,11 +207,11 @@ namespace Landis.Extension.Scrapple
 
                         try
                         {
-                            ecoregionAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * (double)sitesPerEcoregions[ecoregion.Index];
+                            ecoregionAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * ecoregionNumSites;
                         }
                         catch
                         {
-                            throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found. Year: {0}, day: {1}, ecoregion: {2}", ActualYear, day, ecoregion.Name));
+                            throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found. Year: {0}, day: {1}, ecoregion: {2}, NumSites={3}", ActualYear, day, ecoregion.Name, sitesPerEcoregions[ecoregion.Index]));
                         }
                     }
                 }

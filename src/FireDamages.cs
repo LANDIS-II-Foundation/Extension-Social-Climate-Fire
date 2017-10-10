@@ -100,7 +100,7 @@ namespace Landis.Extension.Scrapple
             }
 
             set {
-                if(value < damageSpecies.Longevity)
+                if(value <= damageSpecies.Longevity)
                     maxAge = value;
                 else
                     throw new InputValueException(value.ToString(),

@@ -64,7 +64,7 @@ AbieConc 0 450 0.1
 AbieMagn 0 50 0.6
 AbieMagn 0 450 0.1
 PinuCont 0 50 0.3
-PinuCont 51 550 0.1
+PinuCont 51 250 0.1
 PinuMont 0 50 0.2
 PinuMont 51 550 0.05
 TsugMert 0 50 0.6
@@ -72,7 +72,7 @@ TsugMert 0 450 0.1
 PinuAlbi 0 50 0.6
 PinuAlbi 0 450 0.1
 PopuTrem 0 30  0.25
-PopuTrem 31 715  0.1
+PopuTrem 31 175  0.1
 NonnResp 0 80   0.5
 NonnSeed 0 80   0.5
 FixnResp 0 80   0.5
@@ -83,7 +83,7 @@ FireIntensityClass_2_DamageTable
 PinuJeff 0 50  0.3  
 PinuJeff 51 500 0.15
 PinuLamb 0 50 0.3
-PinuLamb 51 550 0.15
+PinuLamb 51 500 0.15
 CaloDecu 0 50 0.3
 CaloDecu 51 500 0.15
 AbieConc 0 50 0.75
@@ -91,7 +91,7 @@ AbieConc 0 450 0.2
 AbieMagn 0 50 0.75
 AbieMagn 0 450 0.2
 PinuCont 0 50 0.75
-PinuCont 51 550 0.2
+PinuCont 51 250 0.2
 PinuMont 0 50 0.3
 PinuMont 51 550 0.15
 TsugMert 0 50 0.75
@@ -99,7 +99,7 @@ TsugMert 0 450 0.2
 PinuAlbi 0 50 0.75
 PinuAlbi 0 450 0.2
 PopuTrem 0 30  0.85
-PopuTrem 31 715  0.75
+PopuTrem 31 175  0.75
 NonnResp 0 80   0.75
 NonnSeed 0 80   0.75
 FixnResp 0 80   0.75
@@ -118,7 +118,7 @@ AbieConc 0 450 0.5
 AbieMagn 0 50 0.99
 AbieMagn 0 450 0.5
 PinuCont 0 50 0.99
-PinuCont 51 550 0.5
+PinuCont 51 250 0.5
 PinuMont 0 50 0.8
 PinuMont 51 550 0.25
 TsugMert 0 50 0.95
@@ -126,7 +126,7 @@ TsugMert 0 450 0.5
 PinuAlbi 0 50 0.95
 PinuAlbi 0 450 0.5
 PopuTrem 0 30  0.99
-PopuTrem 31 715  0.95
+PopuTrem 31 175  0.95
 NonnResp 0 80   0.99
 NonnSeed 0 80   0.99
 FixnResp 0 80   0.99
