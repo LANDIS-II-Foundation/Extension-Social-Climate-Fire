@@ -177,8 +177,7 @@ namespace Landis.Extension.Scrapple
 
             double UaUb = windSpeed / combustionBuoyancy;
             double slopeDegrees = (double) SiteVars.GroundSlope[site] / 180.0 * Math.PI; //convert from Radians to Degrees
-            double slopeAngle = (double) SiteVars.UphillSlopeAzimuth[site];// / 180 * Math.PI; // convert from Radians to Degrees
-            //windDirection = windDirection / 180 * Math.PI;
+            double slopeAngle = (double) SiteVars.UphillSlopeAzimuth[site];
             double relativeWindDirection = (windDirection - slopeAngle) / 180.0 * Math.PI;
 
             // From R.M. Nelson Intl J Wildland Fire, 2002
@@ -187,7 +186,15 @@ namespace Landis.Extension.Scrapple
             //PlugIn.ModelCore.UI.WriteLine("  wind speed={0}, effective_ws={1}.", windSpeed, effectiveWindSpeed);
             // End EFFECTIVE WIND SPEED ************************
 
-            double fineFuelBiomass = 0.5; //SiteVars.FineFuels[site];  // NEED TO FIX NECN-Hydro installer
+            double fineFuelBiomass = 0.0;
+            try
+            {
+                fineFuelBiomass = SiteVars.FineFuels[site];
+            }
+            catch
+            {
+                PlugIn.ModelCore.UI.WriteLine("NOTE: FINE FUELS NOT OPERATIONAL.  DEFAULT IS ZERO.");
+            }
 
             // LADDER FUELS ************************
             double ladderFuelBiomass = 0.0;

@@ -36,8 +36,8 @@ SpreadProbabilityB2 -0.005  << fine fuels
 SpreadProbabilityB3 -0.33  << wind speed
 
 SeverityFactor:LadderFuelMaxAge 50
-SeverityFactor:LadderFuelBiomass -1.0
-SeverityFactor:FineFuelBiomass  0.0
+SeverityFactor:LadderFuelBiomass 20.0
+SeverityFactor:FineFuelBiomass  5.0
 
 SuppressionEffectiveness:LightningLow		5
 SuppressionEffectiveness:LightningMedium	50
@@ -133,5 +133,5 @@ FixnResp 0 80   0.99
 FixnSeed 0 80   0.99
 
 LadderFuelSpeciesList 
-PinuJeff
+AbieConc AbieMagn PinuJeff PinuCont
 
