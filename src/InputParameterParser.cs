@@ -159,6 +159,10 @@ namespace Landis.Extension.Scrapple
             ReadVar(sp3);
             parameters.SpreadProbabilityB3 = sp3.Value;
 
+            InputVar<double> sf_ff = new InputVar<double>("SeverityFactor:FineFuelPercent");
+            ReadVar(sf_ff);
+            parameters.SeverityFactor_FineFuelPercent = sf_ff.Value;
+
             InputVar<int> lfma = new InputVar<int>("SeverityFactor:LadderFuelMaxAge");
             ReadVar(lfma);
             parameters.LadderFuelMaxAge = lfma.Value;
@@ -167,9 +171,34 @@ namespace Landis.Extension.Scrapple
             ReadVar(sf_lf);
             parameters.SeverityFactor_LadderFuelBiomass = sf_lf.Value;
 
-            InputVar<double> sf_ff = new InputVar<double>("SeverityFactor:FineFuelBiomass");
-            ReadVar(sf_ff);
-            parameters.SeverityFactor_FineFuelBiomass = sf_ff.Value;
+            //  Read the species list for ladderfuels:
+            List<string> speciesNames = new List<string>();
+
+            const string LadderFuelSpeciesList = "LadderFuelSpeciesList";
+            ReadName(LadderFuelSpeciesList);
+
+            while (!AtEndOfInput && CurrentName != "SuppressionEffectiveness:LightningLow")
+            {
+                StringReader currentLine = new StringReader(CurrentLine);
+                TextReader.SkipWhitespace(currentLine);
+                while (currentLine.Peek() != -1)
+                {
+                    ReadValue(speciesName, currentLine);
+                    string name = speciesName.Value.Actual;
+
+                    if (speciesNames.Contains(name))
+                        throw NewParseException("The species {0} appears more than once.", name);
+                    speciesNames.Add(name);
+
+                    ISpecies species = GetSpecies(new InputValue<string>(name, speciesName.Value.String));
+                    parameters.LadderFuelSpeciesList.Add(species);
+
+                    TextReader.SkipWhitespace(currentLine);
+                }
+                GetNextLine();
+            }
+            foreach (ISpecies ladder_spp in parameters.LadderFuelSpeciesList)
+                PlugIn.ModelCore.UI.WriteLine("    Ladder fuel species: {0}", ladder_spp.Name);
 
             InputVar<int> lso = new InputVar<int>("SuppressionEffectiveness:LightningLow");
             ReadVar(lso);
@@ -215,7 +244,6 @@ namespace Landis.Extension.Scrapple
             const string FireIntensityClass_1_DamageTable = "FireIntensityClass_1_DamageTable";
             const string FireIntensityClass_2_DamageTable = "FireIntensityClass_2_DamageTable";
             const string FireIntensityClass_3_DamageTable = "FireIntensityClass_3_DamageTable";
-            const string LadderFuelSpeciesList = "LadderFuelSpeciesList";
 
 
             InputVar<string> spp = new InputVar<string>("Species Name");
@@ -296,7 +324,7 @@ namespace Landis.Extension.Scrapple
             }
 
             ReadName(FireIntensityClass_3_DamageTable);
-            while (!AtEndOfInput && CurrentName != LadderFuelSpeciesList) 
+            while (!AtEndOfInput) // && CurrentName != LadderFuelSpeciesList) 
             {
 
                 StringReader currentLine = new StringReader(CurrentLine);
@@ -337,33 +365,6 @@ namespace Landis.Extension.Scrapple
             foreach (FireDamage damage in parameters.FireDamages_Severity3)
                 PlugIn.ModelCore.UI.WriteLine("      {0} : {1} : {2}", damage.DamageSpecies.Name, damage.MaxAge, damage.ProbablityMortality);
 
-            //  Read the species list for ladderfuels:
-            List<string> speciesNames = new List<string>();
-
-            ReadName(LadderFuelSpeciesList);
-
-            while (!AtEndOfInput)
-            {
-                StringReader currentLine = new StringReader(CurrentLine);
-                TextReader.SkipWhitespace(currentLine);
-                while (currentLine.Peek() != -1)
-                {
-                    ReadValue(speciesName, currentLine);
-                    string name = speciesName.Value.Actual;
-
-                    if (speciesNames.Contains(name))
-                        throw NewParseException("The species {0} appears more than once.", name);
-                    speciesNames.Add(name);
-
-                    ISpecies species = GetSpecies(new InputValue<string>(name, speciesName.Value.String));
-                    parameters.LadderFuelSpeciesList.Add(species);
-
-                    TextReader.SkipWhitespace(currentLine);
-                }
-                GetNextLine();
-            }
-            foreach (ISpecies ladder_spp in parameters.LadderFuelSpeciesList)
-                PlugIn.ModelCore.UI.WriteLine("    Ladder fuel species: {0}", ladder_spp.Name);
 
             return parameters; 
         }

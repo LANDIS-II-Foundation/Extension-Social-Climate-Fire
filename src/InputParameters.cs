@@ -50,7 +50,7 @@ namespace Landis.Extension.Scrapple
 
         int LadderFuelMaxAge { get; set; }
         double SeverityFactor_LadderFuelBiomass { get; set; }
-        double SeverityFactor_FineFuelBiomass { get; set; }
+        double SeverityFactor_FineFuelPercent { get; set; }
 
         int LightningSuppressEffectivenss_low { get; set; }
         int LightningSuppressEffectivenss_medium { get; set; }
@@ -109,7 +109,7 @@ namespace Landis.Extension.Scrapple
 
         private int ladderFuelMaxAge;
         private double severityFactor_LadderFuelBiomass;
-        private double severityFactor_FineFuelBiomass;
+        private double severityFactor_FineFuelPercentage;
 
         private int lightningSuppressEffectivenss_low;
         private int lightningSuppressEffectivenss_medium;
@@ -494,15 +494,15 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public double SeverityFactor_FineFuelBiomass
+        public double SeverityFactor_FineFuelPercent
         {
             get
             {
-                return severityFactor_FineFuelBiomass;
+                return severityFactor_FineFuelPercentage;
             }
             set
             {
-                severityFactor_FineFuelBiomass = value;
+                severityFactor_FineFuelPercentage = value;
             }
         }
 

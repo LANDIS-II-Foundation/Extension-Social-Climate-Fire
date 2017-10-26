@@ -183,13 +183,12 @@ namespace Landis.Extension.Scrapple
             // From R.M. Nelson Intl J Wildland Fire, 2002
             double effectiveWindSpeed = combustionBuoyancy * (Math.Pow(Math.Pow(UaUb, 2.0) + (2.0 * (UaUb) * Math.Sin(slopeDegrees) * Math.Cos(relativeWindDirection)) + Math.Pow(Math.Sin(slopeDegrees), 2.0), 0.5));
             this.MeanEffectiveWindSpeed += effectiveWindSpeed;
-            //PlugIn.ModelCore.UI.WriteLine("  wind speed={0}, effective_ws={1}.", windSpeed, effectiveWindSpeed);
             // End EFFECTIVE WIND SPEED ************************
 
-            double fineFuelBiomass = 0.0;
+            double fineFuelPercent = 0.0;
             try
             {
-                fineFuelBiomass = SiteVars.FineFuels[site];
+                fineFuelPercent = SiteVars.FineFuels[site] / PlugIn.Parameters.MaxFineFuels;
             }
             catch
             {
@@ -277,7 +276,7 @@ namespace Landis.Extension.Scrapple
             double spreadB2 = PlugIn.Parameters.SpreadProbabilityB2;
             double spreadB3 = PlugIn.Parameters.SpreadProbabilityB3;
 
-            double Pspread = Math.Pow(Math.E, spreadB0 + (spreadB1 * fireWeatherIndex) + (spreadB2 * fineFuelBiomass) + (spreadB3*effectiveWindSpeed));
+            double Pspread = Math.Pow(Math.E, spreadB0 + (spreadB1 * fireWeatherIndex) + (spreadB2 * fineFuelPercent) + (spreadB3*effectiveWindSpeed));
             Pspread = Pspread / (1.0 + Pspread);
             // End PROBABILITY OF SPREAD calculation **************************
 
@@ -292,7 +291,7 @@ namespace Landis.Extension.Scrapple
                 // Severity a function of ladder fuels, fine fuels, source spread intensity.
                 siteSeverity = 1;
                 int highSeverityRiskFactors = 0;
-                if (fineFuelBiomass > PlugIn.Parameters.SeverityFactor_FineFuelBiomass)
+                if (fineFuelPercent > PlugIn.Parameters.SeverityFactor_FineFuelPercent)
                     highSeverityRiskFactors++;
                 if (ladderFuelBiomass > PlugIn.Parameters.SeverityFactor_LadderFuelBiomass)
                     highSeverityRiskFactors++;

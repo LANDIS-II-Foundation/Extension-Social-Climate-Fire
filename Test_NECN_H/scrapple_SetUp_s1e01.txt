@@ -20,7 +20,7 @@ LightningIgnitionsB0  -3.0
 LightningIgnitionsB1  0.005
 AccidentalIgnitionsB0 -3.0
 AccidentalIgnitionsB1 0.005
-MaximumFineFuels 60.0
+MaximumFineFuels 3.0
 MaximumRxWindSpeed 10.0
 MaximumRxFireWeatherIndex 30.0
 MinimumRxFireWeatherIndex 5.0
@@ -35,9 +35,11 @@ SpreadProbabilityB1 0.085  <<FWI
 SpreadProbabilityB2 -0.005  << fine fuels
 SpreadProbabilityB3 -0.33  << wind speed
 
+SeverityFactor:FineFuelPercent  50.0
 SeverityFactor:LadderFuelMaxAge 50
-SeverityFactor:LadderFuelBiomass 20.0
-SeverityFactor:FineFuelBiomass  5.0
+SeverityFactor:LadderFuelBiomass -1.0
+LadderFuelSpeciesList 
+AbieConc AbieMagn PinuJeff PinuCont
 
 SuppressionEffectiveness:LightningLow		5
 SuppressionEffectiveness:LightningMedium	50
@@ -132,6 +134,4 @@ NonnSeed 0 80   0.99
 FixnResp 0 80   0.99
 FixnSeed 0 80   0.99
 
-LadderFuelSpeciesList 
-AbieConc AbieMagn PinuJeff PinuCont
 
