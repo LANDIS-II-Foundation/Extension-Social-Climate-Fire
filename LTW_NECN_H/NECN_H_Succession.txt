@@ -97,7 +97,7 @@ FunctionalGroupParameters << -  estimates from fhmem_century_succession.txt
 	
 >> Name		Index	PPDF1	PPDF2	PPDF3	PPDF4	FCFRAC	BTOLAI	KLAI	MAXLAI	PPRPTS2	PPRPTS3	Wood	Month	Age		Leaf 
 >>	 				T-Mean	T-Max	T-shape	T-shape	leaf											DecayR	Wood	Mort	Drop
->>																									Mort	Shape			Month CRFrac	FRFrac
+>>																											Mort	Shape	Month CRFrac	FRFrac
 
 Conifers	1		23.0	40.0	0.05	6.0		0.2		-0.8	10000		10		0.2		0.1		1.0		0.002	10		9		0.1		0.1
 Hardwoods	2		23.0	35.0	0.05	7.0		0.3		-0.8	5000		20		0.2		0.1		1.0		0.002	10		9		0.1		0.1	

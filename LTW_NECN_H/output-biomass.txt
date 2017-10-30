@@ -1,4 +1,4 @@
-LandisData  "Output Biomass"
+LandisData  "Biomass Output"
 
 Timestep  5
 

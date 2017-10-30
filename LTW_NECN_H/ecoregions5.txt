@@ -8,4 +8,4 @@ LandisData  Ecoregions
       yes    3   eco3   "Lodgepole pine/Subalpine"
       yes    4   eco4   "Shrub - chaparral/sage"
       yes    5   eco5	"Aspen/Riparian vegetation"
-      no     0   Other  "Water/Urban/Rock/Outside LTB"
+      no     0   eco0  "Water/Urban/Rock/Outside LTB"

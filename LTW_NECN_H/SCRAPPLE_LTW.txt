@@ -7,35 +7,43 @@ AccidentalIgnitionsMap     ./ScrappleInputs/human_ign1.tif
 LightningIgnitionsMap  ./ScrappleInputs/lightning1.tif
 RxIgnitionsMap  ./ScrappleInputs/rx1.tif
 
-AccidentalSuppressionMap	./fire_new_456.img
-LightningSuppressionMap		./fire_new_456.img
-RxSuppressionMap		./fire_new_456.img
+AccidentalSuppressionMap	./ScrappleInputs/LTB_suppress.tif
+LightningSuppressionMap		./ScrappleInputs/LTB_suppress.tif
+RxSuppressionMap		./ScrappleInputs/LTB_suppress.tif
 
 GroundSlopeMap slope.img
 UphillSlopeAzimuthMap  upslope.img
 
-LightningIgnitionsB0  -100
-LightningIgnitionsB1  0.005   
-AccidentalIgnitionsB0 -100
-AccidentalIgnitionsB1 0.005
-
-MaximumFineFuels 600000.0 <<Setting these all ridiclously high
-MaximumRxWindSpeed 200.0
-MaximumRxFireWeatherIndex 100.0
-MinimumRxFireWeatherIndex 0.0
-NumberRxAnnualFires 25
+LightningIgnitionsB0  -5.0
+LightningIgnitionsB1  0.05
+AccidentalIgnitionsB0 -5.0
+AccidentalIgnitionsB1 0.05
+MaximumFineFuels 60.0
+MaximumRxWindSpeed 10.0
+MaximumRxFireWeatherIndex 30.0
+MinimumRxFireWeatherIndex 5.0
+NumberRxAnnualFires 5
 
 MaximumSpreadAreaB0	3.1
-MaximumSpreadAreaB1	200.0
-MaximumSpreadAreaB2	200.0
+MaximumSpreadAreaB1	0.0
+MaximumSpreadAreaB2	0.0
 
-SeverityFactor:LadderFuelMaxAge 5
-SeverityFactor:LadderFuelBiomass 2.0
-SeverityFactor:FineFuelBiomass  1.0
+SpreadProbabilityB0 -5.825
+SpreadProbabilityB1 0.081  <<FWI
+SpreadProbabilityB2 0.0000005  << fine fuels17
+SpreadProbabilityB3 -0.33  << wind speed
 
-SuppressionEffectiveness:LightningLow		0
-SuppressionEffectiveness:LightningMedium	0
-SuppressionEffectiveness:LightningHigh		0
+SeverityFactor:FineFuelPercent  50.0
+SeverityFactor:LadderFuelMaxAge 50
+SeverityFactor:LadderFuelBiomass -1.0
+
+LadderFuelSpeciesList 
+PinuJeff AbieConc
+
+
+SuppressionEffectiveness:LightningLow		5
+SuppressionEffectiveness:LightningMedium	50
+SuppressionEffectiveness:LightningHigh		75
 SuppressionEffectiveness:RxLow			5
 SuppressionEffectiveness:RxMedium		50
 SuppressionEffectiveness:RxHigh			75
@@ -43,23 +51,84 @@ SuppressionEffectiveness:AccidentalLow		5
 SuppressionEffectiveness:AccidentalMedium	50
 SuppressionEffectiveness:AccidentalHigh		75
 
+
 FireIntensityClass_1_DamageTable
 >> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
-PinuJeff 0 50  0.9  
-PinuJeff 51 100 0.5
+PinuJeff 0 50  0.2  
+PinuJeff 51 500 0.05
+PinuLamb 0 50 0.2
+PinuLamb 51 550 0.05
+CaloDecu 0 50 0.2
+CaloDecu 51 500 0.01
+AbieConc 0 50 0.6
+AbieConc 0 450 0.1
+AbieMagn 0 50 0.6
+AbieMagn 0 450 0.1
+PinuCont 0 50 0.3
+PinuCont 51 250 0.1
+PinuMont 0 50 0.2
+PinuMont 51 550 0.05
+TsugMert 0 50 0.6
+TsugMert 0 450 0.1
+PinuAlbi 0 50 0.6
+PinuAlbi 0 450 0.1
+PopuTrem 0 30  0.25
+PopuTrem 31 175  0.1
+NonnResp 0 80   0.5
+NonnSeed 0 80   0.5
+FixnResp 0 80   0.5
+FixnSeed 0 80   0.5
 
 FireIntensityClass_2_DamageTable
 >> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
-PinuJeff 0 50  0.9  
-PinuJeff 51 100 0.5
+PinuJeff 0 50  0.3  
+PinuJeff 51 500 0.15
+PinuLamb 0 50 0.3
+PinuLamb 51 500 0.15
+CaloDecu 0 50 0.3
+CaloDecu 51 500 0.15
+AbieConc 0 50 0.75
+AbieConc 0 450 0.2
+AbieMagn 0 50 0.75
+AbieMagn 0 450 0.2
+PinuCont 0 50 0.75
+PinuCont 51 250 0.2
+PinuMont 0 50 0.3
+PinuMont 51 550 0.15
+TsugMert 0 50 0.75
+TsugMert 0 450 0.2
+PinuAlbi 0 50 0.75
+PinuAlbi 0 450 0.2
+PopuTrem 0 30  0.85
+PopuTrem 31 175  0.75
+NonnResp 0 80   0.75
+NonnSeed 0 80   0.75
+FixnResp 0 80   0.75
+FixnSeed 0 80   0.75
 
 FireIntensityClass_3_DamageTable
 >> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
-PinuJeff 0 50  0.9  
-PinuJeff 51 100 0.5
-
-LadderFuelSpeciesList 
-AbieConc
-
-
->> MapNames  fire/ignitions-{timestep}.img
+PinuJeff 0 50  0.8  
+PinuJeff 51 500 0.25
+PinuLamb 0 50 0.8
+PinuLamb 51 550 0.25
+CaloDecu 0 50 0.8
+CaloDecu 51 500 0.25
+AbieConc 0 50 0.99
+AbieConc 0 450 0.5
+AbieMagn 0 50 0.99
+AbieMagn 0 450 0.5
+PinuCont 0 50 0.99
+PinuCont 51 250 0.5
+PinuMont 0 50 0.8
+PinuMont 51 550 0.25
+TsugMert 0 50 0.95
+TsugMert 0 450 0.5
+PinuAlbi 0 50 0.95
+PinuAlbi 0 450 0.5
+PopuTrem 0 30  0.99
+PopuTrem 31 175  0.95
+NonnResp 0 80   0.99
+NonnSeed 0 80   0.99
+FixnResp 0 80   0.99
+FixnSeed 0 80 0.99

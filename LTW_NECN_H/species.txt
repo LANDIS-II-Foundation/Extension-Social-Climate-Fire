@@ -2,7 +2,7 @@ LandisData	Species
 >> same species at Sarah's - 3 deleted	
 					
 
->>				Sexual	Shade	Fire	Seed Disp Dist	Veg	Sprout	Age	Post-Fire
+>>						Sexual	Shade	Fire	Seed Disp Dist	Veg	Sprout	Age	Post-Fire
 >>	Name		Long	Maturit	Tol.	Tol.	Effecti	Maximum	Rep P	Min	Max	Regen
 >>	----		-------	-----	-----	----	------  -------	-----	----	-----	--------
 	PinuJeff	500	25	2	5	50	300	0	0	0	none
