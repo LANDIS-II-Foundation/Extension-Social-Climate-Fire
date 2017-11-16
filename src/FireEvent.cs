@@ -191,6 +191,10 @@ namespace Landis.Extension.Scrapple
                     {
 
                         ActiveSite[] spread = new ActiveSite[] { (ActiveSite)neighborSite, site };
+                        fireSites.Add(spread);
+                        this.TotalSitesDamaged++;
+
+
                         //this.Spread(PlugIn.ModelCore.CurrentTime, neighborDay, (ActiveSite)neighborSite, (ActiveSite)site);
                     }
                 }
@@ -266,8 +270,6 @@ namespace Landis.Extension.Scrapple
             //SiteVars.DayOfFire[site] = (ushort)day;
 
             SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
-
-            this.TotalSitesDamaged++;
 
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
             double fireWeatherIndex = 0.0;
