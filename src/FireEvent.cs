@@ -28,11 +28,10 @@ namespace Landis.Extension.Scrapple
         public static Random rnd = new Random();
 
         private ActiveSite initiationSite;
-        public int TotalSitesDamaged;
+        private static List<ActiveSite[]> fireSites;
 
+        public int TotalSitesDamaged;
         public int CohortsKilled;
-//        private double eventSeverity;
-        
         public double InitiationFireWeatherIndex;
         public Ignition IgnitionType;
         AnnualClimate_Daily annualWeatherData;
@@ -121,8 +120,15 @@ namespace Landis.Extension.Scrapple
 
             FireEvent fireEvent = new FireEvent(initiationSite, day, ignitionType);
 
+            ActiveSite[] initialSites = new ActiveSite[2];
+            initialSites[0] = (ActiveSite)initiationSite;
+            initialSites[1] = (ActiveSite)initiationSite;
+
+            fireSites = new List<ActiveSite[]>();
+            fireSites.Add(initialSites);
+
             // desitination and source are the same for ignition site
-            fireEvent.Spread(PlugIn.ModelCore.CurrentTime, day, (ActiveSite)initiationSite, (ActiveSite)initiationSite);
+            fireEvent.Spread(PlugIn.ModelCore.CurrentTime, day); //, (ActiveSite)initiationSite, (ActiveSite)initiationSite);
 
             LogEvent(PlugIn.ModelCore.CurrentTime, fireEvent);
 
@@ -133,32 +139,145 @@ namespace Landis.Extension.Scrapple
 
 
         //---------------------------------------------------------------------
-        public void Spread(int currentTime, int day, ActiveSite site, ActiveSite sourceSite)
+        private void Spread(int currentTime, int day)//, ActiveSite site, ActiveSite sourceSite)
         {
-            // First, load necessary parameters
-            // Refer to design doc on Google Drive for questions or explanations
-
-            if (day > maxDay)
+            // First, take the first site off the list, ensuring that days are sequential from the beginning.
+            while (fireSites.Count() > 0)
             {
-                maxDay = day;
-                NumberOfDays++;
+                ActiveSite[] sitePair = fireSites.First();
+                ActiveSite site = sitePair[0];
+                ActiveSite sourceSite = sitePair[1];
+
+                CalculateIntensity(site, sourceSite);
+
+                // DAY OF FIRE *****************************
+                if (!spreadArea.ContainsKey(day))
+                {
+                    spreadArea.Add(day, 1);  // second int is the cell count, later turned into area
+                }
+                else
+                {
+                    spreadArea[day]++;
+                }
+
+                IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
+                double fireWeatherIndex = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyFireWeatherIndex[day];
+                double windSpeed = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyWindSpeed[day];
+
+                //      Calculate spread-area-max 
+                double spreadAreaMaxHectares = PlugIn.Parameters.MaximumSpreadAreaB0 +
+                    PlugIn.Parameters.MaximumSpreadAreaB1 * fireWeatherIndex +
+                    PlugIn.Parameters.MaximumSpreadAreaB2 * windSpeed;
+                double dailySpreadAreaHectares = spreadArea[day] * PlugIn.ModelCore.CellArea / 10000; // convert to Ha
+
+                //  if spread-area > spread-area-max, day = day + 1, assuming that spreadAreaMax units are hectares:
+                if (dailySpreadAreaHectares > spreadAreaMaxHectares)
+                    day++;  // GOTO the next day.
+
+                if (day > maxDay)
+                {
+                    maxDay = day;
+                    NumberOfDays++;
+                }
+                // DAY OF FIRE *****************************
+
+                if (CanSpread(site, sourceSite, day))
+                {
+                    //      Spread to neighbors
+                    List<Site> neighbors = Get4ActiveNeighbors(site);
+                    neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor] || !neighbor.IsActive);
+
+                    foreach (Site neighborSite in neighbors)
+                    {
+                        ActiveSite[] spread = new ActiveSite[] { (ActiveSite)neighborSite, site };
+                        //this.Spread(PlugIn.ModelCore.CurrentTime, neighborDay, (ActiveSite)neighborSite, (ActiveSite)site);
+                    }
+                }
+                fireSites.Remove(fireSites.First());
             }
 
-            SiteVars.TypeOfIginition[site] = (short) this.IgnitionType;
-            SiteVars.DayOfFire[site] = (ushort)day;
-            SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
-            this.TotalSitesDamaged++;
 
-            IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
+        }
 
-            double fireWeatherIndex = 0.0;
+        private void CalculateIntensity(ActiveSite site, ActiveSite sourceSite)
+        {
+            double fineFuelPercent = 0.0;
             try
             {
-                fireWeatherIndex = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyFireWeatherIndex[day]; 
+                fineFuelPercent = SiteVars.FineFuels[site] / PlugIn.Parameters.MaxFineFuels;
             }
             catch
             {
-                throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found \t year: {0}, day: {1} in ecoregion: {2} not found", currentTime, day, ecoregion.Name));
+                PlugIn.ModelCore.UI.WriteLine("NOTE: FINE FUELS NOT OPERATIONAL.  DEFAULT IS ZERO.");
+            }
+
+            // LADDER FUELS ************************
+            double ladderFuelBiomass = 0.0;
+            foreach (ISpeciesCohorts speciesCohorts in SiteVars.Cohorts[site])
+                foreach (ICohort cohort in speciesCohorts)
+                    if (PlugIn.Parameters.LadderFuelSpeciesList.Contains(cohort.Species) && cohort.Age <= PlugIn.Parameters.LadderFuelMaxAge)
+                        ladderFuelBiomass += cohort.Biomass;
+            // End LADDER FUELS ************************
+
+            // SEVERITY calculation **************************
+            // Next, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
+            // Severity a function of ladder fuels, fine fuels, source spread intensity.
+            siteSeverity = 1;
+            int highSeverityRiskFactors = 0;
+            if (fineFuelPercent > PlugIn.Parameters.SeverityFactor_FineFuelPercent)
+                highSeverityRiskFactors++;
+            if (ladderFuelBiomass > PlugIn.Parameters.SeverityFactor_LadderFuelBiomass)
+                highSeverityRiskFactors++;
+            if (SiteVars.Severity[sourceSite] > 2)
+                highSeverityRiskFactors++;
+
+            if (highSeverityRiskFactors == 1)
+                siteSeverity = 2;
+            if (highSeverityRiskFactors > 1)
+                siteSeverity = 3;
+            // End SEVERITY calculation **************************
+
+            int siteCohortsKilled = 0;
+
+            if (siteSeverity > 0)
+            {
+                //      Cause mortality
+                siteCohortsKilled = Damage(site);
+
+                SiteVars.Severity[site] = (byte)siteSeverity;
+                this.MeanSeverity += siteSeverity;
+                if (siteSeverity == 1)
+                    this.NumberCellsSeverity1++;
+                if (siteSeverity == 2)
+                    this.NumberCellsSeverity2++;
+                if (siteSeverity == 3)
+                    this.NumberCellsSeverity3++;
+
+            }
+
+        }
+
+        private bool CanSpread(ActiveSite site, ActiveSite sourceSite, int day)
+        {
+            bool spread = false;
+            SiteVars.TypeOfIginition [site] = (short) this.IgnitionType;
+
+            //SiteVars.DayOfFire[site] = (ushort)day;
+
+            SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
+
+            this.TotalSitesDamaged++;
+
+            IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
+            double fireWeatherIndex = 0.0;
+            try
+            {
+
+                fireWeatherIndex = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyFireWeatherIndex[day];
+            }
+            catch
+            {
+                throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found \t year: {0}, day: {1} in ecoregion: {2} not found", PlugIn.ModelCore.CurrentTime, day, ecoregion.Name));
             }
             // EFFECTIVE WIND SPEED ************************
             double windSpeed = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyWindSpeed[day];
@@ -176,8 +295,8 @@ namespace Landis.Extension.Scrapple
                 combustionBuoyancy = 50.0;
 
             double UaUb = windSpeed / combustionBuoyancy;
-            double slopeDegrees = (double) SiteVars.GroundSlope[site] / 180.0 * Math.PI; //convert from Radians to Degrees
-            double slopeAngle = (double) SiteVars.UphillSlopeAzimuth[site];
+            double slopeDegrees = (double)SiteVars.GroundSlope[site] / 180.0 * Math.PI; //convert from Radians to Degrees
+            double slopeAngle = (double)SiteVars.UphillSlopeAzimuth[site];
             double relativeWindDirection = (windDirection - slopeAngle) / 180.0 * Math.PI;
 
             // From R.M. Nelson Intl J Wildland Fire, 2002
@@ -230,13 +349,13 @@ namespace Landis.Extension.Scrapple
                 switch (SiteVars.LightningSuppressionIndex[site])
                 {
                     case 1:
-                        suppressEffect = 1.0 - ((double) PlugIn.Parameters.LightningSuppressEffectivenss_low / 100.0);
+                        suppressEffect = 1.0 - ((double)PlugIn.Parameters.LightningSuppressEffectivenss_low / 100.0);
                         break;
                     case 2:
-                        suppressEffect = 1.0 - ((double) PlugIn.Parameters.LightningSuppressEffectivenss_medium / 100.0);
+                        suppressEffect = 1.0 - ((double)PlugIn.Parameters.LightningSuppressEffectivenss_medium / 100.0);
                         break;
                     case 3:
-                        suppressEffect = 1.0 - ((double) PlugIn.Parameters.LightningSuppressEffectivenss_high / 100.0);
+                        suppressEffect = 1.0 - ((double)PlugIn.Parameters.LightningSuppressEffectivenss_high / 100.0);
                         break;
                     default:
                         suppressEffect = 1.0;
@@ -249,7 +368,7 @@ namespace Landis.Extension.Scrapple
                 switch (SiteVars.RxSuppressionIndex[site])
                 {
                     case 1:
-                        suppressEffect = 1.0 - ((double) PlugIn.Parameters.RxSuppressEffectivenss_low / 100.0);
+                        suppressEffect = 1.0 - ((double)PlugIn.Parameters.RxSuppressEffectivenss_low / 100.0);
                         break;
                     case 2:
                         suppressEffect = 1.0 - ((double)PlugIn.Parameters.RxSuppressEffectivenss_medium / 100.0);
@@ -276,93 +395,21 @@ namespace Landis.Extension.Scrapple
             double spreadB2 = PlugIn.Parameters.SpreadProbabilityB2;
             double spreadB3 = PlugIn.Parameters.SpreadProbabilityB3;
 
-            double Pspread = Math.Pow(Math.E, spreadB0 + (spreadB1 * fireWeatherIndex) + (spreadB2 * fineFuelPercent) + (spreadB3*effectiveWindSpeed));
+            double Pspread = Math.Pow(Math.E, spreadB0 + (spreadB1 * fireWeatherIndex) + (spreadB2 * fineFuelPercent) + (spreadB3 * effectiveWindSpeed));
             Pspread = Pspread / (1.0 + Pspread);
             // End PROBABILITY OF SPREAD calculation **************************
 
             this.MeanSpreadProbability += Pspread;
             double Pspread_adjusted = Pspread * suppressEffect;
             if (Pspread_adjusted > PlugIn.ModelCore.GenerateUniform())
-            {
+                spread = true;
 
-
-                // SEVERITY calculation **************************
-                // Next, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
-                // Severity a function of ladder fuels, fine fuels, source spread intensity.
-                siteSeverity = 1;
-                int highSeverityRiskFactors = 0;
-                if (fineFuelPercent > PlugIn.Parameters.SeverityFactor_FineFuelPercent)
-                    highSeverityRiskFactors++;
-                if (ladderFuelBiomass > PlugIn.Parameters.SeverityFactor_LadderFuelBiomass)
-                    highSeverityRiskFactors++;
-                if(SiteVars.Severity[sourceSite] > 2)
-                    highSeverityRiskFactors++;
-
-                if (highSeverityRiskFactors == 1)
-                    siteSeverity = 2;
-                if (highSeverityRiskFactors > 1)
-                    siteSeverity = 3;
-                // End SEVERITY calculation **************************
-
-                int siteCohortsKilled = 0;
-
-                if (siteSeverity > 0)
-                {
-                    //      Cause mortality
-                    siteCohortsKilled = Damage(site);
-
-                SiteVars.Severity[site] = (byte)siteSeverity;
-                    this.MeanSeverity += siteSeverity;
-                    if (siteSeverity == 1)
-                        this.NumberCellsSeverity1++;
-                    if (siteSeverity == 2)
-                        this.NumberCellsSeverity2++;
-                    if (siteSeverity == 3)
-                        this.NumberCellsSeverity3++;
-
-                }
-
-                //      Calculate spread-area-max 
-                double spreadAreaMaxHectares = PlugIn.Parameters.MaximumSpreadAreaB0 + 
-                    PlugIn.Parameters.MaximumSpreadAreaB1*fireWeatherIndex + 
-                    PlugIn.Parameters.MaximumSpreadAreaB2*windSpeed;
-                
-                if (!spreadArea.ContainsKey(day))
-                {
-                    spreadArea.Add(day, 1);  // second int is the cell count, later turned into area
-                }
-                else
-                {
-                    spreadArea[day]++;
-                }
-
-                //      Spread to neighbors
-                List<Site> neighbors = Get4ActiveNeighbors(site);
-                neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor] || !neighbor.IsActive);
-                int neighborDay = day;
-
-
-                foreach (Site neighborSite in neighbors)
-                {
-                    //  if spread-area > spread-area-max, day = day + 1
-                    // Assuming that spreadAreaMax units are hectares:
-                    double dailySpreadAreaHectares = spreadArea[day] * PlugIn.ModelCore.CellArea / 10000; // convert to Ha
-
-
-                    if (dailySpreadAreaHectares > spreadAreaMaxHectares)
-                        neighborDay = day+1;
-                    this.Spread(PlugIn.ModelCore.CurrentTime, neighborDay, (ActiveSite) neighborSite, (ActiveSite) site);
-                }
-
-
-            }
-
-
+            return spread;
 
         }
 
-        //---------------------------------------------------------------------
-        private static List<Site> Get4ActiveNeighbors(Site srcSite)
+    //---------------------------------------------------------------------
+    private static List<Site> Get4ActiveNeighbors(Site srcSite)
         {
             if (!srcSite.IsActive)
                 throw new ApplicationException("Source site is not active.");
