@@ -44,9 +44,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\debug\Landis.Library.BiomassCohorts-v2.dll</HintPath>
     </Reference>
-    <Reference Include="Landis.Library.Climate-v1.1, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Landis.Library.Climate-beta1.1, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\debug\Landis.Library.Climate-v1.1.dll</HintPath>
+      <HintPath>bin\debug\Landis.Library.Climate-beta1.1.dll</HintPath>
     </Reference>
     <Reference Include="Landis.Library.Cohorts, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
