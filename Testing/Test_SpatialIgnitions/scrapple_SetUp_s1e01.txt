@@ -1,0 +1,58 @@
+LandisData  "SCRAPPLE"
+
+>> Note:  All inputs are provided as examples only.  They are not intended to serve as default values.
+Timestep                            1
+
+AccidentalIgnitionsMap     ./Accidental_Ignition_Map.img
+LightningIgnitionsMap  ./Lightning_Ignition_Map.img
+RxIgnitionsMap  ./Lightning_Ignition_Map.img
+
+AccidentalSuppressionMap	./Test_suppress.img
+LightningSuppressionMap		./Test_suppress.img
+RxSuppressionMap		./Test_suppress.img
+
+GroundSlopeMap GroundSlope.gis
+UphillSlopeAzimuthMap  UphillSlope.gis
+
+LightningIgnitionsB0  -3
+LightningIgnitionsB1  0.1
+RxFireIgnitionsB0 0.0
+RxFireIgnitionsB1 0.0
+AccidentalIgnitionsB0 -3.335
+AccidentalIgnitionsB1 0.04807
+MaximumFineFuels 60.0
+MaximumRxWindSpeed 4.0
+MaximumRxFireWeatherIndex 40.0
+
+SuppressionEffectiveness:LightningLow		5
+SuppressionEffectiveness:LightningMedium	50
+SuppressionEffectiveness:LightningHigh		75
+SuppressionEffectiveness:RxLow			5
+SuppressionEffectiveness:RxMedium		50
+SuppressionEffectiveness:RxHigh			75
+SuppressionEffectiveness:AccidentalLow		5
+SuppressionEffectiveness:AccidentalMedium	50
+SuppressionEffectiveness:AccidentalHigh		75
+
+LadderFuelMaxAge 30
+
+FireIntensityClass_1_DamageTable
+>> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
+PinuJeff 0 50  0.9  
+PinuJeff 51 100 0.5
+
+FireIntensityClass_2_DamageTable
+>> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
+PinuJeff 0 50  0.9  
+PinuJeff 51 100 0.5
+
+FireIntensityClass_3_DamageTable
+>> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
+PinuJeff 0 50  0.9  
+PinuJeff 51 100 0.5
+
+LadderFuelSpeciesList 
+AbieConc
+
+
+>> MapNames  fire/ignitions-{timestep}.img

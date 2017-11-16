@@ -1,0 +1,35 @@
+>> LTB - base (current) climate
+
+LandisData Scenario
+
+Duration 50
+
+Species 		"./species.txt"
+
+Ecoregions 		"./ecoregions5.txt" << using 5 ecoregions
+EcoregionsMap 		"./Century_input_maps/ecoregions5.img"
+CellLength 100 << meters, so cell area = 1 ha
+
+>> Succession Extension Initialization File
+>> -------------------- -------------------
+
+"NECN_Hydro Succession"	"./NECN_H_Succession.txt"
+
+
+>> Disturbance Extensions Initialization File
+>> ---------------------- -------------------
+	SCRAPPLE				SCRAPPLE_LTW.txt
+>>"Leaf Biomass Harvest"		"./fuel-treatments-Continuous-15RP.txt"
+>>"Base BDA"                      "./base-BDA-input.txt"
+
+DisturbancesRandomOrder no
+
+>> Output Extensions Initialization File
+>> ----------------- -------------------
+>>"Output Max Species Age"		"./max-spp-age.output.txt"
+>> "Output Cohort Statistics"    	"./cohort-stats.output.txt"		<< any succession ext.
+>>"Max Species Age" 		max-spp-age.output-base.txt  		<< any succession ext.
+>> Reclassification			reclass.output-base.txt 		<< for age-only succession ONLY
+ "Output Biomass"		"./output-biomass.txt"   << output biomass
+
+>>RandomNumberSeed 4,357

@@ -181,14 +181,15 @@ namespace Landis.Extension.Scrapple
                 }
                 // DAY OF FIRE *****************************
 
-                if (CanSpread(site, sourceSite, day))
-                {
-                    //      Spread to neighbors
-                    List<Site> neighbors = Get4ActiveNeighbors(site);
-                    neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor] || !neighbor.IsActive);
+                //      Spread to neighbors
+                List<Site> neighbors = Get4ActiveNeighbors(site);
+                neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor] || !neighbor.IsActive);
 
-                    foreach (Site neighborSite in neighbors)
+                foreach (Site neighborSite in neighbors)
+                {
+                    if (CanSpread((ActiveSite) neighborSite, site, day))
                     {
+
                         ActiveSite[] spread = new ActiveSite[] { (ActiveSite)neighborSite, site };
                         //this.Spread(PlugIn.ModelCore.CurrentTime, neighborDay, (ActiveSite)neighborSite, (ActiveSite)site);
                     }
@@ -401,6 +402,7 @@ namespace Landis.Extension.Scrapple
 
             this.MeanSpreadProbability += Pspread;
             double Pspread_adjusted = Pspread * suppressEffect;
+
             if (Pspread_adjusted > PlugIn.ModelCore.GenerateUniform())
                 spread = true;
 
