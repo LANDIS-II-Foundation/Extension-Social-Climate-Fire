@@ -399,7 +399,7 @@ namespace Landis.Extension.Scrapple
             double spreadB3 = PlugIn.Parameters.SpreadProbabilityB3;
 
             double Pspread = Math.Pow(Math.E, spreadB0 + (spreadB1 * fireWeatherIndex) + (spreadB2 * fineFuelPercent) + (spreadB3 * effectiveWindSpeed));
-            Pspread = Pspread / (1.0 + Pspread);
+            Pspread = 1.0 / (1.0 + Pspread);
             // End PROBABILITY OF SPREAD calculation **************************
 
             this.MeanSpreadProbability += Pspread;
