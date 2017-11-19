@@ -91,7 +91,7 @@ namespace Landis.Extension.Scrapple
             SiteVars.Disturbed[initiationSite] = true;
 
             this.CohortsKilled = 0;
-            this.TotalSitesDamaged = 0;  // minimum 1 for the ignition cell
+            this.TotalSitesDamaged = 1;  // minimum 1 for the ignition cell
             this.InitiationFireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
             this.spreadArea = new Dictionary<int, int>();
             this.NumberOfDays = 1;
