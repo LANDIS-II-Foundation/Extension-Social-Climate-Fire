@@ -14,7 +14,7 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<double> rxFireWeight;
         private static ISiteVar<double> accidentalFireWeight;
         private static ISiteVar<short> typeOfIginition;
-        private static ISiteVar<byte> severity;
+        private static ISiteVar<byte> intensity;
         private static ISiteVar<ushort> dayOfFire;
         private static ISiteVar<bool> disturbed;
         private static ISiteVar<ushort> groundSlope;
@@ -35,7 +35,7 @@ namespace Landis.Extension.Scrapple
 
             eventVar = PlugIn.ModelCore.Landscape.NewSiteVar<FireEvent>(InactiveSiteMode.DistinctValues);
             timeOfLastFire       = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
-            severity         = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
+            intensity         = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
             dayOfFire = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
 
             groundSlope          = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
@@ -62,7 +62,7 @@ namespace Landis.Extension.Scrapple
             }
 
 
-            PlugIn.ModelCore.RegisterSiteVar(SiteVars.Severity, "Fire.Severity");
+            PlugIn.ModelCore.RegisterSiteVar(SiteVars.Intensity, "Fire.Severity");
             PlugIn.ModelCore.RegisterSiteVar(SiteVars.TimeOfLastFire, "Fire.TimeOfLastEvent");
         }
 
@@ -197,11 +197,11 @@ namespace Landis.Extension.Scrapple
         //}
 
         //---------------------------------------------------------------------
-        public static ISiteVar<byte> Severity
+        public static ISiteVar<byte> Intensity
         {
             get
             {
-                return severity;
+                return intensity;
             }
         }
 

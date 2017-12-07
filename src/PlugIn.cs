@@ -143,7 +143,7 @@ namespace Landis.Extension.Scrapple
                 SiteVars.InitializeDisturbances();
 
             SiteVars.Disturbed.ActiveSiteValues = false;
-            SiteVars.Severity.ActiveSiteValues = 0;
+            SiteVars.Intensity.ActiveSiteValues = 0;
             SiteVars.DayOfFire.ActiveSiteValues = 0;
             SiteVars.TypeOfIginition.ActiveSiteValues = 0;
 
@@ -300,7 +300,7 @@ namespace Landis.Extension.Scrapple
                     if (site.IsActive)
                     {
                         if (SiteVars.Disturbed[site])
-                            pixel.MapCode.Value = (short) (SiteVars.Severity[site]);
+                            pixel.MapCode.Value = (short) (SiteVars.Intensity[site]);
                         else
                             pixel.MapCode.Value = 0;
                     }

@@ -52,7 +52,7 @@ namespace Landis.Extension.Scrapple
         public Dictionary<int, int> spreadArea;
 
         public int maxDay;
-        public int siteSeverity;
+        public int siteIntensity;
 
         //---------------------------------------------------------------------
         static FireEvent()
@@ -149,6 +149,7 @@ namespace Landis.Extension.Scrapple
                 ActiveSite sourceSite = sitePair[1];
 
                 CalculateIntensity(site, sourceSite);
+                SiteVars.DayOfFire[site] = (ushort) day;
 
                 // DAY OF FIRE *****************************
                 if (!spreadArea.ContainsKey(day))
@@ -224,38 +225,38 @@ namespace Landis.Extension.Scrapple
                         ladderFuelBiomass += cohort.Biomass;
             // End LADDER FUELS ************************
 
-            // SEVERITY calculation **************************
+            // INTENSITY calculation **************************
             // Next, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
             // Severity a function of ladder fuels, fine fuels, source spread intensity.
-            siteSeverity = 1;
+            siteIntensity = 1;
             int highSeverityRiskFactors = 0;
             if (fineFuelPercent > PlugIn.Parameters.SeverityFactor_FineFuelPercent)
                 highSeverityRiskFactors++;
             if (ladderFuelBiomass > PlugIn.Parameters.SeverityFactor_LadderFuelBiomass)
                 highSeverityRiskFactors++;
-            if (SiteVars.Severity[sourceSite] > 2)
+            if (SiteVars.Intensity[sourceSite] > 2)
                 highSeverityRiskFactors++;
 
             if (highSeverityRiskFactors == 1)
-                siteSeverity = 2;
+                siteIntensity = 2;
             if (highSeverityRiskFactors > 1)
-                siteSeverity = 3;
-            // End SEVERITY calculation **************************
+                siteIntensity = 3;
+            // End INTENSITY calculation **************************
 
             int siteCohortsKilled = 0;
 
-            if (siteSeverity > 0)
+            if (siteIntensity > 0)
             {
                 //      Cause mortality
                 siteCohortsKilled = Damage(site);
 
-                SiteVars.Severity[site] = (byte)siteSeverity;
-                this.MeanSeverity += siteSeverity;
-                if (siteSeverity == 1)
+                SiteVars.Intensity[site] = (byte)siteIntensity;
+                this.MeanSeverity += siteIntensity;
+                if (siteIntensity == 1)
                     this.NumberCellsSeverity1++;
-                if (siteSeverity == 2)
+                if (siteIntensity == 2)
                     this.NumberCellsSeverity2++;
-                if (siteSeverity == 3)
+                if (siteIntensity == 3)
                     this.NumberCellsSeverity3++;
 
             }
@@ -290,11 +291,11 @@ namespace Landis.Extension.Scrapple
             this.MeanFWI += fireWeatherIndex;
 
             double combustionBuoyancy = 10.0;  // Cannot be zero, also very insensitive when UaUb > 5.
-            if (SiteVars.Severity[sourceSite] == 1)
+            if (SiteVars.Intensity[sourceSite] == 1)
                 combustionBuoyancy = 10.0;
-            if (SiteVars.Severity[sourceSite] == 2)
+            if (SiteVars.Intensity[sourceSite] == 2)
                 combustionBuoyancy = 25.0;
-            if (SiteVars.Severity[sourceSite] == 3)
+            if (SiteVars.Intensity[sourceSite] == 3)
                 combustionBuoyancy = 50.0;
 
             double UaUb = windSpeed / combustionBuoyancy;
@@ -453,17 +454,15 @@ namespace Landis.Extension.Scrapple
 
         //  A filter to determine which cohorts are removed.
         int IDisturbance.ReduceOrKillMarkedCohort(ICohort cohort)
-        //bool ICohortDisturbance.MarkCohortForDeath(ICohort cohort)
         {
             bool killCohort = false;
-            //int siteSeverity = 1;
 
             List<IFireDamage> fireDamages = null;
-            if (siteSeverity == 1)
+            if (siteIntensity == 1)
                 fireDamages = PlugIn.Parameters.FireDamages_Severity1;
-            if (siteSeverity == 2)
+            if (siteIntensity == 2)
                 fireDamages = PlugIn.Parameters.FireDamages_Severity2;
-            if (siteSeverity == 3)
+            if (siteIntensity == 3)
                 fireDamages = PlugIn.Parameters.FireDamages_Severity3;
 
             foreach (IFireDamage damage in fireDamages)

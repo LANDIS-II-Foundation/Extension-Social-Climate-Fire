@@ -159,15 +159,15 @@ namespace Landis.Extension.Scrapple
             ReadVar(sp3);
             parameters.SpreadProbabilityB3 = sp3.Value;
 
-            InputVar<double> sf_ff = new InputVar<double>("SeverityFactor:FineFuelPercent");
+            InputVar<double> sf_ff = new InputVar<double>("IntensityFactor:FineFuelPercent");
             ReadVar(sf_ff);
             parameters.SeverityFactor_FineFuelPercent = sf_ff.Value;
 
-            InputVar<int> lfma = new InputVar<int>("SeverityFactor:LadderFuelMaxAge");
+            InputVar<int> lfma = new InputVar<int>("IntensityFactor:LadderFuelMaxAge");
             ReadVar(lfma);
             parameters.LadderFuelMaxAge = lfma.Value;
 
-            InputVar<double> sf_lf = new InputVar<double>("SeverityFactor:LadderFuelBiomass");
+            InputVar<double> sf_lf = new InputVar<double>("IntensityFactor:LadderFuelBiomass");
             ReadVar(sf_lf);
             parameters.SeverityFactor_LadderFuelBiomass = sf_lf.Value;
 
