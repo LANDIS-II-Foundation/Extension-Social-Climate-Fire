@@ -93,7 +93,7 @@ namespace Landis.Extension.Scrapple
             this.CohortsKilled = 0;
             this.TotalSitesDamaged = 1;  // minimum 1 for the ignition cell
             this.InitiationFireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
-            this.spreadArea = new Dictionary<int, int>();
+            //this.spreadArea = new Dictionary<int, int>();
             this.NumberOfDays = 1;
             this.MeanSeverity = 0.0;
             this.MeanWindDirection = 0.0;
@@ -139,8 +139,9 @@ namespace Landis.Extension.Scrapple
 
 
         //---------------------------------------------------------------------
-        private void Spread(int currentTime, int day)//, ActiveSite site, ActiveSite sourceSite)
+        private void Spread(int currentTime, int day)
         {
+            int dailySpreadArea = 0;
             // First, take the first site off the list, ensuring that days are sequential from the beginning.
             while (fireSites.Count() > 0)
             {
@@ -150,30 +151,45 @@ namespace Landis.Extension.Scrapple
 
                 CalculateIntensity(site, sourceSite);
                 SiteVars.DayOfFire[site] = (ushort) day;
+                dailySpreadArea++;
 
-                // DAY OF FIRE *****************************
-                if (!spreadArea.ContainsKey(day))
-                {
-                    spreadArea.Add(day, 1);  // second int is the cell count, later turned into area
-                }
-                else
-                {
-                    spreadArea[day]++;
-                }
+                //// DAY OF FIRE *****************************
+                //if (!spreadArea.ContainsKey(day))
+                //{
+                //    spreadArea.Add(day, 1);  // second int is the cell count, later turned into area
+                //}
+                //else
+                //{
+                //    spreadArea[day]++;
+                //}
 
                 IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
-                double fireWeatherIndex = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyFireWeatherIndex[day];
-                double windSpeed = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyWindSpeed[day];
+                double fireWeatherIndex = 0.0;
+                try
+                {
+
+                    fireWeatherIndex = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyFireWeatherIndex[day];
+                }
+                catch
+                {
+                    throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found \t year: {0}, day: {1} in ecoregion: {2} not found", PlugIn.ModelCore.CurrentTime, day, ecoregion.Name));
+                }
+
+                double effectiveWindSpeed = CalculateEffectiveWindSpeed(site, sourceSite, fireWeatherIndex, day);
+                this.MeanEffectiveWindSpeed += effectiveWindSpeed;
 
                 //      Calculate spread-area-max 
                 double spreadAreaMaxHectares = PlugIn.Parameters.MaximumSpreadAreaB0 +
-                    PlugIn.Parameters.MaximumSpreadAreaB1 * fireWeatherIndex +
-                    PlugIn.Parameters.MaximumSpreadAreaB2 * windSpeed;
-                double dailySpreadAreaHectares = spreadArea[day] * PlugIn.ModelCore.CellArea / 10000; // convert to Ha
+                    (PlugIn.Parameters.MaximumSpreadAreaB1 * fireWeatherIndex) +
+                    (PlugIn.Parameters.MaximumSpreadAreaB2 * effectiveWindSpeed);
+                double dailySpreadAreaHectares = dailySpreadArea * PlugIn.ModelCore.CellArea / 10000; // convert to Ha
 
                 //  if spread-area > spread-area-max, day = day + 1, assuming that spreadAreaMax units are hectares:
                 if (dailySpreadAreaHectares > spreadAreaMaxHectares)
+                {
                     day++;  // GOTO the next day.
+                    dailySpreadArea = 0;
+                }
 
                 if (day > maxDay)
                 {
@@ -188,7 +204,7 @@ namespace Landis.Extension.Scrapple
 
                 foreach (Site neighborSite in neighbors)
                 {
-                    if (CanSpread((ActiveSite) neighborSite, site, day))
+                    if (CanSpread((ActiveSite) neighborSite, site, day, fireWeatherIndex, effectiveWindSpeed))
                     {
 
                         ActiveSite[] spread = new ActiveSite[] { (ActiveSite)neighborSite, site };
@@ -263,7 +279,7 @@ namespace Landis.Extension.Scrapple
 
         }
 
-        private bool CanSpread(ActiveSite site, ActiveSite sourceSite, int day)
+        private bool CanSpread(ActiveSite site, ActiveSite sourceSite, int day, double fireWeatherIndex, double effectiveWindSpeed)
         {
             bool spread = false;
             SiteVars.TypeOfIginition [site] = (short) this.IgnitionType;
@@ -271,42 +287,6 @@ namespace Landis.Extension.Scrapple
             //SiteVars.DayOfFire[site] = (ushort)day;
 
             SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
-
-            IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
-            double fireWeatherIndex = 0.0;
-            try
-            {
-
-                fireWeatherIndex = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyFireWeatherIndex[day];
-            }
-            catch
-            {
-                throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found \t year: {0}, day: {1} in ecoregion: {2} not found", PlugIn.ModelCore.CurrentTime, day, ecoregion.Name));
-            }
-            // EFFECTIVE WIND SPEED ************************
-            double windSpeed = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyWindSpeed[day];
-            double windDirection = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyWindDirection[day];// / 180 * Math.PI;
-            this.MeanWindDirection += windDirection;
-            this.MeanWindSpeed += windSpeed;
-            this.MeanFWI += fireWeatherIndex;
-
-            double combustionBuoyancy = 10.0;  // Cannot be zero, also very insensitive when UaUb > 5.
-            if (SiteVars.Intensity[sourceSite] == 1)
-                combustionBuoyancy = 10.0;
-            if (SiteVars.Intensity[sourceSite] == 2)
-                combustionBuoyancy = 25.0;
-            if (SiteVars.Intensity[sourceSite] == 3)
-                combustionBuoyancy = 50.0;
-
-            double UaUb = windSpeed / combustionBuoyancy;
-            double slopeDegrees = (double)SiteVars.GroundSlope[site] / 180.0 * Math.PI; //convert from Radians to Degrees
-            double slopeAngle = (double)SiteVars.UphillSlopeAzimuth[site];
-            double relativeWindDirection = (windDirection - slopeAngle) / 180.0 * Math.PI;
-
-            // From R.M. Nelson Intl J Wildland Fire, 2002
-            double effectiveWindSpeed = combustionBuoyancy * (Math.Pow(Math.Pow(UaUb, 2.0) + (2.0 * (UaUb) * Math.Sin(slopeDegrees) * Math.Cos(relativeWindDirection)) + Math.Pow(Math.Sin(slopeDegrees), 2.0), 0.5));
-            this.MeanEffectiveWindSpeed += effectiveWindSpeed;
-            // End EFFECTIVE WIND SPEED ************************
 
             double fineFuelPercent = 0.0;
             try
@@ -412,9 +392,40 @@ namespace Landis.Extension.Scrapple
             return spread;
 
         }
+        private double CalculateEffectiveWindSpeed(ActiveSite site, ActiveSite sourceSite, double fireWeatherIndex, int day)
+        {
+            IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
 
-    //---------------------------------------------------------------------
-    private static List<Site> Get4ActiveNeighbors(Site srcSite)
+            // EFFECTIVE WIND SPEED ************************
+            double windSpeed = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyWindSpeed[day];
+            double windDirection = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyWindDirection[day];// / 180 * Math.PI;
+            this.MeanWindDirection += windDirection;
+            this.MeanWindSpeed += windSpeed;
+            this.MeanFWI += fireWeatherIndex;
+
+            double combustionBuoyancy = 10.0;  // Cannot be zero, also very insensitive when UaUb > 5.
+            if (SiteVars.Intensity[sourceSite] == 1)
+                combustionBuoyancy = 10.0;
+            if (SiteVars.Intensity[sourceSite] == 2)
+                combustionBuoyancy = 25.0;
+            if (SiteVars.Intensity[sourceSite] == 3)
+                combustionBuoyancy = 50.0;
+
+            double UaUb = windSpeed / combustionBuoyancy;
+            double slopeDegrees = (double)SiteVars.GroundSlope[site] / 180.0 * Math.PI; //convert from Radians to Degrees
+            double slopeAngle = (double)SiteVars.UphillSlopeAzimuth[site];
+            double relativeWindDirection = (windDirection - slopeAngle) / 180.0 * Math.PI;
+
+            // From R.M. Nelson Intl J Wildland Fire, 2002
+            double effectiveWindSpeed = combustionBuoyancy * (Math.Pow(Math.Pow(UaUb, 2.0) + (2.0 * (UaUb) * Math.Sin(slopeDegrees) * Math.Cos(relativeWindDirection)) + Math.Pow(Math.Sin(slopeDegrees), 2.0), 0.5));
+
+            return effectiveWindSpeed;
+            // End EFFECTIVE WIND SPEED ************************
+
+        }
+
+        //---------------------------------------------------------------------
+        private static List<Site> Get4ActiveNeighbors(Site srcSite)
         {
             if (!srcSite.IsActive)
                 throw new ApplicationException("Source site is not active.");

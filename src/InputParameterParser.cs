@@ -137,11 +137,11 @@ namespace Landis.Extension.Scrapple
 
             InputVar<double> maxSA1 = new InputVar<double>("MaximumSpreadAreaB1");
             ReadVar(maxSA1);
-            parameters.MaximumSpreadAreaB0 = maxSA1.Value;
+            parameters.MaximumSpreadAreaB1 = maxSA1.Value;
 
             InputVar<double> maxSA2 = new InputVar<double>("MaximumSpreadAreaB2");
             ReadVar(maxSA2);
-            parameters.MaximumSpreadAreaB0 = maxSA2.Value;
+            parameters.MaximumSpreadAreaB2 = maxSA2.Value;
 
             InputVar<double> sp0 = new InputVar<double>("SpreadProbabilityB0");
             ReadVar(sp0);
