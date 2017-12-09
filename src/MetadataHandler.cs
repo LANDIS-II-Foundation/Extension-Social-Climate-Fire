@@ -33,7 +33,7 @@ namespace Landis.Extension.Scrapple
             //          table outputs:   
             //---------------------------------------
 
-            PlugIn.ignitionsLog = new MetadataTable<IgnitionsLog>("climate-fire-ignitions-log.csv");
+            PlugIn.ignitionsLog = new MetadataTable<IgnitionsLog>("scrapple-ignitions-log.csv");
 
             OutputMetadata tblOut_igns = new OutputMetadata()
             {
@@ -45,7 +45,7 @@ namespace Landis.Extension.Scrapple
             tblOut_igns.RetriveFields(typeof(IgnitionsLog));
             Extension.OutputMetadatas.Add(tblOut_igns);
 
-            PlugIn.eventLog = new MetadataTable<EventsLog>("climate-fire-events-log.csv");
+            PlugIn.eventLog = new MetadataTable<EventsLog>("scrapple-events-log.csv");
 
             OutputMetadata tblOut_events = new OutputMetadata()
             {
@@ -57,7 +57,7 @@ namespace Landis.Extension.Scrapple
             tblOut_events.RetriveFields(typeof(EventsLog));
             Extension.OutputMetadatas.Add(tblOut_events);
 
-            PlugIn.summaryLog = new MetadataTable<SummaryLog>("climate-fire-summary-log.csv");
+            PlugIn.summaryLog = new MetadataTable<SummaryLog>("scrapple-summary-log.csv");
 
             OutputMetadata tblSummaryOut_events = new OutputMetadata()
             {
@@ -72,17 +72,17 @@ namespace Landis.Extension.Scrapple
             //---------------------------------------            
             //          map outputs:         
             //---------------------------------------
-            string severityMapFileName = "climate-fire-severity.img";
-            OutputMetadata mapOut_Severity = new OutputMetadata()
+            string intensityMapFileName = "scrapple-intensity.img";
+            OutputMetadata mapOut_Intensity = new OutputMetadata()
             {
                 Type = OutputType.Map,
-                Name = "Severity",
-                FilePath = @severityMapFileName,
+                Name = "Intensity",
+                FilePath = @intensityMapFileName,
                 Map_DataType = MapDataType.Ordinal,
                 Map_Unit = FieldUnits.Severity_Rank,
                 Visualize = true,
             };
-            Extension.OutputMetadatas.Add(mapOut_Severity);
+            Extension.OutputMetadatas.Add(mapOut_Intensity);
 
             //OutputMetadata mapOut_Time = new OutputMetadata()
             //{

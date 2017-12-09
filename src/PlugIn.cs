@@ -268,7 +268,7 @@ namespace Landis.Extension.Scrapple
 
         private void WriteMaps(int currentTime)
         {
-            string path = MapNames.ReplaceTemplateVars("fire/ignition-type-{timestep}.img", currentTime);
+            string path = MapNames.ReplaceTemplateVars("scrapple-fire/ignition-type-{timestep}.img", currentTime);
 
             using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
             {
@@ -291,7 +291,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            path = MapNames.ReplaceTemplateVars("fire/severity-{timestep}.img", currentTime);
+            path = MapNames.ReplaceTemplateVars("scrapple-fire/intensity-{timestep}.img", currentTime);
             using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
             {
                 ShortPixel pixel = outputRaster.BufferPixel;
@@ -313,7 +313,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            path = MapNames.ReplaceTemplateVars("fire/day-of-fire-{timestep}.img", currentTime);
+            path = MapNames.ReplaceTemplateVars("scrapple-fire/day-of-fire-{timestep}.img", currentTime);
             using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
             {
                 ShortPixel pixel = outputRaster.BufferPixel;
