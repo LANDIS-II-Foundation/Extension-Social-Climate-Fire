@@ -35,12 +35,13 @@ SpreadProbabilityB1 0.085  <<FWI
 SpreadProbabilityB2 -0.005  << fine fuels
 SpreadProbabilityB3 -0.33  << wind speed
 
-SeverityFactor:FineFuelPercent  50.0
-SeverityFactor:LadderFuelMaxAge 50
-SeverityFactor:LadderFuelBiomass -1.0
+IntensityFactor:FineFuelPercent  0.0
+IntensityFactor:LadderFuelMaxAge 50
+IntensityFactor:LadderFuelBiomass -1.0
 LadderFuelSpeciesList 
 AbieConc AbieMagn PinuJeff PinuCont
 
+SuppressionMaxWindSpeed 40
 SuppressionEffectiveness:LightningLow		5
 SuppressionEffectiveness:LightningMedium	5
 SuppressionEffectiveness:LightningHigh		5

@@ -177,7 +177,7 @@ namespace Landis.Extension.Scrapple
             const string LadderFuelSpeciesList = "LadderFuelSpeciesList";
             ReadName(LadderFuelSpeciesList);
 
-            while (!AtEndOfInput && CurrentName != "SuppressionEffectiveness:LightningLow")
+            while (!AtEndOfInput && CurrentName != "SuppressionMaxWindSpeed")
             {
                 StringReader currentLine = new StringReader(CurrentLine);
                 TextReader.SkipWhitespace(currentLine);
