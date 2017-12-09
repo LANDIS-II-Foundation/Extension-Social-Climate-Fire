@@ -161,7 +161,7 @@ namespace Landis.Extension.Scrapple
 
             InputVar<double> sf_ff = new InputVar<double>("IntensityFactor:FineFuelPercent");
             ReadVar(sf_ff);
-            parameters.SeverityFactor_FineFuelPercent = sf_ff.Value;
+            parameters.IntensityFactor_FineFuelPercent = sf_ff.Value;
 
             InputVar<int> lfma = new InputVar<int>("IntensityFactor:LadderFuelMaxAge");
             ReadVar(lfma);
@@ -169,7 +169,7 @@ namespace Landis.Extension.Scrapple
 
             InputVar<double> sf_lf = new InputVar<double>("IntensityFactor:LadderFuelBiomass");
             ReadVar(sf_lf);
-            parameters.SeverityFactor_LadderFuelBiomass = sf_lf.Value;
+            parameters.IntensityFactor_LadderFuelBiomass = sf_lf.Value;
 
             //  Read the species list for ladderfuels:
             List<string> speciesNames = new List<string>();
@@ -199,6 +199,10 @@ namespace Landis.Extension.Scrapple
             }
             foreach (ISpecies ladder_spp in parameters.LadderFuelSpeciesList)
                 PlugIn.ModelCore.UI.WriteLine("    Ladder fuel species: {0}", ladder_spp.Name);
+
+            InputVar<int> smws = new InputVar<int>("SuppressionMaxWindSpeed");
+            ReadVar(smws);
+            parameters.SuppressionMaxWindSpeed = smws.Value;
 
             InputVar<int> lso = new InputVar<int>("SuppressionEffectiveness:LightningLow");
             ReadVar(lso);

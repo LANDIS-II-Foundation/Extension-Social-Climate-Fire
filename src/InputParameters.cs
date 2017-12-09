@@ -17,7 +17,6 @@ namespace Landis.Extension.Scrapple
         List<IFireDamage> FireDamages_Severity1{get;}
         List<IFireDamage> FireDamages_Severity2 { get; }
         List<IFireDamage> FireDamages_Severity3 { get; }
-        //string MapNamesTemplate {get;set;}
 
         string LighteningFireMap { get; set; }
         string RxFireMap { get; set; }
@@ -29,8 +28,6 @@ namespace Landis.Extension.Scrapple
 
         double LightningIgnitionB0 { get; set; }
         double LightningIgnitionB1 { get; set; }
-        //double RxFireIgnitionB0 { get; set; }
-        //double RxFireIgnitionB1 { get; set; }
         double AccidentalFireIgnitionB0 { get; set; }
         double AccidentalFireIgnitionB1 { get; set; }
         double MaxFineFuels { get; set; }
@@ -49,9 +46,10 @@ namespace Landis.Extension.Scrapple
         double SpreadProbabilityB3 { get; set; }
 
         int LadderFuelMaxAge { get; set; }
-        double SeverityFactor_LadderFuelBiomass { get; set; }
-        double SeverityFactor_FineFuelPercent { get; set; }
+        double IntensityFactor_LadderFuelBiomass { get; set; }
+        double IntensityFactor_FineFuelPercent { get; set; }
 
+        int SuppressionMaxWindSpeed { get; set; }
         int LightningSuppressEffectivenss_low { get; set; }
         int LightningSuppressEffectivenss_medium { get; set; }
         int LightningSuppressEffectivenss_high { get; set; }
@@ -108,9 +106,10 @@ namespace Landis.Extension.Scrapple
         private double spreadProbabilityB3;
 
         private int ladderFuelMaxAge;
-        private double severityFactor_LadderFuelBiomass;
-        private double severityFactor_FineFuelPercentage;
+        private double intensityFactor_LadderFuelBiomass;
+        private double intensityFactor_FineFuelPercentage;
 
+        private int suppressionMaxWindSpeed;
         private int lightningSuppressEffectivenss_low;
         private int lightningSuppressEffectivenss_medium;
         private int lightningSuppressEffectivenss_high;
@@ -274,31 +273,6 @@ namespace Landis.Extension.Scrapple
                 lightningIgnitionB1 = value;
             }
         }
-        //---------------------------------------------------------------------
-        //public double RxFireIgnitionB0
-        //{
-        //    get
-        //    {
-        //        return rxFireIgnitionB0;
-        //    }
-        //    set
-        //    {
-        //        rxFireIgnitionB0 = value;
-        //    }
-        //}
-
-        ////---------------------------------------------------------------------
-        //public double RxFireIgnitionB1
-        //{
-        //    get
-        //    {
-        //        return rxFireIgnitionB1;
-        //    }
-        //    set
-        //    {
-        //        rxFireIgnitionB1 = value;
-        //    }
-        //}
         //---------------------------------------------------------------------
         public double AccidentalFireIgnitionB0
         {
@@ -482,33 +456,44 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public double SeverityFactor_LadderFuelBiomass
+        public double IntensityFactor_LadderFuelBiomass
         {
             get
             {
-                return severityFactor_LadderFuelBiomass;
+                return intensityFactor_LadderFuelBiomass;
             }
             set
             {
-                severityFactor_LadderFuelBiomass = value;
+                intensityFactor_LadderFuelBiomass = value;
             }
         }
         //---------------------------------------------------------------------
-        public double SeverityFactor_FineFuelPercent
+        public double IntensityFactor_FineFuelPercent
         {
             get
             {
-                return severityFactor_FineFuelPercentage;
+                return intensityFactor_FineFuelPercentage;
             }
             set
             {
-                severityFactor_FineFuelPercentage = value;
+                intensityFactor_FineFuelPercentage = value;
             }
         }
 
 
         //---------------------------------------------------------------------
-
+        public int SuppressionMaxWindSpeed
+        {
+            get
+            {
+                return suppressionMaxWindSpeed;
+            }
+            set
+            {
+                suppressionMaxWindSpeed = value;
+            }
+        }
+        //---------------------------------------------------------------------
         public int LightningSuppressEffectivenss_low
         {
             get { return lightningSuppressEffectivenss_low; }

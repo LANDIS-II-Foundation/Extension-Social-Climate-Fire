@@ -246,11 +246,12 @@ namespace Landis.Extension.Scrapple
             // Severity a function of ladder fuels, fine fuels, source spread intensity.
             siteIntensity = 1;
             int highSeverityRiskFactors = 0;
-            if (fineFuelPercent > PlugIn.Parameters.SeverityFactor_FineFuelPercent)
+
+            if (fineFuelPercent > PlugIn.Parameters.IntensityFactor_FineFuelPercent)
                 highSeverityRiskFactors++;
-            if (ladderFuelBiomass > PlugIn.Parameters.SeverityFactor_LadderFuelBiomass)
+            if (ladderFuelBiomass > PlugIn.Parameters.IntensityFactor_LadderFuelBiomass)
                 highSeverityRiskFactors++;
-            if (SiteVars.Intensity[sourceSite] > 2)
+            if (SiteVars.Intensity[sourceSite] == 3)
                 highSeverityRiskFactors++;
 
             if (highSeverityRiskFactors == 1)
@@ -283,8 +284,6 @@ namespace Landis.Extension.Scrapple
         {
             bool spread = false;
             SiteVars.TypeOfIginition [site] = (short) this.IgnitionType;
-
-            //SiteVars.DayOfFire[site] = (ushort)day;
 
             SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
 
@@ -366,6 +365,11 @@ namespace Landis.Extension.Scrapple
 
                 }
             }
+
+            // NO suppression above a given wind speed due to dangers to firefighters and aircraft.
+            if (effectiveWindSpeed > PlugIn.Parameters.SuppressionMaxWindSpeed)
+                suppressEffect = 0.0;
+
             this.MeanSuppression += suppressEffect;
             // End SUPPRESSION ************************
 
