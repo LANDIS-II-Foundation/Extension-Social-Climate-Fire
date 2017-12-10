@@ -153,16 +153,6 @@ namespace Landis.Extension.Scrapple
                 SiteVars.DayOfFire[site] = (ushort) day;
                 dailySpreadArea++;
 
-                //// DAY OF FIRE *****************************
-                //if (!spreadArea.ContainsKey(day))
-                //{
-                //    spreadArea.Add(day, 1);  // second int is the cell count, later turned into area
-                //}
-                //else
-                //{
-                //    spreadArea[day]++;
-                //}
-
                 IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
                 double fireWeatherIndex = 0.0;
                 try
@@ -182,7 +172,7 @@ namespace Landis.Extension.Scrapple
                 double spreadAreaMaxHectares = PlugIn.Parameters.MaximumSpreadAreaB0 +
                     (PlugIn.Parameters.MaximumSpreadAreaB1 * fireWeatherIndex) +
                     (PlugIn.Parameters.MaximumSpreadAreaB2 * effectiveWindSpeed);
-                double dailySpreadAreaHectares = dailySpreadArea * PlugIn.ModelCore.CellArea / 10000; // convert to Ha
+                double dailySpreadAreaHectares = (double) dailySpreadArea * PlugIn.ModelCore.CellArea / 10000.0; // convert to Ha
 
                 //  if spread-area > spread-area-max, day = day + 1, assuming that spreadAreaMax units are hectares:
                 if (dailySpreadAreaHectares > spreadAreaMaxHectares)
