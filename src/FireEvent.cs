@@ -168,14 +168,17 @@ namespace Landis.Extension.Scrapple
                 double effectiveWindSpeed = CalculateEffectiveWindSpeed(site, sourceSite, fireWeatherIndex, day);
                 this.MeanEffectiveWindSpeed += effectiveWindSpeed;
 
+                // DAY OF FIRE *****************************
                 //      Calculate spread-area-max 
                 double spreadAreaMaxHectares = PlugIn.Parameters.MaximumSpreadAreaB0 +
                     (PlugIn.Parameters.MaximumSpreadAreaB1 * fireWeatherIndex) +
                     (PlugIn.Parameters.MaximumSpreadAreaB2 * effectiveWindSpeed);
-                double dailySpreadAreaHectares = (double) dailySpreadArea * PlugIn.ModelCore.CellArea / 10000.0; // convert to Ha
+
+                //PlugIn.ModelCore.UI.WriteLine("   Day={0}, spreadAreaMaxHectares={1}, dailySpreadArea={2}, FWI={3}, WS={4}", day, spreadAreaMaxHectares, dailySpreadArea, fireWeatherIndex, effectiveWindSpeed);
+
 
                 //  if spread-area > spread-area-max, day = day + 1, assuming that spreadAreaMax units are hectares:
-                if (dailySpreadAreaHectares > spreadAreaMaxHectares)
+                if (dailySpreadArea > spreadAreaMaxHectares)
                 {
                     day++;  // GOTO the next day.
                     dailySpreadArea = 0;
@@ -200,8 +203,6 @@ namespace Landis.Extension.Scrapple
                         ActiveSite[] spread = new ActiveSite[] { (ActiveSite)neighborSite, site };
                         fireSites.Add(spread);
                         this.TotalSitesDamaged++;
-
-
                         //this.Spread(PlugIn.ModelCore.CurrentTime, neighborDay, (ActiveSite)neighborSite, (ActiveSite)site);
                     }
                 }

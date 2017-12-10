@@ -1,11 +1,11 @@
 LandisData "Climate Config"				
 		
 ClimateTimeSeries			Daily_RandomYears
-ClimateFile				LTB_daily_historic_fixed.csv
+ClimateFile				LTB_daily_historic_fixed_partial.csv
 ClimateFileFormat			Daily_Temp-C_Precip-mmDay
 
 SpinUpClimateTimeSeries			Daily_AverageAllYears
-SpinUpClimateFile			LTB_daily_historic.csv
+SpinUpClimateFile			LTB_daily_historic_fixed_partial.csv
 SpinUpClimateFileFormat			Daily_Temp-C_Precip-mmDay
 
 UsingFireClimate			yes
