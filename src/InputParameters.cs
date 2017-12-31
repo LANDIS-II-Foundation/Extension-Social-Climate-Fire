@@ -52,6 +52,7 @@ namespace Landis.Extension.Scrapple
         double IntensityFactor_FineFuelPercent { get; set; }
 
         int SuppressionMaxWindSpeed { get; set; }
+        List<ISuppressionTable> SuppressionFWI_Table { get; set; }
         int LightningSuppressEffectivenss_low { get; set; }
         int LightningSuppressEffectivenss_medium { get; set; }
         int LightningSuppressEffectivenss_high { get; set; }
@@ -114,6 +115,7 @@ namespace Landis.Extension.Scrapple
         private double intensityFactor_FineFuelPercentage;
 
         private int suppressionMaxWindSpeed;
+        private List<ISuppressionTable> suppressionFWI_Table;
         private int lightningSuppressEffectivenss_low;
         private int lightningSuppressEffectivenss_medium;
         private int lightningSuppressEffectivenss_high;
@@ -511,6 +513,18 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
+        public List<ISuppressionTable> SuppressionFWI_Table
+        {
+            get
+            {
+                return suppressionFWI_Table;
+            }
+            set
+            {
+                suppressionFWI_Table = value;
+            }
+        }
+
         public int LightningSuppressEffectivenss_low
         {
             get { return lightningSuppressEffectivenss_low; }

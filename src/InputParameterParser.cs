@@ -42,6 +42,9 @@ namespace Landis.Extension.Scrapple
             ReadLandisDataVar();
 
             InputParameters parameters = new InputParameters();
+            const string FireIntensityClass_1_DamageTable = "FireIntensityClass_1_DamageTable";
+            const string FireIntensityClass_2_DamageTable = "FireIntensityClass_2_DamageTable";
+            const string FireIntensityClass_3_DamageTable = "FireIntensityClass_3_DamageTable";
 
             InputVar<int> timestep = new InputVar<int>("Timestep");
             ReadVar(timestep);
@@ -208,50 +211,87 @@ namespace Landis.Extension.Scrapple
             ReadVar(smws);
             parameters.SuppressionMaxWindSpeed = smws.Value;
 
-            InputVar<int> lso = new InputVar<int>("SuppressionEffectiveness:LightningLow");
-            ReadVar(lso);
-            parameters.LightningSuppressEffectivenss_low = lso.Value;
+            ReadName("SuppressionTable");
 
-            InputVar<int> lsm = new InputVar<int>("SuppressionEffectiveness:LightningMedium");
-            ReadVar(lsm);
-            parameters.LightningSuppressEffectivenss_medium = lsm.Value;
+            InputVar<string> ig = new InputVar<string>("Ignition Type");
+            InputVar<double> fwib1 = new InputVar<double>("FWI_Break1");
+            InputVar<double> fwib2 = new InputVar<double>("FWI_Break2");
+            InputVar<double> suppeff1 = new InputVar<double>("SuppressionEffectiveness1");
+            InputVar<double> suppeff2 = new InputVar<double>("SuppressionEffectiveness2");
+            InputVar<double> suppeff3 = new InputVar<double>("SuppressionEffectiveness3");
 
-            InputVar<int> lsh = new InputVar<int>("SuppressionEffectiveness:LightningHigh");
-            ReadVar(lsh);
-            parameters.LightningSuppressEffectivenss_high = lsh.Value;
+            while (!AtEndOfInput && CurrentName != FireIntensityClass_1_DamageTable)
+            {
+                StringReader currentLine = new StringReader(CurrentLine);
 
-            InputVar<int> rso = new InputVar<int>("SuppressionEffectiveness:RxLow");
-            ReadVar(rso);
-            parameters.RxSuppressEffectivenss_low = rso.Value;
+                ISuppressionTable suppressTable = new SuppressionTable();
 
-            InputVar<int> rsm = new InputVar<int>("SuppressionEffectiveness:RxMedium");
-            ReadVar(rsm);
-            parameters.RxSuppressEffectivenss_medium = rsm.Value;
+                ReadValue(ig, currentLine);
+                suppressTable.Type = IgnitionParse(ig.Value);
 
-            InputVar<int> rsh = new InputVar<int>("SuppressionEffectiveness:RxHigh");
-            ReadVar(rsh);
-            parameters.RxSuppressEffectivenss_high = rsh.Value;
+                ReadValue(fwib1, currentLine);
+                suppressTable.FWI_Break1 = fwib1.Value;
 
-            InputVar<int> aso = new InputVar<int>("SuppressionEffectiveness:AccidentalLow");
-            ReadVar(aso);
-            parameters.AccidentalSuppressEffectivenss_low = aso.Value;
+                ReadValue(fwib2, currentLine);
+                suppressTable.FWI_Break2 = fwib2.Value;
 
-            InputVar<int> asm = new InputVar<int>("SuppressionEffectiveness:AccidentalMedium");
-            ReadVar(asm);
-            parameters.AccidentalSuppressEffectivenss_medium = asm.Value;
+                ReadValue(suppeff1, currentLine);
+                suppressTable.EffectivenessLow = suppeff1.Value;
 
-            InputVar<int> ash = new InputVar<int>("SuppressionEffectiveness:AccidentalHigh");
-            ReadVar(ash);
-            parameters.AccidentalSuppressEffectivenss_high = ash.Value;
+                ReadValue(suppeff2, currentLine);
+                suppressTable.EffectivenessMedium = suppeff2.Value;
+
+                ReadValue(suppeff3, currentLine);
+                suppressTable.EffectivenessHigh = suppeff3.Value;
+
+                parameters.SuppressionFWI_Table.Add(suppressTable);
+
+                CheckNoDataAfter("the " + suppeff3.Name + " column", currentLine);
+                GetNextLine();
+            }
+            if (parameters.SuppressionFWI_Table.Count == 0)
+                throw NewParseException("No suppression levels defined.");
+
+            //InputVar<int> lso = new InputVar<int>("SuppressionEffectiveness:LightningLow");
+            //ReadVar(lso);
+            //parameters.LightningSuppressEffectivenss_low = lso.Value;
+
+            //InputVar<int> lsm = new InputVar<int>("SuppressionEffectiveness:LightningMedium");
+            //ReadVar(lsm);
+            //parameters.LightningSuppressEffectivenss_medium = lsm.Value;
+
+            //InputVar<int> lsh = new InputVar<int>("SuppressionEffectiveness:LightningHigh");
+            //ReadVar(lsh);
+            //parameters.LightningSuppressEffectivenss_high = lsh.Value;
+
+            //InputVar<int> rso = new InputVar<int>("SuppressionEffectiveness:RxLow");
+            //ReadVar(rso);
+            //parameters.RxSuppressEffectivenss_low = rso.Value;
+
+            //InputVar<int> rsm = new InputVar<int>("SuppressionEffectiveness:RxMedium");
+            //ReadVar(rsm);
+            //parameters.RxSuppressEffectivenss_medium = rsm.Value;
+
+            //InputVar<int> rsh = new InputVar<int>("SuppressionEffectiveness:RxHigh");
+            //ReadVar(rsh);
+            //parameters.RxSuppressEffectivenss_high = rsh.Value;
+
+            //InputVar<int> aso = new InputVar<int>("SuppressionEffectiveness:AccidentalLow");
+            //ReadVar(aso);
+            //parameters.AccidentalSuppressEffectivenss_low = aso.Value;
+
+            //InputVar<int> asm = new InputVar<int>("SuppressionEffectiveness:AccidentalMedium");
+            //ReadVar(asm);
+            //parameters.AccidentalSuppressEffectivenss_medium = asm.Value;
+
+            //InputVar<int> ash = new InputVar<int>("SuppressionEffectiveness:AccidentalHigh");
+            //ReadVar(ash);
+            //parameters.AccidentalSuppressEffectivenss_high = ash.Value;
 
             //-------------------------------------------------------------------
             //  Read table of Fire Damage classes.
             //  Damages are in increasing order.
             PlugIn.ModelCore.UI.WriteLine("   Loading Fire mortality data...");
-
-            const string FireIntensityClass_1_DamageTable = "FireIntensityClass_1_DamageTable";
-            const string FireIntensityClass_2_DamageTable = "FireIntensityClass_2_DamageTable";
-            const string FireIntensityClass_3_DamageTable = "FireIntensityClass_3_DamageTable";
 
 
             InputVar<string> spp = new InputVar<string>("Species Name");
@@ -389,17 +429,17 @@ namespace Landis.Extension.Scrapple
         }
         //---------------------------------------------------------------------
 
-        //public static Distribution DistParse(string word)
-        //{
-        //    switch (word)
-        //    {
-        //        case "gamma":     return Distribution.gamma;
-        //        case "lognormal": return Distribution.lognormal;
-        //        case "normal":    return Distribution.normal;
-        //        case "Weibull":   return Distribution.Weibull;
-        //        default: throw new System.FormatException("Valid Distributions: gamma, lognormal, normal, Weibull");
-        //    }
-        //}
+        public static Ignition IgnitionParse(string word)
+        {
+            switch (word.ToLower())
+            {
+                case "prescribed": return Ignition.Rx;
+                case "rx": return Ignition.Rx;
+                case "lightening": return Ignition.Lightning;
+                case "accidental": return Ignition.Accidental;
+                default: throw new System.FormatException("Valid Ignition Types: Prescribed, Rx, Lightening, Accidental");
+            }
+        }
 
 
         //---------------------------------------------------------------------

@@ -104,6 +104,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SummaryLog.cs" />
+    <Compile Include="SuppressionTable.cs" />
     <Compile Include="Topography.cs" />
     <Compile Include="ShortPixel.cs">
       <SubType>Code</SubType>
