@@ -31,9 +31,11 @@ namespace Landis.Extension.Scrapple
         double AccidentalFireIgnitionB0 { get; set; }
         double AccidentalFireIgnitionB1 { get; set; }
         double MaxFineFuels { get; set; }
-        double MaxRxWindSpeed { get; set; }
-        double MaxRxFireWeatherIndex { get; set; }
-        double MinRxFireWeatherIndex { get; set; }
+
+        double RxMaxWindSpeed { get; set; }
+        double RxMaxFireWeatherIndex { get; set; }
+        double RxMinFireWeatherIndex { get; set; }
+        int RxMaxFireIntensity { get; set; }
         int NumberRxAnnualFires { get; set; }
 
         double MaximumSpreadAreaB0 { get; set; }
@@ -91,9 +93,11 @@ namespace Landis.Extension.Scrapple
         private double accidentalFireIgnitionB0;
         private double accidentalFireIgnitionB1;
         private double maxFineFuels;
+
         private double maxRxWindSpeed;
         private double maxRxFireWeatherIndex;
         private double minRxFireWeatherIndex;
+        private int maxRxFireIntensity;
         private int numberRxAnnualFires;
 
         private double maximumSpreadAreaB0;
@@ -312,7 +316,7 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public double MaxRxWindSpeed
+        public double RxMaxWindSpeed
         {
             get
             {
@@ -324,7 +328,7 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public double MaxRxFireWeatherIndex
+        public double RxMaxFireWeatherIndex
         {
             get
             {
@@ -336,7 +340,7 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public double MinRxFireWeatherIndex
+        public double RxMinFireWeatherIndex
         {
             get
             {
@@ -347,6 +351,19 @@ namespace Landis.Extension.Scrapple
                 minRxFireWeatherIndex = value;
             }
         }
+        //---------------------------------------------------------------------
+        public int RxMaxFireIntensity
+        {
+            get
+            {
+                return maxRxFireIntensity;
+            }
+            set
+            {
+                maxRxFireIntensity = value;
+            }
+        }
+
         //---------------------------------------------------------------------
         public int NumberRxAnnualFires
         {

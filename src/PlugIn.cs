@@ -168,7 +168,7 @@ namespace Landis.Extension.Scrapple
             }
             
            
-            int daysPerYear = 366;
+            int daysPerYear = 365;
             // VS: hasn't been properly integrated into Climate Library.
             //int daysPerYear = (AnnualClimate.IsLeapYear(actualYear) ? true : false) ? 366 : 365;
 
@@ -244,9 +244,9 @@ namespace Landis.Extension.Scrapple
                     //List<ActiveSite> shuffledRxFireSites = Shuffle(ModelCore.Landscape.ActiveSites.ToList(), SiteVars.RxFireWeight);
                     // Ignite a single Rx fire per day
                     if (numRxFires > 0 &&
-                        landscapeAverageFireWeatherIndex > Parameters.MinRxFireWeatherIndex &&
-                        landscapeAverageFireWeatherIndex < Parameters.MaxRxFireWeatherIndex &&
-                        weatherData.DailyWindSpeed[day] < Parameters.MaxRxWindSpeed)
+                        landscapeAverageFireWeatherIndex > Parameters.RxMinFireWeatherIndex &&
+                        landscapeAverageFireWeatherIndex < Parameters.RxMaxFireWeatherIndex &&
+                        weatherData.DailyWindSpeed[day] < Parameters.RxMaxWindSpeed)
                     {
                         Ignite(Ignition.Rx, shuffledRxFireSites, day, landscapeAverageFireWeatherIndex);
                         LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Rx.ToString(), 1, day);

@@ -20,10 +20,15 @@ LightningIgnitionsB0  -3.0
 LightningIgnitionsB1  0.005
 AccidentalIgnitionsB0 -3.0
 AccidentalIgnitionsB1 0.005
+
+>> A generic parameter, determines the fine-fuel scale from 0-1.0
 MaximumFineFuels 3.0
+
+>> Prescribed Fire Parameters
 MaximumRxWindSpeed 10.0
 MaximumRxFireWeatherIndex 30.0
 MinimumRxFireWeatherIndex 5.0
+MaximumRxFireIntensity 2
 NumberRxAnnualFires 5
 
 MaximumSpreadAreaB0	3.1

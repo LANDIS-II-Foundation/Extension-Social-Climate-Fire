@@ -251,6 +251,9 @@ namespace Landis.Extension.Scrapple
                 siteIntensity = 3;
             // End INTENSITY calculation **************************
 
+            if (this.IgnitionType == Ignition.Rx)
+                siteIntensity = Math.Min(siteIntensity, PlugIn.Parameters.RxMaxFireIntensity);
+
             int siteCohortsKilled = 0;
 
             if (siteIntensity > 0)

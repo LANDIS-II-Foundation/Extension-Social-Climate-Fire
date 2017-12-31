@@ -117,15 +117,19 @@ namespace Landis.Extension.Scrapple
 
             InputVar<double> maxRxWS = new InputVar<double>("MaximumRxWindSpeed");
             ReadVar(maxRxWS);
-            parameters.MaxRxWindSpeed = maxRxWS.Value;
+            parameters.RxMaxWindSpeed = maxRxWS.Value;
 
             InputVar<double> maxRxFWI = new InputVar<double>("MaximumRxFireWeatherIndex");
             ReadVar(maxRxFWI);
-            parameters.MaxRxFireWeatherIndex = maxRxFWI.Value;
+            parameters.RxMaxFireWeatherIndex = maxRxFWI.Value;
 
             InputVar<double> minRxFWI = new InputVar<double>("MinimumRxFireWeatherIndex");
             ReadVar(minRxFWI);
-            parameters.MinRxFireWeatherIndex = minRxFWI.Value;
+            parameters.RxMinFireWeatherIndex = minRxFWI.Value;
+
+            InputVar<int> maxRxFI = new InputVar<int>("MaximumRxFireIntensity");
+            ReadVar(maxRxFI);
+            parameters.RxMaxFireIntensity = maxRxFI.Value;
 
             InputVar<int> nrxf = new InputVar<int>("NumberRxAnnualFires");
             ReadVar(nrxf);
