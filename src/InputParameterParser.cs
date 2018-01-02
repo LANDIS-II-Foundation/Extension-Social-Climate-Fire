@@ -216,9 +216,9 @@ namespace Landis.Extension.Scrapple
             InputVar<string> ig = new InputVar<string>("Ignition Type");
             InputVar<double> fwib1 = new InputVar<double>("FWI_Break1");
             InputVar<double> fwib2 = new InputVar<double>("FWI_Break2");
-            InputVar<double> suppeff1 = new InputVar<double>("SuppressionEffectiveness1");
-            InputVar<double> suppeff2 = new InputVar<double>("SuppressionEffectiveness2");
-            InputVar<double> suppeff3 = new InputVar<double>("SuppressionEffectiveness3");
+            InputVar<int> suppeff1 = new InputVar<int>("SuppressionEffectiveness1");
+            InputVar<int> suppeff2 = new InputVar<int>("SuppressionEffectiveness2");
+            InputVar<int> suppeff3 = new InputVar<int>("SuppressionEffectiveness3");
 
             while (!AtEndOfInput && CurrentName != FireIntensityClass_1_DamageTable)
             {
@@ -249,8 +249,8 @@ namespace Landis.Extension.Scrapple
                 CheckNoDataAfter("the " + suppeff3.Name + " column", currentLine);
                 GetNextLine();
             }
-            if (parameters.SuppressionFWI_Table.Count == 0)
-                throw NewParseException("No suppression levels defined.");
+            if (parameters.SuppressionFWI_Table.Count != 3)
+                throw NewParseException("EXACTLY THREE suppression levels must be defined: accidental, prescribed, lightening.");
 
             //InputVar<int> lso = new InputVar<int>("SuppressionEffectiveness:LightningLow");
             //ReadVar(lso);
@@ -435,7 +435,7 @@ namespace Landis.Extension.Scrapple
             {
                 case "prescribed": return Ignition.Rx;
                 case "rx": return Ignition.Rx;
-                case "lightening": return Ignition.Lightning;
+                case "lightning": return Ignition.Lightning;
                 case "accidental": return Ignition.Accidental;
                 default: throw new System.FormatException("Valid Ignition Types: Prescribed, Rx, Lightening, Accidental");
             }

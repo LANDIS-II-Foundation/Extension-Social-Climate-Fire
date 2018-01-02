@@ -302,63 +302,71 @@ namespace Landis.Extension.Scrapple
 
             // SUPPRESSION ************************
             double suppressEffect = 1.0;
-            if (this.IgnitionType == Ignition.Accidental)
-            {
-                switch (SiteVars.AccidentalSuppressionIndex[site])
-                {
-                    case 1:
-                        suppressEffect = 1.0 - ((double)PlugIn.Parameters.AccidentalSuppressEffectivenss_low / 100.0);
-                        break;
-                    case 2:
-                        suppressEffect = 1.0 - ((double)PlugIn.Parameters.AccidentalSuppressEffectivenss_medium / 100.0);
-                        break;
-                    case 3:
-                        suppressEffect = 1.0 - ((double)PlugIn.Parameters.AccidentalSuppressEffectivenss_high / 100.0);
-                        break;
-                    default:
-                        suppressEffect = 1.0;  // None
-                        break;
+            suppressEffect = 1.0 - ((double) PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].EffectivenessLow / 100.0);
 
-                }
-            }
-            if (this.IgnitionType == Ignition.Lightning)
-            {
-                switch (SiteVars.LightningSuppressionIndex[site])
-                {
-                    case 1:
-                        suppressEffect = 1.0 - ((double)PlugIn.Parameters.LightningSuppressEffectivenss_low / 100.0);
-                        break;
-                    case 2:
-                        suppressEffect = 1.0 - ((double)PlugIn.Parameters.LightningSuppressEffectivenss_medium / 100.0);
-                        break;
-                    case 3:
-                        suppressEffect = 1.0 - ((double)PlugIn.Parameters.LightningSuppressEffectivenss_high / 100.0);
-                        break;
-                    default:
-                        suppressEffect = 1.0;
-                        break;
+            if (fireWeatherIndex > PlugIn.Parameters.SuppressionFWI_Table[(int) this.IgnitionType].FWI_Break1)
+                suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].EffectivenessMedium / 100.0);
 
-                }
-            }
-            if (this.IgnitionType == Ignition.Rx)
-            {
-                switch (SiteVars.RxSuppressionIndex[site])
-                {
-                    case 1:
-                        suppressEffect = 1.0 - ((double)PlugIn.Parameters.RxSuppressEffectivenss_low / 100.0);
-                        break;
-                    case 2:
-                        suppressEffect = 1.0 - ((double)PlugIn.Parameters.RxSuppressEffectivenss_medium / 100.0);
-                        break;
-                    case 3:
-                        suppressEffect = 1.0 - ((double)PlugIn.Parameters.RxSuppressEffectivenss_high / 100.0);
-                        break;
-                    default:
-                        suppressEffect = 1.0;
-                        break;
+            if (fireWeatherIndex > PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].FWI_Break2)
+                suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].EffectivenessHigh / 100.0);
 
-                }
-            }
+            //if (this.IgnitionType == Ignition.Accidental)
+            //{
+            //    switch (SiteVars.AccidentalSuppressionIndex[site])
+            //    {
+            //        case 1:
+            //            suppressEffect = 1.0 - ((double)PlugIn.Parameters.AccidentalSuppressEffectivenss_low / 100.0);
+            //            break;
+            //        case 2:
+            //            suppressEffect = 1.0 - ((double)PlugIn.Parameters.AccidentalSuppressEffectivenss_medium / 100.0);
+            //            break;
+            //        case 3:
+            //            suppressEffect = 1.0 - ((double)PlugIn.Parameters.AccidentalSuppressEffectivenss_high / 100.0);
+            //            break;
+            //        default:
+            //            suppressEffect = 1.0;  // None
+            //            break;
+
+            //    }
+            //}
+            //if (this.IgnitionType == Ignition.Lightning)
+            //{
+            //    switch (SiteVars.LightningSuppressionIndex[site])
+            //    {
+            //        case 1:
+            //            suppressEffect = 1.0 - ((double)PlugIn.Parameters.LightningSuppressEffectivenss_low / 100.0);
+            //            break;
+            //        case 2:
+            //            suppressEffect = 1.0 - ((double)PlugIn.Parameters.LightningSuppressEffectivenss_medium / 100.0);
+            //            break;
+            //        case 3:
+            //            suppressEffect = 1.0 - ((double)PlugIn.Parameters.LightningSuppressEffectivenss_high / 100.0);
+            //            break;
+            //        default:
+            //            suppressEffect = 1.0;
+            //            break;
+
+            //    }
+            //}
+            //if (this.IgnitionType == Ignition.Rx)
+            //{
+            //    switch (SiteVars.RxSuppressionIndex[site])
+            //    {
+            //        case 1:
+            //            suppressEffect = 1.0 - ((double)PlugIn.Parameters.RxSuppressEffectivenss_low / 100.0);
+            //            break;
+            //        case 2:
+            //            suppressEffect = 1.0 - ((double)PlugIn.Parameters.RxSuppressEffectivenss_medium / 100.0);
+            //            break;
+            //        case 3:
+            //            suppressEffect = 1.0 - ((double)PlugIn.Parameters.RxSuppressEffectivenss_high / 100.0);
+            //            break;
+            //        default:
+            //            suppressEffect = 1.0;
+            //            break;
+
+            //    }
+            //}
 
             // NO suppression above a given wind speed due to dangers to firefighters and aircraft.
             if (effectiveWindSpeed > PlugIn.Parameters.SuppressionMaxWindSpeed)

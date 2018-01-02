@@ -11,9 +11,9 @@ namespace Landis.Extension.Scrapple
         Ignition Type {get;set;}
         double FWI_Break1{get;set;}
         double FWI_Break2{get;set;}
-        double EffectivenessLow{get;set;}
-        double EffectivenessMedium{get;set;}
-        double EffectivenessHigh{get;set;}
+        int EffectivenessLow{get;set;}
+        int EffectivenessMedium{get;set;}
+        int EffectivenessHigh{get;set;}
     }
 
     /// <summary>
@@ -25,9 +25,9 @@ namespace Landis.Extension.Scrapple
         private Ignition type;
         private double fwi_Break1;
         private double fwi_Break2;
-        private double effectivenessLow;
-        private double effectivenessMedium;
-        private double effectivenessHigh;
+        private int effectivenessLow;
+        private int effectivenessMedium;
+        private int effectivenessHigh;
         
         //---------------------------------------------------------------------
 
@@ -75,38 +75,38 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public double EffectivenessLow
+        public int EffectivenessLow
         {
             get {
                 return effectivenessLow;
             }
             set {
-                if (value < 0.0 || value > 1.0)
-                    throw new InputValueException(value.ToString(), "Value must be between 0 and 1");
+                if (value < 0 || value > 100)
+                    throw new InputValueException(value.ToString(), "Value must be between 0 and 100");
                 effectivenessLow = value;
             }
         }
         //---------------------------------------------------------------------
-        public double EffectivenessMedium
+        public int EffectivenessMedium
         {
             get {
                 return effectivenessMedium;
             }
             set {
-                if (value < 0.0 || value > 1.0)
-                    throw new InputValueException(value.ToString(), "Value must be between 0 and 1");
+                if (value < 0 || value > 100)
+                    throw new InputValueException(value.ToString(), "Value must be between 0 and 100");
                 effectivenessMedium = value;
             }
         }
         //---------------------------------------------------------------------
-        public double EffectivenessHigh
+        public int EffectivenessHigh
         {
             get {
                 return effectivenessHigh;
             }
             set {
-                if (value < 0.0 || value > 1.0)
-                    throw new InputValueException(value.ToString(), "Value must be between 0 and 1");
+                if (value < 00 || value > 100)
+                    throw new InputValueException(value.ToString(), "Value must be between 0 and 100");
                 effectivenessHigh = value;
             }
         }
