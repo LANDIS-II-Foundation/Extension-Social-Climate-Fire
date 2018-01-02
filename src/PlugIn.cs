@@ -168,7 +168,7 @@ namespace Landis.Extension.Scrapple
             }
             
            
-            int daysPerYear = 365;
+            int daysPerYear = 364;
             // VS: hasn't been properly integrated into Climate Library.
             //int daysPerYear = (AnnualClimate.IsLeapYear(actualYear) ? true : false) ? 366 : 365;
 

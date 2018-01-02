@@ -34,6 +34,7 @@ InitialDeadCoarseRootsMapName	random50.img
 
 
 CalibrateMode 	no
+SmokeModelOutputs yes
 WaterDecayFunction Ratio <<Linear or Ratio
 
 
