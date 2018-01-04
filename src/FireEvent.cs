@@ -191,21 +191,26 @@ namespace Landis.Extension.Scrapple
                 }
                 // DAY OF FIRE *****************************
 
-                //      Spread to neighbors
-                List<Site> neighbors = Get4ActiveNeighbors(site);
-                neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor] || !neighbor.IsActive);
-
-                foreach (Site neighborSite in neighbors)
+                // SPREAD to neighbors ***********************
+                if (day < PlugIn.DaysPerYear)
                 {
-                    if (CanSpread((ActiveSite) neighborSite, site, day, fireWeatherIndex, effectiveWindSpeed))
-                    {
+                    List<Site> neighbors = Get4ActiveNeighbors(site);
+                    neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor] || !neighbor.IsActive);
 
-                        ActiveSite[] spread = new ActiveSite[] { (ActiveSite)neighborSite, site };
-                        fireSites.Add(spread);
-                        this.TotalSitesDamaged++;
-                        //this.Spread(PlugIn.ModelCore.CurrentTime, neighborDay, (ActiveSite)neighborSite, (ActiveSite)site);
+                    foreach (Site neighborSite in neighbors)
+                    {
+                        if (CanSpread((ActiveSite)neighborSite, site, day, fireWeatherIndex, effectiveWindSpeed))
+                        {
+
+                            ActiveSite[] spread = new ActiveSite[] { (ActiveSite)neighborSite, site };
+                            fireSites.Add(spread);
+                            this.TotalSitesDamaged++;
+                            //this.Spread(PlugIn.ModelCore.CurrentTime, neighborDay, (ActiveSite)neighborSite, (ActiveSite)site);
+                        }
                     }
                 }
+                // SPREAD to neighbors ***********************
+
                 fireSites.Remove(fireSites.First());
             }
 

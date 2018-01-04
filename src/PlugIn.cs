@@ -53,6 +53,11 @@ namespace Landis.Extension.Scrapple
         public static double MaximumSpreadAreaB1;
         public static double MaximumSpreadAreaB2;
 
+        public static int DaysPerYear = 364;
+        // VS: hasn't been properly integrated into Climate Library.
+        //int daysPerYear = (AnnualClimate.IsLeapYear(actualYear) ? true : false) ? 366 : 365;
+
+
         //---------------------------------------------------------------------
 
         public PlugIn()
@@ -124,12 +129,7 @@ namespace Landis.Extension.Scrapple
                     sitesPerEcoregions[ecoregion.Index]++;
 
             }
-
-
         }
-
-
-
 
         //---------------------------------------------------------------------
 
@@ -166,12 +166,6 @@ namespace Landis.Extension.Scrapple
             {
                 throw new UninitializedClimateData(string.Format("Could not initilize the actual year {0} from climate data", ActualYear));
             }
-            
-           
-            int daysPerYear = 364;
-            // VS: hasn't been properly integrated into Climate Library.
-            //int daysPerYear = (AnnualClimate.IsLeapYear(actualYear) ? true : false) ? 366 : 365;
-
 
             // Get the active sites from the landscape and shuffle them 
             // Potential area for future optimization
@@ -183,7 +177,7 @@ namespace Landis.Extension.Scrapple
             List<ActiveSite> shuffledAccidentalFireSites = Shuffle(PlugIn.ModelCore.Landscape.ActiveSites.ToList(), SiteVars.AccidentalFireWeight);
 
             int numRxFires = Parameters.NumberRxAnnualFires;
-            for (int day = 0; day < daysPerYear; ++day)
+            for (int day = 0; day < DaysPerYear; ++day)
             {
                 double ecoregionAverageFireWeatherIndex = 0.0;
                 double ecoregionNumSites = 0.0;
@@ -291,7 +285,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            path = MapNames.ReplaceTemplateVars("scrapple-fire/intensity-{timestep}.img", currentTime);
+            path = MapNames.ReplaceTemplateVars("scrapple-fire/fire-intensity-{timestep}.img", currentTime);
             using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
             {
                 ShortPixel pixel = outputRaster.BufferPixel;

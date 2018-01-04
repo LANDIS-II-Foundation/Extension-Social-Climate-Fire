@@ -72,7 +72,7 @@ namespace Landis.Extension.Scrapple
             //---------------------------------------            
             //          map outputs:         
             //---------------------------------------
-            string intensityMapFileName = "scrapple-intensity.img";
+            string intensityMapFileName = "scrapple-severity.img";
             OutputMetadata mapOut_Intensity = new OutputMetadata()
             {
                 Type = OutputType.Map,
