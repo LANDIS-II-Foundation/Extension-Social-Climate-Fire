@@ -1,6 +1,6 @@
 //  Authors:  Robert M. Scheller, Alec Kretchun, Vincent Schuster
 
-using Landis.Library.AgeOnlyCohorts;
+//using Landis.Library.AgeOnlyCohorts;
 using Landis.SpatialModeling;
 using Landis.Library.Climate;
 using Landis.Core;
@@ -8,11 +8,11 @@ using Landis.Library.Metadata;
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Data;
-using System.Reflection;
+//using System.IO;
+//using System.Data;
+//using System.Reflection;
 using System.Linq;
-using System.Diagnostics;
+//using System.Diagnostics;
 
 namespace Landis.Extension.Scrapple
 {
@@ -196,7 +196,7 @@ namespace Landis.Extension.Scrapple
                         }
                         catch
                         {
-                            throw new UninitializedClimateData(string.Format("Climate data could not be found. Year: {0} in ecoregion: {1}", ActualYear, ecoregion.Name));
+                            throw new UninitializedClimateData(string.Format("Climate data could not be found in Run(). Year: {0} in ecoregion: {1}", ActualYear, ecoregion.Name));
                         }
 
                         try
@@ -205,7 +205,7 @@ namespace Landis.Extension.Scrapple
                         }
                         catch
                         {
-                            throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found. Year: {0}, day: {1}, ecoregion: {2}, NumSites={3}", ActualYear, day, ecoregion.Name, sitesPerEcoregions[ecoregion.Index]));
+                            throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found in Run(). Year: {0}, day: {1}, ecoregion: {2}, NumSites={3}", ActualYear, day, ecoregion.Name, sitesPerEcoregions[ecoregion.Index]));
                         }
                     }
                 }

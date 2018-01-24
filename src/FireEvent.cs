@@ -153,6 +153,9 @@ namespace Landis.Extension.Scrapple
                 SiteVars.DayOfFire[site] = (ushort) day;
                 dailySpreadArea++;
 
+                if (day > PlugIn.DaysPerYear)
+                    return;
+
                 IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
                 double fireWeatherIndex = 0.0;
                 try
@@ -162,7 +165,7 @@ namespace Landis.Extension.Scrapple
                 }
                 catch
                 {
-                    throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found \t year: {0}, day: {1} in ecoregion: {2} not found", PlugIn.ModelCore.CurrentTime, day, ecoregion.Name));
+                    throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found in Spread().  Year: {0}, Day: {1}, Ecoregion: {2}.", PlugIn.ActualYear, day, ecoregion.Name));
                 }
 
                 double effectiveWindSpeed = CalculateEffectiveWindSpeed(site, sourceSite, fireWeatherIndex, day);
