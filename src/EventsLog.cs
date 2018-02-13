@@ -47,8 +47,8 @@ namespace Landis.Extension.Scrapple
         [DataFieldAttribute(Desc = "Average Wind Direction")]
         public double MeanWindDirection { set; get; }
 
-        [DataFieldAttribute(Desc = "Average Suppression")]
-        public double MeanSuppression { set; get; }
+        [DataFieldAttribute(Desc = "Average Suppression Effectiveness")]
+        public double MeanSuppressionEffectiveness { set; get; }
 
         [DataFieldAttribute(Desc = "Mean FWI", Format = "0.00")]
         public double MeanFWI { set; get; }

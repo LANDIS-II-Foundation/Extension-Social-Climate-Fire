@@ -40,6 +40,7 @@ WaterDecayFunction Ratio <<Linear or Ratio
 
 ProbabilityEstablishAdjust 	1.0
 InitialMineralN				2.0
+InitialFineFuels 		0.1  << a fraction 0-1.0 of dead wood.
 AtmosphericNSlope			0.05
 AtmosphericNIntercept		0.05
 Latitude					44.0
