@@ -1,6 +1,5 @@
 //  Authors:  Robert M. Scheller, Alec Kretchun, Vincent Schuster
 
-//using Landis.Library.AgeOnlyCohorts;
 using Landis.Library.BiomassCohorts;
 using Landis.SpatialModeling;
 using Landis.Core;
@@ -22,7 +21,7 @@ namespace Landis.Extension.Scrapple
     }
 
     public class FireEvent
-        : IDisturbance//ICohortDisturbance
+        : IDisturbance
     {
         private static readonly bool isDebugEnabled = false; //debugLog.IsDebugEnabled;
         public static Random rnd = new Random();
@@ -310,13 +309,6 @@ namespace Landis.Extension.Scrapple
 
             // SUPPRESSION ************************
             double suppressEffect = 0.0;
-            //suppressEffect = 1.0 - ((double) PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].EffectivenessLow / 100.0);
-
-            //if (fireWeatherIndex > PlugIn.Parameters.SuppressionFWI_Table[(int) this.IgnitionType].FWI_Break1)
-            //    suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].EffectivenessMedium / 100.0);
-
-            //if (fireWeatherIndex > PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].FWI_Break2)
-            //    suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].EffectivenessHigh / 100.0);
 
             if (this.IgnitionType == Ignition.Accidental)
             {
