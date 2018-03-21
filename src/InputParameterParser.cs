@@ -220,7 +220,7 @@ namespace Landis.Extension.Scrapple
             InputVar<int> suppeff2 = new InputVar<int>("SuppressionEffectiveness2");
             InputVar<int> suppeff3 = new InputVar<int>("SuppressionEffectiveness3");
 
-            while (!AtEndOfInput && CurrentName != FireIntensityClass_1_DamageTable)
+            while (!AtEndOfInput && CurrentName != "DeadWoodTable")
             {
                 StringReader currentLine = new StringReader(CurrentLine);
 
@@ -251,6 +251,36 @@ namespace Landis.Extension.Scrapple
             }
             if (parameters.SuppressionFWI_Table.Count != 3)
                 throw NewParseException("EXACTLY THREE suppression levels must be defined: accidental, prescribed, lightening.");
+
+            //-------------------------------------------------------------------
+            //  Read table of Fire Damage classes.
+            //  Damages are in increasing order.
+            PlugIn.ModelCore.UI.WriteLine("   Loading Dead Wood Map data...");
+
+
+            InputVar<string> dw_spp = new InputVar<string>("Species Name");
+            InputVar<int> dw_minAge = new InputVar<int>("Min Interval Age");
+
+            ReadName("DeadWoodTable");
+            while (!AtEndOfInput && CurrentName != FireIntensityClass_1_DamageTable)
+            {
+                StringReader currentLine = new StringReader(CurrentLine);
+                IDeadWood dead_wood_list = new DeadWood();
+                parameters.DeadWoodList.Add(dead_wood_list);
+
+                ReadValue(dw_spp, currentLine);
+                ISpecies species = PlugIn.ModelCore.Species[dw_spp.Value.Actual];
+                if (species == null)
+                    throw new InputValueException(dw_spp.Value.String,
+                                                  "{0} is not a species name.",
+                                                  dw_spp.Value.String);
+                dead_wood_list.Species = species;
+
+                ReadValue(dw_minAge, currentLine);
+                dead_wood_list.MinAge = dw_minAge.Value;
+
+                GetNextLine();
+            }
 
             //InputVar<int> lso = new InputVar<int>("SuppressionEffectiveness:LightningLow");
             //ReadVar(lso);
@@ -293,8 +323,7 @@ namespace Landis.Extension.Scrapple
             //  Damages are in increasing order.
             PlugIn.ModelCore.UI.WriteLine("   Loading Fire mortality data...");
 
-
-            InputVar<string> spp = new InputVar<string>("Species Name");
+            //InputVar<string> spp = new InputVar<string>("Species Name");
             InputVar<int> maxAge = new InputVar<int>("Max Interval Age");
             InputVar<int> minAge = new InputVar<int>("Min Interval Age");
             InputVar<double> probMortality = new InputVar<double>("Probability of Mortality");
@@ -303,6 +332,8 @@ namespace Landis.Extension.Scrapple
             while (!AtEndOfInput && CurrentName != FireIntensityClass_2_DamageTable)
             {
                 StringReader currentLine = new StringReader(CurrentLine);
+                IFireDamage damage = new FireDamage();
+                parameters.FireDamages_Severity1.Add(damage);
 
                 ReadValue(speciesName, currentLine);
                 ISpecies species = PlugIn.ModelCore.Species[speciesName.Value.Actual];
@@ -310,8 +341,6 @@ namespace Landis.Extension.Scrapple
                     throw new InputValueException(speciesName.Value.String,
                                                   "{0} is not a species name.",
                                                   speciesName.Value.String);
-                IFireDamage damage = new FireDamage();
-                parameters.FireDamages_Severity1.Add(damage);
                 damage.DamageSpecies = species;
 
                 ReadValue(minAge, currentLine);
@@ -320,22 +349,8 @@ namespace Landis.Extension.Scrapple
                 ReadValue(maxAge, currentLine);
                 damage.MaxAge = maxAge.Value;
 
-                ////  Maximum age for every damage must be > 
-                ////  maximum age of previous damage.
-                //if (maxAge.Value.Actual <= previousMaxAge)
-                //{
-                //    throw new InputValueException(maxAge.Value.String,
-                //        "MaxAge must > the maximum age ({0}) of the preceeding damage class",
-                //        previousMaxAge);
-                //}
-
-                //previousMaxAge = maxAge.Value.Actual;
-
                 ReadValue(probMortality, currentLine);
                 damage.ProbablityMortality = probMortality.Value;
-
-                //TextReader.SkipWhitespace(currentLine);
-                //}
 
                 GetNextLine();
             }

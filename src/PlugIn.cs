@@ -146,6 +146,7 @@ namespace Landis.Extension.Scrapple
             SiteVars.Intensity.ActiveSiteValues = 0;
             SiteVars.DayOfFire.ActiveSiteValues = 0;
             SiteVars.TypeOfIginition.ActiveSiteValues = 0;
+            SiteVars.SpecialDeadWood.ActiveSiteValues = 0;
 
             AnnualClimate_Daily weatherData = null;
             totalBurnedSites = new int[3];
@@ -262,7 +263,29 @@ namespace Landis.Extension.Scrapple
 
         private void WriteMaps(int currentTime)
         {
-            string path = MapNames.ReplaceTemplateVars("scrapple-fire/ignition-type-{timestep}.img", currentTime);
+            string path = MapNames.ReplaceTemplateVars("scrapple-fire/special-dead-wood-{timestep}.img", currentTime);
+
+            using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
+            {
+                IntPixel pixel = outputRaster.BufferPixel;
+                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                {
+                    if (site.IsActive)
+                    {
+                        if (SiteVars.Disturbed[site])
+                            pixel.MapCode.Value = (int) (SiteVars.SpecialDeadWood[site]);
+                        else
+                            pixel.MapCode.Value = 0;
+                    }
+                    else
+                    {
+                        //  Inactive site
+                        pixel.MapCode.Value = 0;
+                    }
+                    outputRaster.WriteBufferPixel();
+                }
+            }
+            path = MapNames.ReplaceTemplateVars("scrapple-fire/ignition-type-{timestep}.img", currentTime);
 
             using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
             {

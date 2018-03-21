@@ -25,6 +25,7 @@ namespace Landis.Extension.Scrapple
     {
         private static readonly bool isDebugEnabled = false; //debugLog.IsDebugEnabled;
         public static Random rnd = new Random();
+        private static ActiveSite damage_site;
 
         private ActiveSite initiationSite;
         private static List<ActiveSite[]> fireSites;
@@ -266,6 +267,7 @@ namespace Landis.Extension.Scrapple
             if (siteIntensity > 0)
             {
                 //      Cause mortality
+                damage_site = site;
                 siteCohortsKilled = Damage(site);
 
                 SiteVars.Intensity[site] = (byte)siteIntensity;
@@ -517,6 +519,11 @@ namespace Landis.Extension.Scrapple
                     {
                         killCohort = true;
                         this.TotalBiomassMortality += cohort.Biomass;  
+                        foreach (IDeadWood deadwood in PlugIn.Parameters.DeadWoodList)
+                        {
+                            if (cohort.Species == deadwood.Species && cohort.Age >= deadwood.MinAge)
+                                SiteVars.SpecialDeadWood[damage_site] += cohort.Biomass;
+                        }
                     }
                     break;  // No need to search further
 

@@ -14,10 +14,6 @@ namespace Landis.Extension.Scrapple
     public interface IInputParameters
     {
         int Timestep{get;set;}
-        List<IFireDamage> FireDamages_Severity1{get;}
-        List<IFireDamage> FireDamages_Severity2 { get; }
-        List<IFireDamage> FireDamages_Severity3 { get; }
-
         string LighteningFireMap { get; set; }
         string RxFireMap { get; set; }
         string AccidentalFireMap { get; set; }
@@ -53,17 +49,13 @@ namespace Landis.Extension.Scrapple
 
         int SuppressionMaxWindSpeed { get; set; }
         List<ISuppressionTable> SuppressionFWI_Table { get; }
-        //int LightningSuppressEffectivenss_low { get; set; }
-        //int LightningSuppressEffectivenss_medium { get; set; }
-        //int LightningSuppressEffectivenss_high { get; set; }
-        //int RxSuppressEffectivenss_low { get; set; }
-        //int RxSuppressEffectivenss_medium { get; set; }
-        //int RxSuppressEffectivenss_high { get; set; }
-        //int AccidentalSuppressEffectivenss_low { get; set; }
-        //int AccidentalSuppressEffectivenss_medium { get; set; }
-        //int AccidentalSuppressEffectivenss_high { get; set; }
-
         List<ISpecies> LadderFuelSpeciesList { get; }
+        List<IDeadWood> DeadWoodList { get; }
+
+        List<IFireDamage> FireDamages_Severity1 { get; }
+        List<IFireDamage> FireDamages_Severity2 { get; }
+        List<IFireDamage> FireDamages_Severity3 { get; }
+
     }
 }
 
@@ -77,10 +69,6 @@ namespace Landis.Extension.Scrapple
     {
         private int timestep;
         
-        private List<IFireDamage> damages_severity1;
-        private List<IFireDamage> damages_severity2;
-        private List<IFireDamage> damages_severity3;
-
         private string lighteningFireMap;
         private string accidentalFireMap;
         private string rxFireMap;
@@ -116,17 +104,12 @@ namespace Landis.Extension.Scrapple
 
         private int suppressionMaxWindSpeed;
         private List<ISuppressionTable> suppressionFWI_Table;
-        //private int lightningSuppressEffectivenss_low;
-        //private int lightningSuppressEffectivenss_medium;
-        //private int lightningSuppressEffectivenss_high;
-        //private int rxSuppressEffectivenss_low;
-        //private int rxSuppressEffectivenss_medium;
-        //private int rxSuppressEffectivenss_high;
-        //private int accidentalSuppressEffectivenss_low;
-        //private int accidentalSuppressEffectivenss_medium;
-        //private int accidentalSuppressEffectivenss_high;
-
         private List<ISpecies> ladderFuelSpeciesList;
+        private List<IDeadWood> deadWoodList;
+
+        private List<IFireDamage> damages_severity1;
+        private List<IFireDamage> damages_severity2;
+        private List<IFireDamage> damages_severity3;
 
 
 
@@ -145,30 +128,6 @@ namespace Landis.Extension.Scrapple
                         throw new InputValueException(value.ToString(),
                                                       "Value must be = or > 0.");
                 timestep = value;
-            }
-        }
-        //---------------------------------------------------------------------
-        public List<IFireDamage> FireDamages_Severity1
-        {
-            get {
-                return damages_severity1;
-            }
-        }
-
-        //---------------------------------------------------------------------
-        public List<IFireDamage> FireDamages_Severity2
-        {
-            get
-            {
-                return damages_severity2;
-            }
-        }
-        //---------------------------------------------------------------------
-        public List<IFireDamage> FireDamages_Severity3
-        {
-            get
-            {
-                return damages_severity3;
             }
         }
         //---------------------------------------------------------------------
@@ -524,61 +483,50 @@ namespace Landis.Extension.Scrapple
             //    suppressionFWI_Table = value;
             //}
         }
+        //---------------------------------------------------------------------
+        public List<IDeadWood> DeadWoodList
+        {
+            get
+            {
+                return deadWoodList;
+            }
+        }
+        //---------------------------------------------------------------------
+        public List<IFireDamage> FireDamages_Severity1
+        {
+            get
+            {
+                return damages_severity1;
+            }
+        }
 
-        //public int LightningSuppressEffectivenss_low
-        //{
-        //    get { return lightningSuppressEffectivenss_low; }
-        //    set { lightningSuppressEffectivenss_low = value; }
-        //}
-        //public int LightningSuppressEffectivenss_medium
-        //{
-        //    get { return lightningSuppressEffectivenss_medium; }
-        //    set { lightningSuppressEffectivenss_medium = value; }
-        //}
-        //public int LightningSuppressEffectivenss_high
-        //{
-        //    get { return lightningSuppressEffectivenss_high; }
-        //    set { lightningSuppressEffectivenss_high = value; }
-        //}
-        //public int RxSuppressEffectivenss_low
-        //{
-        //    get { return rxSuppressEffectivenss_low; }
-        //    set { rxSuppressEffectivenss_low = value; }
-        //}
-        //public int RxSuppressEffectivenss_medium
-        //{
-        //    get { return rxSuppressEffectivenss_medium; }
-        //    set { rxSuppressEffectivenss_medium = value; }
-        //}
-        //public int RxSuppressEffectivenss_high
-        //{
-        //    get { return rxSuppressEffectivenss_high; }
-        //    set { rxSuppressEffectivenss_high = value; }
-        //}
-        //public int AccidentalSuppressEffectivenss_low
-        //{
-        //    get { return accidentalSuppressEffectivenss_low; }
-        //    set { accidentalSuppressEffectivenss_low = value; }
-        //}
-        //public int AccidentalSuppressEffectivenss_medium
-        //{
-        //    get { return accidentalSuppressEffectivenss_medium; }
-        //    set { accidentalSuppressEffectivenss_medium = value; }
-        //}
-        //public int AccidentalSuppressEffectivenss_high
-        //{
-        //    get { return accidentalSuppressEffectivenss_high; }
-        //    set { accidentalSuppressEffectivenss_high = value; }
-        //}
+        //---------------------------------------------------------------------
+        public List<IFireDamage> FireDamages_Severity2
+        {
+            get
+            {
+                return damages_severity2;
+            }
+        }
+        //---------------------------------------------------------------------
+        public List<IFireDamage> FireDamages_Severity3
+        {
+            get
+            {
+                return damages_severity3;
+            }
+        }
+
         //---------------------------------------------------------------------
 
         public InputParameters()
         {
+            ladderFuelSpeciesList = new List<ISpecies>();
+            deadWoodList = new List<IDeadWood>();
+            suppressionFWI_Table = new List<ISuppressionTable>();
             damages_severity1 = new List<IFireDamage>();
             damages_severity2 = new List<IFireDamage>();
             damages_severity3 = new List<IFireDamage>();
-            ladderFuelSpeciesList = new List<ISpecies>();
-            suppressionFWI_Table = new List<ISuppressionTable>();
         }
         //---------------------------------------------------------------------
 

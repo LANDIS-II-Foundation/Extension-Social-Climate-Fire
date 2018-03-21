@@ -53,8 +53,12 @@ Accidental	20	40	5	5	5
 Lightning	20	40	5	5	5
 Rx		20	40	5	5	5
 
+DeadWoodTable
+PinuJeff  50
+CaloDecu  25
+
 FireIntensityClass_1_DamageTable
->> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
+>> Format = species [minAge maxAge Pmortality] ... [repeating]  Any missing data is 0.0
 PinuJeff 0 50  0.2  
 PinuJeff 51 500 0.05
 PinuLamb 0 50 0.2
@@ -81,7 +85,7 @@ FixnResp 0 80   0.5
 FixnSeed 0 80   0.5
 
 FireIntensityClass_2_DamageTable
->> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
+>> Format = species [minAge maxAge Pmortality] ... [repeating]  Any missing data is 0.0
 PinuJeff 0 50  0.3  
 PinuJeff 51 500 0.15
 PinuLamb 0 50 0.3
@@ -108,7 +112,7 @@ FixnResp 0 80   0.75
 FixnSeed 0 80   0.75
 
 FireIntensityClass_3_DamageTable
->> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
+>> Format = species [minAge maxAge Pmortality] ... [repeating]  Any missing data is 0.0
 PinuJeff 0 50  0.8  
 PinuJeff 51 500 0.25
 PinuLamb 0 50 0.8

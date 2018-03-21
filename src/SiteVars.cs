@@ -1,6 +1,5 @@
 //  Authors:  Robert M. Scheller, Alec Kretchun, Vincent Schuster
 
-//using Landis.Library.AgeOnlyCohorts;
 using Landis.SpatialModeling;
 using Landis.Library.BiomassCohorts;
 
@@ -20,7 +19,8 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<ushort> groundSlope;
         private static ISiteVar<ushort> uphillSlopeAzimuth;
         private static ISiteVar<ISiteCohorts> cohorts;
-        public static ISiteVar<double> fineFuels;
+        private static ISiteVar<double> fineFuels;
+        private static ISiteVar<double> specialDeadWood;  // potential snags, specifically
 
         private static ISiteVar<double> lightningSuppressionIndex;
         private static ISiteVar<double> rxSuppressionIndex;
@@ -49,6 +49,7 @@ namespace Landis.Extension.Scrapple
             accidentalSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             typeOfIginition = PlugIn.ModelCore.Landscape.NewSiteVar<short>();
             disturbed = PlugIn.ModelCore.Landscape.NewSiteVar<bool>();
+            specialDeadWood = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
 
             //Also initialize topography, will be overwritten if optional parameters provided:
             SiteVars.GroundSlope.ActiveSiteValues = 0;
@@ -142,21 +143,8 @@ namespace Landis.Extension.Scrapple
                 return typeOfIginition;
             }
         }
+        //---------------------------------------------------------------------
 
-        //public static ISiteVar<Site> OriginSite
-        //{
-        //    get
-        //    {
-        //        return originSite;
-        //    }
-
-        //    set
-        //    {
-        //        originSite = value;
-        //    }
-        //}
-        // ------------ End addition
-        
 
         public static ISiteVar<int> TimeOfLastFire
         {
@@ -164,37 +152,6 @@ namespace Landis.Extension.Scrapple
                 return timeOfLastFire;
             }
         }
-        //---------------------------------------------------------------------
-        //public static ISiteVar<FireEvent> FireEvent
-        //{
-        //    get {
-        //        return eventVar;
-        //    }
-        //}
-        
-        //public static ISiteVar<int> PercentConifer
-        //{
-        //    get {
-        //        return percentConifer;
-        //    }
-        //}
-
-        ////---------------------------------------------------------------------
-
-        //public static ISiteVar<int> PercentHardwood
-        //{
-        //    get {
-        //        return percentHardwood;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-
-        //public static ISiteVar<int> PercentDeadFir
-        //{
-        //    get {
-        //        return percentDeadFir;
-        //    }
-        //}
 
         //---------------------------------------------------------------------
         public static ISiteVar<byte> Intensity
@@ -235,6 +192,14 @@ namespace Landis.Extension.Scrapple
         {
             get {
                 return uphillSlopeAzimuth;
+            }
+        }
+        //---------------------------------------------------------------------
+        public static ISiteVar<double> SpecialDeadWood
+        {
+            get
+            {
+                return specialDeadWood;
             }
         }
         //---------------------------------------------------------------------
