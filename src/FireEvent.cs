@@ -492,7 +492,7 @@ namespace Landis.Extension.Scrapple
         private int Damage(ActiveSite site)
         {
             int previousCohortsKilled = this.CohortsKilled;
-            SiteVars.Cohorts[site].ReduceOrKillBiomassCohorts(this); //.RemoveMarkedCohorts(this);
+            SiteVars.Cohorts[site].ReduceOrKillBiomassCohorts(this); 
             return this.CohortsKilled - previousCohortsKilled;
         }
 
@@ -522,7 +522,11 @@ namespace Landis.Extension.Scrapple
                         foreach (IDeadWood deadwood in PlugIn.Parameters.DeadWoodList)
                         {
                             if (cohort.Species == deadwood.Species && cohort.Age >= deadwood.MinAge)
+                            {
                                 SiteVars.SpecialDeadWood[damage_site] += cohort.Biomass;
+                                //PlugIn.ModelCore.UI.WriteLine("special dead = {0}, site={1}.", SiteVars.SpecialDeadWood[damage_site], damage_site);
+
+                            }
                         }
                     }
                     break;  // No need to search further
