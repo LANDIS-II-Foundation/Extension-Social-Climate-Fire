@@ -267,10 +267,10 @@ namespace Landis.Extension.Scrapple
             if (siteIntensity > 0)
             {
                 //      Cause mortality
+                SiteVars.Intensity[site] = (byte)siteIntensity;
                 damage_site = site;
                 siteCohortsKilled = Damage(site);
 
-                SiteVars.Intensity[site] = (byte)siteIntensity;
                 this.MeanSeverity += siteIntensity;
                 if (siteIntensity == 1)
                     this.NumberCellsSeverity1++;
