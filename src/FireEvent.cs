@@ -25,7 +25,6 @@ namespace Landis.Extension.Scrapple
     {
         private static readonly bool isDebugEnabled = false; //debugLog.IsDebugEnabled;
         public static Random rnd = new Random();
-        private static ActiveSite damage_site;
 
         private ActiveSite initiationSite;
         private static List<ActiveSite[]> fireSites;
@@ -45,6 +44,7 @@ namespace Landis.Extension.Scrapple
         public double MeanSpreadProbability;
         public double MeanFWI;
         public double TotalBiomassMortality;
+        public ActiveSite Current_damage_site;
         public int NumberCellsSeverity1;
         public int NumberCellsSeverity2;
         public int NumberCellsSeverity3;
@@ -93,7 +93,6 @@ namespace Landis.Extension.Scrapple
             this.CohortsKilled = 0;
             this.TotalSitesDamaged = 1;  // minimum 1 for the ignition cell
             this.InitiationFireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
-            //this.spreadArea = new Dictionary<int, int>();
             this.NumberOfDays = 1;
             this.MeanSeverity = 0.0;
             this.MeanWindDirection = 0.0;
@@ -106,6 +105,7 @@ namespace Landis.Extension.Scrapple
             this.NumberCellsSeverity1 = 0;
             this.NumberCellsSeverity2 = 0;
             this.NumberCellsSeverity3 = 0;
+            this.Current_damage_site = initiationSite;
             this.maxDay = day;
 
         }
@@ -268,7 +268,7 @@ namespace Landis.Extension.Scrapple
             {
                 //      Cause mortality
                 SiteVars.Intensity[site] = (byte)siteIntensity;
-                damage_site = site;
+                Current_damage_site = site;
                 siteCohortsKilled = Damage(site);
 
                 this.MeanSeverity += siteIntensity;
@@ -515,15 +515,17 @@ namespace Landis.Extension.Scrapple
             {
                 if(cohort.Species == damage.DamageSpecies && cohort.Age >= damage.MinAge && cohort.Age < damage.MaxAge)
                 {
-                    if (damage.ProbablityMortality > PlugIn.ModelCore.GenerateUniform())
+                    double random = PlugIn.ModelCore.GenerateUniform();
+                    if (damage.ProbablityMortality > random)
                     {
+                        //PlugIn.ModelCore.UI.WriteLine("damage prob={0}, Random#={1}", damage.ProbablityMortality, random);
                         killCohort = true;
                         this.TotalBiomassMortality += cohort.Biomass;  
                         foreach (IDeadWood deadwood in PlugIn.Parameters.DeadWoodList)
                         {
                             if (cohort.Species == deadwood.Species && cohort.Age >= deadwood.MinAge)
                             {
-                                SiteVars.SpecialDeadWood[damage_site] += cohort.Biomass;
+                                SiteVars.SpecialDeadWood[this.Current_damage_site] += cohort.Biomass;
                                 //PlugIn.ModelCore.UI.WriteLine("special dead = {0}, site={1}.", SiteVars.SpecialDeadWood[damage_site], damage_site);
 
                             }
@@ -534,10 +536,14 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            if (killCohort) {
+            if (killCohort)
+            {
                 this.CohortsKilled++;
+                return cohort.Biomass;
             }
-            return cohort.Biomass; 
+
+            return 0;
+
         }
 
         //---------------------------------------------------------------------

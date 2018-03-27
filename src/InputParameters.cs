@@ -33,6 +33,7 @@ namespace Landis.Extension.Scrapple
         double RxMinFireWeatherIndex { get; set; }
         int RxMaxFireIntensity { get; set; }
         int NumberRxAnnualFires { get; set; }
+        int FirstDayRxFire { get; set; }
 
         double MaximumSpreadAreaB0 { get; set; }
         double MaximumSpreadAreaB1 { get; set; }
@@ -88,6 +89,7 @@ namespace Landis.Extension.Scrapple
         private double minRxFireWeatherIndex;
         private int maxRxFireIntensity;
         private int numberRxAnnualFires;
+        private int firstDayRx;
 
         private double maximumSpreadAreaB0;
         private double maximumSpreadAreaB1;
@@ -335,6 +337,18 @@ namespace Landis.Extension.Scrapple
             set
             {
                 numberRxAnnualFires = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public int FirstDayRxFire
+        {
+            get
+            {
+                return firstDayRx;
+            }
+            set
+            {
+                firstDayRx = value;
             }
         }
         //---------------------------------------------------------------------

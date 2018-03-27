@@ -8,11 +8,7 @@ using Landis.Library.Metadata;
 
 using System;
 using System.Collections.Generic;
-//using System.IO;
-//using System.Data;
-//using System.Reflection;
 using System.Linq;
-//using System.Diagnostics;
 
 namespace Landis.Extension.Scrapple
 {
@@ -241,7 +237,8 @@ namespace Landis.Extension.Scrapple
                     if (numRxFires > 0 &&
                         landscapeAverageFireWeatherIndex > Parameters.RxMinFireWeatherIndex &&
                         landscapeAverageFireWeatherIndex < Parameters.RxMaxFireWeatherIndex &&
-                        weatherData.DailyWindSpeed[day] < Parameters.RxMaxWindSpeed)
+                        weatherData.DailyWindSpeed[day] < Parameters.RxMaxWindSpeed && 
+                        day >= Parameters.FirstDayRxFire)
                     {
                         Ignite(Ignition.Rx, shuffledRxFireSites, day, landscapeAverageFireWeatherIndex);
                         LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Rx.ToString(), 1, day);

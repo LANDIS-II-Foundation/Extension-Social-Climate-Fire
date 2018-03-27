@@ -20,7 +20,7 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<ushort> uphillSlopeAzimuth;
         private static ISiteVar<ISiteCohorts> cohorts;
         private static ISiteVar<double> fineFuels;
-        private static ISiteVar<double> specialDeadWood;  // potential snags, specifically
+        private static ISiteVar<int> specialDeadWood;  // potential snags, specifically
 
         private static ISiteVar<double> lightningSuppressionIndex;
         private static ISiteVar<double> rxSuppressionIndex;
@@ -49,7 +49,7 @@ namespace Landis.Extension.Scrapple
             accidentalSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             typeOfIginition = PlugIn.ModelCore.Landscape.NewSiteVar<short>();
             disturbed = PlugIn.ModelCore.Landscape.NewSiteVar<bool>();
-            specialDeadWood = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
+            specialDeadWood = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
 
             //Also initialize topography, will be overwritten if optional parameters provided:
             SiteVars.GroundSlope.ActiveSiteValues = 0;
@@ -58,8 +58,7 @@ namespace Landis.Extension.Scrapple
             //Initialize TimeSinceLastFire to the maximum cohort age:
             foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
             {
-                //ushort maxAge = GetMaxAge(site);
-                timeOfLastFire[site] = 0; // PlugIn.ModelCore.StartTime - maxAge;
+                timeOfLastFire[site] = 0; 
             }
 
 
@@ -195,7 +194,7 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public static ISiteVar<double> SpecialDeadWood
+        public static ISiteVar<int> SpecialDeadWood
         {
             get
             {

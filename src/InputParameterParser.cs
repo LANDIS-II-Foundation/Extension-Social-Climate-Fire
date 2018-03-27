@@ -138,6 +138,10 @@ namespace Landis.Extension.Scrapple
             ReadVar(nrxf);
             parameters.NumberRxAnnualFires = nrxf.Value;
 
+            InputVar<int> first_rx_day = new InputVar<int>("FirstDayRxFires");
+            ReadVar(first_rx_day);
+            parameters.FirstDayRxFire = first_rx_day.Value;
+
             InputVar<double> maxSA0 = new InputVar<double>("MaximumSpreadAreaB0");
             ReadVar(maxSA0);
             parameters.MaximumSpreadAreaB0 = maxSA0.Value;
@@ -282,41 +286,6 @@ namespace Landis.Extension.Scrapple
                 GetNextLine();
             }
 
-            //InputVar<int> lso = new InputVar<int>("SuppressionEffectiveness:LightningLow");
-            //ReadVar(lso);
-            //parameters.LightningSuppressEffectivenss_low = lso.Value;
-
-            //InputVar<int> lsm = new InputVar<int>("SuppressionEffectiveness:LightningMedium");
-            //ReadVar(lsm);
-            //parameters.LightningSuppressEffectivenss_medium = lsm.Value;
-
-            //InputVar<int> lsh = new InputVar<int>("SuppressionEffectiveness:LightningHigh");
-            //ReadVar(lsh);
-            //parameters.LightningSuppressEffectivenss_high = lsh.Value;
-
-            //InputVar<int> rso = new InputVar<int>("SuppressionEffectiveness:RxLow");
-            //ReadVar(rso);
-            //parameters.RxSuppressEffectivenss_low = rso.Value;
-
-            //InputVar<int> rsm = new InputVar<int>("SuppressionEffectiveness:RxMedium");
-            //ReadVar(rsm);
-            //parameters.RxSuppressEffectivenss_medium = rsm.Value;
-
-            //InputVar<int> rsh = new InputVar<int>("SuppressionEffectiveness:RxHigh");
-            //ReadVar(rsh);
-            //parameters.RxSuppressEffectivenss_high = rsh.Value;
-
-            //InputVar<int> aso = new InputVar<int>("SuppressionEffectiveness:AccidentalLow");
-            //ReadVar(aso);
-            //parameters.AccidentalSuppressEffectivenss_low = aso.Value;
-
-            //InputVar<int> asm = new InputVar<int>("SuppressionEffectiveness:AccidentalMedium");
-            //ReadVar(asm);
-            //parameters.AccidentalSuppressEffectivenss_medium = asm.Value;
-
-            //InputVar<int> ash = new InputVar<int>("SuppressionEffectiveness:AccidentalHigh");
-            //ReadVar(ash);
-            //parameters.AccidentalSuppressEffectivenss_high = ash.Value;
 
             //-------------------------------------------------------------------
             //  Read table of Fire Damage classes.
