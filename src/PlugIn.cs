@@ -270,7 +270,10 @@ namespace Landis.Extension.Scrapple
                     if (site.IsActive)
                     {
                         if (SiteVars.Disturbed[site])
-                            pixel.MapCode.Value = (int) (SiteVars.SpecialDeadWood[site]);
+                        {
+                            pixel.MapCode.Value = (int)(SiteVars.SpecialDeadWood[site]);
+                            //PlugIn.ModelCore.UI.WriteLine("special dead = {0}, site={1}, pixel={2}.", SiteVars.SpecialDeadWood[site], site, pixel.MapCode.Value);
+                        }
                         else
                             pixel.MapCode.Value = 0;
                     }

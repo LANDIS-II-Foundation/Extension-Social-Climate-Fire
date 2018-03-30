@@ -229,25 +229,5 @@ namespace Landis.Extension.Scrapple
             }
         }
 
-        //---------------------------------------------------------------------
-        //public static ushort GetMaxAge(ActiveSite site)
-        //{
-        //    if (SiteVars.Cohorts[site] == null)
-        //    {
-        //        PlugIn.ModelCore.UI.WriteLine("Cohort are null.");
-        //        return 0;
-        //    }
-        //    ushort max = 0;
-
-        //    foreach (ISpeciesCohorts speciesCohorts in SiteVars.Cohorts[site])
-        //    {
-        //        foreach (ICohort cohort in speciesCohorts)
-        //        {
-        //            if (cohort.Age > max)
-        //                max = cohort.Age;
-        //        }
-        //    }
-        //    return max;
-        //}
     }
 }

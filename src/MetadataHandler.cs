@@ -72,7 +72,7 @@ namespace Landis.Extension.Scrapple
             //---------------------------------------            
             //          map outputs:         
             //---------------------------------------
-            string intensityMapFileName = "scrapple-severity.img";
+            string intensityMapFileName = "scrapple-intensity.img";
             OutputMetadata mapOut_Intensity = new OutputMetadata()
             {
                 Type = OutputType.Map,
@@ -84,6 +84,17 @@ namespace Landis.Extension.Scrapple
             };
             Extension.OutputMetadatas.Add(mapOut_Intensity);
 
+            //string specialDeadWoodMapFileName = "scrapple-dead-wood.img";
+            //OutputMetadata mapOut_SpecialDead = new OutputMetadata()
+            //{
+            //    Type = OutputType.Map,
+            //    Name = "SpecialDeadWood",
+            //    FilePath = @specialDeadWoodMapFileName,
+            //    Map_DataType = MapDataType.Continuous,
+            //    Map_Unit = FieldUnits.g_C_m2,
+            //    Visualize = true,
+            //};
+            //Extension.OutputMetadatas.Add(mapOut_Intensity);
             //OutputMetadata mapOut_Time = new OutputMetadata()
             //{
             //    Type = OutputType.Map,

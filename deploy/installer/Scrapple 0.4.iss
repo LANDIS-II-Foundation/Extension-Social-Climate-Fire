@@ -1,6 +1,6 @@
  #define PackageName      "SCRAPPLE"
 #define PackageNameLong  "Scrapple Extension"
-#define Version          "0.4.7"
+#define Version          "0.4.8"
 #define ReleaseType      "official"
 #define ReleaseNumber    "0.0"
 #define CoreVersion      "6.0"
