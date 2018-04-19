@@ -30,6 +30,7 @@ MaximumRxFireWeatherIndex 30.0
 MinimumRxFireWeatherIndex 5.0
 MaximumRxFireIntensity 2
 NumberRxAnnualFires 5
+FirstDayRxFires 2
 
 MaximumSpreadAreaB0	3.1
 MaximumSpreadAreaB1	0.0
