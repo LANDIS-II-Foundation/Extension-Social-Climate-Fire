@@ -1,0 +1,205 @@
+LandisData  "SCRAPPLE"
+
+>> Note:  All inputs are provided as examples only.  They are not intended to serve as default values.
+>>     Parameter                      Value
+>> ----------------------------       -------
+Timestep                            1
+
+AccidentalIgnitionsMap     ./Accidental_Ignition_Map.img
+LightningIgnitionsMap  ./Lightning_Ignition_Map.img
+RxIgnitionsMap  ./Lightning_Ignition_Map.img
+
+AccidentalSuppressionMap	./suppress3.img
+LightningSuppressionMap		./suppress3.img
+RxSuppressionMap		./suppress3.img
+
+GroundSlopeMap GroundSlope.gis
+UphillSlopeAzimuthMap  UphillSlope.gis
+
+>>Updated on 2/20 w new fits params
+LightningIgnitionsB0   -8.5
+LightningIgnitionsB1   0.03
+AccidentalIgnitionsB0  -80
+AccidentalIgnitionsB1  0.03
+
+>> A generic parameter, determines the fine-fuel scale from 0-1.0
+MaximumFineFuels 500.0
+
+>> Prescribed Fire Parameters
+MaximumRxWindSpeed 8.0
+MaximumRxFireWeatherIndex 10.0
+MinimumRxFireWeatherIndex 8.0
+MaximumRxFireIntensity 1
+NumberRxAnnualFires 0
+FirstDayRxFires 275 
+
+
+MaximumSpreadAreaB0	10
+MaximumSpreadAreaB1	-2.5 <<-3 <<FWI
+MaximumSpreadAreaB2	-2.5 <<-2.5  <<effective wind speed
+
+
+SpreadProbabilityB0 -1.79 << Intercept
+SpreadProbabilityB1 0.06  <<FWI
+SpreadProbabilityB2  -.915 << relativized fine fuels. 
+SpreadProbabilityB3 0.0126 << effective wind speed. 
+
+IntensityFactor:FineFuelPercent  0.1
+IntensityFactor:LadderFuelMaxAge 40
+IntensityFactor:LadderFuelBiomass 20
+
+LadderFuelSpeciesList 
+AbieConc AbieMagn PinuJeff PinuCont
+
+SuppressionMaxWindSpeed 100
+SuppressionTable  << Currently must be entered in this exact order
+>>Type		FWI1	FWI2	Lo	Md	High-Effectiveness
+Accidental	20	40	0	0	0
+Lightning	20	40	0	0	0
+Rx			20	40	0	0	0
+
+DeadWoodTable
+PinuJeff  22
+CaloDecu  33
+PinuCont  38
+PinuLamb  27
+AbieMagn  28
+AbieConc  29
+
+>> Mortality data is compiled from Brian Garrett and Brandon Collins 12/7/2017
+>> There could also be a high age cohort with slightly elevated mortality levels per Brian
+
+FireIntensityClass_1_DamageTable
+>> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
+PinuJeff 0   40   0.45
+PinuJeff 40  80   0.1
+PinuJeff 80  500  0.05
+PinuLamb 0   40   0.45
+PinuLamb 40  80   0.1
+PinuLamb 80  500  0.05
+CaloDecu 0   40   0.5
+CaloDecu 40  80   0.15
+CaloDecu 80  500  0.1
+AbieConc 0   40   0.6
+AbieConc 40  80   0.15
+AbieConc 80  450  0.05
+AbieMagn 0   40   0.6
+AbieMagn 40  80   0.15
+AbieMagn 80  500  0.05
+PinuCont 0   30   0.6
+PinuCont 30  70   0.35
+PinuCont 70  250  0.25
+PinuMont 0   40   0.55
+PinuMont 40  80   0.15
+PinuMont 80  550  0.1
+TsugMert 0   30   0.6
+TsugMert 30  70   0.2
+TsugMert 70  800  0.1
+PinuAlbi 0   30   0.65
+PinuAlbi 30  70   0.3
+PinuAlbi 70  900  0.1
+PopuTrem 0   30   0.5
+PopuTrem 30  70   0.3
+PopuTrem 70  175  0.1
+NonnResp 0   10   0.6
+NonnResp 10  40   0.7
+NonnResp 40  80   0.8
+NonnSeed 0   10   0.6
+NonnSeed 10  40   0.7
+NonnSeed 40  80   0.8
+FixnResp 0   10   0.6
+FixnResp 10  40   0.7
+FixnResp 40  80   0.8
+FixnSeed 0   10   0.6
+FixnSeed 10  40   0.7
+FixnSeed 40  80   0.8
+
+FireIntensityClass_2_DamageTable
+>> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
+PinuJeff 0   40    0.6
+PinuJeff 40  80    0.25
+PinuJeff 80  500   0.15
+PinuLamb 0   40    0.7
+PinuLamb 40  80    0.2
+PinuLamb 80  500   0.1
+CaloDecu 0   40    0.75
+CaloDecu 40  80    0.2
+CaloDecu 80  500   0.1
+AbieConc 0   40    0.8
+AbieConc 40  80    0.4
+AbieConc 80  450   0.2
+AbieMagn 0   40    0.8
+AbieMagn 40  80    0.25
+AbieMagn 80  500   0.1
+PinuCont 0   30    0.85
+PinuCont 30  70    0.7
+PinuCont 70  250   0.6
+PinuMont 0   40    0.77
+PinuMont 40  80    0.3
+PinuMont 80  550   0.25
+TsugMert 0   30    0.8
+TsugMert 30  70    0.5
+TsugMert 70  800   0.3
+PinuAlbi 0   30    0.8
+PinuAlbi 30  70    0.5
+PinuAlbi 70  900   0.4
+PopuTrem 0   30    0.9
+PopuTrem 30  70    0.7
+PopuTrem 70  175   0.6
+NonnResp 0   10    0.9
+NonnResp 10  40    0.9
+NonnResp 40  80    0.9
+NonnSeed 0   10    0.9
+NonnSeed 10  40    0.9
+NonnSeed 40  80    0.9
+FixnResp 0   10    0.9
+FixnResp 10  40    0.9
+FixnResp 40  80    0.9
+FixnSeed 0   10    0.9
+FixnSeed 10  40    0.9
+FixnSeed 40  80    0.9
+
+FireIntensityClass_3_DamageTable
+>> Format = species [maxAge Pmortality] ... [repeating]  Any missing data is 0.0
+PinuJeff 0   40   0.9
+PinuJeff 40  80   0.8
+PinuJeff 80  500  0.7
+PinuLamb 0   40   0.9
+PinuLamb 40  80   0.8
+PinuLamb 80  500  0.6
+CaloDecu 0   40   0.9
+CaloDecu 40  80   0.7
+CaloDecu 80  500  0.5
+AbieConc 0   40   0.99
+AbieConc 40  80   0.75
+AbieConc 80  450  0.8
+AbieMagn 0   40   0.99
+AbieMagn 40  80   0.75
+AbieMagn 80  500  0.8
+PinuCont 0   30   0.99
+PinuCont 30  70   0.95
+PinuCont 70  250  0.9
+PinuMont 0   40   0.9
+PinuMont 40  80   0.75
+PinuMont 80  550  0.6
+TsugMert 0   30   0.9
+TsugMert 30  70   0.75
+TsugMert 70  800  0.6
+PinuAlbi 0   30   0.97
+PinuAlbi 30  70   0.8
+PinuAlbi 70  900  0.7
+PopuTrem 0   30   0.99
+PopuTrem 30  70   0.95
+PopuTrem 70  175  0.9
+NonnResp 0   10   0.9
+NonnResp 10  40   0.9
+NonnResp 40  80   0.99
+NonnSeed 0   10   0.9
+NonnSeed 10  40   0.9
+NonnSeed 40  80   0.99
+FixnResp 0   10   0.9
+FixnResp 10  40   0.9
+FixnResp 40  80   0.99
+FixnSeed 0   10   0.9
+FixnSeed 10  40   0.9
+FixnSeed 40  80   0.99
