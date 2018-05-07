@@ -76,8 +76,8 @@ namespace Landis.Extension.Scrapple
                 return initiationSite;
             }
         }
-        // Constructor function
 
+        // Constructor function
         public FireEvent(ActiveSite initiationSite, int day, Ignition ignitionType)
         {
             this.initiationSite = initiationSite;
