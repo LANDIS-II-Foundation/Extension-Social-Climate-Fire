@@ -350,6 +350,51 @@ namespace Landis.Extension.Scrapple
                     outputRaster.WriteBufferPixel();
                 }
             }
+
+            path = MapNames.ReplaceTemplateVars("scrapple-fire/smolder-consumption-{timestep}.img", currentTime);
+            using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
+            {
+                IntPixel pixel = outputRaster.BufferPixel;
+                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                {
+                    if (site.IsActive)
+                    {
+                        if (SiteVars.Disturbed[site])
+                            pixel.MapCode.Value = (short)(SiteVars.SmolderConsumption[site]);
+                        else
+                            pixel.MapCode.Value = 0;
+                    }
+                    else
+                    {
+                        //  Inactive site
+                        pixel.MapCode.Value = 0;
+                    }
+                    outputRaster.WriteBufferPixel();
+                }
+            }
+
+            path = MapNames.ReplaceTemplateVars("scrapple-fire/flaming-consumption-{timestep}.img", currentTime);
+            using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
+            {
+                IntPixel pixel = outputRaster.BufferPixel;
+                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                {
+                    if (site.IsActive)
+                    {
+                        if (SiteVars.Disturbed[site])
+                            pixel.MapCode.Value = (short)(SiteVars.FlamingConsumption[site]);
+                        else
+                            pixel.MapCode.Value = 0;
+                    }
+                    else
+                    {
+                        //  Inactive site
+                        pixel.MapCode.Value = 0;
+                    }
+                    outputRaster.WriteBufferPixel();
+                }
+            }
+
         }
 
 

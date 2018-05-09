@@ -25,6 +25,9 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<double> lightningSuppressionIndex;
         private static ISiteVar<double> rxSuppressionIndex;
         private static ISiteVar<double> accidentalSuppressionIndex;
+
+        public static ISiteVar<double> SmolderConsumption;
+        public static ISiteVar<double> FlamingConsumption;
         //---------------------------------------------------------------------
 
         public static void Initialize()
@@ -51,9 +54,12 @@ namespace Landis.Extension.Scrapple
             disturbed = PlugIn.ModelCore.Landscape.NewSiteVar<bool>();
             specialDeadWood = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
 
+            SmolderConsumption = PlugIn.ModelCore.GetSiteVar<double>("Succession.SmolderConsumption");
+            FlamingConsumption = PlugIn.ModelCore.GetSiteVar<double>("Succession.FlamingConsumption");
+
             //Also initialize topography, will be overwritten if optional parameters provided:
-            SiteVars.GroundSlope.ActiveSiteValues = 0;
-            SiteVars.UphillSlopeAzimuth.ActiveSiteValues = 0;
+            //SiteVars.GroundSlope.ActiveSiteValues = 0;
+            //SiteVars.UphillSlopeAzimuth.ActiveSiteValues = 0;
 
             //Initialize TimeSinceLastFire to the maximum cohort age:
             foreach (ActiveSite site in PlugIn.ModelCore.Landscape)

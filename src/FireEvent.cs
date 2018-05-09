@@ -87,7 +87,6 @@ namespace Landis.Extension.Scrapple
 
             int actualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_DailyData.First().Key;
             this.annualWeatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
-            //SiteVars.TypeOfIginition[initiationSite] = (ushort) ignitionType;
             SiteVars.Disturbed[initiationSite] = true;
 
             this.CohortsKilled = 0;

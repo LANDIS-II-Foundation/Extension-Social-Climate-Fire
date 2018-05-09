@@ -1,7 +1,7 @@
 LandisData   Extension
 
 Name         "SCRAPPLE"
-Version      0.3
+Version      0.5
 Type         disturbance:fire
 Assembly     Landis.Extension.Scrapple
 Class        Landis.Extension.Scrapple.PlugIn
