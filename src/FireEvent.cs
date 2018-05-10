@@ -44,7 +44,7 @@ namespace Landis.Extension.Scrapple
         public double MeanSpreadProbability;
         public double MeanFWI;
         public double TotalBiomassMortality;
-        public ActiveSite Current_damage_site;
+        public ActiveSite currentSite;
         public int NumberCellsSeverity1;
         public int NumberCellsSeverity2;
         public int NumberCellsSeverity3;
@@ -73,7 +73,7 @@ namespace Landis.Extension.Scrapple
         {
             get
             {
-                return initiationSite;
+                return currentSite;
             }
         }
 
@@ -104,7 +104,7 @@ namespace Landis.Extension.Scrapple
             this.NumberCellsSeverity1 = 0;
             this.NumberCellsSeverity2 = 0;
             this.NumberCellsSeverity3 = 0;
-            this.Current_damage_site = initiationSite;
+            this.currentSite = initiationSite;
             this.maxDay = day;
 
         }
@@ -144,11 +144,12 @@ namespace Landis.Extension.Scrapple
             // First, take the first site off the list, ensuring that days are sequential from the beginning.
             while (fireSites.Count() > 0)
             {
-                ActiveSite[] sitePair = fireSites.First();
-                ActiveSite site = sitePair[0];
-                ActiveSite sourceSite = sitePair[1];
+                //yActiveSite[] sitePair = fireSites.First();
+                ActiveSite site = fireSites.First()[0];
+                ActiveSite sourceSite = fireSites.First()[1];
 
                 CalculateIntensity(site, sourceSite);
+
                 SiteVars.DayOfFire[site] = (ushort) day;
                 dailySpreadArea++;
 
@@ -213,7 +214,8 @@ namespace Landis.Extension.Scrapple
                 }
                 // SPREAD to neighbors ***********************
 
-                fireSites.Remove(fireSites.First());
+                //fireSites.Remove(fireSites.First());
+                fireSites.RemoveAt(0);
             }
 
 
@@ -221,6 +223,9 @@ namespace Landis.Extension.Scrapple
 
         private void CalculateIntensity(ActiveSite site, ActiveSite sourceSite)
         {
+
+            //PlugIn.ModelCore.UI.WriteLine("  Calculate Intensity: {0}.", site);
+
             double fineFuelPercent = 0.0;
             try
             {
@@ -267,7 +272,7 @@ namespace Landis.Extension.Scrapple
             {
                 //      Cause mortality
                 SiteVars.Intensity[site] = (byte)siteIntensity;
-                Current_damage_site = site;
+                currentSite = site;
                 siteCohortsKilled = Damage(site);
 
                 this.MeanSeverity += siteIntensity;
@@ -490,6 +495,7 @@ namespace Landis.Extension.Scrapple
 
         private int Damage(ActiveSite site)
         {
+            //PlugIn.ModelCore.UI.WriteLine("  Calculate Damage: {0}.", site);
             int previousCohortsKilled = this.CohortsKilled;
             SiteVars.Cohorts[site].ReduceOrKillBiomassCohorts(this); 
             return this.CohortsKilled - previousCohortsKilled;
@@ -524,7 +530,7 @@ namespace Landis.Extension.Scrapple
                         {
                             if (cohort.Species == deadwood.Species && cohort.Age >= deadwood.MinAge)
                             {
-                                SiteVars.SpecialDeadWood[this.Current_damage_site] += cohort.Biomass;
+                                SiteVars.SpecialDeadWood[this.currentSite] += cohort.Biomass;
                                 //PlugIn.ModelCore.UI.WriteLine("special dead = {0}, site={1}.", SiteVars.SpecialDeadWood[this.Current_damage_site], this.Current_damage_site);
 
                             }
