@@ -21,7 +21,6 @@ LightningIgnitionsB1  0.005
 AccidentalIgnitionsB0 -3.0
 AccidentalIgnitionsB1 0.005
 
->> A generic parameter, determines the fine-fuel scale from 0-1.0
 MaximumFineFuels 3.0
 
 >> Prescribed Fire Parameters
