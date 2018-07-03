@@ -1,6 +1,6 @@
 //  Authors:  Robert M. Scheller, Alec Kretchun, Vincent Schuster
 
-using Edu.Wisc.Forest.Flel.Util;
+using Landis.Utilities;
 
 //RMS: An example of how to read in maps through time.  We're saving this for a late itertion.
 
