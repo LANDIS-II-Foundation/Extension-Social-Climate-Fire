@@ -428,6 +428,9 @@ namespace Landis.Extension.Scrapple
             if (Pspread_adjusted > PlugIn.ModelCore.GenerateUniform())
                 spread = true;
 
+            if(spread)
+                SiteVars.SpreadProbability[site] = Pspread;
+
             return spread;
 
         }

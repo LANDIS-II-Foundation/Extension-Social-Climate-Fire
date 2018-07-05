@@ -1,0 +1,9 @@
+LandisData   Extension
+
+Name         "SCRAPPLE"
+Version      1.0
+Type         disturbance:fire
+Assembly     Landis.Extension.Scrapple
+Class        Landis.Extension.Scrapple.PlugIn
+Description  "Climate and data-driven fire disturbance"
+CoreVersion  6.0

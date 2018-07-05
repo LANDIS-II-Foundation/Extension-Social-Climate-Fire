@@ -140,6 +140,7 @@ namespace Landis.Extension.Scrapple
 
             SiteVars.Disturbed.ActiveSiteValues = false;
             SiteVars.Intensity.ActiveSiteValues = 0;
+            SiteVars.SpreadProbability.ActiveSiteValues = 0.0;
             SiteVars.DayOfFire.ActiveSiteValues = 0;
             SiteVars.TypeOfIginition.ActiveSiteValues = 0;
             SiteVars.SpecialDeadWood.ActiveSiteValues = 0;
@@ -317,6 +318,28 @@ namespace Landis.Extension.Scrapple
                     {
                         if (SiteVars.Disturbed[site])
                             pixel.MapCode.Value = (short) (SiteVars.Intensity[site]);
+                        else
+                            pixel.MapCode.Value = 0;
+                    }
+                    else
+                    {
+                        //  Inactive site
+                        pixel.MapCode.Value = 0;
+                    }
+                    outputRaster.WriteBufferPixel();
+                }
+            }
+
+            path = MapNames.ReplaceTemplateVars("scrapple-fire/fire-spread-probability-{timestep}.img", currentTime);
+            using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
+            {
+                ShortPixel pixel = outputRaster.BufferPixel;
+                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                {
+                    if (site.IsActive)
+                    {
+                        if (SiteVars.Disturbed[site])
+                            pixel.MapCode.Value = (short)(SiteVars.SpreadProbability[site]);
                         else
                             pixel.MapCode.Value = 0;
                     }

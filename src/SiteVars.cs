@@ -21,6 +21,7 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<ISiteCohorts> cohorts;
         private static ISiteVar<double> fineFuels;
         private static ISiteVar<int> specialDeadWood;  // potential snags, specifically
+        private static ISiteVar<double> spreadProbablity;
 
         private static ISiteVar<double> lightningSuppressionIndex;
         private static ISiteVar<double> rxSuppressionIndex;
@@ -39,6 +40,7 @@ namespace Landis.Extension.Scrapple
             eventVar = PlugIn.ModelCore.Landscape.NewSiteVar<FireEvent>(InactiveSiteMode.DistinctValues);
             timeOfLastFire       = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             intensity         = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
+            spreadProbablity = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             dayOfFire = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
 
             groundSlope          = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
@@ -132,7 +134,15 @@ namespace Landis.Extension.Scrapple
                 return accidentalSuppressionIndex;
             }
         }
-        ////---------------------------------------------------------------------
+        //---------------------------------------------------------------------
+        public static ISiteVar<double> SpreadProbability
+        {
+            get
+            {
+                return spreadProbablity;
+            }
+        }
+        //---------------------------------------------------------------------
         public static ISiteVar<double> FineFuels
         {
             get
