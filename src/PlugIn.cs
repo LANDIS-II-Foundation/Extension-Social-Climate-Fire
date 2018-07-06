@@ -339,7 +339,7 @@ namespace Landis.Extension.Scrapple
                     if (site.IsActive)
                     {
                         if (SiteVars.Disturbed[site])
-                            pixel.MapCode.Value = (short)(SiteVars.SpreadProbability[site]);
+                            pixel.MapCode.Value = (short)(SiteVars.SpreadProbability[site] * 100);
                         else
                             pixel.MapCode.Value = 0;
                     }
