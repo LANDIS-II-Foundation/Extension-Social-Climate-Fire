@@ -314,7 +314,7 @@ namespace Landis.Extension.Scrapple
 
 
             // SUPPRESSION ************************
-            double suppressEffect = 0.0;
+            double suppressEffect = 1.0;
 
             if (this.IgnitionType == Ignition.Accidental)
             {
@@ -339,7 +339,7 @@ namespace Landis.Extension.Scrapple
                             suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].EffectivenessHigh / 100.0);
                         break;
                     default:
-                        suppressEffect = 0.0;  // None
+                        suppressEffect = 1.0;  // None
                         break;
 
                 }
@@ -367,7 +367,7 @@ namespace Landis.Extension.Scrapple
                             suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].EffectivenessHigh / 100.0);
                         break;
                     default:
-                        suppressEffect = 0.0;  // None
+                        suppressEffect = 1.0;  // None
                         break;
 
                 }
@@ -395,7 +395,7 @@ namespace Landis.Extension.Scrapple
                             suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].EffectivenessHigh / 100.0);
                         break;
                     default:
-                        suppressEffect = 0.0;  // None
+                        suppressEffect = 1.0;  // None
                         break;
 
                 }
@@ -403,7 +403,7 @@ namespace Landis.Extension.Scrapple
 
             // NO suppression above a given wind speed due to dangers to firefighters and aircraft.
             if (effectiveWindSpeed > PlugIn.Parameters.SuppressionMaxWindSpeed)
-                suppressEffect = 0.0;
+                suppressEffect = 1.0;
 
             this.MeanSuppression += suppressEffect;
             // End SUPPRESSION ************************
@@ -428,8 +428,8 @@ namespace Landis.Extension.Scrapple
             if (Pspread_adjusted > PlugIn.ModelCore.GenerateUniform())
                 spread = true;
 
-            if(spread)
-                SiteVars.SpreadProbability[site] = Pspread;
+            //if(spread)
+            SiteVars.SpreadProbability[site] = Pspread;
 
             return spread;
 
