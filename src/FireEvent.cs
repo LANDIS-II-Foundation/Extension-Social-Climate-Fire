@@ -229,7 +229,8 @@ namespace Landis.Extension.Scrapple
             double fineFuelPercent = 0.0;
             try
             {
-                fineFuelPercent = SiteVars.FineFuels[site] / PlugIn.Parameters.MaxFineFuels;
+                fineFuelPercent = Math.Min(SiteVars.FineFuels[site] / PlugIn.Parameters.MaxFineFuels, 1.0);
+                //fineFuelPercent = SiteVars.FineFuels[site] / PlugIn.Parameters.MaxFineFuels;
             }
             catch
             {
@@ -297,7 +298,8 @@ namespace Landis.Extension.Scrapple
             double fineFuelPercent = 0.0;
             try
             {
-                fineFuelPercent = SiteVars.FineFuels[site] / PlugIn.Parameters.MaxFineFuels;
+                fineFuelPercent = Math.Min(SiteVars.FineFuels[site] / PlugIn.Parameters.MaxFineFuels, 1.0);
+                PlugIn.ModelCore.UI.WriteLine("NOTE: fine fuels = {0}, MaxFF={1}, ffPercent={2}", SiteVars.FineFuels[site], PlugIn.Parameters.MaxFineFuels, fineFuelPercent);
             }
             catch
             {
@@ -314,7 +316,7 @@ namespace Landis.Extension.Scrapple
 
 
             // SUPPRESSION ************************
-            double suppressEffect = 1.0;
+            double suppressEffect = 1.0; // 1.0 = no effect
 
             if (this.IgnitionType == Ignition.Accidental)
             {
