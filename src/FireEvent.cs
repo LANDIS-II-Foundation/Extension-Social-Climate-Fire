@@ -301,7 +301,6 @@ namespace Landis.Extension.Scrapple
             {
                 //fineFuelPercent = Math.Min(SiteVars.FineFuels[site] / PlugIn.Parameters.MaxFineFuels, 1.0);
                 fineFuelPercent = SiteVars.FineFuels[site];
-                //PlugIn.ModelCore.UI.WriteLine("NOTE: fine fuels = {0}, MaxFF={1}, ffPercent={2}", SiteVars.FineFuels[site], PlugIn.Parameters.MaxFineFuels, fineFuelPercent);
             }
             catch
             {
