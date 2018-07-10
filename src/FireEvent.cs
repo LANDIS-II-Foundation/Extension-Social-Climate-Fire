@@ -229,7 +229,8 @@ namespace Landis.Extension.Scrapple
             double fineFuelPercent = 0.0;
             try
             {
-                fineFuelPercent = Math.Min(SiteVars.FineFuels[site] / PlugIn.Parameters.MaxFineFuels, 1.0);
+                //fineFuelPercent = Math.Min(SiteVars.FineFuels[site] / PlugIn.Parameters.MaxFineFuels, 1.0);
+                fineFuelPercent = SiteVars.FineFuels[site];
                 //fineFuelPercent = SiteVars.FineFuels[site] / PlugIn.Parameters.MaxFineFuels;
             }
             catch
@@ -298,8 +299,9 @@ namespace Landis.Extension.Scrapple
             double fineFuelPercent = 0.0;
             try
             {
-                fineFuelPercent = Math.Min(SiteVars.FineFuels[site] / PlugIn.Parameters.MaxFineFuels, 1.0);
-                PlugIn.ModelCore.UI.WriteLine("NOTE: fine fuels = {0}, MaxFF={1}, ffPercent={2}", SiteVars.FineFuels[site], PlugIn.Parameters.MaxFineFuels, fineFuelPercent);
+                //fineFuelPercent = Math.Min(SiteVars.FineFuels[site] / PlugIn.Parameters.MaxFineFuels, 1.0);
+                fineFuelPercent = SiteVars.FineFuels[site];
+                //PlugIn.ModelCore.UI.WriteLine("NOTE: fine fuels = {0}, MaxFF={1}, ffPercent={2}", SiteVars.FineFuels[site], PlugIn.Parameters.MaxFineFuels, fineFuelPercent);
             }
             catch
             {
@@ -424,13 +426,14 @@ namespace Landis.Extension.Scrapple
             Pspread = 1.0 / (1.0 + Pspread);
             // End PROBABILITY OF SPREAD calculation **************************
 
-            this.MeanSpreadProbability += Pspread;
             double Pspread_adjusted = Pspread * suppressEffect;
 
             if (Pspread_adjusted > PlugIn.ModelCore.GenerateUniform())
                 spread = true;
 
-            //if(spread)
+            if(spread)
+                this.MeanSpreadProbability += Pspread_adjusted;
+
             SiteVars.SpreadProbability[site] = Pspread;
 
             return spread;
