@@ -229,8 +229,10 @@ namespace Landis.Extension.Scrapple
             double fineFuelPercent = 0.0;
             try
             {
-                //fineFuelPercent = Math.Min(SiteVars.FineFuels[site] / PlugIn.Parameters.MaxFineFuels, 1.0);
-                fineFuelPercent = SiteVars.FineFuels[site];
+                fineFuelPercent = Math.Min(SiteVars.FineFuels[site] / PlugIn.Parameters.MaxFineFuels, 1.0);
+
+                if(SiteVars.HarvestTime[site] > PlugIn.ModelCore.CurrentTime)
+                    fineFuelPercent = (System.Math.Min(1.0, (double)(PlugIn.ModelCore.CurrentTime - SiteVars.HarvestTime[site]) * 0.1));
                 //fineFuelPercent = SiteVars.FineFuels[site] / PlugIn.Parameters.MaxFineFuels;
             }
             catch

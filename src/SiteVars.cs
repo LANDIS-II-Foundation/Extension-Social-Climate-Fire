@@ -29,6 +29,7 @@ namespace Landis.Extension.Scrapple
 
         public static ISiteVar<double> SmolderConsumption;
         public static ISiteVar<double> FlamingConsumption;
+        public static ISiteVar<int> HarvestTime;
         //---------------------------------------------------------------------
 
         public static void Initialize()
@@ -58,10 +59,7 @@ namespace Landis.Extension.Scrapple
 
             SmolderConsumption = PlugIn.ModelCore.GetSiteVar<double>("Succession.SmolderConsumption");
             FlamingConsumption = PlugIn.ModelCore.GetSiteVar<double>("Succession.FlamingConsumption");
-
-            //Also initialize topography, will be overwritten if optional parameters provided:
-            //SiteVars.GroundSlope.ActiveSiteValues = 0;
-            //SiteVars.UphillSlopeAzimuth.ActiveSiteValues = 0;
+            HarvestTime = PlugIn.ModelCore.GetSiteVar<int>("Harvest.TimeOfLastEvent");
 
             //Initialize TimeSinceLastFire to the maximum cohort age:
             foreach (ActiveSite site in PlugIn.ModelCore.Landscape)

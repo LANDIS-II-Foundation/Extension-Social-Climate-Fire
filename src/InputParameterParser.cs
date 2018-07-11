@@ -208,8 +208,8 @@ namespace Landis.Extension.Scrapple
                 }
                 GetNextLine();
             }
-            foreach (ISpecies ladder_spp in parameters.LadderFuelSpeciesList)
-                PlugIn.ModelCore.UI.WriteLine("    Ladder fuel species: {0}", ladder_spp.Name);
+            //foreach (ISpecies ladder_spp in parameters.LadderFuelSpeciesList)
+            //    PlugIn.ModelCore.UI.WriteLine("    Ladder fuel species: {0}", ladder_spp.Name);
 
             InputVar<int> smws = new InputVar<int>("SuppressionMaxWindSpeed");
             ReadVar(smws);
@@ -385,17 +385,17 @@ namespace Landis.Extension.Scrapple
             }
 
             // Next, read out the data to verify:
-            PlugIn.ModelCore.UI.WriteLine("   Fire mortality data for severity class 1:");
-            foreach (FireDamage damage in parameters.FireDamages_Severity1)
-                PlugIn.ModelCore.UI.WriteLine("      {0} : {1} : {2}", damage.DamageSpecies.Name, damage.MaxAge, damage.ProbablityMortality);
+            //PlugIn.ModelCore.UI.WriteLine("   Fire mortality data for severity class 1:");
+            //foreach (FireDamage damage in parameters.FireDamages_Severity1)
+            //    PlugIn.ModelCore.UI.WriteLine("      {0} : {1} : {2}", damage.DamageSpecies.Name, damage.MaxAge, damage.ProbablityMortality);
 
-            PlugIn.ModelCore.UI.WriteLine("   Fire mortality data for severity class 2:");
-            foreach (FireDamage damage in parameters.FireDamages_Severity2)
-                PlugIn.ModelCore.UI.WriteLine("      {0} : {1} : {2}", damage.DamageSpecies.Name, damage.MaxAge, damage.ProbablityMortality);
+            //PlugIn.ModelCore.UI.WriteLine("   Fire mortality data for severity class 2:");
+            //foreach (FireDamage damage in parameters.FireDamages_Severity2)
+            //    PlugIn.ModelCore.UI.WriteLine("      {0} : {1} : {2}", damage.DamageSpecies.Name, damage.MaxAge, damage.ProbablityMortality);
 
-            PlugIn.ModelCore.UI.WriteLine("   Fire mortality data for severity class 3:");
-            foreach (FireDamage damage in parameters.FireDamages_Severity3)
-                PlugIn.ModelCore.UI.WriteLine("      {0} : {1} : {2}", damage.DamageSpecies.Name, damage.MaxAge, damage.ProbablityMortality);
+            //PlugIn.ModelCore.UI.WriteLine("   Fire mortality data for severity class 3:");
+            //foreach (FireDamage damage in parameters.FireDamages_Severity3)
+            //    PlugIn.ModelCore.UI.WriteLine("      {0} : {1} : {2}", damage.DamageSpecies.Name, damage.MaxAge, damage.ProbablityMortality);
 
 
             return parameters; 
