@@ -484,6 +484,10 @@ namespace Landis.Extension.Scrapple
                 new RelativeLocation( 0,  1),  // east
                 new RelativeLocation( 1,  0),  // south
                 new RelativeLocation( 0, -1),  // west
+                new RelativeLocation(-1,  1),  // northwest
+                new RelativeLocation( 1,  1),  // northeast
+                new RelativeLocation( 1,  -1),  // southeast
+                new RelativeLocation( -1, -1),  // southwest
             };
 
             foreach (RelativeLocation relativeLoc in neighborhood)
