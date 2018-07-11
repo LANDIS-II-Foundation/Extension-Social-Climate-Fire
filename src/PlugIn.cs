@@ -233,7 +233,6 @@ namespace Landis.Extension.Scrapple
                         LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Lightning.ToString(), numAFires, day);
                     }
 
-                    //List<ActiveSite> shuffledRxFireSites = Shuffle(ModelCore.Landscape.ActiveSites.ToList(), SiteVars.RxFireWeight);
                     // Ignite a single Rx fire per day
                     if (numRxFires > 0 &&
                         landscapeAverageFireWeatherIndex > Parameters.RxMinFireWeatherIndex &&
