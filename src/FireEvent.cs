@@ -435,7 +435,7 @@ namespace Landis.Extension.Scrapple
             if(spread)
                 this.MeanSpreadProbability += Pspread_adjusted;
 
-            SiteVars.SpreadProbability[site] = Pspread;
+            SiteVars.SpreadProbability[site] = Pspread_adjusted;
 
             return spread;
 
