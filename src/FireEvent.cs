@@ -297,9 +297,6 @@ namespace Landis.Extension.Scrapple
 
         private bool CanSpread(ActiveSite site, ActiveSite sourceSite, int day, double fireWeatherIndex, double effectiveWindSpeed)
         {
-            if (this.IgnitionType == Ignition.Rx)
-                return true;
-
             bool spread = false;
             SiteVars.TypeOfIginition [site] = (short) this.IgnitionType;
 
@@ -436,6 +433,10 @@ namespace Landis.Extension.Scrapple
 
             double Pspread = Math.Pow(Math.E, -1.0 * (spreadB0 + (spreadB1 * fireWeatherIndex) + (spreadB2 * fineFuelPercent) + (spreadB3 * effectiveWindSpeed)));
             Pspread = 1.0 / (1.0 + Pspread);
+
+            if (this.IgnitionType == Ignition.Rx)
+                Pspread = 1.0;
+
             // End PROBABILITY OF SPREAD calculation **************************
 
             double Pspread_adjusted = Pspread * suppressEffect;
