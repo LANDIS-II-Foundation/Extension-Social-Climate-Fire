@@ -142,6 +142,10 @@ namespace Landis.Extension.Scrapple
             ReadVar(first_rx_day);
             parameters.FirstDayRxFire = first_rx_day.Value;
 
+            InputVar<int> trxs = new InputVar<int>("TargetRxSize");
+            ReadVar(trxs);
+            parameters.RxTargetSize = trxs.Value;
+
             InputVar<double> maxSA0 = new InputVar<double>("MaximumSpreadAreaB0");
             ReadVar(maxSA0);
             parameters.MaximumSpreadAreaB0 = maxSA0.Value;

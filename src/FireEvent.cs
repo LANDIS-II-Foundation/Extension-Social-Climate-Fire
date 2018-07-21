@@ -49,7 +49,7 @@ namespace Landis.Extension.Scrapple
         public int NumberCellsSeverity2;
         public int NumberCellsSeverity3;
 
-        public Dictionary<int, int> spreadArea;
+        //public Dictionary<int, int> spreadArea;
 
         public int maxDay;
         public int siteIntensity;
@@ -140,7 +140,7 @@ namespace Landis.Extension.Scrapple
         //---------------------------------------------------------------------
         private void Spread(int currentTime, int day)
         {
-            int dailySpreadArea = 0;
+            float dailySpreadArea = 0.0f;
             // First, take the first site off the list, ensuring that days are sequential from the beginning.
             while (fireSites.Count() > 0)
             {
@@ -151,7 +151,7 @@ namespace Landis.Extension.Scrapple
                 CalculateIntensity(site, sourceSite);
 
                 SiteVars.DayOfFire[site] = (ushort) day;
-                dailySpreadArea++;
+                dailySpreadArea += PlugIn.ModelCore.CellArea;
 
                 if (day > PlugIn.DaysPerYear)
                     return;
@@ -173,24 +173,32 @@ namespace Landis.Extension.Scrapple
 
                 // DAY OF FIRE *****************************
                 //      Calculate spread-area-max 
-                double spreadAreaMaxHectares = PlugIn.Parameters.MaximumSpreadAreaB0 +
+                if (this.IgnitionType == Ignition.Rx)
+                {
+                    if (this.TotalSitesDamaged > PlugIn.Parameters.RxTargetSize)
+                        return;
+                }
+                else
+                {
+                    double spreadAreaMaxHectares = PlugIn.Parameters.MaximumSpreadAreaB0 +
                     (PlugIn.Parameters.MaximumSpreadAreaB1 * fireWeatherIndex) +
                     (PlugIn.Parameters.MaximumSpreadAreaB2 * effectiveWindSpeed);
 
-                //PlugIn.ModelCore.UI.WriteLine("   Day={0}, spreadAreaMaxHectares={1}, dailySpreadArea={2}, FWI={3}, WS={4}", day, spreadAreaMaxHectares, dailySpreadArea, fireWeatherIndex, effectiveWindSpeed);
+                    //PlugIn.ModelCore.UI.WriteLine("   Day={0}, spreadAreaMaxHectares={1}, dailySpreadArea={2}, FWI={3}, WS={4}", day, spreadAreaMaxHectares, dailySpreadArea, fireWeatherIndex, effectiveWindSpeed);
 
 
-                //  if spread-area > spread-area-max, day = day + 1, assuming that spreadAreaMax units are hectares:
-                if (dailySpreadArea > spreadAreaMaxHectares)
-                {
-                    day++;  // GOTO the next day.
-                    dailySpreadArea = 0;
-                }
+                    //  if spread-area > spread-area-max, day = day + 1, assuming that spreadAreaMax units are hectares:
+                    if (dailySpreadArea > spreadAreaMaxHectares)
+                    {
+                        day++;  // GOTO the next day.
+                        dailySpreadArea = 0;
+                    }
 
-                if (day > maxDay)
-                {
-                    maxDay = day;
-                    NumberOfDays++;
+                    if (day > maxDay)
+                    {
+                        maxDay = day;
+                        NumberOfDays++;
+                    }
                 }
                 // DAY OF FIRE *****************************
 
@@ -289,6 +297,9 @@ namespace Landis.Extension.Scrapple
 
         private bool CanSpread(ActiveSite site, ActiveSite sourceSite, int day, double fireWeatherIndex, double effectiveWindSpeed)
         {
+            if (this.IgnitionType == Ignition.Rx)
+                return true;
+
             bool spread = false;
             SiteVars.TypeOfIginition [site] = (short) this.IgnitionType;
 

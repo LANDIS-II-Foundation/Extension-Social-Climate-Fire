@@ -32,6 +32,7 @@ MinimumRxFireWeatherIndex 8.0
 MaximumRxFireIntensity 1
 NumberRxAnnualFires 1
 FirstDayRxFires 275 
+TargetRxSize 6
 
 
 MaximumSpreadAreaB0	10

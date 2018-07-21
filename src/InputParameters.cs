@@ -34,6 +34,7 @@ namespace Landis.Extension.Scrapple
         int RxMaxFireIntensity { get; set; }
         int NumberRxAnnualFires { get; set; }
         int FirstDayRxFire { get; set; }
+        int RxTargetSize { get; set; }
 
         double MaximumSpreadAreaB0 { get; set; }
         double MaximumSpreadAreaB1 { get; set; }
@@ -90,6 +91,7 @@ namespace Landis.Extension.Scrapple
         private int maxRxFireIntensity;
         private int numberRxAnnualFires;
         private int firstDayRx;
+        private int targetRxSize;
 
         private double maximumSpreadAreaB0;
         private double maximumSpreadAreaB1;
@@ -349,6 +351,18 @@ namespace Landis.Extension.Scrapple
             set
             {
                 firstDayRx = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public int RxTargetSize
+        {
+            get
+            {
+                return targetRxSize;
+            }
+            set
+            {
+                targetRxSize = value;
             }
         }
         //---------------------------------------------------------------------
