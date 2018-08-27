@@ -1,6 +1,6 @@
 //  Authors:  Robert M. Scheller, Vincent Schuster, Alec Kretchun
 
-using Edu.Wisc.Forest.Flel.Util;
+using Landis.Utilities;
 using Landis.Core;
 using System.Collections.Generic;
 
