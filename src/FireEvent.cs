@@ -127,7 +127,7 @@ namespace Landis.Extension.Scrapple
             fireSites.Add(initialSites);
 
             // desitination and source are the same for ignition site
-            fireEvent.Spread(PlugIn.ModelCore.CurrentTime, day); //, (ActiveSite)initiationSite, (ActiveSite)initiationSite);
+            fireEvent.Spread(PlugIn.ModelCore.CurrentTime, day); 
 
             LogEvent(PlugIn.ModelCore.CurrentTime, fireEvent);
 
