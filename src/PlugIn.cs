@@ -269,7 +269,7 @@ namespace Landis.Extension.Scrapple
                 {
                     if (site.IsActive)
                     {
-                        if (SiteVars.Disturbed[site])
+                        if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
                         {
                             pixel.MapCode.Value = (int)(SiteVars.SpecialDeadWood[site]);
                         }
@@ -293,7 +293,7 @@ namespace Landis.Extension.Scrapple
                 {
                     if (site.IsActive)
                     {
-                        if (SiteVars.Disturbed[site])
+                        if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
                             pixel.MapCode.Value = (short) (SiteVars.TypeOfIginition[site] + 1);
                         else
                             pixel.MapCode.Value = 0;
@@ -315,7 +315,7 @@ namespace Landis.Extension.Scrapple
                 {
                     if (site.IsActive)
                     {
-                        if (SiteVars.Disturbed[site])
+                        if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
                             pixel.MapCode.Value = (short) (SiteVars.Intensity[site]);
                         else
                             pixel.MapCode.Value = 0;
@@ -337,7 +337,7 @@ namespace Landis.Extension.Scrapple
                 {
                     if (site.IsActive)
                     {
-                        if (SiteVars.Disturbed[site])
+                        if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
                             pixel.MapCode.Value = (short)(SiteVars.SpreadProbability[site] * 100);
                         else
                             pixel.MapCode.Value = 0;
@@ -359,7 +359,7 @@ namespace Landis.Extension.Scrapple
                 {
                     if (site.IsActive)
                     {
-                        if (SiteVars.Disturbed[site])
+                        if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
                             pixel.MapCode.Value = (short) (SiteVars.DayOfFire[site]);
                         else
                             pixel.MapCode.Value = 0;
@@ -381,7 +381,7 @@ namespace Landis.Extension.Scrapple
                 {
                     if (site.IsActive)
                     {
-                        if (SiteVars.Disturbed[site])
+                        if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
                             pixel.MapCode.Value = SiteVars.SmolderConsumption[site];
                         else
                             pixel.MapCode.Value = 0;
@@ -403,7 +403,7 @@ namespace Landis.Extension.Scrapple
                 {
                     if (site.IsActive)
                     {
-                        if (SiteVars.Disturbed[site])
+                        if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
                             pixel.MapCode.Value = SiteVars.FlamingConsumption[site];
                         else
                             pixel.MapCode.Value = 0;
