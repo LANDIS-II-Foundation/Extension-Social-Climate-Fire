@@ -30,6 +30,8 @@ namespace Landis.Extension.Scrapple
         public static ISiteVar<double> SmolderConsumption;
         public static ISiteVar<double> FlamingConsumption;
         public static ISiteVar<int> HarvestTime;
+        public static ISiteVar<int> EventID;
+
         //---------------------------------------------------------------------
 
         public static void Initialize()
@@ -56,16 +58,17 @@ namespace Landis.Extension.Scrapple
             typeOfIginition = PlugIn.ModelCore.Landscape.NewSiteVar<short>();
             disturbed = PlugIn.ModelCore.Landscape.NewSiteVar<bool>();
             specialDeadWood = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
+            EventID = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
 
             SmolderConsumption = PlugIn.ModelCore.GetSiteVar<double>("Succession.SmolderConsumption");
             FlamingConsumption = PlugIn.ModelCore.GetSiteVar<double>("Succession.FlamingConsumption");
             HarvestTime = PlugIn.ModelCore.GetSiteVar<int>("Harvest.TimeOfLastEvent");
 
             //Initialize TimeSinceLastFire to the maximum cohort age:
-            foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
-            {
-                timeOfLastFire[site] = 0; 
-            }
+            //foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
+            //{
+            //    timeOfLastFire[site] = 0; 
+            //}
 
 
             PlugIn.ModelCore.RegisterSiteVar(SiteVars.Intensity, "Fire.Severity");

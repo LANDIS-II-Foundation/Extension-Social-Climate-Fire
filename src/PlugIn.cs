@@ -34,6 +34,7 @@ namespace Landis.Extension.Scrapple
         public static int FutureClimateBaseYear;
         public static Dictionary<int, int> sitesPerEcoregions;
         public static int ActualYear;
+        public static int EventID = 0;
 
         private static int[] totalBurnedSites;
         private static int[] numberOfFire;
@@ -144,6 +145,7 @@ namespace Landis.Extension.Scrapple
             SiteVars.DayOfFire.ActiveSiteValues = 0;
             SiteVars.TypeOfIginition.ActiveSiteValues = 0;
             SiteVars.SpecialDeadWood.ActiveSiteValues = 0;
+            SiteVars.EventID.ActiveSiteValues = 0;
 
             AnnualClimate_Daily weatherData = null;
             totalBurnedSites = new int[3];
@@ -417,6 +419,27 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
+            path = MapNames.ReplaceTemplateVars("scrapple-fire/event-ID-{timestep}.img", currentTime);
+            using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
+            {
+                IntPixel pixel = outputRaster.BufferPixel;
+                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                {
+                    if (site.IsActive)
+                    {
+                        if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
+                            pixel.MapCode.Value = SiteVars.EventID[site];
+                        else
+                            pixel.MapCode.Value = 0;
+                    }
+                    else
+                    {
+                        //  Inactive site
+                        pixel.MapCode.Value = 0;
+                    }
+                    outputRaster.WriteBufferPixel();
+                }
+            }
         }
 
 

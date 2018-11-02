@@ -118,6 +118,7 @@ namespace Landis.Extension.Scrapple
                 PlugIn.ModelCore.UI.WriteLine("   Fire event started at {0} ...", initiationSite.Location);
 
             FireEvent fireEvent = new FireEvent(initiationSite, day, ignitionType);
+            PlugIn.EventID++;
 
             ActiveSite[] initialSites = new ActiveSite[2];
             initialSites[0] = (ActiveSite)initiationSite;
@@ -129,7 +130,7 @@ namespace Landis.Extension.Scrapple
             // desitination and source are the same for ignition site
             fireEvent.Spread(PlugIn.ModelCore.CurrentTime, day); 
 
-            LogEvent(PlugIn.ModelCore.CurrentTime, fireEvent);
+            LogEvent(PlugIn.ModelCore.CurrentTime, fireEvent, PlugIn.EventID);
 
             return fireEvent;
         }
@@ -578,11 +579,12 @@ namespace Landis.Extension.Scrapple
 
         //---------------------------------------------------------------------
 
-        public static void LogEvent(int currentTime, FireEvent fireEvent)
+        public static void LogEvent(int currentTime, FireEvent fireEvent, int eventID)
         {
 
             PlugIn.eventLog.Clear();
             EventsLog el = new EventsLog();
+            el.EventID = eventID;
             el.SimulationYear = currentTime;
             el.InitRow = fireEvent.initiationSite.Location.Row;
             el.InitColumn = fireEvent.initiationSite.Location.Column;

@@ -11,7 +11,10 @@ namespace Landis.Extension.Scrapple
     public class EventsLog
     {
 
-        [DataFieldAttribute(Unit = FieldUnits.Year, Desc = "...")]
+        [DataFieldAttribute(Desc = "EventIndex")]
+        public int EventID { set; get; }
+
+        [DataFieldAttribute(Unit = FieldUnits.Year, Desc = "Year")]
         public int SimulationYear {set; get;}
 
         [DataFieldAttribute(Desc = "Initiation Row")]
