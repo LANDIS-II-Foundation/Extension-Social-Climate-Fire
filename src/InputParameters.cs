@@ -27,6 +27,7 @@ namespace Landis.Extension.Scrapple
         double AccidentalFireIgnitionB0 { get; set; }
         double AccidentalFireIgnitionB1 { get; set; }
         double MaxFineFuels { get; set; }
+        List<IDynamicIgnitionMap> DynamicRxIgnitionMaps { get; }
 
         double RxMaxWindSpeed { get; set; }
         double RxMaxFireWeatherIndex { get; set; }
@@ -74,6 +75,7 @@ namespace Landis.Extension.Scrapple
         private string lighteningFireMap;
         private string accidentalFireMap;
         private string rxFireMap;
+        private List<IDynamicIgnitionMap> dynamicRxIgnitions;
 
         private string lighteningSuppressionMap;
         private string accidentalSuppressionMap;
@@ -165,6 +167,15 @@ namespace Landis.Extension.Scrapple
             set
             {
                 rxFireMap = value;
+            }
+        }
+        //---------------------------------------------------------------------
+
+        public List<IDynamicIgnitionMap> DynamicRxIgnitionMaps
+        {
+            get
+            {
+                return dynamicRxIgnitions;
             }
         }
         //---------------------------------------------------------------------
@@ -555,6 +566,7 @@ namespace Landis.Extension.Scrapple
             damages_severity1 = new List<IFireDamage>();
             damages_severity2 = new List<IFireDamage>();
             damages_severity3 = new List<IFireDamage>();
+            dynamicRxIgnitions = new List<IDynamicIgnitionMap>();
         }
         //---------------------------------------------------------------------
 

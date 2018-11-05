@@ -38,7 +38,6 @@ namespace Landis.Extension.Scrapple
 
         protected override IInputParameters Parse()
         {
-            //const string MapNames = "MapNames";
             ReadLandisDataVar();
 
             InputParameters parameters = new InputParameters();
@@ -62,6 +61,45 @@ namespace Landis.Extension.Scrapple
             ReadVar(rxIgnitionsMapFile);
             parameters.RxFireMap = rxIgnitionsMapFile.Value;
 
+            //----------------------------------------------------------
+            // Read in the table of dynamic ecoregions:
+
+            if (ReadOptionalName("DynamicRxIgnitionMaps"))
+            {
+
+                InputVar<string> mapName = new InputVar<string>("Dynamic Rx Ignition Map Name");
+                InputVar<int> year = new InputVar<int>("Year to read in new FireRegion Map");
+
+                double previousYear = 0;
+
+                while (!AtEndOfInput && CurrentName != "AccidentalSuppressionMap")
+                {
+                    StringReader currentLine = new StringReader(CurrentLine);
+
+                    IDynamicIgnitionMap dynRxIgnMap = new DynamicIgnitionMap();
+                    parameters.DynamicRxIgnitionMaps.Add(dynRxIgnMap);
+
+                    ReadValue(year, currentLine);
+                    dynRxIgnMap.Year = year.Value;
+
+                    if (year.Value.Actual <= previousYear)
+                    {
+                        throw new InputValueException(year.Value.String,
+                            "Year must > the year ({0}) of the preceeding ecoregion map",
+                            previousYear);
+                    }
+
+                    previousYear = year.Value.Actual;
+
+                    ReadValue(mapName, currentLine);
+                    dynRxIgnMap.MapName = mapName.Value;
+
+                    CheckNoDataAfter("the " + mapName.Name + " column",
+                                     currentLine);
+                    GetNextLine();
+                }
+            }
+
             InputVar<string> humanSuppressionMapFile = new InputVar<string>("AccidentalSuppressionMap");
             ReadVar(humanSuppressionMapFile);
             parameters.AccidentalSuppressionMap = humanSuppressionMapFile.Value;
@@ -73,10 +111,8 @@ namespace Landis.Extension.Scrapple
             InputVar<string> rxSuppressionMapFile = new InputVar<string>("RxSuppressionMap");
             ReadVar(rxSuppressionMapFile);
             parameters.RxSuppressionMap = rxSuppressionMapFile.Value;
-            
 
             // Load Ground Slope Data
-            //const string GroundSlopeFile = "GroundSlopeFile";
             InputVar<string> groundSlopeFile = new InputVar<string>("GroundSlopeMap");
             ReadVar(groundSlopeFile);
 

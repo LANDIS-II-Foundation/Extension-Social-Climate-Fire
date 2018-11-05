@@ -1,0 +1,116 @@
+LandisData	"NECN Succession"
+
+Timestep  1
+
+SeedingAlgorithm  WardSeedDispersal
+
+InitialCommunities      "./initial-communities.txt"
+InitialCommunitiesMap   "./initial-communities.gis"
+ClimateConfigFile 	climate-generator-baseline.txt	
+
+SoilDepthMapName				random110.img 
+SoilDrainMapName				constantpoint75.img 
+SoilBaseFlowMapName				constantpoint4.img 
+SoilStormFlowMapName			constantpoint4.img
+SoilFieldCapacityMapName		random_point1_point2.img
+SoilWiltingPointMapName			random_point05_point099.img
+SoilPercentSandMapName			random_point01_point5.img
+SoilPercentClayMapName			random_point01_point5.img
+InitialSOM1CsurfMapName			random110.img
+InitialSOM1NsurfMapName			random6.img
+InitialSOM1CsoilMapName			random110.img
+InitialSOM1NsoilMapName			random9.img
+InitialSOM2CMapName				random4500.img
+InitialSOM2NMapName				random145.img
+InitialSOM3CMapName				random1294.img
+InitialSOM3NMapName				random50.img
+InitialDeadWoodSurfaceMapName	random110.img 
+InitialDeadCoarseRootsMapName	random50.img
+
+
+
+
+CalibrateMode 	no
+SmokeModelOutputs no
+WaterDecayFunction Ratio <<Linear or Ratio
+
+
+ProbabilityEstablishAdjust 	1.0
+InitialMineralN				2.0
+InitialFineFuels 			0.1  
+AtmosphericNSlope			0.05
+AtmosphericNIntercept		0.05
+Latitude					44.0
+DenitrificationRate			0.001
+DecayRateSurf				0.01
+DecayRateSOM1				0.01
+DecayRateSOM2				0.2
+DecayRateSOM3				0.001
+
+
+MaximumLAI
+
+>> Shade	Max LAI
+>> Class	
+>> ----------	--------------------	
+	1	1 
+	2	2.5 
+	3	3.5 
+	4	6
+	5	8
+
+LightEstablishmentTable
+>> Spp Shade	Probability
+>> Class	by Actual Shade
+>> ----------	--------------------	
+>>		0	1	2	3	4	5
+	1	1.0	0.1	0.0	0.0	0.0	0.0
+	2	1.0	1.0	0.1	0.05	0.0	0.0
+	3	1.0	1.0	1.0	0.1	0.05	0.0
+	4	1.0	1.0	1.0	1.0	0.1	0.05
+	5	0.1	0.5	1.0	1.0	1.0	1.0
+
+SpeciesParameters
+
+>> Species   Funct	N-fix?	GDD	GDD	Min	Max	Leaf	Epi-	Leaf	FRoot	Wood	CRoot	Leaf  FRoot Wood  CRoot Littr 	max	max
+>>	     ional	Y/N	Min	Max	Jan	Drought	Long	cormic	Lign%	Lign%	Lign%	Lign%	CN    CN    CN    CN    CN			ANPP	AGB
+>> 	     Type				Temp			re-
+>>           								sprout
+PinuJeff	1		N		555	2149	-5		0.94	6.00	N		0.28	0.2		0.25	0.25	48		48		250		167		100 	200     30000	
+PinuLamb	1		N		815	2866	-5		0.90	2.50	N		0.17	0.2		0.25	0.25	53		53		278		185		100 	150	 	40000	
+CaloDecu	1		N		837	2938	-18		0.99	4.00	N		0.1		0.2		0.25	0.25	48		48		500		333		100     150	 	24000	
+AbieConc	1		N		540	2670	-10		0.93	8.00	N		0.17	0.2		0.25	0.25	30		30		333		222		100 	150	 	41000	
+AbieMagn	1		N		483	1257	-10		0.87	8.00	N		0.17	0.2		0.25	0.25	30		30		250		167		100 	150	 	20000	
+PinuCont	1		N		276	1230	-18		0.87	3.50	N		0.25	0.2		0.25	0.25	48		48		500		333		100 	150	 	12000	
+PinuMont	1		N		155	1220	-18		0.82	7.00	N		0.31	0.2		0.25	0.25	37		37		500		333		100 	150	 	32000	
+TsugMert	1		N		235	1200	-18		0.80	4.50	Y		0.24	0.2		0.25	0.25	80		80		333		222		100 	150	 	12000	
+PinuAlbi	1		N		230	1205	-18		0.90	5.50	Y		0.27	0.2		0.25	0.25	80		80		333		222		100 	150	 	12000	
+PopuTrem	2		N		600	3000	-10		0.82	1.00	Y		0.18	0.2		0.25	0.25	62		62		333		222		100 	150	 	12000	
+NonnResp	3		N		400	4000	-10		0.99	1.50	Y		0.25	0.2		0.25	0.25	56		56		333		222		100 	75	 	2750	
+NonnSeed	3		N		400	4000	-10		0.97	1.50	N		0.25	0.2		0.25	0.25	59		59		333		222		100 	75	 	2700	
+FixnResp	3		Y		400	4000	-10		0.97	1.50	Y		0.25	0.2		0.25	0.25	20		28		333		222		50  	75	 	2900	
+FixnSeed	3		Y		400	4000	-10		0.99	1.50	N		0.25	0.2		0.25	0.25	20		30		333		222		50  	75	 	2400	
+
+
+FunctionalGroupParameters 
+>> 															Age	Leaf
+>> Name		Index	PPDF1	PPDF2	PPDF3	PPDF4	FCFRAC	BTOLAI	KLAI	MAXLAI	PPRPTS2	PPRPTS3	Wood	Monthly	Mort	Drop
+>> 			T-Mean	T-Max	T-shape	T-shape	leaf						DecayR	WoodMortShape	Month	CRFrac	FRFrac
+Conifers	1	23.0	40.0	0.05	6.0	0.2	-0.8	10000	10	0.2	0.1	1.0	0.002	10	9	0.1	0.1
+Hardwoods	2	23.0	35.0	0.05	7.0	0.3	-0.8	5000	20	0.2	0.1	1.0	0.002	10	9	0.1	0.1	
+Shrub		3		23.0	38.0	0.05	8.0		0.3		-0.8	500			5		0.2		0.1		1.0		0.002	10		9		0.1		0.1
+
+FireReductionParameters
+>>	Severity	WoodLitter	Litter	SOM
+>>	Fire		Reduct		Reduct	Reduction
+	1		0.0		0.5	0.5
+	2		0.0		0.75	0.5
+	3		0.0		1.0	0.5
+
+HarvestReductionParameters
+>>	Name		WoodLitter	Litter	SOM		CohortWood	CohortLeaf
+>>			Reduct		Reduct	Reduction	Removal		Removal
+	Clearcut	0.0		0.01	0.02		0.85		0.15
+
+
+   

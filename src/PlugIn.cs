@@ -9,6 +9,7 @@ using Landis.Library.Metadata;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 namespace Landis.Extension.Scrapple
 {
@@ -51,6 +52,8 @@ namespace Landis.Extension.Scrapple
         public static double MaximumSpreadAreaB2;
 
         public static int DaysPerYear = 364;
+
+        private List<IDynamicIgnitionMap> dynamicRxIgns;
         // VS: hasn't been properly integrated into Climate Library.
         //int daysPerYear = (AnnualClimate.IsLeapYear(actualYear) ? true : false) ? 366 : 365;
 
@@ -111,6 +114,8 @@ namespace Landis.Extension.Scrapple
 
             // Initilize the FireRegions Maps
             modelCore.UI.WriteLine("   Initializing Fire...");
+
+            dynamicRxIgns = Parameters.DynamicRxIgnitionMaps;
             MapUtility.Initilize(Parameters.LighteningFireMap, Parameters.AccidentalFireMap, Parameters.RxFireMap,
                                  Parameters.LighteningSuppressionMap, Parameters.AccidentalSuppressionMap, Parameters.RxSuppressionMap);
             MetadataHandler.InitializeMetadata(Parameters.Timestep, ModelCore);
@@ -146,6 +151,15 @@ namespace Landis.Extension.Scrapple
             SiteVars.TypeOfIginition.ActiveSiteValues = 0;
             SiteVars.SpecialDeadWood.ActiveSiteValues = 0;
             SiteVars.EventID.ActiveSiteValues = 0;
+
+            foreach (IDynamicIgnitionMap dynamicIgnitions in dynamicRxIgns)
+            {
+                if (dynamicIgnitions.Year == PlugIn.modelCore.CurrentTime)
+                {
+                    PlugIn.ModelCore.UI.WriteLine("   Reading in new Fire Regions Map {0}.", dynamicIgnitions.MapName);
+                    MapUtility.ReadMap(dynamicIgnitions.MapName, SiteVars.RxFireWeight); 
+                }
+            }
 
             AnnualClimate_Daily weatherData = null;
             totalBurnedSites = new int[3];
@@ -601,8 +615,6 @@ namespace Landis.Extension.Scrapple
             summaryLog.AddObject(sl);
             summaryLog.WriteToFile();
         }
-
-        //---------------------------------------------------------------------
 
         /*
          * VS:: THIS MAY BE NEEDED
