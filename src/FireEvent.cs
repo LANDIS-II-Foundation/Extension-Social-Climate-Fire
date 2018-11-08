@@ -176,6 +176,8 @@ namespace Landis.Extension.Scrapple
                 //      Calculate spread-area-max 
                 if (this.IgnitionType == Ignition.Rx)
                 {
+                    if (PlugIn.Parameters.RxZonesMap != null && SiteVars.RxZones[site] != SiteVars.RxZones[sourceSite])
+                        return;
                     if (this.TotalSitesDamaged > PlugIn.Parameters.RxTargetSize)
                         return;
                 }

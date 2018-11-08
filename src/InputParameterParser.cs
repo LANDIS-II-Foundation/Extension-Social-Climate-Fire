@@ -182,6 +182,12 @@ namespace Landis.Extension.Scrapple
             ReadVar(trxs);
             parameters.RxTargetSize = trxs.Value;
 
+            InputVar<string> rzn = new InputVar<string>("RxZonesMap");
+            if (ReadOptionalVar(rzn))
+                parameters.RxZonesMap = rzn.Value;
+            else
+                parameters.RxZonesMap = null;
+
             InputVar<double> maxSA0 = new InputVar<double>("MaximumSpreadAreaB0");
             ReadVar(maxSA0);
             parameters.MaximumSpreadAreaB0 = maxSA0.Value;

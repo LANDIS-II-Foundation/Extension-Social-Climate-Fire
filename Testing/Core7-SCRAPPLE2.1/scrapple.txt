@@ -31,14 +31,14 @@ AccidentalIgnitionsB1  0.03
 MaximumFineFuels 500.0
 
 >> Prescribed Fire Parameters
-MaximumRxWindSpeed 8.0
-MaximumRxFireWeatherIndex 10.0
-MinimumRxFireWeatherIndex 8.0
+MaximumRxWindSpeed 80.0
+MaximumRxFireWeatherIndex 80.0
+MinimumRxFireWeatherIndex 1.0
 MaximumRxFireIntensity 1
-NumberRxAnnualFires 1
-FirstDayRxFires 275
-TargetRxSize 4
-
+NumberRxAnnualFires 10
+FirstDayRxFires 2
+TargetRxSize 40
+RxZonesMap base-harvest_Stand_s1e1.gis  << Optional
 
 MaximumSpreadAreaB0	10
 MaximumSpreadAreaB1	-2.5 <<-3 <<FWI

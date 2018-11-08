@@ -31,7 +31,7 @@ namespace Landis.Extension.Scrapple
         public static ISiteVar<double> FlamingConsumption;
         public static ISiteVar<int> HarvestTime;
         public static ISiteVar<int> EventID;
-        public static ISiteVar<int> RxFireRegion;
+        public static ISiteVar<int> RxZones;
 
         //---------------------------------------------------------------------
 
@@ -60,7 +60,7 @@ namespace Landis.Extension.Scrapple
             disturbed = PlugIn.ModelCore.Landscape.NewSiteVar<bool>();
             specialDeadWood = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             EventID = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
-            RxFireRegion = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
+            RxZones = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
 
             SmolderConsumption = PlugIn.ModelCore.GetSiteVar<double>("Succession.SmolderConsumption");
             FlamingConsumption = PlugIn.ModelCore.GetSiteVar<double>("Succession.FlamingConsumption");
