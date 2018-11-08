@@ -10,9 +10,9 @@ LightningIgnitionsMap  ./Lightning_Ignition_Map.img
 RxIgnitionsMap  ./Lightning_Ignition_Map.img
 
 DynamicRxIgnitionMaps << Optional
-3 ./suppress3.img 
-5 ./suppress3.img 
-13 ./suppress3.img 
+3 Lightning_Ignition_Map.img 
+5 Lightning_Ignition_Map.img
+13 Lightning_Ignition_Map.img
 
 AccidentalSuppressionMap	./suppress3.img
 LightningSuppressionMap		./suppress3.img

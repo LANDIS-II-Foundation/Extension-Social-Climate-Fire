@@ -25,14 +25,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="DynamicRxFireRegion.cs.save" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="DynamicRxFireRegion.cs.save" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Landis.Core" Version="2.0.0" />
     <PackageReference Include="Landis.Core.Implementation" Version="2.0.0" />
   </ItemGroup>
