@@ -118,7 +118,8 @@ namespace Landis.Extension.Scrapple
             dynamicRxIgns = Parameters.DynamicRxIgnitionMaps;
             MapUtility.Initilize(Parameters.LighteningFireMap, Parameters.AccidentalFireMap, Parameters.RxFireMap,
                                  Parameters.LighteningSuppressionMap, Parameters.AccidentalSuppressionMap, Parameters.RxSuppressionMap);
-            MapUtility.ReadMap(Parameters.RxZonesMap, SiteVars.RxZones);
+            if(Parameters.RxZonesMap != null)
+                MapUtility.ReadMap(Parameters.RxZonesMap, SiteVars.RxZones);
             MetadataHandler.InitializeMetadata(Parameters.Timestep, ModelCore);
 
             sitesPerEcoregions = new Dictionary<int, int>();
