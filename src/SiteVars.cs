@@ -66,13 +66,6 @@ namespace Landis.Extension.Scrapple
             FlamingConsumption = PlugIn.ModelCore.GetSiteVar<double>("Succession.FlamingConsumption");
             HarvestTime = PlugIn.ModelCore.GetSiteVar<int>("Harvest.TimeOfLastEvent");
 
-            //Initialize TimeSinceLastFire to the maximum cohort age:
-            //foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
-            //{
-            //    timeOfLastFire[site] = 0; 
-            //}
-
-
             PlugIn.ModelCore.RegisterSiteVar(SiteVars.Intensity, "Fire.Severity");
             PlugIn.ModelCore.RegisterSiteVar(SiteVars.TimeOfLastFire, "Fire.TimeOfLastEvent");
         }
@@ -85,6 +78,12 @@ namespace Landis.Extension.Scrapple
         public static void InitializeDisturbances()
         {
             fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.FineFuels");
+
+            // RMS:  I'm not positive this will work, but the idea is for fine fuels to connect to NECN (.FineFuels) or PnET (.Litter)
+            if (fineFuels == null)
+            {
+                fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.Litter");
+            }
 
         }
 
