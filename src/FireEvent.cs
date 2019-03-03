@@ -421,7 +421,6 @@ namespace Landis.Extension.Scrapple
             if (effectiveWindSpeed > PlugIn.Parameters.SuppressionMaxWindSpeed)
                 suppressEffect = 1.0;
 
-            this.MeanSuppression += suppressEffect;
             // End SUPPRESSION ************************
 
             // PROBABILITY OF SPREAD calculation **************************
@@ -447,8 +446,11 @@ namespace Landis.Extension.Scrapple
             if (Pspread_adjusted > PlugIn.ModelCore.GenerateUniform())
                 spread = true;
 
-            if(spread)
+            if (spread)
+            {
                 this.MeanSpreadProbability += Pspread_adjusted;
+                this.MeanSuppression += (1.0 - suppressEffect) * 100.0;
+            }
 
             SiteVars.SpreadProbability[site] = Pspread_adjusted;
 

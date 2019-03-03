@@ -20,7 +20,7 @@ namespace Landis.Extension.Scrapple
         [DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Ignitions")]
         public int AttemptedNumberIgnitions { set; get; }
 
-        [DataFieldAttribute(Desc = "Annual Fire Weather Index")]
+        [DataFieldAttribute(Desc = "Daily Landscape Fire Weather Index")]
         public double FireWeatherIndex { set; get; }
 
         [DataFieldAttribute(Desc = "Ignition Type")]
