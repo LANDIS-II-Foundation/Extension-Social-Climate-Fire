@@ -184,13 +184,10 @@ namespace Landis.Extension.Scrapple
             }
 
             // Get the active sites from the landscape and shuffle them 
-            // Potential area for future optimization
-            //List<ActiveSite> activeSites = PlugIn.ModelCore.Landscape.ToList();
-
             // Sites are weighted for ignition in the Shuffle method, based on the respective inputs maps.
-            List<ActiveSite> shuffledLightningFireSites = Shuffle(PlugIn.ModelCore.Landscape.ActiveSites.ToList(), SiteVars.LightningFireWeight);
-            List<ActiveSite> shuffledRxFireSites = Shuffle(PlugIn.ModelCore.Landscape.ActiveSites.ToList(), SiteVars.RxFireWeight);
-            List<ActiveSite> shuffledAccidentalFireSites = Shuffle(PlugIn.ModelCore.Landscape.ActiveSites.ToList(), SiteVars.AccidentalFireWeight);
+            List<ActiveSite> shuffledLightningFireSites = Shuffle(SiteVars.LightningFireWeight);
+            List<ActiveSite> shuffledRxFireSites = Shuffle(SiteVars.RxFireWeight);
+            List<ActiveSite> shuffledAccidentalFireSites = Shuffle(SiteVars.AccidentalFireWeight);
 
             int numRxFires = Parameters.NumberRxAnnualFires;
             for (int day = 0; day < DaysPerYear; ++day)
@@ -232,27 +229,32 @@ namespace Landis.Extension.Scrapple
                 // FWI must be > .10 
                 if (landscapeAverageFireWeatherIndex >= 10.0)
                 {
-                    //List<ActiveSite> shuffledAccidentalFireSites = Shuffle(ModelCore.Landscape.ActiveSites.ToList(), SiteVars.AccidentalFireWeight);
-                    int numLFires = NumberOfIgnitions(Ignition.Accidental, landscapeAverageFireWeatherIndex);
 
                     // Ignite Accidental Fires.
-                    for (int i = 0; i < numLFires; ++i)
+                    if (shuffledAccidentalFireSites.Count > 0)
                     {
-                        Ignite(Ignition.Accidental, shuffledAccidentalFireSites, day, landscapeAverageFireWeatherIndex);
-                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Accidental.ToString(), numLFires, day);
+                        int numLFires = NumberOfIgnitions(Ignition.Accidental, landscapeAverageFireWeatherIndex);
+                        for (int i = 0; i < numLFires; ++i)
+                        {
+                            Ignite(Ignition.Accidental, shuffledAccidentalFireSites, day, landscapeAverageFireWeatherIndex);
+                            LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Accidental.ToString(), numLFires, day);
+                        }
                     }
 
                     // Ignite Lightning Fires
-                    //List<ActiveSite> shuffledLightningFireSites = Shuffle(ModelCore.Landscape.ActiveSites.ToList(), SiteVars.LightningFireWeight);
-                    int numAFires = NumberOfIgnitions(Ignition.Lightning, landscapeAverageFireWeatherIndex);
-                    for (int i = 0; i < numAFires; ++i)
+                    if (shuffledLightningFireSites.Count > 0)
                     {
-                        Ignite(Ignition.Lightning, shuffledLightningFireSites, day, landscapeAverageFireWeatherIndex);
-                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Lightning.ToString(), numAFires, day);
+                        int numAFires = NumberOfIgnitions(Ignition.Lightning, landscapeAverageFireWeatherIndex);
+                        for (int i = 0; i < numAFires; ++i)
+                        {
+                            Ignite(Ignition.Lightning, shuffledLightningFireSites, day, landscapeAverageFireWeatherIndex);
+                            LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Lightning.ToString(), numAFires, day);
+                        }
                     }
 
                     // Ignite a single Rx fire per day
-                    if (numRxFires > 0 &&
+                    if (shuffledRxFireSites.Count > 0 &&
+                        numRxFires > 0 &&
                         landscapeAverageFireWeatherIndex > Parameters.RxMinFireWeatherIndex &&
                         landscapeAverageFireWeatherIndex < Parameters.RxMaxFireWeatherIndex &&
                         weatherData.DailyWindSpeed[day] < Parameters.RxMaxWindSpeed && 
@@ -589,8 +591,13 @@ namespace Landis.Extension.Scrapple
         // A helper function to shuffle a list of ActiveSties: Algorithm may be improved.
         // Sites are weighted for ignition in the Shuffle method, based on the respective inputs maps.
 
-        private static List<ActiveSite> Shuffle(List<ActiveSite> list, ISiteVar<double> weightedSiteVar)
+        private static List<ActiveSite> Shuffle(ISiteVar<double> weightedSiteVar)
         {
+            List<ActiveSite> list = new List<ActiveSite>(); ;
+            foreach (ActiveSite site in PlugIn.ModelCore.Landscape.ActiveSites)
+                if (weightedSiteVar[site] > 0.0)
+                    list.Add(site);
+
             List<ActiveSite> shuffledList = new List<ActiveSite>();
             double totalWeight = 0;
             foreach (ActiveSite site in list)
