@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <RootNamespace>Landis.Extension.Scrapple</RootNamespace>
-    <AssemblyName>Landis.Extension.Scrapple-v2-climate-temp</AssemblyName>
+    <AssemblyName>Landis.Extension.Scrapple-v2</AssemblyName>
     <AssemblyTitle>Landis.Extension.Scrapple-v2</AssemblyTitle>
     <AssemblyCopyright>Landis-II-Foundation</AssemblyCopyright>
     <AssemblyVersion>2.0</AssemblyVersion>
@@ -39,7 +39,7 @@
     <Reference Include="Landis.Library.BiomassCohorts-v3">
       <HintPath>lib\Landis.Library.BiomassCohorts-v3.dll</HintPath>
     </Reference>
-    <Reference Include="Landis.Library.Climate-v4">
+    <Reference Include="Landis.Library.Climate-v3">
       <HintPath>lib\Landis.Library.Climate-v3.dll</HintPath>
     </Reference>
     <Reference Include="Landis.Library.Cohorts-v2">
