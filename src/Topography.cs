@@ -12,6 +12,7 @@ namespace Landis.Extension.Scrapple
 
         internal static void ReadGroundSlopeMap(string path)
         {
+            PlugIn.ModelCore.UI.WriteLine("   Reading in {0}", path);
             IInputRaster<IntPixel> map;
             try
             {
@@ -52,6 +53,7 @@ namespace Landis.Extension.Scrapple
 
         internal static void ReadUphillSlopeAzimuthMap(string path)
         {
+            PlugIn.ModelCore.UI.WriteLine("   Reading in {0}", path);
             IInputRaster<IntPixel> map;
 
             try
