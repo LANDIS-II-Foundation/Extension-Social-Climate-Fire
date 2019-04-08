@@ -115,15 +115,11 @@ namespace Landis.Extension.Scrapple
             // Load Ground Slope Data
             InputVar<string> groundSlopeFile = new InputVar<string>("GroundSlopeMap");
             ReadVar(groundSlopeFile);
-
-            PlugIn.ModelCore.UI.WriteLine("   Loading Slope data...");
             Topography.ReadGroundSlopeMap(groundSlopeFile.Value);
 
             // Load Uphill Slope Azimuth Data
             InputVar<string> uphillSlopeMap = new InputVar<string>("UphillSlopeAzimuthMap");
             ReadVar(uphillSlopeMap);
-
-            PlugIn.ModelCore.UI.WriteLine("   Loading Azimuth data...");
             Topography.ReadUphillSlopeAzimuthMap(uphillSlopeMap.Value);
 
             InputVar<double> lightningB0 = new InputVar<double>("LightningIgnitionsB0");
@@ -305,7 +301,7 @@ namespace Landis.Extension.Scrapple
             //-------------------------------------------------------------------
             //  Read table of Fire Damage classes.
             //  Damages are in increasing order.
-            PlugIn.ModelCore.UI.WriteLine("   Loading Dead Wood Map data...");
+            PlugIn.ModelCore.UI.WriteLine("   Loading Dead Wood table...");
 
 
             InputVar<string> dw_spp = new InputVar<string>("Species Name");
@@ -336,7 +332,7 @@ namespace Landis.Extension.Scrapple
             //-------------------------------------------------------------------
             //  Read table of Fire Damage classes.
             //  Damages are in increasing order.
-            PlugIn.ModelCore.UI.WriteLine("   Loading Fire mortality data...");
+            PlugIn.ModelCore.UI.WriteLine("   Loading Fire mortality tables...");
 
             //InputVar<string> spp = new InputVar<string>("Species Name");
             InputVar<int> maxAge = new InputVar<int>("Max Interval Age");

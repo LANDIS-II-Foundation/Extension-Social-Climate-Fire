@@ -1,6 +1,5 @@
 //  Authors:  Robert M. Scheller, Alec Kretchun, Vincent Schuster
 
-//using Landis.Library.AgeOnlyCohorts;
 using Landis.SpatialModeling;
 using Landis.Library.Climate;
 using Landis.Core;
