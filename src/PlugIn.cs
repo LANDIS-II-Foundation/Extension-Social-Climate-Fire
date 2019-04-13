@@ -112,7 +112,7 @@ namespace Landis.Extension.Scrapple
             ///******************** DEBUGGER END *********************
 
             // Initilize the FireRegions Maps
-            modelCore.UI.WriteLine("   Initializing Fire...");
+            modelCore.UI.WriteLine("Initializing SCRAPPLE Fire...");
 
             dynamicRxIgns = Parameters.DynamicRxIgnitionMaps;
             MapUtility.Initilize(Parameters.LighteningFireMap, Parameters.AccidentalFireMap, Parameters.RxFireMap,
@@ -310,17 +310,21 @@ namespace Landis.Extension.Scrapple
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths2), currentTime);
 
 
-            using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
+            using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
-                ShortPixel pixel = outputRaster.BufferPixel;
+                IntPixel pixel = outputRaster.BufferPixel;
                 foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
                 {
                     if (site.IsActive)
                     {
                         if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
-                            pixel.MapCode.Value = (short) (SiteVars.TypeOfIginition[site] + 1);
+                        {
+                            pixel.MapCode.Value = (SiteVars.TypeOfIginition[site] + 2);
+                            //if (SiteVars.TypeOfIginition[site] != (int) Ignition.Rx)
+                            //    PlugIn.ModelCore.UI.WriteLine("   Ignition Type = {0}.", SiteVars.TypeOfIginition[site]);
+                        }
                         else
-                            pixel.MapCode.Value = 0;
+                            pixel.MapCode.Value = 1;
                     }
                     else
                     {
@@ -334,15 +338,15 @@ namespace Landis.Extension.Scrapple
             string[] paths3 = { "scrapple-fire", "fire-intensity-{timestep}.img" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths3), currentTime);
             //path = MapNames.ReplaceTemplateVars("scrapple-fire/fire-intensity-{timestep}.img", currentTime);
-            using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
+            using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
-                ShortPixel pixel = outputRaster.BufferPixel;
+                IntPixel pixel = outputRaster.BufferPixel;
                 foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
                 {
                     if (site.IsActive)
                     {
                         if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
-                            pixel.MapCode.Value = (short) (SiteVars.Intensity[site]);
+                            pixel.MapCode.Value = (int) (SiteVars.Intensity[site]);
                         else
                             pixel.MapCode.Value = 0;
                     }

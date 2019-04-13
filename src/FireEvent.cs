@@ -13,7 +13,7 @@ using System.Linq;
 namespace Landis.Extension.Scrapple
 {
 
-    public enum Ignition : short
+    public enum Ignition : int
     {
         Accidental,
         Lightning,
@@ -145,7 +145,6 @@ namespace Landis.Extension.Scrapple
             // First, take the first site off the list, ensuring that days are sequential from the beginning.
             while (fireSites.Count() > 0)
             {
-                //yActiveSite[] sitePair = fireSites.First();
                 ActiveSite site = fireSites.First()[0];
                 ActiveSite sourceSite = fireSites.First()[1];
 
@@ -176,8 +175,6 @@ namespace Landis.Extension.Scrapple
                 //      Calculate spread-area-max 
                 if (this.IgnitionType == Ignition.Rx)
                 {
-                    if (PlugIn.Parameters.RxZonesMap != null && SiteVars.RxZones[site] != SiteVars.RxZones[sourceSite])
-                        return;
                     if (this.TotalSitesDamaged > PlugIn.Parameters.RxTargetSize)
                         return;
                 }
@@ -219,13 +216,10 @@ namespace Landis.Extension.Scrapple
                             ActiveSite[] spread = new ActiveSite[] { (ActiveSite)neighborSite, site };
                             fireSites.Add(spread);
                             this.TotalSitesDamaged++;
-                            //this.Spread(PlugIn.ModelCore.CurrentTime, neighborDay, (ActiveSite)neighborSite, (ActiveSite)site);
                         }
                     }
                 }
                 // SPREAD to neighbors ***********************
-
-                //fireSites.Remove(fireSites.First());
                 fireSites.RemoveAt(0);
             }
 
@@ -282,7 +276,9 @@ namespace Landis.Extension.Scrapple
             if (siteIntensity > 0)
             {
                 //      Cause mortality
-                SiteVars.Intensity[site] = (byte)siteIntensity;
+                SiteVars.Intensity[site] = (byte) siteIntensity;
+                SiteVars.TypeOfIginition[site] = (int)this.IgnitionType;
+
                 currentSite = site;
                 siteCohortsKilled = Damage(site);
 
@@ -301,7 +297,14 @@ namespace Landis.Extension.Scrapple
         private bool CanSpread(ActiveSite site, ActiveSite sourceSite, int day, double fireWeatherIndex, double effectiveWindSpeed)
         {
             bool spread = false;
-            SiteVars.TypeOfIginition [site] = (short) this.IgnitionType;
+
+            if (this.IgnitionType == Ignition.Rx && PlugIn.Parameters.RxZonesMap != null && SiteVars.RxZones[site] != SiteVars.RxZones[sourceSite])
+            {
+                //PlugIn.ModelCore.UI.WriteLine("  Fire spread zone limitation.  Spread not allowed to new site");
+                return false;
+            }
+
+            //SiteVars.TypeOfIginition[site] = (int) this.IgnitionType;
 
             SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
 

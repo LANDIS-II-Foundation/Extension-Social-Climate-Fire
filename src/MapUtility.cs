@@ -26,7 +26,7 @@ namespace Landis.Extension.Scrapple
 
         public static void ReadMap(string path, ISiteVar<double> siteVar)
         {
-            PlugIn.ModelCore.UI.WriteLine("   Reading in {0}", path);
+            PlugIn.ModelCore.UI.WriteLine("   Reading in data from {0}", path);
 
             IInputRaster<IntPixel> map;
 
@@ -65,7 +65,7 @@ namespace Landis.Extension.Scrapple
 
         public static void ReadMap(string path, ISiteVar<int> siteVar)
         {
-            PlugIn.ModelCore.UI.WriteLine("   Reading in {0}", path);
+            PlugIn.ModelCore.UI.WriteLine("   Reading in data from {0}", path);
             IInputRaster<IntPixel> map;
 
             try

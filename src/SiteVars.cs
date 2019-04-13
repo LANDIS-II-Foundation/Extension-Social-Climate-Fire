@@ -12,7 +12,7 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<double> lightningFireWeight;
         private static ISiteVar<double> rxFireWeight;
         private static ISiteVar<double> accidentalFireWeight;
-        private static ISiteVar<short> typeOfIginition;
+        private static ISiteVar<int> typeOfIginition;
         private static ISiteVar<byte> intensity;
         private static ISiteVar<ushort> dayOfFire;
         private static ISiteVar<bool> disturbed;
@@ -56,7 +56,7 @@ namespace Landis.Extension.Scrapple
             lightningSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             rxSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             accidentalSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
-            typeOfIginition = PlugIn.ModelCore.Landscape.NewSiteVar<short>();
+            typeOfIginition = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             disturbed = PlugIn.ModelCore.Landscape.NewSiteVar<bool>();
             specialDeadWood = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             EventID = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
@@ -153,7 +153,7 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public static ISiteVar<short> TypeOfIginition
+        public static ISiteVar<int> TypeOfIginition
         {
             get
             {
