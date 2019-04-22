@@ -259,7 +259,8 @@ namespace Landis.Extension.Scrapple
                         weatherData.DailyWindSpeed[day] < Parameters.RxMaxWindSpeed && 
                         day >= Parameters.FirstDayRxFire)
                     {
-                        int numFires = (int) Math.Max(Math.Round((double) (numRxFires / 365 - day)), 1);
+                        // TEMPORARY:  Assume that only one-quarter of the year has appropriate conditions for Rx fire.  To be updated.
+                        int numFires = (int) Math.Max(Math.Round((double) (numRxFires / 90)), 1);  
                         for (int i = 0; i < numFires; ++i)
                         {
                             Ignite(Ignition.Rx, shuffledRxFireSites, day, landscapeAverageFireWeatherIndex);
