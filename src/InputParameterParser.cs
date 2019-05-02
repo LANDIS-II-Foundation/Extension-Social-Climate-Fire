@@ -155,24 +155,48 @@ namespace Landis.Extension.Scrapple
             parameters.RxMaxWindSpeed = maxRxWS.Value;
 
             InputVar<double> maxRxFWI = new InputVar<double>("MaximumRxFireWeatherIndex");
-            ReadVar(maxRxFWI);
-            parameters.RxMaxFireWeatherIndex = maxRxFWI.Value;
+            if(ReadOptionalVar(maxRxFWI))
+                parameters.RxMaxFireWeatherIndex = maxRxFWI.Value;
+            else
+                parameters.RxMaxFireWeatherIndex = 300;  // the maximum imaginable
 
             InputVar<double> minRxFWI = new InputVar<double>("MinimumRxFireWeatherIndex");
-            ReadVar(minRxFWI);
-            parameters.RxMinFireWeatherIndex = minRxFWI.Value;
+            if (ReadOptionalVar(minRxFWI))
+                parameters.RxMinFireWeatherIndex = minRxFWI.Value;
+            else
+                parameters.RxMinFireWeatherIndex = 0;
+
+            InputVar<double> maxRxT = new InputVar<double>("MaximumRxTemperature");
+            if (ReadOptionalVar(maxRxT))
+                parameters.RxMaxTemperature = maxRxT.Value;
+            else
+                parameters.RxMaxFireWeatherIndex = 50;  // the maximum imaginable
+
+            InputVar<double> minRxRH = new InputVar<double>("MinimumRxRelativeHumidity");
+            if (ReadOptionalVar(minRxRH))
+                parameters.RxMinRelativeHumidity = minRxRH.Value;
+            else
+                parameters.RxMinRelativeHumidity = -500.0;
 
             InputVar<int> maxRxFI = new InputVar<int>("MaximumRxFireIntensity");
             ReadVar(maxRxFI);
             parameters.RxMaxFireIntensity = maxRxFI.Value;
 
-            InputVar<int> nrxf = new InputVar<int>("NumberRxAnnualFires");
-            ReadVar(nrxf);
-            parameters.NumberRxAnnualFires = nrxf.Value;
+            InputVar<int> nrxf_a = new InputVar<int>("NumberRxAnnualFires");
+            ReadVar(nrxf_a);
+            parameters.RxNumberAnnualFires = nrxf_a.Value;
+
+            InputVar<int> nrxf_d = new InputVar<int>("NumberRxDailyFires");
+            ReadVar(nrxf_d);
+            parameters.RxNumberDailyFires = nrxf_d.Value;
 
             InputVar<int> first_rx_day = new InputVar<int>("FirstDayRxFires");
             ReadVar(first_rx_day);
-            parameters.FirstDayRxFire = first_rx_day.Value;
+            parameters.RxFirstDayFire = first_rx_day.Value;
+
+            InputVar<int> last_rx_day = new InputVar<int>("LastDayRxFires");
+            ReadVar(last_rx_day);
+            parameters.RxLastDayFire = last_rx_day.Value;
 
             InputVar<int> trxs = new InputVar<int>("TargetRxSize");
             ReadVar(trxs);

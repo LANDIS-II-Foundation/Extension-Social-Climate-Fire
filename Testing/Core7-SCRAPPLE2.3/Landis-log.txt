@@ -1,0 +1,88 @@
+2019-05-01 13:51:48,779 - LANDIS-II 7.0 (7)
+2019-05-01 13:51:48,786 - 
+2019-05-01 13:51:48,846 - Loading scenario from file "scenario_landscape.txt" ...
+2019-05-01 13:51:48,906 - Initialized random number generator with seed = 3,375,481,131
+2019-05-01 13:51:48,907 - Loading species data from file "species_LTB.txt" ...
+2019-05-01 13:51:48,922 - Loading ecoregions from file "./ecoregions.txt" ...
+2019-05-01 13:51:48,936 - Initializing landscape from ecoregions map "./ecoregions.gis" ...
+2019-05-01 13:51:48,947 - Cell length = 100 m, cell area = 1 ha
+2019-05-01 13:51:48,948 - Map dimensions: 99 rows by 99 columns = 9,801 cells
+2019-05-01 13:51:48,955 - Sites: 9,801 active (100.0%), 0 inactive (0.0%)
+2019-05-01 13:51:48,965 - Loading NECN Succession extension ...
+2019-05-01 13:51:48,980 -    Registering Data:  Succession.LeafBiomassCohorts.
+2019-05-01 13:51:48,980 -    Registering Data:  Succession.AgeCohorts.
+2019-05-01 13:51:48,980 -    Registering Data:  Succession.BiomassCohorts.
+2019-05-01 13:51:48,980 -    Registering Data:  Succession.FineFuels.
+2019-05-01 13:51:48,981 -    Registering Data:  Succession.SmolderConsumption.
+2019-05-01 13:51:48,981 -    Registering Data:  Succession.FlamingConsumption.
+2019-05-01 13:51:48,981 -    Registering Data:  Succession.CWD.
+2019-05-01 13:51:49,036 -    Begin parsing FUNCTIONAL GROUP table.
+2019-05-01 13:51:49,038 -    Begin reading FIRE REDUCTION parameters.
+2019-05-01 13:51:49,039 -    Begin reading HARVEST REDUCTION parameters.
+2019-05-01 13:51:49,042 - Initializing NECN Succession ...
+2019-05-01 13:51:49,074 -   Read in data from random110.img
+2019-05-01 13:51:49,092 -   Read in data from constantpoint75.img
+2019-05-01 13:51:49,105 -   Read in data from constantpoint4.img
+2019-05-01 13:51:49,119 -   Read in data from constantpoint4.img
+2019-05-01 13:51:49,121 -   Read in data from random_point1_point2.img
+2019-05-01 13:51:49,133 -   Read in data from random_point05_point099.img
+2019-05-01 13:51:49,146 -   Read in data from random_point01_point5.img
+2019-05-01 13:51:49,158 -   Read in data from random_point01_point5.img
+2019-05-01 13:51:49,164 -   Read in data from random110.img
+2019-05-01 13:51:49,167 -   Read in data from random6.img
+2019-05-01 13:51:49,182 -   Read in data from random110.img
+2019-05-01 13:51:49,184 -   Read in data from random9.img
+2019-05-01 13:51:49,197 -   Read in data from random4500.img
+2019-05-01 13:51:49,213 -   Read in data from random145.img
+2019-05-01 13:51:49,227 -   Read in data from random1294.img
+2019-05-01 13:51:49,239 -   Read in data from random50.img
+2019-05-01 13:51:49,252 -   Read in data from random110.img
+2019-05-01 13:51:49,257 -   Read in data from random50.img
+2019-05-01 13:51:49,279 -    Loading weather data ...
+2019-05-01 13:52:40,183 -    Registering Data:  TimeOfLastSuccession.
+2019-05-01 13:52:40,184 -    Registering Data:  Shade.
+2019-05-01 13:52:40,185 -    Creating Dispersal Neighborhood List.
+2019-05-01 13:52:40,186 -    Dispersal:  NeighborRadius=5050, CellLength=100, numCellRadius=50
+2019-05-01 13:52:40,194 -    Loading initial communities from file "./initial-communities.txt" ...
+2019-05-01 13:52:40,212 -    Reading initial communities map "./initial-communities.gis" ...
+2019-05-01 13:52:40,287 -    Opening a NECN log file "NECN-prob-establish-log.csv" ...
+2019-05-01 13:52:40,445 - Loading SCRAPPLE extension ...
+2019-05-01 13:52:40,448 -    Registering Data:  Fire.Severity.
+2019-05-01 13:52:40,449 -    Registering Data:  Fire.TimeOfLastEvent.
+2019-05-01 13:52:40,457 -    Reading in GroundSlope.gis
+2019-05-01 13:52:40,461 -    Reading in UphillSlope.gis
+2019-05-01 13:52:40,472 -    Loading Dead Wood table...
+2019-05-01 13:52:40,473 -    Loading Fire mortality tables...
+2019-05-01 13:52:40,475 - Initializing SCRAPPLE Fire...
+2019-05-01 13:52:40,477 -    Reading in data from ./Lightning_Ignition_Map.img
+2019-05-01 13:52:40,489 -    Reading in data from ./Lightning_Ignition_Map.img
+2019-05-01 13:52:40,491 -    Reading in data from ./Accidental_Ignition_Map.img
+2019-05-01 13:52:40,502 -    Reading in data from ./suppress3.img
+2019-05-01 13:52:40,519 -    Reading in data from ./suppress3.img
+2019-05-01 13:52:40,521 -    Reading in data from ./suppress3.img
+2019-05-01 13:52:40,537 - Using the following extensions ...
+   Extension Name            Extension Filename       
+   --------------            ------------------       
+   NECN Succession           NECN.txt                 
+   SCRAPPLE                  scrapple.txt             
+
+2019-05-01 13:52:40,537 - Current time: 1
+2019-05-01 13:52:40,539 - Running SCRAPPLE ...
+2019-05-01 13:52:40,543 -    Processing landscape for Fire events ...
+2019-05-01 13:52:47,393 - Done running extension
+2019-05-01 13:52:47,394 - Running NECN Succession ...
+2019-05-01 13:52:56,467 - Current time: 2
+2019-05-01 13:52:56,468 - Running SCRAPPLE ...
+2019-05-01 13:52:56,468 -    Processing landscape for Fire events ...
+2019-05-01 13:53:02,759 - Done running extension
+2019-05-01 13:53:02,759 - Running NECN Succession ...
+2019-05-01 13:53:11,060 - Current time: 3
+2019-05-01 13:53:11,061 - Running SCRAPPLE ...
+2019-05-01 13:53:11,062 -    Reading in new Fire Regions Map Lightning_Ignition_Map.img.
+2019-05-01 13:53:11,062 -    Reading in data from Lightning_Ignition_Map.img
+2019-05-01 13:53:11,072 -    Processing landscape for Fire events ...
+2019-05-01 13:53:17,440 - Done running extension
+2019-05-01 13:53:17,441 - Running NECN Succession ...
+2019-05-01 13:53:25,355 - Current time: 4
+2019-05-01 13:53:25,355 - Running SCRAPPLE ...
+2019-05-01 13:53:25,356 -    Processing landscape for Fire events ...

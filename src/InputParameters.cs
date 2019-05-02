@@ -32,9 +32,13 @@ namespace Landis.Extension.Scrapple
         double RxMaxWindSpeed { get; set; }
         double RxMaxFireWeatherIndex { get; set; }
         double RxMinFireWeatherIndex { get; set; }
+        double RxMaxTemperature { get; set; }
+        double RxMinRelativeHumidity { get; set; }
         int RxMaxFireIntensity { get; set; }
-        int NumberRxAnnualFires { get; set; }
-        int FirstDayRxFire { get; set; }
+        int RxNumberAnnualFires { get; set; }
+        int RxNumberDailyFires { get; set; }
+        int RxFirstDayFire { get; set; }
+        int RxLastDayFire { get; set; }
         int RxTargetSize { get; set; }
         string RxZonesMap { get; set; }
 
@@ -91,9 +95,13 @@ namespace Landis.Extension.Scrapple
         private double maxRxWindSpeed;
         private double maxRxFireWeatherIndex;
         private double minRxFireWeatherIndex;
+        private double maxRxTemperature;
+        private double minRxRelativeHumidity;
         private int maxRxFireIntensity;
         private int numberRxAnnualFires;
+        private int numberRxDailyFires;
         private int firstDayRx;
+        private int lastDayRx;
         private int targetRxSize;
         private string rxZoneMap;
 
@@ -330,6 +338,30 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
+        public double RxMaxTemperature
+        {
+            get
+            {
+                return maxRxTemperature;
+            }
+            set
+            {
+                maxRxTemperature = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public double RxMinRelativeHumidity
+        {
+            get
+            {
+                return minRxRelativeHumidity;
+            }
+            set
+            {
+                minRxRelativeHumidity = value;
+            }
+        }
+        //---------------------------------------------------------------------
         public int RxMaxFireIntensity
         {
             get
@@ -343,7 +375,7 @@ namespace Landis.Extension.Scrapple
         }
 
         //---------------------------------------------------------------------
-        public int NumberRxAnnualFires
+        public int RxNumberAnnualFires
         {
             get
             {
@@ -355,7 +387,19 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public int FirstDayRxFire
+        public int RxNumberDailyFires
+        {
+            get
+            {
+                return numberRxDailyFires;
+            }
+            set
+            {
+                numberRxDailyFires = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public int RxFirstDayFire
         {
             get
             {
@@ -364,6 +408,18 @@ namespace Landis.Extension.Scrapple
             set
             {
                 firstDayRx = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public int RxLastDayFire
+        {
+            get
+            {
+                return lastDayRx;
+            }
+            set
+            {
+                lastDayRx = value;
             }
         }
         //---------------------------------------------------------------------
