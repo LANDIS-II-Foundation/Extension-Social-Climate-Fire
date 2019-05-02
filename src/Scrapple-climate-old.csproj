@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <RootNamespace>Landis.Extension.Scrapple</RootNamespace>
-    <AssemblyName>Landis.Extension.Scrapple-v2</AssemblyName>
+    <AssemblyName>Landis.Extension.Scrapple-v2.1</AssemblyName>
     <AssemblyTitle>Landis.Extension.Scrapple-v2</AssemblyTitle>
     <AssemblyCopyright>Landis-II-Foundation</AssemblyCopyright>
     <AssemblyVersion>2.0</AssemblyVersion>

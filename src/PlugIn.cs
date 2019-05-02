@@ -217,7 +217,7 @@ namespace Landis.Extension.Scrapple
                         {
                             ecoregionAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * ecoregionNumSites;
                             ecoregionAverageTemperature += weatherData.DailyMaxTemp[day] * ecoregionNumSites;
-                            ecoregionAverageRelativeHumidity += weatherData.DailyMinRH[day] * ecoregionNumSites;
+                            //ecoregionAverageRelativeHumidity += weatherData.DailyMinRH[day] * ecoregionNumSites;
                         }
                         catch
                         {
@@ -228,7 +228,7 @@ namespace Landis.Extension.Scrapple
 
                 double landscapeAverageFireWeatherIndex = ecoregionAverageFireWeatherIndex / (double) modelCore.Landscape.ActiveSiteCount;
                 double landscapeAverageTemperature = ecoregionAverageTemperature / (double)modelCore.Landscape.ActiveSiteCount;
-                double landscapeAverageRelHumidity = ecoregionAverageRelativeHumidity / (double)modelCore.Landscape.ActiveSiteCount;
+                //double landscapeAverageRelHumidity = ecoregionAverageRelativeHumidity / (double)modelCore.Landscape.ActiveSiteCount;
 
                 //modelCore.UI.WriteLine("   Processing landscape for Fire events.  Day={0}, FWI={1}", day, landscapeAverageFireWeatherIndex);
 
@@ -260,7 +260,7 @@ namespace Landis.Extension.Scrapple
                     landscapeAverageFireWeatherIndex > Parameters.RxMinFireWeatherIndex &&
                     landscapeAverageFireWeatherIndex < Parameters.RxMaxFireWeatherIndex &&
                     landscapeAverageTemperature < Parameters.RxMaxTemperature &&
-                    landscapeAverageRelHumidity > Parameters.RxMinRelativeHumidity &&
+                    //landscapeAverageRelHumidity > Parameters.RxMinRelativeHumidity &&
                     weatherData.DailyWindSpeed[day] < Parameters.RxMaxWindSpeed &&
                     day >= Parameters.RxFirstDayFire &&
                     day < Parameters.RxLastDayFire)
