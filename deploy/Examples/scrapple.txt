@@ -27,18 +27,21 @@ MaximumFineFuels 500.0
 
 >> Prescribed Fire Parameters
 MaximumRxWindSpeed 8.0
-MaximumRxFireWeatherIndex 10.0
-MinimumRxFireWeatherIndex 8.0
+MaximumRxFireWeatherIndex 80.0  << Optional
+MinimumRxFireWeatherIndex 1.0   << Optional
+MaximumRxTemperature 35.0	<< Optional
+>> MinimumRxRelativeHumidity 22.0	<< Optional
 MaximumRxFireIntensity 1
-NumberRxAnnualFires 1
-FirstDayRxFires 275
-TargetRxSize 4
-
+NumberRxAnnualFires 410
+NumberRxDailyFires 10
+FirstDayRxFires 2
+LastDayRxFires 300
+TargetRxSize 40
+>> RxZonesMap fire-zones.gis  << Optional
 
 MaximumSpreadAreaB0	10
 MaximumSpreadAreaB1	-2.5 <<-3 <<FWI
 MaximumSpreadAreaB2	-2.5 <<-2.5  <<effective wind speed
-
 
 SpreadProbabilityB0 -1.79 << Intercept
 SpreadProbabilityB1 0.06  <<FWI
@@ -57,7 +60,7 @@ SuppressionTable  << Currently must be entered in this exact order
 >>Type		FWI1	FWI2	Lo	Md	High-Effectiveness
 Accidental	20	40	5	65	95
 Lightning	20	40	5	65	95
-Rx			20	40	5	65	95
+Rx		20	40	5	65	95
 
 DeadWoodTable
 PinuJeff  22
