@@ -339,16 +339,16 @@ namespace Landis.Extension.Scrapple
             {
                 switch (SiteVars.AccidentalSuppressionIndex[site])
                 {
-                    case 1:
+                    case 1:  // suppression map code = 1
                         suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].EffectivenessLow / 100.0);
                         break;
-                    case 2:
+                    case 2:  // suppression map code = 2
                         suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].EffectivenessLow / 100.0);
 
                         if (fireWeatherIndex > PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].FWI_Break1)
                             suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].EffectivenessMedium / 100.0);
                         break;
-                    case 3:
+                    case 3:  // suppression map code = 3
                         suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].EffectivenessLow / 100.0);
 
                         if (fireWeatherIndex > PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].FWI_Break1)
@@ -357,7 +357,7 @@ namespace Landis.Extension.Scrapple
                         if (fireWeatherIndex > PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].FWI_Break2)
                             suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].EffectivenessHigh / 100.0);
                         break;
-                    default:
+                    default:  // suppression map code = 0
                         suppressEffect = 1.0;  // None
                         break;
 
