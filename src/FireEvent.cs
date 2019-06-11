@@ -215,7 +215,7 @@ namespace Landis.Extension.Scrapple
 
                             ActiveSite[] spread = new ActiveSite[] { (ActiveSite)neighborSite, site };
                             fireSites.Add(spread);
-                            this.TotalSitesDamaged++;
+                            //this.TotalSitesDamaged++;
                         }
                     }
                 }
@@ -281,6 +281,7 @@ namespace Landis.Extension.Scrapple
 
                 currentSite = site;
                 siteCohortsKilled = Damage(site);
+                this.TotalSitesDamaged++;
 
                 this.MeanSeverity += siteIntensity;
                 if (siteIntensity == 1)

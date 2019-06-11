@@ -329,8 +329,6 @@ namespace Landis.Extension.Scrapple
                         if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
                         {
                             pixel.MapCode.Value = (SiteVars.TypeOfIginition[site] + 2);
-                            //if (SiteVars.TypeOfIginition[site] != (int) Ignition.Rx)
-                            //    PlugIn.ModelCore.UI.WriteLine("   Ignition Type = {0}.", SiteVars.TypeOfIginition[site]);
                         }
                         else
                             pixel.MapCode.Value = 1;
@@ -355,9 +353,9 @@ namespace Landis.Extension.Scrapple
                     if (site.IsActive)
                     {
                         if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
-                            pixel.MapCode.Value = (int) (SiteVars.Intensity[site]);
+                            pixel.MapCode.Value = (int) (SiteVars.Intensity[site] + 1);
                         else
-                            pixel.MapCode.Value = 0;
+                            pixel.MapCode.Value = 1;
                     }
                     else
                     {
@@ -403,9 +401,9 @@ namespace Landis.Extension.Scrapple
                     if (site.IsActive)
                     {
                         if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
-                            pixel.MapCode.Value = (short) (SiteVars.DayOfFire[site]);
+                            pixel.MapCode.Value = (short) (SiteVars.DayOfFire[site] + 1);
                         else
-                            pixel.MapCode.Value = 0;
+                            pixel.MapCode.Value = 1;
                     }
                     else
                     {
