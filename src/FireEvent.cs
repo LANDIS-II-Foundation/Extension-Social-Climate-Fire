@@ -27,7 +27,7 @@ namespace Landis.Extension.Scrapple
         public static Random rnd = new Random();
 
         private ActiveSite initiationSite;
-        private static List<ActiveSite[]> fireSites;
+        private static List<ActiveSite[]> fireSites;  //an array to handle source and target sites.
 
         public int TotalSitesDamaged;
         public int CohortsKilled;
@@ -52,7 +52,7 @@ namespace Landis.Extension.Scrapple
         //public Dictionary<int, int> spreadArea;
 
         public int maxDay;
-        public int siteIntensity;
+        public int siteIntensity = 1;  //default is low intensity
 
         //---------------------------------------------------------------------
         static FireEvent()
@@ -145,18 +145,18 @@ namespace Landis.Extension.Scrapple
             // First, take the first site off the list, ensuring that days are sequential from the beginning.
             while (fireSites.Count() > 0)
             {
-                ActiveSite site = fireSites.First()[0];
+                ActiveSite targetSite = fireSites.First()[0];
                 ActiveSite sourceSite = fireSites.First()[1];
 
-                CalculateIntensity(site, sourceSite);
+                CalculateIntensity(targetSite, sourceSite);
 
-                SiteVars.DayOfFire[site] = (ushort) day;
+                SiteVars.DayOfFire[targetSite] = (ushort) day;
                 dailySpreadArea += PlugIn.ModelCore.CellArea;
 
                 if (day > PlugIn.DaysPerYear)
                     return;
 
-                IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
+                IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[targetSite];
                 double fireWeatherIndex = 0.0;
                 try
                 {
@@ -168,7 +168,7 @@ namespace Landis.Extension.Scrapple
                     throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found in Spread().  Year: {0}, Day: {1}, Ecoregion: {2}.", PlugIn.ActualYear, day, ecoregion.Name));
                 }
 
-                double effectiveWindSpeed = CalculateEffectiveWindSpeed(site, sourceSite, fireWeatherIndex, day);
+                double effectiveWindSpeed = CalculateEffectiveWindSpeed(targetSite, sourceSite, fireWeatherIndex, day);
                 this.MeanEffectiveWindSpeed += effectiveWindSpeed;
 
                 // DAY OF FIRE *****************************
@@ -202,20 +202,21 @@ namespace Landis.Extension.Scrapple
                 }
                 // DAY OF FIRE *****************************
 
-                // SPREAD to neighbors ***********************
+                // SPREAD from target to new neighbors ***********************
                 if (day < PlugIn.DaysPerYear)
                 {
-                    List<Site> neighbors = Get4ActiveNeighbors(site);
-                    neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor] || !neighbor.IsActive);
+                    sourceSite = targetSite;  // the target becomes the source
+                    List<ActiveSite> neighbors = Get8ActiveNeighbors(targetSite);
+                    neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor]);
 
-                    foreach (Site neighborSite in neighbors)
+                    foreach (ActiveSite neighborSite in neighbors)
                     {
-                        if (CanSpread((ActiveSite)neighborSite, site, day, fireWeatherIndex, effectiveWindSpeed))
+                        if (CanSpread(neighborSite, sourceSite, day, fireWeatherIndex, effectiveWindSpeed))
                         {
 
-                            ActiveSite[] spread = new ActiveSite[] { (ActiveSite)neighborSite, site };
+                            ActiveSite[] spread = new ActiveSite[] { neighborSite, sourceSite };
                             fireSites.Add(spread);
-                            //this.TotalSitesDamaged++;
+                            this.TotalSitesDamaged++;
                         }
                     }
                 }
@@ -273,15 +274,15 @@ namespace Landis.Extension.Scrapple
 
             int siteCohortsKilled = 0;
 
-            if (siteIntensity > 0)
-            {
+            //if (siteIntensity > 0)
+            //{
                 //      Cause mortality
                 SiteVars.Intensity[site] = (byte) siteIntensity;
                 SiteVars.TypeOfIginition[site] = (int)this.IgnitionType;
 
                 currentSite = site;
                 siteCohortsKilled = Damage(site);
-                this.TotalSitesDamaged++;
+                //this.TotalSitesDamaged++;
 
                 this.MeanSeverity += siteIntensity;
                 if (siteIntensity == 1)
@@ -291,7 +292,7 @@ namespace Landis.Extension.Scrapple
                 if (siteIntensity == 3)
                     this.NumberCellsSeverity3++;
 
-            }
+            //}
 
         }
 
@@ -494,12 +495,12 @@ namespace Landis.Extension.Scrapple
         }
 
         //---------------------------------------------------------------------
-        private static List<Site> Get4ActiveNeighbors(Site srcSite)
+        private static List<ActiveSite> Get8ActiveNeighbors(Site srcSite)
         {
             if (!srcSite.IsActive)
                 throw new ApplicationException("Source site is not active.");
 
-            List<Site> neighbors = new List<Site>();
+            List<ActiveSite> neighbors = new List<ActiveSite>();
 
             RelativeLocation[] neighborhood = new RelativeLocation[]
             {
@@ -519,11 +520,11 @@ namespace Landis.Extension.Scrapple
 
                 if (neighbor != null && neighbor.IsActive)
                 {
-                    neighbors.Add(neighbor);
+                    neighbors.Add((ActiveSite) neighbor);
                 }
             }
 
-            return neighbors; //fastNeighbors;
+            return neighbors; 
         }
         //---------------------------------------------------------------------
 
