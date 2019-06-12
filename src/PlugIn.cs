@@ -217,7 +217,7 @@ namespace Landis.Extension.Scrapple
                         {
                             ecoregionAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * ecoregionNumSites;
                             ecoregionAverageTemperature += weatherData.DailyMaxTemp[day] * ecoregionNumSites;
-                            ecoregionAverageRelativeHumidity += weatherData.DailyMinRH[day] * ecoregionNumSites;
+                            //ecoregionAverageRelativeHumidity += weatherData.DailyMinRH[day] * ecoregionNumSites;
                         }
                         catch
                         {
@@ -560,7 +560,7 @@ namespace Landis.Extension.Scrapple
             {
                 FireEvent fireEvent = FireEvent.Initiate(shuffledFireSites.First(), modelCore.CurrentTime, day, ignitionType);
 
-                totalBurnedSites[(int) ignitionType] += fireEvent.TotalSitesDamaged;
+                totalBurnedSites[(int) ignitionType] += fireEvent.TotalSitesSpread;
                 numberOfFire[(int)ignitionType]++;
                 totalBiomassMortality[(int)ignitionType] += (int)fireEvent.TotalBiomassMortality;
                 numCellsSeverity1 += fireEvent.NumberCellsSeverity1;

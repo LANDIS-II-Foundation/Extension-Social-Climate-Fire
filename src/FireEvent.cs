@@ -29,14 +29,14 @@ namespace Landis.Extension.Scrapple
         private ActiveSite initiationSite;
         private static List<ActiveSite[]> fireSites;  //an array to handle source and target sites.
 
-        public int TotalSitesDamaged;
+        public int TotalSitesSpread;
         public int CohortsKilled;
         public double InitiationFireWeatherIndex;
         public Ignition IgnitionType;
         AnnualClimate_Daily annualWeatherData;
         public int NumberOfDays;
         public int IgnitionDay;
-        public double MeanSeverity;
+        public double MeanIntensity;
         public double MeanWindDirection;
         public double MeanWindSpeed;
         public double MeanEffectiveWindSpeed;
@@ -48,6 +48,7 @@ namespace Landis.Extension.Scrapple
         public int NumberCellsSeverity1;
         public int NumberCellsSeverity2;
         public int NumberCellsSeverity3;
+        public int TotalSitesBurned;
 
         //public Dictionary<int, int> spreadArea;
 
@@ -90,10 +91,10 @@ namespace Landis.Extension.Scrapple
             SiteVars.Disturbed[initiationSite] = true;
 
             this.CohortsKilled = 0;
-            this.TotalSitesDamaged = 1;  // minimum 1 for the ignition cell
+            this.TotalSitesSpread = 0;  
             this.InitiationFireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
             this.NumberOfDays = 1;
-            this.MeanSeverity = 0.0;
+            this.MeanIntensity = 0.0;
             this.MeanWindDirection = 0.0;
             this.MeanWindSpeed = 0.0;
             this.MeanEffectiveWindSpeed = 0.0;
@@ -104,6 +105,7 @@ namespace Landis.Extension.Scrapple
             this.NumberCellsSeverity1 = 0;
             this.NumberCellsSeverity2 = 0;
             this.NumberCellsSeverity3 = 0;
+            this.TotalSitesBurned = 0;
             this.currentSite = initiationSite;
             this.maxDay = day;
 
@@ -149,6 +151,7 @@ namespace Landis.Extension.Scrapple
                 ActiveSite sourceSite = fireSites.First()[1];
 
                 CalculateIntensity(targetSite, sourceSite);
+                fireSites.RemoveAt(0);
 
                 SiteVars.DayOfFire[targetSite] = (ushort) day;
                 dailySpreadArea += PlugIn.ModelCore.CellArea;
@@ -175,7 +178,7 @@ namespace Landis.Extension.Scrapple
                 //      Calculate spread-area-max 
                 if (this.IgnitionType == Ignition.Rx)
                 {
-                    if (this.TotalSitesDamaged > PlugIn.Parameters.RxTargetSize)
+                    if (this.TotalSitesSpread > PlugIn.Parameters.RxTargetSize)
                         return;
                 }
                 else
@@ -207,7 +210,7 @@ namespace Landis.Extension.Scrapple
                 {
                     sourceSite = targetSite;  // the target becomes the source
                     List<ActiveSite> neighbors = Get8ActiveNeighbors(targetSite);
-                    neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor]);
+                    //neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor]);
 
                     foreach (ActiveSite neighborSite in neighbors)
                     {
@@ -216,12 +219,11 @@ namespace Landis.Extension.Scrapple
 
                             ActiveSite[] spread = new ActiveSite[] { neighborSite, sourceSite };
                             fireSites.Add(spread);
-                            this.TotalSitesDamaged++;
+                            this.TotalSitesSpread++;
                         }
                     }
                 }
                 // SPREAD to neighbors ***********************
-                fireSites.RemoveAt(0);
             }
 
 
@@ -284,13 +286,15 @@ namespace Landis.Extension.Scrapple
                 siteCohortsKilled = Damage(site);
                 //this.TotalSitesDamaged++;
 
-                this.MeanSeverity += siteIntensity;
+                this.MeanIntensity += siteIntensity;
                 if (siteIntensity == 1)
                     this.NumberCellsSeverity1++;
                 if (siteIntensity == 2)
                     this.NumberCellsSeverity2++;
                 if (siteIntensity == 3)
                     this.NumberCellsSeverity3++;
+
+            this.TotalSitesBurned++;
 
             //}
 
@@ -299,16 +303,13 @@ namespace Landis.Extension.Scrapple
         private bool CanSpread(ActiveSite site, ActiveSite sourceSite, int day, double fireWeatherIndex, double effectiveWindSpeed)
         {
             bool spread = false;
+            SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
 
             if (this.IgnitionType == Ignition.Rx && PlugIn.Parameters.RxZonesMap != null && SiteVars.RxZones[site] != SiteVars.RxZones[sourceSite])
             {
                 //PlugIn.ModelCore.UI.WriteLine("  Fire spread zone limitation.  Spread not allowed to new site");
                 return false;
             }
-
-            //SiteVars.TypeOfIginition[site] = (int) this.IgnitionType;
-
-            SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
 
             double fineFuelPercent = 0.0;
             double fineFuelPercent_harvest = 1.0;
@@ -518,7 +519,7 @@ namespace Landis.Extension.Scrapple
             {
                 Site neighbor = srcSite.GetNeighbor(relativeLoc);
 
-                if (neighbor != null && neighbor.IsActive)
+                if (neighbor != null && neighbor.IsActive && !SiteVars.Disturbed[srcSite])
                 {
                     neighbors.Add((ActiveSite) neighbor);
                 }
@@ -601,15 +602,15 @@ namespace Landis.Extension.Scrapple
             el.IgnitionType = fireEvent.IgnitionType.ToString();
             el.InitialDayOfYear = fireEvent.IgnitionDay;
             el.NumberOfDays = fireEvent.NumberOfDays;
-            el.MeanSpreadProbability = fireEvent.MeanSpreadProbability / (double)fireEvent.TotalSitesDamaged;
-            el.MeanFWI = fireEvent.MeanFWI / (double)fireEvent.TotalSitesDamaged;
-            el.TotalSitesBurned = fireEvent.TotalSitesDamaged;
+            el.MeanSpreadProbability = fireEvent.MeanSpreadProbability / (double)fireEvent.TotalSitesSpread;
+            el.MeanFWI = fireEvent.MeanFWI / (double)fireEvent.TotalSitesSpread;
+            el.TotalSitesBurned = fireEvent.TotalSitesBurned;
             el.CohortsKilled = fireEvent.CohortsKilled;
-            el.MeanSeverity = fireEvent.MeanSeverity / (double) fireEvent.TotalSitesDamaged;
-            el.MeanWindDirection = fireEvent.MeanWindDirection / (double)fireEvent.TotalSitesDamaged;
-            el.MeanWindSpeed = fireEvent.MeanWindSpeed / (double)fireEvent.TotalSitesDamaged;
-            el.MeanEffectiveWindSpeed = fireEvent.MeanEffectiveWindSpeed / (double)fireEvent.TotalSitesDamaged;
-            el.MeanSuppressionEffectiveness = fireEvent.MeanSuppression / (double)fireEvent.TotalSitesDamaged;
+            el.MeanSeverity = fireEvent.MeanIntensity / (double) fireEvent.TotalSitesSpread;
+            el.MeanWindDirection = fireEvent.MeanWindDirection / (double)fireEvent.TotalSitesSpread;
+            el.MeanWindSpeed = fireEvent.MeanWindSpeed / (double)fireEvent.TotalSitesSpread;
+            el.MeanEffectiveWindSpeed = fireEvent.MeanEffectiveWindSpeed / (double)fireEvent.TotalSitesSpread;
+            el.MeanSuppressionEffectiveness = fireEvent.MeanSuppression / (double)fireEvent.TotalSitesSpread;
             el.TotalBiomassMortality = fireEvent.TotalBiomassMortality;
             el.NumberCellsSeverity1 = fireEvent.NumberCellsSeverity1;
             el.NumberCellsSeverity2 = fireEvent.NumberCellsSeverity2;
