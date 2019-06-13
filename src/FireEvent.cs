@@ -178,7 +178,7 @@ namespace Landis.Extension.Scrapple
                 //      Calculate spread-area-max 
                 if (this.IgnitionType == Ignition.Rx)
                 {
-                    if (this.TotalSitesSpread > PlugIn.Parameters.RxTargetSize)
+                    if (this.TotalSitesBurned > PlugIn.Parameters.RxTargetSize)
                         return;
                 }
                 else
@@ -278,23 +278,25 @@ namespace Landis.Extension.Scrapple
 
             //if (siteIntensity > 0)
             //{
-                //      Cause mortality
-                SiteVars.Intensity[site] = (byte) siteIntensity;
-                SiteVars.TypeOfIginition[site] = (int)this.IgnitionType;
+            //      Cause mortality
+            SiteVars.Intensity[site] = (byte)siteIntensity;
+            SiteVars.TypeOfIginition[site] = (int)this.IgnitionType;
 
-                currentSite = site;
-                siteCohortsKilled = Damage(site);
-                //this.TotalSitesDamaged++;
+            currentSite = site;
+            siteCohortsKilled = Damage(site);
+            //this.TotalSitesDamaged++;
 
-                this.MeanIntensity += siteIntensity;
-                if (siteIntensity == 1)
-                    this.NumberCellsSeverity1++;
-                if (siteIntensity == 2)
-                    this.NumberCellsSeverity2++;
-                if (siteIntensity == 3)
-                    this.NumberCellsSeverity3++;
+            this.MeanIntensity += siteIntensity;
+            if (siteIntensity == 1)
+                this.NumberCellsSeverity1++;
+            if (siteIntensity == 2)
+                this.NumberCellsSeverity2++;
+            if (siteIntensity == 3)
+                this.NumberCellsSeverity3++;
 
             this.TotalSitesBurned++;
+            SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
+
 
             //}
 
@@ -303,7 +305,7 @@ namespace Landis.Extension.Scrapple
         private bool CanSpread(ActiveSite site, ActiveSite sourceSite, int day, double fireWeatherIndex, double effectiveWindSpeed)
         {
             bool spread = false;
-            SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
+            //SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
 
             if (this.IgnitionType == Ignition.Rx && PlugIn.Parameters.RxZonesMap != null && SiteVars.RxZones[site] != SiteVars.RxZones[sourceSite])
             {
@@ -454,6 +456,7 @@ namespace Landis.Extension.Scrapple
 
             if (spread)
             {
+                //SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
                 this.MeanSpreadProbability += Pspread_adjusted;
                 this.MeanSuppression += (1.0 - suppressEffect) * 100.0;
             }
@@ -519,7 +522,7 @@ namespace Landis.Extension.Scrapple
             {
                 Site neighbor = srcSite.GetNeighbor(relativeLoc);
 
-                if (neighbor != null && neighbor.IsActive && !SiteVars.Disturbed[srcSite])
+                if (neighbor != null && neighbor.IsActive && !SiteVars.Disturbed[neighbor])
                 {
                     neighbors.Add((ActiveSite) neighbor);
                 }
@@ -602,15 +605,15 @@ namespace Landis.Extension.Scrapple
             el.IgnitionType = fireEvent.IgnitionType.ToString();
             el.InitialDayOfYear = fireEvent.IgnitionDay;
             el.NumberOfDays = fireEvent.NumberOfDays;
-            el.MeanSpreadProbability = fireEvent.MeanSpreadProbability / (double)fireEvent.TotalSitesSpread;
-            el.MeanFWI = fireEvent.MeanFWI / (double)fireEvent.TotalSitesSpread;
+            el.MeanSpreadProbability = fireEvent.MeanSpreadProbability / (double)fireEvent.TotalSitesBurned;
+            el.MeanFWI = fireEvent.MeanFWI / (double)fireEvent.TotalSitesBurned;
             el.TotalSitesBurned = fireEvent.TotalSitesBurned;
             el.CohortsKilled = fireEvent.CohortsKilled;
-            el.MeanSeverity = fireEvent.MeanIntensity / (double) fireEvent.TotalSitesSpread;
-            el.MeanWindDirection = fireEvent.MeanWindDirection / (double)fireEvent.TotalSitesSpread;
-            el.MeanWindSpeed = fireEvent.MeanWindSpeed / (double)fireEvent.TotalSitesSpread;
-            el.MeanEffectiveWindSpeed = fireEvent.MeanEffectiveWindSpeed / (double)fireEvent.TotalSitesSpread;
-            el.MeanSuppressionEffectiveness = fireEvent.MeanSuppression / (double)fireEvent.TotalSitesSpread;
+            el.MeanSeverity = fireEvent.MeanIntensity / (double) fireEvent.TotalSitesBurned;
+            el.MeanWindDirection = fireEvent.MeanWindDirection / (double)fireEvent.TotalSitesBurned;
+            el.MeanWindSpeed = fireEvent.MeanWindSpeed / (double)fireEvent.TotalSitesBurned;
+            el.MeanEffectiveWindSpeed = fireEvent.MeanEffectiveWindSpeed / (double)fireEvent.TotalSitesBurned;
+            el.MeanSuppressionEffectiveness = fireEvent.MeanSuppression / (double)fireEvent.TotalSitesBurned;
             el.TotalBiomassMortality = fireEvent.TotalBiomassMortality;
             el.NumberCellsSeverity1 = fireEvent.NumberCellsSeverity1;
             el.NumberCellsSeverity2 = fireEvent.NumberCellsSeverity2;

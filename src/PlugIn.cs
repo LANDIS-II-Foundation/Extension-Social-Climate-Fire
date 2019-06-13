@@ -560,7 +560,7 @@ namespace Landis.Extension.Scrapple
             {
                 FireEvent fireEvent = FireEvent.Initiate(shuffledFireSites.First(), modelCore.CurrentTime, day, ignitionType);
 
-                totalBurnedSites[(int) ignitionType] += fireEvent.TotalSitesSpread;
+                totalBurnedSites[(int) ignitionType] += fireEvent.TotalSitesBurned;
                 numberOfFire[(int)ignitionType]++;
                 totalBiomassMortality[(int)ignitionType] += (int)fireEvent.TotalBiomassMortality;
                 numCellsSeverity1 += fireEvent.NumberCellsSeverity1;
