@@ -295,10 +295,7 @@ namespace Landis.Extension.Scrapple
                 this.NumberCellsSeverity3++;
 
             this.TotalSitesBurned++;
-            SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
-
-
-            //}
+            //SiteVars.Disturbed[site] = true;  
 
         }
 
@@ -456,7 +453,7 @@ namespace Landis.Extension.Scrapple
 
             if (spread)
             {
-                //SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
+                SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
                 this.MeanSpreadProbability += Pspread_adjusted;
                 this.MeanSuppression += (1.0 - suppressEffect) * 100.0;
             }
@@ -605,7 +602,7 @@ namespace Landis.Extension.Scrapple
             el.IgnitionType = fireEvent.IgnitionType.ToString();
             el.InitialDayOfYear = fireEvent.IgnitionDay;
             el.NumberOfDays = fireEvent.NumberOfDays;
-            el.MeanSpreadProbability = fireEvent.MeanSpreadProbability / (double)fireEvent.TotalSitesBurned;
+            el.MeanSpreadProbability = fireEvent.MeanSpreadProbability / (double)fireEvent.TotalSitesSpread;
             el.MeanFWI = fireEvent.MeanFWI / (double)fireEvent.TotalSitesBurned;
             el.TotalSitesBurned = fireEvent.TotalSitesBurned;
             el.CohortsKilled = fireEvent.CohortsKilled;

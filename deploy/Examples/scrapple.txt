@@ -55,7 +55,7 @@ IntensityFactor:LadderFuelBiomass 20
 LadderFuelSpeciesList 
 AbieConc AbieMagn PinuJeff PinuCont
 
-SuppressionMaxWindSpeed 100
+SuppressionMaxWindSpeed 100  << specifically for helicopter safety
 SuppressionTable  << Currently must be entered in this exact order
 >>Type		FWI1	FWI2	Lo	Md	High-Effectiveness
 Accidental	20	40	5	65	95
