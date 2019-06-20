@@ -217,7 +217,7 @@ namespace Landis.Extension.Scrapple
                         {
                             ecoregionAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * ecoregionNumSites;
                             ecoregionAverageTemperature += weatherData.DailyMaxTemp[day] * ecoregionNumSites;
-                            //ecoregionAverageRelativeHumidity += weatherData.DailyMinRH[day] * ecoregionNumSites;
+                            ecoregionAverageRelativeHumidity += weatherData.DailyMinRH[day] * ecoregionNumSites;
                         }
                         catch
                         {

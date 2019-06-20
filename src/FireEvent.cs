@@ -54,6 +54,11 @@ namespace Landis.Extension.Scrapple
 
         public int maxDay;
         public int siteIntensity = 1;  //default is low intensity
+        private double siteWindDirection = -999;
+        private double siteWindSpeed = 0;
+        private double siteFireWeatherIndex = 0;
+        private double siteEffectiveWindSpeed = 0;
+
 
         //---------------------------------------------------------------------
         static FireEvent()
@@ -91,7 +96,8 @@ namespace Landis.Extension.Scrapple
             SiteVars.Disturbed[initiationSite] = true;
 
             this.CohortsKilled = 0;
-            this.TotalSitesSpread = 0;  
+            this.TotalSitesSpread = 0;
+            this.TotalSitesBurned = 0;
             this.InitiationFireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
             this.NumberOfDays = 1;
             this.MeanIntensity = 0.0;
@@ -105,7 +111,6 @@ namespace Landis.Extension.Scrapple
             this.NumberCellsSeverity1 = 0;
             this.NumberCellsSeverity2 = 0;
             this.NumberCellsSeverity3 = 0;
-            this.TotalSitesBurned = 0;
             this.currentSite = initiationSite;
             this.maxDay = day;
 
@@ -150,15 +155,6 @@ namespace Landis.Extension.Scrapple
                 ActiveSite targetSite = fireSites.First()[0];
                 ActiveSite sourceSite = fireSites.First()[1];
 
-                CalculateIntensity(targetSite, sourceSite);
-                fireSites.RemoveAt(0);
-
-                SiteVars.DayOfFire[targetSite] = (ushort) day;
-                dailySpreadArea += PlugIn.ModelCore.CellArea;
-
-                if (day > PlugIn.DaysPerYear)
-                    return;
-
                 IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[targetSite];
                 double fireWeatherIndex = 0.0;
                 try
@@ -172,7 +168,15 @@ namespace Landis.Extension.Scrapple
                 }
 
                 double effectiveWindSpeed = CalculateEffectiveWindSpeed(targetSite, sourceSite, fireWeatherIndex, day);
-                this.MeanEffectiveWindSpeed += effectiveWindSpeed;
+
+                CalculateIntensity(targetSite, sourceSite);
+                fireSites.RemoveAt(0);
+
+                SiteVars.DayOfFire[targetSite] = (ushort) day;
+                dailySpreadArea += PlugIn.ModelCore.CellArea;
+
+                if (day > PlugIn.DaysPerYear)
+                    return;
 
                 // DAY OF FIRE *****************************
                 //      Calculate spread-area-max 
@@ -295,6 +299,11 @@ namespace Landis.Extension.Scrapple
                 this.NumberCellsSeverity3++;
 
             this.TotalSitesBurned++;
+            this.MeanWindDirection += siteWindDirection;
+            this.MeanWindSpeed += siteWindSpeed;
+            this.MeanFWI += siteFireWeatherIndex;
+            this.MeanEffectiveWindSpeed += siteEffectiveWindSpeed;
+
             //SiteVars.Disturbed[site] = true;  
 
         }
@@ -302,13 +311,14 @@ namespace Landis.Extension.Scrapple
         private bool CanSpread(ActiveSite site, ActiveSite sourceSite, int day, double fireWeatherIndex, double effectiveWindSpeed)
         {
             bool spread = false;
-            //SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
 
             if (this.IgnitionType == Ignition.Rx && PlugIn.Parameters.RxZonesMap != null && SiteVars.RxZones[site] != SiteVars.RxZones[sourceSite])
             {
                 //PlugIn.ModelCore.UI.WriteLine("  Fire spread zone limitation.  Spread not allowed to new site");
                 return false;
             }
+
+            SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
 
             double fineFuelPercent = 0.0;
             double fineFuelPercent_harvest = 1.0;
@@ -453,7 +463,6 @@ namespace Landis.Extension.Scrapple
 
             if (spread)
             {
-                SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
                 this.MeanSpreadProbability += Pspread_adjusted;
                 this.MeanSuppression += (1.0 - suppressEffect) * 100.0;
             }
@@ -470,9 +479,9 @@ namespace Landis.Extension.Scrapple
             // EFFECTIVE WIND SPEED ************************
             double windSpeed = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyWindSpeed[day];
             double windDirection = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyWindDirection[day];// / 180 * Math.PI;
-            this.MeanWindDirection += windDirection;
-            this.MeanWindSpeed += windSpeed;
-            this.MeanFWI += fireWeatherIndex;
+            siteWindDirection = windDirection;
+            siteWindSpeed = windSpeed;
+            siteFireWeatherIndex = fireWeatherIndex;
 
             double combustionBuoyancy = 10.0;  // Cannot be zero, also very insensitive when UaUb > 5.
             if (SiteVars.Intensity[sourceSite] == 1)
@@ -489,6 +498,8 @@ namespace Landis.Extension.Scrapple
 
             // From R.M. Nelson Intl J Wildland Fire, 2002
             double effectiveWindSpeed = combustionBuoyancy * (Math.Pow(Math.Pow(UaUb, 2.0) + (2.0 * (UaUb) * Math.Sin(slopeDegrees) * Math.Cos(relativeWindDirection)) + Math.Pow(Math.Sin(slopeDegrees), 2.0), 0.5));
+
+            siteEffectiveWindSpeed = effectiveWindSpeed;
 
             return effectiveWindSpeed;
             // End EFFECTIVE WIND SPEED ************************
@@ -610,7 +621,7 @@ namespace Landis.Extension.Scrapple
             el.MeanWindDirection = fireEvent.MeanWindDirection / (double)fireEvent.TotalSitesBurned;
             el.MeanWindSpeed = fireEvent.MeanWindSpeed / (double)fireEvent.TotalSitesBurned;
             el.MeanEffectiveWindSpeed = fireEvent.MeanEffectiveWindSpeed / (double)fireEvent.TotalSitesBurned;
-            el.MeanSuppressionEffectiveness = fireEvent.MeanSuppression / (double)fireEvent.TotalSitesBurned;
+            el.MeanSuppressionEffectiveness = fireEvent.MeanSuppression / (double)fireEvent.TotalSitesSpread;
             el.TotalBiomassMortality = fireEvent.TotalBiomassMortality;
             el.NumberCellsSeverity1 = fireEvent.NumberCellsSeverity1;
             el.NumberCellsSeverity2 = fireEvent.NumberCellsSeverity2;
