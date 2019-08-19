@@ -188,6 +188,8 @@ namespace Landis.Extension.Scrapple
             List<ActiveSite> shuffledRxFireSites = Shuffle(SiteVars.RxFireWeight);
             List<ActiveSite> shuffledAccidentalFireSites = Shuffle(SiteVars.AccidentalFireWeight);
 
+            modelCore.UI.WriteLine("   Next, loop through each day to start fires...");
+
             int numRxFires = Parameters.RxNumberAnnualFires;
             for (int day = 0; day < DaysPerYear; ++day)
             {
@@ -230,10 +232,10 @@ namespace Landis.Extension.Scrapple
                 double landscapeAverageTemperature = ecoregionAverageTemperature / (double)modelCore.Landscape.ActiveSiteCount;
                 double landscapeAverageRelHumidity = ecoregionAverageRelativeHumidity / (double)modelCore.Landscape.ActiveSiteCount;
 
-                //modelCore.UI.WriteLine("   Processing landscape for Fire events.  Day={0}, FWI={1}", day, landscapeAverageFireWeatherIndex);
+                modelCore.UI.WriteLine("   Processing landscape for Fire events.  Day={0}, FWI={1}", day, landscapeAverageFireWeatherIndex);
 
                 // Ignite Accidental Fires. FWI must be > .10 
-                PlugIn.ModelCore.UI.WriteLine("   Generating accidental fires...");
+                //PlugIn.ModelCore.UI.WriteLine("   Generating accidental fires...");
                 if (shuffledAccidentalFireSites.Count > 0 && landscapeAverageFireWeatherIndex >= 10.0)
                 {
                     int numLFires = NumberOfIgnitions(Ignition.Accidental, landscapeAverageFireWeatherIndex);
@@ -245,7 +247,7 @@ namespace Landis.Extension.Scrapple
                 }
 
                 // Ignite Lightning Fires FWI must be > .10 
-                PlugIn.ModelCore.UI.WriteLine("   Generating lightning fires...");
+                //PlugIn.ModelCore.UI.WriteLine("   Generating lightning fires...");
                 if (shuffledLightningFireSites.Count > 0 && landscapeAverageFireWeatherIndex >= 10.0)
                 {
                     int numAFires = NumberOfIgnitions(Ignition.Lightning, landscapeAverageFireWeatherIndex);
@@ -257,7 +259,7 @@ namespace Landis.Extension.Scrapple
                 }
 
                 // Ignite a single Rx fire per day
-                PlugIn.ModelCore.UI.WriteLine("   Generating prescribed fire...");
+                //PlugIn.ModelCore.UI.WriteLine("   Generating prescribed fire...");
                 if (shuffledRxFireSites.Count > 0 &&
                     numRxFires > 0 &&
                     landscapeAverageFireWeatherIndex > Parameters.RxMinFireWeatherIndex &&
@@ -276,7 +278,8 @@ namespace Landis.Extension.Scrapple
                     }
                 }
             }
-        
+
+            modelCore.UI.WriteLine("   Done processing days.  Next, write maps and summary log files. ...");
 
             WriteMaps(PlugIn.ModelCore.CurrentTime);
 
