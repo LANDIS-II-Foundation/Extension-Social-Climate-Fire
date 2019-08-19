@@ -233,6 +233,7 @@ namespace Landis.Extension.Scrapple
                 //modelCore.UI.WriteLine("   Processing landscape for Fire events.  Day={0}, FWI={1}", day, landscapeAverageFireWeatherIndex);
 
                 // Ignite Accidental Fires. FWI must be > .10 
+                PlugIn.ModelCore.UI.WriteLine("   Generating accidental fires...");
                 if (shuffledAccidentalFireSites.Count > 0 && landscapeAverageFireWeatherIndex >= 10.0)
                 {
                     int numLFires = NumberOfIgnitions(Ignition.Accidental, landscapeAverageFireWeatherIndex);
@@ -244,6 +245,7 @@ namespace Landis.Extension.Scrapple
                 }
 
                 // Ignite Lightning Fires FWI must be > .10 
+                PlugIn.ModelCore.UI.WriteLine("   Generating lightning fires...");
                 if (shuffledLightningFireSites.Count > 0 && landscapeAverageFireWeatherIndex >= 10.0)
                 {
                     int numAFires = NumberOfIgnitions(Ignition.Lightning, landscapeAverageFireWeatherIndex);
@@ -255,6 +257,7 @@ namespace Landis.Extension.Scrapple
                 }
 
                 // Ignite a single Rx fire per day
+                PlugIn.ModelCore.UI.WriteLine("   Generating prescribed fire...");
                 if (shuffledRxFireSites.Count > 0 &&
                     numRxFires > 0 &&
                     landscapeAverageFireWeatherIndex > Parameters.RxMinFireWeatherIndex &&

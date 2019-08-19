@@ -119,7 +119,7 @@ namespace Landis.Extension.Scrapple
         //---------------------------------------------------------------------
         public static FireEvent Initiate(ActiveSite initiationSite, int timestep, int day, Ignition ignitionType)
         {
-            //PlugIn.ModelCore.UI.WriteLine("  Fire Event initiated.  Day = {0}, IgnitionType = {1}.", day, ignitionType);
+            PlugIn.ModelCore.UI.WriteLine("  Fire Event initiated.  Day = {0}, IgnitionType = {1}.", day, ignitionType);
 
             if (isDebugEnabled)
                 PlugIn.ModelCore.UI.WriteLine("   Fire event started at {0} ...", initiationSite.Location);
@@ -148,6 +148,7 @@ namespace Landis.Extension.Scrapple
         //---------------------------------------------------------------------
         private void Spread(int currentTime, int day)
         {
+            PlugIn.ModelCore.UI.WriteLine("   Fire spread function...");
             float dailySpreadArea = 0.0f;
             // First, take the first site off the list, ensuring that days are sequential from the beginning.
             while (fireSites.Count() > 0)

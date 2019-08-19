@@ -2,6 +2,7 @@
 
 using Landis.SpatialModeling;
 using Landis.Library.BiomassCohorts;
+using Landis.Library.Biomass;
 
 namespace Landis.Extension.Scrapple
 {
@@ -20,6 +21,7 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<ushort> uphillSlopeAzimuth;
         private static ISiteVar<ISiteCohorts> cohorts;
         private static ISiteVar<double> fineFuels;
+        private static ISiteVar<Pool> tempFineFuels;
         private static ISiteVar<int> specialDeadWood;  // potential snags, specifically
         private static ISiteVar<double> spreadProbablity;
 
@@ -40,6 +42,7 @@ namespace Landis.Extension.Scrapple
 
             cohorts = PlugIn.ModelCore.GetSiteVar<ISiteCohorts>("Succession.BiomassCohorts");
             fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.FineFuels");
+            //tempFineFuels = PlugIn.ModelCore.GetSiteVar<Pool>("Succession.Litter");
 
             eventVar = PlugIn.ModelCore.Landscape.NewSiteVar<FireEvent>(InactiveSiteMode.DistinctValues);
             timeOfLastFire       = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
@@ -82,7 +85,9 @@ namespace Landis.Extension.Scrapple
             // RMS:  I'm not positive this will work, but the idea is for fine fuels to connect to NECN (.FineFuels) or PnET (.Litter)
             if (fineFuels == null)
             {
-                fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.Litter");
+                tempFineFuels = PlugIn.ModelCore.GetSiteVar<Pool>("Succession.Litter");
+                foreach(ActiveSite site in PlugIn.ModelCore.Landscape)
+                    SiteVars.FineFuels[site] = SiteVars.tempFineFuels[site].Mass;
             }
 
         }
