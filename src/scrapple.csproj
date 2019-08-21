@@ -30,6 +30,9 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Reference Include="Ether.WeightedSelector">
+      <HintPath>lib\Ether.WeightedSelector.dll</HintPath>
+    </Reference>
     <Reference Include="Landis.Library.AgeOnlyCohorts-v3">
       <HintPath>lib\Landis.Library.AgeOnlyCohorts-v3.dll</HintPath>
     </Reference>
