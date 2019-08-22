@@ -675,7 +675,7 @@ namespace Landis.Extension.Scrapple
             foreach (ActiveSite site in PlugIn.ModelCore.Landscape.ActiveSites)
                 if (weightedSiteVar[site] > 0.0)
                 {
-                    wselector.Add(site, ((int)weightedSiteVar[site] * 1000));
+                    wselector.Add(site, ((int)weightedSiteVar[site]));
                     numSites++;
                 }
 
