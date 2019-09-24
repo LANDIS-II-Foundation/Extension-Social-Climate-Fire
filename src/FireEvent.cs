@@ -48,6 +48,9 @@ namespace Landis.Extension.Scrapple
         public int NumberCellsSeverity1;
         public int NumberCellsSeverity2;
         public int NumberCellsSeverity3;
+        public int NumberCellsIntensityFactor1;
+        public int NumberCellsIntensityFactor2;
+        public int NumberCellsIntensityFactor3;
         public int TotalSitesBurned;
 
         //public Dictionary<int, int> spreadArea;
@@ -113,6 +116,9 @@ namespace Landis.Extension.Scrapple
             this.NumberCellsSeverity3 = 0;
             this.currentSite = initiationSite;
             this.maxDay = day;
+            this.NumberCellsIntensityFactor1 = 0;
+            this.NumberCellsIntensityFactor2 = 0;
+            this.NumberCellsIntensityFactor3 = 0;
 
         }
 
@@ -264,11 +270,20 @@ namespace Landis.Extension.Scrapple
             int highSeverityRiskFactors = 0;
 
             if (fineFuelPercent > PlugIn.Parameters.IntensityFactor_FineFuelPercent)
+            {
                 highSeverityRiskFactors++;
+                NumberCellsIntensityFactor1++;
+            }
             if (ladderFuelBiomass > PlugIn.Parameters.IntensityFactor_LadderFuelBiomass)
+            {
                 highSeverityRiskFactors++;
+                NumberCellsIntensityFactor2++;
+            }
             if (SiteVars.Intensity[sourceSite] == 3)
+            {
                 highSeverityRiskFactors++;
+                NumberCellsIntensityFactor3++;
+            }
 
             if (highSeverityRiskFactors == 1)
                 siteIntensity = 2;
@@ -627,6 +642,9 @@ namespace Landis.Extension.Scrapple
             el.NumberCellsSeverity1 = fireEvent.NumberCellsSeverity1;
             el.NumberCellsSeverity2 = fireEvent.NumberCellsSeverity2;
             el.NumberCellsSeverity3 = fireEvent.NumberCellsSeverity3;
+            el.PercentsCellsIntensityFactor1 = (double) fireEvent.NumberCellsIntensityFactor1 / (double)fireEvent.TotalSitesBurned;
+            el.PercentsCellsIntensityFactor2 = (double)fireEvent.NumberCellsIntensityFactor2 / (double)fireEvent.TotalSitesBurned;
+            el.PercentsCellsIntensityFactor3 = (double)fireEvent.NumberCellsIntensityFactor3 / (double)fireEvent.TotalSitesBurned;
 
             PlugIn.eventLog.AddObject(el);
             PlugIn.eventLog.WriteToFile();

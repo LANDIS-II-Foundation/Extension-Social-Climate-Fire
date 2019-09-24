@@ -73,5 +73,14 @@ namespace Landis.Extension.Scrapple
 
         [DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cells Intensity 3")]
         public double NumberCellsSeverity3 { set; get; }
+
+        [DataFieldAttribute(Unit = FieldUnits.Percentage, Desc = "Percent of Cells Intensity Factor 1")]
+        public double PercentsCellsIntensityFactor1 { set; get; }
+
+        [DataFieldAttribute(Unit = FieldUnits.Percentage, Desc = "Percent of Cells Intensity Factor 2")]
+        public double PercentsCellsIntensityFactor2 { set; get; }
+
+        [DataFieldAttribute(Unit = FieldUnits.Percentage, Desc = "Percent of Cells Intensity Factor 3")]
+        public double PercentsCellsIntensityFactor3 { set; get; }
     }
 }
