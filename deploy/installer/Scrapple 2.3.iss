@@ -59,7 +59,6 @@ Source: {#BuildDir}\Landis.Library.Parameters-v2.dll; DestDir: {#ExtDir}; Flags:
 Source: {#BuildDir}\Landis.Library.Biomass-v2.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
 Source: {#BuildDir}\Landis.Library.Climate-v4.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
 Source: {#BuildDir}\Ether.WeightedSelector.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
-; Source: {#BuildDir}\Landis.Library.Climate-v3.pdb; DestDir: {#ExtDir}; Flags: uninsneveruninstall ignoreversion
 
 ; Complete example for testing the extension
 Source: ..\examples\*.txt; DestDir: {#AppDir}\examples\{#ExtensionName}; Flags: ignoreversion
