@@ -326,10 +326,8 @@ namespace Landis.Extension.Scrapple
                     }
 
                     // Ignite a single Rx fire per day
-                    //PlugIn.ModelCore.UI.WriteLine("   Generating prescribed fire...");
-                    if (
-                    numRxSites > 0 &&
-                    //shuffledRxFireSites.Count > 0 &&
+                    PlugIn.ModelCore.UI.WriteLine("   Generating prescribed fire...");
+                    if (numRxSites > 0 &&
                         numRxFires > 0 &&
                         landscapeAverageFireWeatherIndex > Parameters.RxMinFireWeatherIndex &&
                         landscapeAverageFireWeatherIndex < Parameters.RxMaxFireWeatherIndex &&
@@ -359,7 +357,7 @@ namespace Landis.Extension.Scrapple
 
             WriteMaps(PlugIn.ModelCore.CurrentTime);
 
-            WriteSummaryLog(modelCore.CurrentTime);
+            WriteSummaryLog(PlugIn.ModelCore.CurrentTime);
 
             if (isDebugEnabled)
                 modelCore.UI.WriteLine("Done running extension");
