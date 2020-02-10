@@ -234,7 +234,8 @@ namespace Landis.Extension.Scrapple
 
             modelCore.UI.WriteLine("   Next, loop through each day to start fires...");
 
-            int numRxFires = Parameters.RxNumberAnnualFires;
+            int numAnnualRxFires = Parameters.RxNumberAnnualFires;
+
             for (int day = 0; day < DaysPerYear; ++day)
             {
                 //double ecoregionNumSites = 0.0;
@@ -282,76 +283,90 @@ namespace Landis.Extension.Scrapple
                 //double landscapeAverageTemperature = ecoregionAverageTemperature / (double)modelCore.Landscape.ActiveSiteCount;
                 //double landscapeAverageRelHumidity = ecoregionAverageRelativeHumidity / (double)modelCore.Landscape.ActiveSiteCount;
 
-                //modelCore.UI.WriteLine("   Processing landscape for Fire events.  Day={0}, FWI={1}", day, landscapeAverageFireWeatherIndex);
-
-                //if (landscapeAverageFireWeatherIndex > Parameters.RxMinFireWeatherIndex || landscapeAverageFireWeatherIndex >= 10.0)
-                //{
+                modelCore.UI.WriteLine("   Processing landscape for Fire events.  Day={0}, FWI={1}", day, landscapeAverageFireWeatherIndex);
 
                 // Ignite Accidental Fires. FWI must be > .10 
-                //PlugIn.ModelCore.UI.WriteLine("   Generating accidental fires...");
+                PlugIn.ModelCore.UI.WriteLine("   Generating accidental fires...");
                 // if (shuffledAccidentalFireSites.Count > 0 && landscapeAverageFireWeatherIndex >= 10.0)
                 if (numAccidentalSites > 0 && landscapeAverageFireWeatherIndex >= 10.0)
                 {
-                    int numLFires = NumberOfIgnitions(Ignition.Accidental, landscapeAverageFireWeatherIndex);
-                    //for (int i = 0; i < numLFires; ++i)
-                    while (numLFires > 0)
+                    bool fire = false;
+                    int maxNumAccidentalFires = NumberOfIgnitions(Ignition.Accidental, landscapeAverageFireWeatherIndex);
+                    int actualNumAccidentalFires = 0;
+                    while (maxNumAccidentalFires > 0)
                     {
                         //Ignite(Ignition.Accidental, shuffledAccidentalFireSites, day, landscapeAverageFireWeatherIndex);
-                        bool fire = IgniteEther(Ignition.Accidental, weightedAccidentalSites.Select(), day, landscapeAverageFireWeatherIndex);
+                        fire = IgniteEther(Ignition.Accidental, weightedAccidentalSites.Select(), day, landscapeAverageFireWeatherIndex);
                         if (fire)
                         {
-                            LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Accidental.ToString(), numLFires, day);
-                            numLFires--;
+                            maxNumAccidentalFires--;
+                            actualNumAccidentalFires++;
                         }
                     }
+                    if (fire)
+                    {
+                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Accidental.ToString(), actualNumAccidentalFires, day);
                     }
+                }
 
                 // Ignite Lightning Fires FWI must be > .10 
-                //PlugIn.ModelCore.UI.WriteLine("   Generating lightning fires...");
+                PlugIn.ModelCore.UI.WriteLine("   Generating lightning fires...");
                 //if (shuffledLightningFireSites.Count > 0 && landscapeAverageFireWeatherIndex >= 10.0)
                 if (numLightningSites > 0 && landscapeAverageFireWeatherIndex >= 10.0)
                 {
-                        int numAFires = NumberOfIgnitions(Ignition.Lightning, landscapeAverageFireWeatherIndex);
-                    while(numAFires > 0)
-                        //for (int i = 0; i < numAFires; ++i)
-                        {
+                    bool fire = false;
+                    int maxNumLightningFires = NumberOfIgnitions(Ignition.Lightning, landscapeAverageFireWeatherIndex);
+                    int actualNumLightningFires = 0;
+                    while(maxNumLightningFires > 0)
+                    {
                         //Ignite(Ignition.Lightning, shuffledLightningFireSites, day, landscapeAverageFireWeatherIndex);
-                        bool fire = IgniteEther(Ignition.Lightning, weightedLightningSites.Select(), day, landscapeAverageFireWeatherIndex);
+                        fire = IgniteEther(Ignition.Lightning, weightedLightningSites.Select(), day, landscapeAverageFireWeatherIndex);
                         if (fire)
                         {
-                            LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Lightning.ToString(), numAFires, day);
-                            numAFires--;
-                        }
+                            maxNumLightningFires--;
+                            actualNumLightningFires++;
                         }
                     }
-
-                    // Ignite a single Rx fire per day
-                    PlugIn.ModelCore.UI.WriteLine("   Generating prescribed fire...");
-                    if (numRxSites > 0 &&
-                        numRxFires > 0 &&
-                        landscapeAverageFireWeatherIndex > Parameters.RxMinFireWeatherIndex &&
-                        landscapeAverageFireWeatherIndex < Parameters.RxMaxFireWeatherIndex &&
-                        landscapeAverageTemperature < Parameters.RxMaxTemperature &&
-                        landscapeAverageRelHumidity > Parameters.RxMinRelativeHumidity &&
-                        weatherData.DailyWindSpeed[day] < Parameters.RxMaxWindSpeed &&
-                        day >= Parameters.RxFirstDayFire &&
-                        day < Parameters.RxLastDayFire)
+                    if (fire)
                     {
-                    //numRxFires = Parameters.RxNumberDailyFires;
-                        //for (int i = 0; i < Parameters.RxNumberDailyFires; ++i)
-                        while (numRxFires > 0)
-                        {
-                        //Ignite(Ignition.Rx, shuffledRxFireSites, day, landscapeAverageFireWeatherIndex);
-                        bool fire = IgniteEther(Ignition.Rx, weightedRxSites.Select(), day, landscapeAverageFireWeatherIndex);
-                        if (fire)
-                        {
-                            LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Rx.ToString(), Parameters.RxNumberDailyFires, day);
-                            numRxFires--;
-                        }
-                        }
+                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Lightning.ToString(), maxNumLightningFires, day);
                     }
                 }
-            //}
+
+                // Ignite a single Rx fire per day
+                PlugIn.ModelCore.UI.WriteLine("   Generating prescribed fire...");
+
+
+                if (numRxSites > 0 &&
+                    numAnnualRxFires > 0 &&
+                    landscapeAverageFireWeatherIndex > Parameters.RxMinFireWeatherIndex &&
+                    landscapeAverageFireWeatherIndex < Parameters.RxMaxFireWeatherIndex &&
+                    landscapeAverageTemperature < Parameters.RxMaxTemperature &&
+                    landscapeAverageRelHumidity > Parameters.RxMinRelativeHumidity &&
+                    weatherData.DailyWindSpeed[day] < Parameters.RxMaxWindSpeed &&
+                    day >= Parameters.RxFirstDayFire &&
+                    day < Parameters.RxLastDayFire)
+                {
+                    int maxNumDailyRxFires = Parameters.RxNumberDailyFires;
+                    int actualNumRxFires = 0;
+                    bool fire = false;
+
+                    while (numAnnualRxFires > 0 && maxNumDailyRxFires > 0)
+                    {
+                        fire = IgniteEther(Ignition.Rx, weightedRxSites.Select(), day, landscapeAverageFireWeatherIndex);
+                        if (fire)
+                        {
+                            numAnnualRxFires--;
+                            maxNumDailyRxFires--;
+                            actualNumRxFires++;
+                        }
+                    }
+                    if (fire)
+                    {
+                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Rx.ToString(), Parameters.RxNumberDailyFires, day);
+                    }
+                }
+            }
 
             modelCore.UI.WriteLine("   Done processing days.  Next, write maps and summary log files. ...");
 
