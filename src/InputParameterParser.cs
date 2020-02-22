@@ -170,7 +170,7 @@ namespace Landis.Extension.Scrapple
             if (ReadOptionalVar(maxRxT))
                 parameters.RxMaxTemperature = maxRxT.Value;
             else
-                parameters.RxMaxFireWeatherIndex = 50;  // the maximum imaginable
+                parameters.RxMaxTemperature = 50;  // the maximum imaginable
 
             InputVar<double> minRxRH = new InputVar<double>("MinimumRxRelativeHumidity");
             if (ReadOptionalVar(minRxRH))

@@ -189,7 +189,7 @@ namespace Landis.Extension.Scrapple
                 //      Calculate spread-area-max 
                 if (this.IgnitionType == Ignition.Rx)
                 {
-                    if (this.TotalSitesBurned > PlugIn.Parameters.RxTargetSize)
+                    if ((this.TotalSitesBurned * PlugIn.ModelCore.CellArea) > PlugIn.Parameters.RxTargetSize)
                         return;
                 }
                 else
