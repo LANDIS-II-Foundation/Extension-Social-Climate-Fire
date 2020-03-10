@@ -29,6 +29,9 @@ namespace Landis.Extension.Scrapple
         [DataFieldAttribute(Desc = "Day of Year")]
         public int InitialDayOfYear { set; get; }
 
+        [DataFieldAttribute(Desc = "Maximum Spread Area")]
+        public int MaximumSpreadArea { set; get; }
+
         [DataFieldAttribute(Desc = "Ignition Type")]
         public string IgnitionType { set; get; }
 

@@ -52,6 +52,7 @@ namespace Landis.Extension.Scrapple
         public int NumberCellsIntensityFactor2;
         public int NumberCellsIntensityFactor3;
         public int TotalSitesBurned;
+        public int MaxSpreadArea;
 
         //public Dictionary<int, int> spreadArea;
 
@@ -194,7 +195,7 @@ namespace Landis.Extension.Scrapple
                 }
                 else
                 {
-                    double spreadAreaMaxHectares = PlugIn.Parameters.MaximumSpreadAreaB0 +
+                    double MaxSpreadArea = PlugIn.Parameters.MaximumSpreadAreaB0 +
                     (PlugIn.Parameters.MaximumSpreadAreaB1 * fireWeatherIndex) +
                     (PlugIn.Parameters.MaximumSpreadAreaB2 * effectiveWindSpeed);
 
@@ -202,7 +203,7 @@ namespace Landis.Extension.Scrapple
 
 
                     //  if spread-area > spread-area-max, day = day + 1, assuming that spreadAreaMax units are hectares:
-                    if (dailySpreadArea > spreadAreaMaxHectares)
+                    if (dailySpreadArea > MaxSpreadArea)
                     {
                         day++;  // GOTO the next day.
                         dailySpreadArea = 0;
@@ -296,15 +297,11 @@ namespace Landis.Extension.Scrapple
 
             int siteCohortsKilled = 0;
 
-            //if (siteIntensity > 0)
-            //{
-            //      Cause mortality
             SiteVars.Intensity[site] = (byte)siteIntensity;
             SiteVars.TypeOfIginition[site] = (int)this.IgnitionType;
 
             currentSite = site;
             siteCohortsKilled = Damage(site);
-            //this.TotalSitesDamaged++;
 
             this.MeanIntensity += siteIntensity;
             if (siteIntensity == 1)
@@ -320,7 +317,7 @@ namespace Landis.Extension.Scrapple
             this.MeanFWI += siteFireWeatherIndex;
             this.MeanEffectiveWindSpeed += siteEffectiveWindSpeed;
 
-            //SiteVars.Disturbed[site] = true;  
+            SiteVars.EventID[site] = PlugIn.EventID;  
 
         }
 
@@ -629,6 +626,7 @@ namespace Landis.Extension.Scrapple
             el.IgnitionType = fireEvent.IgnitionType.ToString();
             el.InitialDayOfYear = fireEvent.IgnitionDay;
             el.NumberOfDays = fireEvent.NumberOfDays;
+            el.MaximumSpreadArea = fireEvent.MaxSpreadArea;
             el.MeanSpreadProbability = fireEvent.MeanSpreadProbability / (double)fireEvent.TotalSitesSpread;
             el.MeanFWI = fireEvent.MeanFWI / (double)fireEvent.TotalSitesBurned;
             el.TotalSitesBurned = fireEvent.TotalSitesBurned;

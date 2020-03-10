@@ -64,6 +64,8 @@ namespace Landis.Extension.Scrapple
         public static int DaysPerYear = 364;
 
         private List<IDynamicIgnitionMap> dynamicRxIgns;
+        private List<IDynamicSuppressionMap> dynamicSuppress;
+
         // VS: hasn't been properly integrated into Climate Library.
         //int daysPerYear = (AnnualClimate.IsLeapYear(actualYear) ? true : false) ? 366 : 365;
 
@@ -126,6 +128,7 @@ namespace Landis.Extension.Scrapple
             modelCore.UI.WriteLine("Initializing SCRAPPLE Fire...");
 
             dynamicRxIgns = Parameters.DynamicRxIgnitionMaps;
+            dynamicSuppress = Parameters.DynamicSuppressionMaps;
             MapUtility.Initilize(Parameters.LighteningFireMap, Parameters.AccidentalFireMap, Parameters.RxFireMap,
                                  Parameters.LighteningSuppressionMap, Parameters.AccidentalSuppressionMap, Parameters.RxSuppressionMap);
             if (Parameters.RxZonesMap != null)
@@ -197,6 +200,15 @@ namespace Landis.Extension.Scrapple
 
             }
 
+            foreach (IDynamicSuppressionMap dynamicSuppressMaps in dynamicSuppress)
+            {
+                if (dynamicSuppressMaps.Year == PlugIn.modelCore.CurrentTime)
+                {
+                    PlugIn.ModelCore.UI.WriteLine("   Reading in new Fire Suppression Map {0}.", dynamicSuppressMaps.MapName);
+                    MapUtility.ReadMap(dynamicSuppressMaps.MapName, SiteVars.AccidentalSuppressionIndex);
+                }
+            }
+
             AnnualClimate_Daily weatherData = null;
             totalBurnedSites = new int[3];
             numberOfFire = new int[3];
@@ -238,10 +250,6 @@ namespace Landis.Extension.Scrapple
 
             for (int day = 0; day < DaysPerYear; ++day)
             {
-                //double ecoregionNumSites = 0.0;
-                //double ecoregionAverageFireWeatherIndex = 0.0;
-                //double ecoregionAverageTemperature = 0.0;
-                //double ecoregionAverageRelativeHumidity = 0.0;
                 double landscapeAverageFireWeatherIndex = 0.0;
                 double landscapeAverageTemperature = 0.0;
                 double landscapeAverageRelHumidity = 0.0;
@@ -268,9 +276,6 @@ namespace Landis.Extension.Scrapple
                             landscapeAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * ecoregionFractionSites;
                             landscapeAverageTemperature += weatherData.DailyMaxTemp[day] * ecoregionFractionSites;
                             landscapeAverageRelHumidity += weatherData.DailyMinRH[day] * ecoregionFractionSites;
-                            //ecoregionAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * ecoregionNumSites;
-                            //ecoregionAverageTemperature += weatherData.DailyMaxTemp[day] * ecoregionNumSites;
-                            //ecoregionAverageRelativeHumidity += weatherData.DailyMinRH[day] * ecoregionNumSites;
                         }
                         catch
                         {
@@ -278,10 +283,6 @@ namespace Landis.Extension.Scrapple
                         }
                     }
                 }
-
-                //double landscapeAverageFireWeatherIndex = ecoregionAverageFireWeatherIndex / (double) modelCore.Landscape.ActiveSiteCount;
-                //double landscapeAverageTemperature = ecoregionAverageTemperature / (double)modelCore.Landscape.ActiveSiteCount;
-                //double landscapeAverageRelHumidity = ecoregionAverageRelativeHumidity / (double)modelCore.Landscape.ActiveSiteCount;
 
                 modelCore.UI.WriteLine("   Processing landscape for Fire events.  Day={0}, FWI={1}", day, landscapeAverageFireWeatherIndex);
 

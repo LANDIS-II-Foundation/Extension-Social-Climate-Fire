@@ -27,8 +27,6 @@ namespace Landis.Extension.Scrapple
 
         public InputParameterParser()
         {
-            //Edu.Wisc.Forest.Flel.Util.Percentage p = new Edu.Wisc.Forest.Flel.Util.Percentage();
-            // RegisterForInputValues();
             this.speciesDataset = PlugIn.ModelCore.Species;
             this.speciesLineNums = new Dictionary<string, int>();
             this.speciesName = new InputVar<string>("Species");
@@ -111,6 +109,46 @@ namespace Landis.Extension.Scrapple
             InputVar<string> rxSuppressionMapFile = new InputVar<string>("RxSuppressionMap");
             ReadVar(rxSuppressionMapFile);
             parameters.RxSuppressionMap = rxSuppressionMapFile.Value;
+
+            //----------------------------------------------------------
+            // Read in the table of dynamic ecoregions:
+
+            if (ReadOptionalName("DynamicAccidentalSuppressionMaps"))
+            {
+
+                InputVar<string> mapName = new InputVar<string>("Dynamic Suppression Map Name");
+                InputVar<int> year = new InputVar<int>("Year to read in new Suppression Map");
+
+                double previousYear = 0;
+
+                while (!AtEndOfInput && CurrentName != "GroundSlopeMap")
+                {
+                    StringReader currentLine = new StringReader(CurrentLine);
+
+                    IDynamicSuppressionMap dynSuppMap = new DynamicSuppressionMap();
+                    parameters.DynamicSuppressionMaps.Add(dynSuppMap);
+
+                    ReadValue(year, currentLine);
+                    dynSuppMap.Year = year.Value;
+
+                    if (year.Value.Actual <= previousYear)
+                    {
+                        throw new InputValueException(year.Value.String,
+                            "Year must > the year ({0}) of the preceeding ecoregion map",
+                            previousYear);
+                    }
+
+                    previousYear = year.Value.Actual;
+
+                    ReadValue(mapName, currentLine);
+                    dynSuppMap.MapName = mapName.Value;
+
+                    CheckNoDataAfter("the " + mapName.Name + " column",
+                                     currentLine);
+                    GetNextLine();
+                }
+            }
+
 
             // Load Ground Slope Data
             InputVar<string> groundSlopeFile = new InputVar<string>("GroundSlopeMap");
