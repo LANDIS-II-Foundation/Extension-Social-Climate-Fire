@@ -5,9 +5,9 @@
     <AssemblyName>Landis.Extension.Scrapple-v2</AssemblyName>
     <AssemblyTitle>Landis.Extension.Scrapple-v2</AssemblyTitle>
     <AssemblyCopyright>Landis-II-Foundation</AssemblyCopyright>
-    <AssemblyVersion>2.3.5</AssemblyVersion>
-    <Version>2.3.5</Version>
-    <FileVersion>2.3.5</FileVersion>
+    <AssemblyVersion>2.3.6</AssemblyVersion>
+    <Version>2.3.6</Version>
+    <FileVersion>2.3.6</FileVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/LANDIS-II-Foundation/Extension-SCRAPPLE</RepositoryUrl>

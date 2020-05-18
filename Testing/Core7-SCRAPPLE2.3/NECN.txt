@@ -101,11 +101,11 @@ Hardwoods	2	23.0	35.0	0.05	7.0	0.3	-0.8	5000	20	0.2	0.1	1.0	0.002	10	9	0.1	0.1
 Shrub		3		23.0	38.0	0.05	8.0		0.3		-0.8	500			5		0.2		0.1		1.0		0.002	10		9		0.1		0.1
 
 FireReductionParameters
->>	Severity	WoodLitter	Litter	SOM
->>	Fire		Reduct		Reduct	Reduction
-	1		0.0		0.5	0.5
-	2		0.0		0.75	0.5
-	3		0.0		1.0	0.5
+>>	Severity	WoodLitter	Litter	CohortWood	CohortLeaf	SOM
+>>	Fire		Reduct		Reduct	Reduct		Reduct		Reduction
+	1		0.2		0.5	0.1		0.75		0.5
+	2		0.3		0.75	0.15		1.0		0.5
+	3		0.4		1.0	0.2		1.0		0.5
 
 HarvestReductionParameters
 >>	Name		WoodLitter	Litter	SOM		CohortWood	CohortLeaf

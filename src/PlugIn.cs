@@ -42,8 +42,8 @@ namespace Landis.Extension.Scrapple
 
 
         public static int FutureClimateBaseYear;
-        public static Dictionary<int, int> sitesPerEcoregions;
-        public static Dictionary<int, double> fractionSitesPerEcoregions;
+        public static Dictionary<int, int> sitesPerClimateRegion;
+        public static Dictionary<int, double> fractionSitesPerClimateRegion;
         public static int ActualYear;
         public static int EventID = 0;
 
@@ -135,24 +135,24 @@ namespace Landis.Extension.Scrapple
                 MapUtility.ReadMap(Parameters.RxZonesMap, SiteVars.RxZones);
             MetadataHandler.InitializeMetadata(Parameters.Timestep, ModelCore);
 
-            sitesPerEcoregions = new Dictionary<int, int>();
+            sitesPerClimateRegion = new Dictionary<int, int>();
 
             foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
             {
                 IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
-                if (!sitesPerEcoregions.ContainsKey(ecoregion.Index))
-                    sitesPerEcoregions.Add(ecoregion.Index, 1);
+                if (!sitesPerClimateRegion.ContainsKey(ecoregion.Index))
+                    sitesPerClimateRegion.Add(ecoregion.Index, 1);
                 else
-                    sitesPerEcoregions[ecoregion.Index]++;
+                    sitesPerClimateRegion[ecoregion.Index]++;
 
             }
 
-            fractionSitesPerEcoregions = new Dictionary<int, double>();
+            fractionSitesPerClimateRegion = new Dictionary<int, double>();
             foreach (IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
             {
-                if (sitesPerEcoregions.ContainsKey(ecoregion.Index))
+                if (sitesPerClimateRegion.ContainsKey(ecoregion.Index))
                 {
-                    fractionSitesPerEcoregions.Add(ecoregion.Index, ((double)sitesPerEcoregions[ecoregion.Index] / (double)modelCore.Landscape.ActiveSiteCount));
+                    fractionSitesPerClimateRegion.Add(ecoregion.Index, ((double)sitesPerClimateRegion[ecoregion.Index] / (double)modelCore.Landscape.ActiveSiteCount));
                 }
             }
 
@@ -231,7 +231,7 @@ namespace Landis.Extension.Scrapple
 
             modelCore.UI.WriteLine("   Next, shuffle ignition sites...");
             // Get the active sites from the landscape and shuffle them 
-            // Sites are weighted for ignition in the Shuffle method, based on the respective inputs maps.
+            // Sites are weighted for ignition in the Ether.WeightedSelector Shuffle method, based on the respective inputs maps.
             int numSites = 0;
             weightedRxSites = PreShuffleEther(SiteVars.RxFireWeight, out numSites);
             int numRxSites = numSites;
@@ -240,6 +240,7 @@ namespace Landis.Extension.Scrapple
             weightedLightningSites = PreShuffleEther(SiteVars.LightningFireWeight, out numSites);
             int numLightningSites = numSites;
 
+            // Deprecated shuffling:
             //List < ActiveSite> shuffledLightningFireSites = Shuffle(activeLightningSites, SiteVars.LightningFireWeight, lightningTotalWeight);
             //List<ActiveSite> shuffledRxFireSites = Shuffle(activeRxSites, SiteVars.RxFireWeight, rxTotalWeight);
             //List<ActiveSite> shuffledAccidentalFireSites = Shuffle(activeAccidentalSites, SiteVars.AccidentalFireWeight, accidentalTotalWeight);
@@ -255,32 +256,40 @@ namespace Landis.Extension.Scrapple
                 double landscapeAverageRelHumidity = 0.0;
                 // number of fires get initilized to 0 every timestep
 
-                foreach (IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
+                foreach (IEcoregion climateRegion in PlugIn.ModelCore.Ecoregions)
                 {
-                    if (sitesPerEcoregions.ContainsKey(ecoregion.Index))
+                    if (sitesPerClimateRegion.ContainsKey(climateRegion.Index))
                     {
                         //if (sitesPerEcoregions.ContainsKey(ecoregion.Index))
-                        double ecoregionFractionSites = (double) fractionSitesPerEcoregions[ecoregion.Index];
+                        double climateRegionFractionSites = (double) fractionSitesPerClimateRegion[climateRegion.Index];
 
                         try
                         {
-                            weatherData = Climate.Future_DailyData[ActualYear][ecoregion.Index];
+                            weatherData = Climate.Future_DailyData[ActualYear][climateRegion.Index];
                         }
                         catch
                         {
-                            throw new UninitializedClimateData(string.Format("Climate data could not be found in Run(). Year: {0} in ecoregion: {1}", ActualYear, ecoregion.Name));
+                            throw new UninitializedClimateData(string.Format("Climate data could not be found in Run(). Year: {0} in ecoregion: {1}", ActualYear, climateRegion.Name));
                         }
 
                         try
                         {
-                            landscapeAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * ecoregionFractionSites;
-                            landscapeAverageTemperature += weatherData.DailyMaxTemp[day] * ecoregionFractionSites;
-                            landscapeAverageRelHumidity += weatherData.DailyMinRH[day] * ecoregionFractionSites;
+                            landscapeAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * climateRegionFractionSites;
+                            landscapeAverageTemperature += weatherData.DailyMaxTemp[day] * climateRegionFractionSites;
+                            landscapeAverageRelHumidity += weatherData.DailyMinRH[day] * climateRegionFractionSites;
                         }
                         catch
                         {
-                            throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found in Run(). Year: {0}, day: {1}, ecoregion: {2}, NumSites={3}", ActualYear, day, ecoregion.Name, sitesPerEcoregions[ecoregion.Index]));
+                            throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found in Run(). Year: {0}, day: {1}, climate region: {2}, NumSites={3}", ActualYear, day, climateRegion.Name, sitesPerClimateRegion[climateRegion.Index]));
                         }
+
+                        if (Climate.Future_DailyData[PlugIn.ActualYear][climateRegion.Index].DailyRH[day] < 0)
+                        {
+                            string mesg = string.Format("Relative Humidity not included in the climate data.  (RH is required to calculate FWI.) Year: {0}, day: {1}, climate region: {2}, NumSites={3}", ActualYear, day, climateRegion.Name, sitesPerClimateRegion[climateRegion.Index]);
+                            throw new System.ApplicationException(mesg);
+                        }
+
+
                     }
                 }
 
@@ -312,7 +321,6 @@ namespace Landis.Extension.Scrapple
 
                 // Ignite Lightning Fires FWI must be > .10 
                 PlugIn.ModelCore.UI.WriteLine("   Generating lightning fires...");
-                //if (shuffledLightningFireSites.Count > 0 && landscapeAverageFireWeatherIndex >= 10.0)
                 if (numLightningSites > 0 && landscapeAverageFireWeatherIndex >= 10.0)
                 {
                     bool fire = false;
@@ -440,7 +448,6 @@ namespace Landis.Extension.Scrapple
 
             string[] paths3 = { "scrapple-fire", "fire-intensity-{timestep}.img" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths3), currentTime);
-            //path = MapNames.ReplaceTemplateVars("scrapple-fire/fire-intensity-{timestep}.img", currentTime);
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
                 IntPixel pixel = outputRaster.BufferPixel;
@@ -464,7 +471,6 @@ namespace Landis.Extension.Scrapple
 
             string[] paths4 = { "scrapple-fire", "fire-spread-probability-{timestep}.img" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths4), currentTime);
-            //path = MapNames.ReplaceTemplateVars("scrapple-fire/fire-spread-probability-{timestep}.img", currentTime);
             using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
             {
                 ShortPixel pixel = outputRaster.BufferPixel;
@@ -488,7 +494,6 @@ namespace Landis.Extension.Scrapple
 
             string[] paths5 = { "scrapple-fire", "day-of-fire-{timestep}.img" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths5), currentTime);
-            //path = MapNames.ReplaceTemplateVars("scrapple-fire/day-of-fire-{timestep}.img", currentTime);
             using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
             {
                 ShortPixel pixel = outputRaster.BufferPixel;
@@ -512,7 +517,6 @@ namespace Landis.Extension.Scrapple
 
             string[] paths6 = { "scrapple-fire", "smolder-consumption-{timestep}.img" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths6), currentTime);
-            //path = MapNames.ReplaceTemplateVars("scrapple-fire/smolder-consumption-{timestep}.img", currentTime);
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
                 IntPixel pixel = outputRaster.BufferPixel;
@@ -536,7 +540,6 @@ namespace Landis.Extension.Scrapple
 
             string[] paths7 = { "scrapple-fire", "flaming-consumptions-{timestep}.img" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths7), currentTime);
-            //path = MapNames.ReplaceTemplateVars("scrapple-fire/flaming-consumption-{timestep}.img", currentTime);
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
                 IntPixel pixel = outputRaster.BufferPixel;
@@ -560,7 +563,6 @@ namespace Landis.Extension.Scrapple
 
             string[] paths8 = { "scrapple-fire", "event-ID-{timestep}.img" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths8), currentTime);
-            //path = MapNames.ReplaceTemplateVars("scrapple-fire/event-ID-{timestep}.img", currentTime);
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
                 IntPixel pixel = outputRaster.BufferPixel;
@@ -632,6 +634,8 @@ namespace Landis.Extension.Scrapple
                 numCellsSeverity3 += fireEvent.NumberCellsSeverity3;
             return true;
         }
+
+        // This deprecated method uses a brute force sort that is much slower.
         private static void Ignite(Ignition ignitionType, List<ActiveSite> shuffledFireSites, int day, double fireWeatherIndex)
         {
             while (shuffledFireSites.Count() > 0 && SiteVars.Disturbed[shuffledFireSites.First()] == true)
