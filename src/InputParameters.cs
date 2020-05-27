@@ -26,6 +26,10 @@ namespace Landis.Extension.Scrapple
         double LightningIgnitionB1 { get; set; }
         double AccidentalFireIgnitionB0 { get; set; }
         double AccidentalFireIgnitionB1 { get; set; }
+        double LightningIgnitionBinomialB0 { get; set; }
+        double LightningIgnitionBinomialB1 { get; set; }
+        double AccidentalFireIgnitionBinomialB0 { get; set; }
+        double AccidentalFireIgnitionBinomialB1 { get; set; }
         double MaxFineFuels { get; set; }
         List<IDynamicIgnitionMap> DynamicRxIgnitionMaps { get; }
         List<IDynamicSuppressionMap> DynamicSuppressionMaps { get; }
@@ -92,6 +96,10 @@ namespace Landis.Extension.Scrapple
         private double lightningIgnitionB1;
         private double accidentalFireIgnitionB0;
         private double accidentalFireIgnitionB1;
+        private double lightningIgnitionBinomialB0;
+        private double lightningIgnitionBinomialB1;
+        private double accidentalFireIgnitionBinomialB0;
+        private double accidentalFireIgnitionBinomialB1;
         private double maxFineFuels;
 
         private double maxRxWindSpeed;
@@ -300,6 +308,56 @@ namespace Landis.Extension.Scrapple
             }
         }
 
+        //---------------------------------------------------------------------
+        public double LightningIgnitionBinomialB0
+        {
+            get
+            {
+                return lightningIgnitionBinomialB0;
+            }
+            set
+            {
+                lightningIgnitionBinomialB0 = value;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        public double LightningIgnitionBinomialB1
+        {
+            get
+            {
+                return lightningIgnitionBinomialB1;
+            }
+            set
+            {
+                lightningIgnitionBinomialB1 = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public double AccidentalFireIgnitionBinomialB0
+        {
+            get
+            {
+                return accidentalFireIgnitionBinomialB0;
+            }
+            set
+            {
+                accidentalFireIgnitionBinomialB0 = value;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        public double AccidentalFireIgnitionBinomialB1
+        {
+            get
+            {
+                return accidentalFireIgnitionBinomialB1;
+            }
+            set
+            {
+                accidentalFireIgnitionBinomialB1 = value;
+            }
+        }
         //---------------------------------------------------------------------
         public double MaxFineFuels
         {

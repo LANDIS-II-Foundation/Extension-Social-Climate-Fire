@@ -66,6 +66,8 @@ namespace Landis.Extension.Scrapple
         private List<IDynamicIgnitionMap> dynamicRxIgns;
         private List<IDynamicSuppressionMap> dynamicSuppress;
 
+        public static bool ZipTest = false;
+
         // VS: hasn't been properly integrated into Climate Library.
         //int daysPerYear = (AnnualClimate.IsLeapYear(actualYear) ? true : false) ? 366 : 365;
 
@@ -599,11 +601,6 @@ namespace Landis.Extension.Scrapple
                 b0 = Parameters.LightningIgnitionB0;
                 b1 = Parameters.LightningIgnitionB1;
             }
-            //if (ignitionType == Ignition.Rx)
-            //{
-            //    b0 = parameters.RxFireIgnitionB0;
-            //    b1 = parameters.RxFireIgnitionB1;
-            //}
             if (ignitionType == Ignition.Accidental)
             {
                 b0 = Parameters.AccidentalFireIgnitionB0;
@@ -611,10 +608,43 @@ namespace Landis.Extension.Scrapple
             }
 
             int numIgnitions = 0;
-            double possibleIgnitions = Math.Pow(Math.E, (b0 + (b1* fireWeatherIndex)));
-            int floorPossibleIginitions = (int)Math.Floor(possibleIgnitions);
-            numIgnitions +=  floorPossibleIginitions;
-            numIgnitions += (modelCore.GenerateUniform() <= (possibleIgnitions - (double)floorPossibleIginitions) ? 1 : 0);
+            if (!ZipTest)
+            {
+                double possibleIgnitions = Math.Pow(Math.E, (b0 + (b1 * fireWeatherIndex)));
+                int floorPossibleIginitions = (int)Math.Floor(possibleIgnitions);
+                numIgnitions += floorPossibleIginitions;
+                numIgnitions += (modelCore.GenerateUniform() <= (possibleIgnitions - (double)floorPossibleIginitions) ? 1 : 0);
+            } else
+            {
+                double binomb0 = 0.0;
+                double binomb1 = 0.0;
+                if (ignitionType == Ignition.Lightning)
+                {
+                    binomb0 = Parameters.LightningIgnitionBinomialB0;
+                    binomb1 = Parameters.LightningIgnitionBinomialB1;
+                }
+                if (ignitionType == Ignition.Accidental)
+                {
+                    binomb0 = Parameters.AccidentalFireIgnitionBinomialB0;
+                    binomb1 = Parameters.AccidentalFireIgnitionBinomialB1;
+                }
+
+                int BinomDraw = new Random().Next(0, 2);
+                double alpha = Math.Pow(Math.E, (binomb0 + (binomb1 * fireWeatherIndex)));
+                double zerosprob = alpha / (alpha + 1);
+                if (BinomDraw <= zerosprob)
+                {
+
+                    double possibleIgnitions = Math.Pow(Math.E, (b0 + (b1 * fireWeatherIndex)));
+                    int floorPossibleIginitions = (int)Math.Floor(possibleIgnitions);
+                    numIgnitions += floorPossibleIginitions;
+                    numIgnitions += (modelCore.GenerateUniform() <= (possibleIgnitions - (double)floorPossibleIginitions) ? 1 : 0);
+                }
+                else
+                {
+                    numIgnitions = 0;
+                }
+            }
             return numIgnitions;
         }
 

@@ -168,14 +168,6 @@ namespace Landis.Extension.Scrapple
             ReadVar(lightningB1);
             parameters.LightningIgnitionB1 = lightningB1.Value;
 
-            //InputVar<double> rxB0 = new InputVar<double>("RxFireIgnitionsB0");
-            //ReadVar(rxB0);
-            //parameters.LightningIgnitionB0 = rxB0.Value;
-
-            //InputVar<double> rxB1 = new InputVar<double>("RxFireIgnitionsB1");
-            //ReadVar(rxB1);
-            //parameters.LightningIgnitionB1 = rxB1.Value;
-
             InputVar<double> accidentalB0 = new InputVar<double>("AccidentalIgnitionsB0");
             ReadVar(accidentalB0);
             parameters.AccidentalFireIgnitionB0 = accidentalB0.Value;
@@ -183,6 +175,30 @@ namespace Landis.Extension.Scrapple
             InputVar<double> accidentalB1 = new InputVar<double>("AccidentalIgnitionsB1");
             ReadVar(accidentalB1);
             parameters.AccidentalFireIgnitionB1 = accidentalB1.Value;
+
+            InputVar<bool> zip = new InputVar<bool>("ZIPTesting");
+            if (ReadOptionalVar(zip))
+            {
+                PlugIn.ZipTest = true;
+
+                InputVar<double> lightningBinomialB0 = new InputVar<double>("LightningIgnitionsBinomialB0");
+                ReadVar(lightningBinomialB0);
+                parameters.LightningIgnitionBinomialB0 = lightningBinomialB0.Value;
+
+                InputVar<double> lightningBinomialB1 = new InputVar<double>("LightningIgnitionsBinomialB1");
+                ReadVar(lightningBinomialB1);
+                parameters.LightningIgnitionBinomialB1 = lightningBinomialB1.Value;
+
+                InputVar<double> accidentalBinomialB0 = new InputVar<double>("AccidentalIgnitionsBinomialB0");
+                ReadVar(accidentalBinomialB0);
+                parameters.AccidentalFireIgnitionBinomialB0 = accidentalBinomialB0.Value;
+
+                InputVar<double> accidentalBinomialB1 = new InputVar<double>("AccidentalIgnitionsBinomialB1");
+                ReadVar(accidentalBinomialB1);
+                parameters.AccidentalFireIgnitionBinomialB1 = accidentalBinomialB1.Value;
+
+            }
+
 
             InputVar<double> maxFF = new InputVar<double>("MaximumFineFuels");
             ReadVar(maxFF);
