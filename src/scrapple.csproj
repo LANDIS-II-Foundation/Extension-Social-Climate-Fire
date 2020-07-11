@@ -5,9 +5,9 @@
     <AssemblyName>Landis.Extension.Scrapple-v2</AssemblyName>
     <AssemblyTitle>Landis.Extension.Scrapple-v2</AssemblyTitle>
     <AssemblyCopyright>Landis-II-Foundation</AssemblyCopyright>
-    <AssemblyVersion>2.3.7</AssemblyVersion>
-    <Version>2.3.7</Version>
-    <FileVersion>2.3.7</FileVersion>
+    <AssemblyVersion>2.4</AssemblyVersion>
+    <Version>2.4</Version>
+    <FileVersion>2.4</FileVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/LANDIS-II-Foundation/Extension-SCRAPPLE</RepositoryUrl>
@@ -43,7 +43,7 @@
       <HintPath>lib\Landis.Library.BiomassCohorts-v3.dll</HintPath>
     </Reference>
     <Reference Include="Landis.Library.Climate-v4">
-      <HintPath>lib\Landis.Library.Climate-v4.dll</HintPath>
+      <HintPath>lib\Landis.Library.Climate-v4.1.dll</HintPath>
     </Reference>
     <Reference Include="Landis.Library.Cohorts-v2">
       <HintPath>lib\Landis.Library.Cohorts-v2.dll</HintPath>
