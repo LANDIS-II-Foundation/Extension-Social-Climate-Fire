@@ -126,7 +126,6 @@ namespace Landis.Extension.Scrapple
             */
             ///******************** DEBUGGER END *********************
 
-            // Initilize the FireRegions Maps
             modelCore.UI.WriteLine("Initializing SCRAPPLE Fire...");
 
             dynamicRxIgns = Parameters.DynamicRxIgnitionMaps;
@@ -157,6 +156,8 @@ namespace Landis.Extension.Scrapple
                     fractionSitesPerClimateRegion.Add(ecoregion.Index, ((double)sitesPerClimateRegion[ecoregion.Index] / (double)modelCore.Landscape.ActiveSiteCount));
                 }
             }
+
+            SiteVars.TimeOfLastFire.ActiveSiteValues = -999;  // default value to distinguish from recent fires.
 
             //double totalWeight = 0.0;
             //activeRxSites = PreShuffle(SiteVars.RxFireWeight, out totalWeight);
