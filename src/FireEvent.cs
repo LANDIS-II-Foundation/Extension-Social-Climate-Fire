@@ -181,6 +181,7 @@ namespace Landis.Extension.Scrapple
                 fireSites.RemoveAt(0);
 
                 SiteVars.DayOfFire[targetSite] = (ushort) day;
+                SiteVars.TimeOfLastFire[targetSite] = PlugIn.ModelCore.CurrentTime;
                 dailySpreadArea += PlugIn.ModelCore.CellArea;
 
                 if (day > PlugIn.DaysPerYear)
