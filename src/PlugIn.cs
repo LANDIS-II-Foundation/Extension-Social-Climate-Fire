@@ -64,6 +64,8 @@ namespace Landis.Extension.Scrapple
         public static int DaysPerYear = 364;
 
         private List<IDynamicIgnitionMap> dynamicRxIgns;
+        private List<IDynamicIgnitionMap> dynamicLightningIgns;
+        private List<IDynamicIgnitionMap> dynamicAccidentalIgns;
         private List<IDynamicSuppressionMap> dynamicSuppress;
 
         public static bool ZipTest = false;
@@ -128,7 +130,9 @@ namespace Landis.Extension.Scrapple
 
             modelCore.UI.WriteLine("Initializing SCRAPPLE Fire...");
 
-            dynamicRxIgns = Parameters.DynamicRxIgnitionMaps;
+            dynamicRxIgns           = Parameters.DynamicRxIgnitionMaps;
+            dynamicLightningIgns    = Parameters.DynamicLightningIgnitionMaps;
+            dynamicAccidentalIgns   = Parameters.DynamicAccidentalIgnitionMaps;
             dynamicSuppress = Parameters.DynamicSuppressionMaps;
             MapUtility.Initilize(Parameters.LighteningFireMap, Parameters.AccidentalFireMap, Parameters.RxFireMap,
                                  Parameters.LighteningSuppressionMap, Parameters.AccidentalSuppressionMap, Parameters.RxSuppressionMap);
@@ -188,12 +192,12 @@ namespace Landis.Extension.Scrapple
             SiteVars.SpecialDeadWood.ActiveSiteValues = 0;
             SiteVars.EventID.ActiveSiteValues = 0;
 
-            foreach (IDynamicIgnitionMap dynamicIgnitions in dynamicRxIgns)
+            foreach (IDynamicIgnitionMap dynamicRxIgnitions in dynamicRxIgns)
             {
-                if (dynamicIgnitions.Year == PlugIn.modelCore.CurrentTime)
+                if (dynamicRxIgnitions.Year == PlugIn.modelCore.CurrentTime)
                 {
-                    PlugIn.ModelCore.UI.WriteLine("   Reading in new Fire Regions Map {0}.", dynamicIgnitions.MapName);
-                    MapUtility.ReadMap(dynamicIgnitions.MapName, SiteVars.RxFireWeight);
+                    PlugIn.ModelCore.UI.WriteLine("   Reading in new Ignitions Maps {0}.", dynamicRxIgnitions.MapName);
+                    MapUtility.ReadMap(dynamicRxIgnitions.MapName, SiteVars.RxFireWeight);
 
                     double totalWeight = 0.0;
                     activeRxSites = PreShuffle(SiteVars.RxFireWeight, out totalWeight);
@@ -203,6 +207,34 @@ namespace Landis.Extension.Scrapple
 
             }
 
+            foreach (IDynamicIgnitionMap dynamicLxIgns in dynamicLightningIgns)
+            {
+                if (dynamicLxIgns.Year == PlugIn.modelCore.CurrentTime)
+                {
+                    PlugIn.ModelCore.UI.WriteLine("   Reading in new Ignitions Maps {0}.", dynamicLxIgns.MapName);
+                    MapUtility.ReadMap(dynamicLxIgns.MapName, SiteVars.LightningFireWeight);
+
+                    double totalWeight = 0.0;
+                    activeLightningSites = PreShuffle(SiteVars.LightningFireWeight, out totalWeight);
+                    lightningTotalWeight = totalWeight;
+
+                }
+
+            }
+            foreach (IDynamicIgnitionMap dynamicAxIgns in dynamicAccidentalIgns)
+            {
+                if (dynamicAxIgns.Year == PlugIn.modelCore.CurrentTime)
+                {
+                    PlugIn.ModelCore.UI.WriteLine("   Reading in new Ignitions Maps {0}.", dynamicAxIgns.MapName);
+                    MapUtility.ReadMap(dynamicAxIgns.MapName, SiteVars.AccidentalFireWeight);
+
+                    double totalWeight = 0.0;
+                    activeAccidentalSites = PreShuffle(SiteVars.AccidentalFireWeight, out totalWeight);
+                    accidentalTotalWeight = totalWeight;
+
+                }
+
+            }
             foreach (IDynamicSuppressionMap dynamicSuppressMaps in dynamicSuppress)
             {
                 if (dynamicSuppressMaps.Year == PlugIn.modelCore.CurrentTime)

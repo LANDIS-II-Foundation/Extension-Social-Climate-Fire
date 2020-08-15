@@ -32,6 +32,8 @@ namespace Landis.Extension.Scrapple
         double AccidentalFireIgnitionBinomialB1 { get; set; }
         double MaxFineFuels { get; set; }
         List<IDynamicIgnitionMap> DynamicRxIgnitionMaps { get; }
+        List<IDynamicIgnitionMap> DynamicLightningIgnitionMaps { get; }
+        List<IDynamicIgnitionMap> DynamicAccidentalIgnitionMaps { get; }
         List<IDynamicSuppressionMap> DynamicSuppressionMaps { get; }
 
         double RxMaxWindSpeed { get; set; }
@@ -86,6 +88,8 @@ namespace Landis.Extension.Scrapple
         private string accidentalFireMap;
         private string rxFireMap;
         private List<IDynamicIgnitionMap> dynamicRxIgnitions;
+        private List<IDynamicIgnitionMap> dynamicLightningIgnitions;
+        private List<IDynamicIgnitionMap> dynamicAccidentalIgnitions;
         private List<IDynamicSuppressionMap> dynamicSuppression;
 
         private string lighteningSuppressionMap;
@@ -196,6 +200,24 @@ namespace Landis.Extension.Scrapple
             get
             {
                 return dynamicRxIgnitions;
+            }
+        }
+        //---------------------------------------------------------------------
+
+        public List<IDynamicIgnitionMap> DynamicLightningIgnitionMaps
+        {
+            get
+            {
+                return dynamicLightningIgnitions;
+            }
+        }
+        //---------------------------------------------------------------------
+
+        public List<IDynamicIgnitionMap> DynamicAccidentalIgnitionMaps
+        {
+            get
+            {
+                return dynamicAccidentalIgnitions;
             }
         }
         //---------------------------------------------------------------------
@@ -706,6 +728,8 @@ namespace Landis.Extension.Scrapple
             damages_severity2 = new List<IFireDamage>();
             damages_severity3 = new List<IFireDamage>();
             dynamicRxIgnitions = new List<IDynamicIgnitionMap>();
+            dynamicLightningIgnitions = new List<IDynamicIgnitionMap>();
+            dynamicAccidentalIgnitions = new List<IDynamicIgnitionMap>();
             dynamicSuppression = new List<IDynamicSuppressionMap>();
         }
         //---------------------------------------------------------------------

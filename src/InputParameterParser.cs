@@ -51,22 +51,100 @@ namespace Landis.Extension.Scrapple
             ReadVar(humanIgnitionsMapFile);
             parameters.AccidentalFireMap = humanIgnitionsMapFile.Value;
 
+            //----------------------------------------------------------
+            // Read in the table of dynamic ignitions:
+
+            if (ReadOptionalName("DynamicAccidentalIgnitionMaps"))
+            {
+
+                InputVar<string> mapName = new InputVar<string>("Dynamic Accidental Ignition Map Name");
+                InputVar<int> year = new InputVar<int>("Year to read in new ignition map");
+
+                double previousYear = 0;
+
+                while (!AtEndOfInput && CurrentName != "LightningIgnitionsMap")
+                {
+                    StringReader currentLine = new StringReader(CurrentLine);
+
+                    IDynamicIgnitionMap dynAxIgnMap = new DynamicIgnitionMap();
+                    parameters.DynamicAccidentalIgnitionMaps.Add(dynAxIgnMap);
+
+                    ReadValue(year, currentLine);
+                    dynAxIgnMap.Year = year.Value;
+
+                    if (year.Value.Actual <= previousYear)
+                    {
+                        throw new InputValueException(year.Value.String,
+                            "Year must > the year ({0}) of the preceeding ecoregion map",
+                            previousYear);
+                    }
+
+                    previousYear = year.Value.Actual;
+
+                    ReadValue(mapName, currentLine);
+                    dynAxIgnMap.MapName = mapName.Value;
+
+                    CheckNoDataAfter("the " + mapName.Name + " column",
+                                     currentLine);
+                    GetNextLine();
+                }
+            }
+
             InputVar<string> lighteningIgnitionsMapFile = new InputVar<string>("LightningIgnitionsMap");
             ReadVar(lighteningIgnitionsMapFile);
             parameters.LighteningFireMap = lighteningIgnitionsMapFile.Value;
+
+            //----------------------------------------------------------
+            // Read in the table of dynamic ignitions:
+
+            if (ReadOptionalName("DynamicLightningIgnitionMaps"))
+            {
+
+                InputVar<string> mapName = new InputVar<string>("Dynamic Lightning Ignition Map Name");
+                InputVar<int> year = new InputVar<int>("Year to read in new ignition map");
+
+                double previousYear = 0;
+
+                while (!AtEndOfInput && CurrentName != "RxIgnitionsMap")
+                {
+                    StringReader currentLine = new StringReader(CurrentLine);
+
+                    IDynamicIgnitionMap dynLxIgnMap = new DynamicIgnitionMap();
+                    parameters.DynamicLightningIgnitionMaps.Add(dynLxIgnMap);
+
+                    ReadValue(year, currentLine);
+                    dynLxIgnMap.Year = year.Value;
+
+                    if (year.Value.Actual <= previousYear)
+                    {
+                        throw new InputValueException(year.Value.String,
+                            "Year must > the year ({0}) of the preceeding ecoregion map",
+                            previousYear);
+                    }
+
+                    previousYear = year.Value.Actual;
+
+                    ReadValue(mapName, currentLine);
+                    dynLxIgnMap.MapName = mapName.Value;
+
+                    CheckNoDataAfter("the " + mapName.Name + " column",
+                                     currentLine);
+                    GetNextLine();
+                }
+            }
 
             InputVar<string> rxIgnitionsMapFile = new InputVar<string>("RxIgnitionsMap");
             ReadVar(rxIgnitionsMapFile);
             parameters.RxFireMap = rxIgnitionsMapFile.Value;
 
             //----------------------------------------------------------
-            // Read in the table of dynamic ecoregions:
+            // Read in the table of dynamic Rx ignitions:
 
             if (ReadOptionalName("DynamicRxIgnitionMaps"))
             {
 
                 InputVar<string> mapName = new InputVar<string>("Dynamic Rx Ignition Map Name");
-                InputVar<int> year = new InputVar<int>("Year to read in new FireRegion Map");
+                InputVar<int> year = new InputVar<int>("Year to read in new ignitions map");
 
                 double previousYear = 0;
 
