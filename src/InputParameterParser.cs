@@ -189,7 +189,7 @@ namespace Landis.Extension.Scrapple
             parameters.RxSuppressionMap = rxSuppressionMapFile.Value;
 
             //----------------------------------------------------------
-            // Read in the table of dynamic ecoregions:
+            // Read in the table of dynamic suppression maps:
 
             if (ReadOptionalName("DynamicAccidentalSuppressionMaps"))
             {
