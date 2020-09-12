@@ -350,7 +350,7 @@ namespace Landis.Extension.Scrapple
                     }
                     if (fire)
                     {
-                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Accidental.ToString(), actualNumAccidentalFires, day);
+                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Accidental.ToString(), maxNumAccidentalFires, actualNumAccidentalFires, day);
                     }
                 }
 
@@ -373,7 +373,7 @@ namespace Landis.Extension.Scrapple
                     }
                     if (fire)
                     {
-                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Lightning.ToString(), maxNumLightningFires, day);
+                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Lightning.ToString(), maxNumLightningFires, actualNumLightningFires, day);
                     }
                 }
 
@@ -407,7 +407,7 @@ namespace Landis.Extension.Scrapple
                     }
                     if (fire)
                     {
-                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Rx.ToString(), Parameters.RxNumberDailyFires, day);
+                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Rx.ToString(), maxNumDailyRxFires, actualNumRxFires, day);
                     }
                 }
             }
@@ -729,13 +729,14 @@ namespace Landis.Extension.Scrapple
 
         //---------------------------------------------------------------------
 
-        public static void LogIgnition(int currentTime, double fwi, string type, int numIgns, int doy)
+        public static void LogIgnition(int currentTime, double fwi, string type, int attemptedNumIgns, int actualNumIgns, int doy)
         {
 
             ignitionsLog.Clear();
             IgnitionsLog ign = new IgnitionsLog();
             ign.SimulationYear = currentTime;
-            ign.AttemptedNumberIgnitions = numIgns;
+            ign.AttemptedNumberIgnitions = attemptedNumIgns;
+            ign.ActualNumberIgnitions = actualNumIgns;
             ign.DayOfYear = doy;
             ign.FireWeatherIndex = fwi;
             ign.IgnitionType = type;
