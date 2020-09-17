@@ -664,7 +664,7 @@ namespace Landis.Extension.Scrapple
                     binomb1 = Parameters.AccidentalFireIgnitionBinomialB1;
                 }
 
-                int BinomDraw = new Random().Next(0, 2);
+                double BinomDraw = ((double) new Random().Next(0, 20)) / 10.0;
                 double alpha = Math.Pow(Math.E, (binomb0 + (binomb1 * fireWeatherIndex)));
                 double zerosprob = alpha / (alpha + 1);
                 if (BinomDraw <= zerosprob)
