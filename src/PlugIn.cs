@@ -337,6 +337,7 @@ namespace Landis.Extension.Scrapple
                 {
                     bool fire = false;
                     int maxNumAccidentalFires = NumberOfIgnitions(Ignition.Accidental, landscapeAverageFireWeatherIndex);
+                    int logMaxNumAccidentalFires = maxNumAccidentalFires;
                     int actualNumAccidentalFires = 0;
                     while (maxNumAccidentalFires > 0)
                     {
@@ -350,7 +351,7 @@ namespace Landis.Extension.Scrapple
                     }
                     if (fire)
                     {
-                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Accidental.ToString(), maxNumAccidentalFires, actualNumAccidentalFires, day);
+                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Accidental.ToString(), logMaxNumAccidentalFires, actualNumAccidentalFires, day);
                     }
                 }
 
@@ -360,6 +361,7 @@ namespace Landis.Extension.Scrapple
                 {
                     bool fire = false;
                     int maxNumLightningFires = NumberOfIgnitions(Ignition.Lightning, landscapeAverageFireWeatherIndex);
+                    int logMaxNumLightningFires = maxNumLightningFires;
                     int actualNumLightningFires = 0;
                     while(maxNumLightningFires > 0)
                     {
@@ -373,7 +375,7 @@ namespace Landis.Extension.Scrapple
                     }
                     if (fire)
                     {
-                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Lightning.ToString(), maxNumLightningFires, actualNumLightningFires, day);
+                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Lightning.ToString(), logMaxNumLightningFires, actualNumLightningFires, day);
                     }
                 }
 
@@ -407,7 +409,7 @@ namespace Landis.Extension.Scrapple
                     }
                     if (fire)
                     {
-                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Rx.ToString(), maxNumDailyRxFires, actualNumRxFires, day);
+                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Rx.ToString(), Parameters.RxNumberDailyFires, actualNumRxFires, day);
                     }
                 }
             }
