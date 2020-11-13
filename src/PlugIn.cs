@@ -312,6 +312,7 @@ namespace Landis.Extension.Scrapple
                             landscapeAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * climateRegionFractionSites;
                             landscapeAverageTemperature += weatherData.DailyMaxTemp[day] * climateRegionFractionSites;
                             landscapeAverageRelHumidity += weatherData.DailyMinRH[day] * climateRegionFractionSites;
+                           // modelCore.UI.WriteLine("  Fire Weather Check Daily={0}, Average={1}", weatherData.DailyFireWeatherIndex[day], landscapeAverageFireWeatherIndex);
                         }
                         catch
                         {
@@ -328,12 +329,12 @@ namespace Landis.Extension.Scrapple
                     }
                 }
 
-                modelCore.UI.WriteLine("   Processing landscape for Fire events.  Day={0}, FWI={1}", day, landscapeAverageFireWeatherIndex);
-
-                // Ignite Accidental Fires. FWI must be > .10 
+             
+                
                 PlugIn.ModelCore.UI.WriteLine("   Generating accidental fires...");
                 // if (shuffledAccidentalFireSites.Count > 0 && landscapeAverageFireWeatherIndex >= 10.0)
-                if (numAccidentalSites > 0 && landscapeAverageFireWeatherIndex >= 10.0)
+                /// Removed FWI threshold ZR 11-12-20
+                if (numAccidentalSites > 0)
                 {
                     bool fire = false;
                     int maxNumAccidentalFires = NumberOfIgnitions(Ignition.Accidental, landscapeAverageFireWeatherIndex);
@@ -355,9 +356,9 @@ namespace Landis.Extension.Scrapple
                     }
                 }
 
-                // Ignite Lightning Fires FWI must be > .10 
+                /// Removed FWI threshold ZR 11-12-20
                 PlugIn.ModelCore.UI.WriteLine("   Generating lightning fires...");
-                if (numLightningSites > 0 && landscapeAverageFireWeatherIndex >= 10.0)
+                if (numLightningSites > 0)
                 {
                     bool fire = false;
                     int maxNumLightningFires = NumberOfIgnitions(Ignition.Lightning, landscapeAverageFireWeatherIndex);
@@ -645,15 +646,22 @@ namespace Landis.Extension.Scrapple
             int numIgnitions = 0;
             if (!ZipTest)
             {
-                double possibleIgnitions = Math.Pow(Math.E, (b0 + (b1 * fireWeatherIndex)));
-                numIgnitions = (int) Math.Round(possibleIgnitions, 0);
-                //int floorPossibleIginitions = (int)Math.Floor(possibleIgnitions);
-                //numIgnitions += floorPossibleIginitions;
-                //numIgnitions += (modelCore.GenerateUniform() <= (possibleIgnitions - (double)floorPossibleIginitions) ? 1 : 0);
+                //Draw from a poisson distribution  with lambda equal to the log link (b0 +b0 *fireweather )
+                double possibleIgnitions = ModelCore.PoissonDistribution.Lambda = Math.Pow(Math.E, (b0 + (b1 * fireWeatherIndex)));
+               // numIgnitions = (int) Math.Round(possibleIgnitions, 0);
+               //Because the LANDIS-II Lambda returns the population mean we transform it to the whole number + the probability of the remainder to get 
+               // a integer as the response. 
+               // Whole Number
+                int floorPossibleIginitions = (int)Math.Floor(possibleIgnitions);
+                numIgnitions += floorPossibleIginitions;
+                // Remainder 
+                numIgnitions += (modelCore.GenerateUniform() <= (possibleIgnitions - (double)floorPossibleIginitions) ? 1 : 0);
+                //modelCore.UI.WriteLine("   Processing landscape for Fire events.  Possible={0}, Rounded={1}", possibleIgnitions, numIgnitions);
             } else
-            {
+            {/// Zero Inflated: Requires two additional variables 
                 double binomb0 = 0.0;
                 double binomb1 = 0.0;
+                
                 if (ignitionType == Ignition.Lightning)
                 {
                     binomb0 = Parameters.LightningIgnitionBinomialB0;
@@ -664,19 +672,25 @@ namespace Landis.Extension.Scrapple
                     binomb0 = Parameters.AccidentalFireIgnitionBinomialB0;
                     binomb1 = Parameters.AccidentalFireIgnitionBinomialB1;
                 }
-
+                /// The Binomial portion of the draw: 
+                /// Probability of a zero is caculated then a random draw is checked agianst this 
+                /// If greater than the probability of zero the Poisson section is used. 
                 double BinomDraw = modelCore.NextDouble();
+                /// alpha= reverse logit link of the regression values and FWI
                 double alpha = Math.Pow(Math.E, (binomb0 + (binomb1 * fireWeatherIndex)));
                 double zerosprob = alpha / (alpha + 1);
-                if (BinomDraw <= zerosprob)
+                if (BinomDraw >= zerosprob)
                 {
-
-                    double possibleIgnitions = Math.Pow(Math.E, (b0 + (b1 * fireWeatherIndex)));
-                    numIgnitions = (int)Math.Round(possibleIgnitions, 0);
-
-                    //int floorPossibleIginitions = (int)Math.Floor(possibleIgnitions);
-                    //numIgnitions += floorPossibleIginitions;
-                    //numIgnitions += (modelCore.GenerateUniform() <= (possibleIgnitions - (double)floorPossibleIginitions) ? 1 : 0);
+                    /// If yes the mean of possion draw with reverse log link of regression variables. 
+                    double  possibleIgnitions=ModelCore.PoissonDistribution.Lambda = Math.Pow(Math.E, (b0 + (b1 * fireWeatherIndex)));
+                    ///Because the LANDIS-II Lambda returns the population mean we transform it to the whole number + the probability of the remainder to get 
+                    /// a integer as the response. 
+                    /// 
+                    /// Whole Number
+                    int floorPossibleIginitions = (int)Math.Floor(possibleIgnitions);
+                    numIgnitions += floorPossibleIginitions;
+                    /// Remainder 
+                    numIgnitions += (modelCore.GenerateUniform() <= (possibleIgnitions - (double)floorPossibleIginitions) ? 1 : 0);
                 }
                 else
                 {
