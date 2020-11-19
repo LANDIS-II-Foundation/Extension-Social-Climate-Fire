@@ -37,6 +37,7 @@ namespace Landis.Extension.Scrapple
         protected override IInputParameters Parse()
         {
             ReadLandisDataVar();
+            RegisterForInputValues();
 
             InputParameters parameters = new InputParameters();
             const string FireIntensityClass_1_DamageTable = "FireIntensityClass_1_DamageTable";
@@ -254,8 +255,8 @@ namespace Landis.Extension.Scrapple
             ReadVar(accidentalB1);
             parameters.AccidentalFireIgnitionB1 = accidentalB1.Value;
 
-            InputVar<IgnitionDistribution> igniteDistribution = new InputVar<IgnitionDistribution>("IgnitionDistribution");
-            if (ReadOptionalVar(igniteDistribution))
+            InputVar<IgnitionDistribution> igniteDist = new InputVar<IgnitionDistribution>("IgnitionDistribution");
+            if (ReadOptionalVar(igniteDist) && igniteDist.Value == IgnitionDistribution.ZeroInflatedPoisson)
             {
                 PlugIn.IgnitionDist = IgnitionDistribution.ZeroInflatedPoisson;
 
@@ -640,12 +641,11 @@ namespace Landis.Extension.Scrapple
         /// <summary>
         /// Registers the appropriate method for reading input values.
         /// </summary>
-        //public static void RegisterForInputValues()
-        //{
+        public static void RegisterForInputValues()
+        {
 
-        //    Edu.Wisc.Forest.Flel.Util.Type.SetDescription<Distribution>("Random Number Distribution");
-        //    InputValues.Register<Distribution>(DistParse);
-        //}
+            InputValues.Register<IgnitionDistribution>(IgnitionDistributionParse);
+        }
         //---------------------------------------------------------------------
 
         private void ValidatePath(InputValue<string> path)

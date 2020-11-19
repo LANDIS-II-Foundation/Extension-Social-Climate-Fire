@@ -415,7 +415,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            modelCore.UI.WriteLine("   Done processing days.  Next, write maps and summary log files. ...");
+            modelCore.UI.WriteLine("   Done processing fire days.  Next, write fire maps and summary fire files. ...");
 
             WriteMaps(PlugIn.ModelCore.CurrentTime);
 

@@ -21,11 +21,18 @@ RxSuppressionMap		./suppress3.img
 GroundSlopeMap GroundSlope.gis
 UphillSlopeAzimuthMap  UphillSlope.gis
 
->>Updated on 2/20 w new fits params
 LightningIgnitionsB0   -8.5
 LightningIgnitionsB1   0.03
 AccidentalIgnitionsB0  -8.5
 AccidentalIgnitionsB1  0.03
+
+IgnitionDistribution ZeroInflatedPoisson << Poisson or ZeroInflatedPoisson
+
+>> If ZeroInflatedPoisson, you must include the following, otherwise comment out these inputs
+LightningIgnitionsBinomialB0 -8.5
+LightningIgnitionsBinomialB1  0.03
+AccidentalIgnitionsBinomialB0 -8.5
+AccidentalIgnitionsBinomialB1 0.03
 
 >> A generic parameter, determines the fine-fuel scale from 0-1.0
 MaximumFineFuels 500.0
