@@ -13,11 +13,17 @@ using System.Linq;
 namespace Landis.Extension.Scrapple
 {
 
-    public enum Ignition : int
+    public enum IgnitionType : int
     {
         Accidental,
         Lightning,
         Rx
+    }
+
+    public enum IgnitionDistribution : int
+    {
+        Poisson,
+        ZeroInflatedPoisson
     }
 
     public class FireEvent
@@ -31,8 +37,9 @@ namespace Landis.Extension.Scrapple
 
         public int TotalSitesSpread;
         public int CohortsKilled;
+        public int AvailableCohorts;
         public double InitiationFireWeatherIndex;
-        public Ignition IgnitionType;
+        public IgnitionType IgnitionType;
         AnnualClimate_Daily annualWeatherData;
         public int NumberOfDays;
         public int IgnitionDay;
@@ -88,7 +95,7 @@ namespace Landis.Extension.Scrapple
         }
 
         // Constructor function
-        public FireEvent(ActiveSite initiationSite, int day, Ignition ignitionType)
+        public FireEvent(ActiveSite initiationSite, int day, IgnitionType ignitionType)
         {
             this.initiationSite = initiationSite;
             this.IgnitionDay = day;
@@ -100,6 +107,7 @@ namespace Landis.Extension.Scrapple
             SiteVars.Disturbed[initiationSite] = true;
 
             this.CohortsKilled = 0;
+            this.AvailableCohorts = 0;
             this.TotalSitesSpread = 0;
             this.TotalSitesBurned = 0;
             this.InitiationFireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
@@ -124,7 +132,7 @@ namespace Landis.Extension.Scrapple
         }
 
         //---------------------------------------------------------------------
-        public static FireEvent Initiate(ActiveSite initiationSite, int timestep, int day, Ignition ignitionType)
+        public static FireEvent Initiate(ActiveSite initiationSite, int timestep, int day, IgnitionType ignitionType)
         {
             //PlugIn.ModelCore.UI.WriteLine("  Fire Event initiated.  Day = {0}, IgnitionType = {1}.", day, ignitionType);
 
@@ -189,7 +197,7 @@ namespace Landis.Extension.Scrapple
 
                 // DAY OF FIRE *****************************
                 //      Calculate spread-area-max 
-                if (this.IgnitionType == Ignition.Rx)
+                if (this.IgnitionType == IgnitionType.Rx)
                 {
                     if ((this.TotalSitesBurned * PlugIn.ModelCore.CellArea) > PlugIn.Parameters.RxTargetSize)
                         return;
@@ -293,7 +301,7 @@ namespace Landis.Extension.Scrapple
                 siteIntensity = 3;
             // End INTENSITY calculation **************************
 
-            if (this.IgnitionType == Ignition.Rx)
+            if (this.IgnitionType == IgnitionType.Rx)
                 siteIntensity = Math.Min(siteIntensity, PlugIn.Parameters.RxMaxFireIntensity);
 
             int siteCohortsKilled = 0;
@@ -326,7 +334,7 @@ namespace Landis.Extension.Scrapple
         {
             bool spread = false;
 
-            if (this.IgnitionType == Ignition.Rx && PlugIn.Parameters.RxZonesMap != null && SiteVars.RxZones[site] != SiteVars.RxZones[sourceSite])
+            if (this.IgnitionType == IgnitionType.Rx && PlugIn.Parameters.RxZonesMap != null && SiteVars.RxZones[site] != SiteVars.RxZones[sourceSite])
             {
                 //PlugIn.ModelCore.UI.WriteLine("  Fire spread zone limitation.  Spread not allowed to new site");
                 return false;
@@ -361,7 +369,7 @@ namespace Landis.Extension.Scrapple
             // SUPPRESSION ************************
             double suppressEffect = 1.0; // 1.0 = no effect
 
-            if (this.IgnitionType == Ignition.Accidental)
+            if (this.IgnitionType == IgnitionType.Accidental)
             {
                 switch (SiteVars.AccidentalSuppressionIndex[site])
                 {
@@ -389,7 +397,7 @@ namespace Landis.Extension.Scrapple
 
                 }
             }
-            if (this.IgnitionType == Ignition.Lightning)
+            if (this.IgnitionType == IgnitionType.Lightning)
             {
                 switch (SiteVars.LightningSuppressionIndex[site])
                 {
@@ -417,7 +425,7 @@ namespace Landis.Extension.Scrapple
 
                 }
             }
-            if (this.IgnitionType == Ignition.Rx)
+            if (this.IgnitionType == IgnitionType.Rx)
             {
                 switch (SiteVars.RxSuppressionIndex[site])
                 {
@@ -465,7 +473,7 @@ namespace Landis.Extension.Scrapple
             double Pspread = Math.Pow(Math.E, -1.0 * (spreadB0 + (spreadB1 * fireWeatherIndex) + (spreadB2 * fineFuelPercent) + (spreadB3 * effectiveWindSpeed)));
             Pspread = 1.0 / (1.0 + Pspread);
 
-            if (this.IgnitionType == Ignition.Rx)
+            if (this.IgnitionType == IgnitionType.Rx)
                 Pspread = 1.0;
 
             // End PROBABILITY OF SPREAD calculation **************************
@@ -506,12 +514,12 @@ namespace Landis.Extension.Scrapple
                 combustionBuoyancy = 50.0;
 
             double UaUb = windSpeed / combustionBuoyancy;
-            double slopeDegrees = (double)SiteVars.GroundSlope[site] / 180.0 * Math.PI; //convert from Radians to Degrees
+            double slopeRadians = (double)SiteVars.GroundSlope[site] / 180.0 * Math.PI; //convert from Degrees to Radians
             double slopeAngle = (double)SiteVars.UphillSlopeAzimuth[site];
             double relativeWindDirection = (windDirection - slopeAngle) / 180.0 * Math.PI;
 
             // From R.M. Nelson Intl J Wildland Fire, 2002
-            double effectiveWindSpeed = combustionBuoyancy * (Math.Pow(Math.Pow(UaUb, 2.0) + (2.0 * (UaUb) * Math.Sin(slopeDegrees) * Math.Cos(relativeWindDirection)) + Math.Pow(Math.Sin(slopeDegrees), 2.0), 0.5));
+            double effectiveWindSpeed = combustionBuoyancy * (Math.Pow(Math.Pow(UaUb, 2.0) + (2.0 * (UaUb) * Math.Sin(slopeRadians) * Math.Cos(relativeWindDirection)) + Math.Pow(Math.Sin(slopeRadians), 2.0), 0.5));
 
             siteEffectiveWindSpeed = effectiveWindSpeed;
 
@@ -567,6 +575,8 @@ namespace Landis.Extension.Scrapple
         //  A filter to determine which cohorts are removed.
         int IDisturbance.ReduceOrKillMarkedCohort(ICohort cohort)
         {
+            this.AvailableCohorts++;
+
             bool killCohort = false;
 
             List<IFireDamage> fireDamages = null;
@@ -632,6 +642,7 @@ namespace Landis.Extension.Scrapple
             el.MeanFWI = fireEvent.MeanFWI / (double)fireEvent.TotalSitesBurned;
             el.TotalSitesBurned = fireEvent.TotalSitesBurned;
             el.CohortsKilled = fireEvent.CohortsKilled;
+            el.AvailableCohorts = fireEvent.AvailableCohorts;
             el.MeanSeverity = fireEvent.MeanIntensity / (double) fireEvent.TotalSitesBurned;
             el.MeanWindDirection = fireEvent.MeanWindDirection / (double)fireEvent.TotalSitesBurned;
             el.MeanWindSpeed = fireEvent.MeanWindSpeed / (double)fireEvent.TotalSitesBurned;

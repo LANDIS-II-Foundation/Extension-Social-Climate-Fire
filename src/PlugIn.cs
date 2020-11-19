@@ -68,7 +68,7 @@ namespace Landis.Extension.Scrapple
         private List<IDynamicIgnitionMap> dynamicAccidentalIgns;
         private List<IDynamicSuppressionMap> dynamicSuppress;
 
-        public static bool ZipTest = false;
+        public static IgnitionDistribution IgnitionDist = IgnitionDistribution.Poisson;
 
         // VS: hasn't been properly integrated into Climate Library.
         //int daysPerYear = (AnnualClimate.IsLeapYear(actualYear) ? true : false) ? 366 : 365;
@@ -337,13 +337,13 @@ namespace Landis.Extension.Scrapple
                 if (numAccidentalSites > 0)
                 {
                     bool fire = false;
-                    int maxNumAccidentalFires = NumberOfIgnitions(Ignition.Accidental, landscapeAverageFireWeatherIndex);
+                    int maxNumAccidentalFires = NumberOfIgnitions(IgnitionType.Accidental, landscapeAverageFireWeatherIndex);
                     int logMaxNumAccidentalFires = maxNumAccidentalFires;
                     int actualNumAccidentalFires = 0;
                     while (maxNumAccidentalFires > 0)
                     {
                         //Ignite(Ignition.Accidental, shuffledAccidentalFireSites, day, landscapeAverageFireWeatherIndex);
-                        fire = IgniteEther(Ignition.Accidental, weightedAccidentalSites.Select(), day, landscapeAverageFireWeatherIndex);
+                        fire = IgniteEther(IgnitionType.Accidental, weightedAccidentalSites.Select(), day, landscapeAverageFireWeatherIndex);
                         if (fire)
                         {
                             maxNumAccidentalFires--;
@@ -352,7 +352,7 @@ namespace Landis.Extension.Scrapple
                     }
                     if (fire)
                     {
-                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Accidental.ToString(), logMaxNumAccidentalFires, actualNumAccidentalFires, day);
+                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, IgnitionType.Accidental.ToString(), logMaxNumAccidentalFires, actualNumAccidentalFires, day);
                     }
                 }
 
@@ -361,13 +361,13 @@ namespace Landis.Extension.Scrapple
                 if (numLightningSites > 0)
                 {
                     bool fire = false;
-                    int maxNumLightningFires = NumberOfIgnitions(Ignition.Lightning, landscapeAverageFireWeatherIndex);
+                    int maxNumLightningFires = NumberOfIgnitions(IgnitionType.Lightning, landscapeAverageFireWeatherIndex);
                     int logMaxNumLightningFires = maxNumLightningFires;
                     int actualNumLightningFires = 0;
                     while(maxNumLightningFires > 0)
                     {
                         //Ignite(Ignition.Lightning, shuffledLightningFireSites, day, landscapeAverageFireWeatherIndex);
-                        fire = IgniteEther(Ignition.Lightning, weightedLightningSites.Select(), day, landscapeAverageFireWeatherIndex);
+                        fire = IgniteEther(IgnitionType.Lightning, weightedLightningSites.Select(), day, landscapeAverageFireWeatherIndex);
                         if (fire)
                         {
                             maxNumLightningFires--;
@@ -376,7 +376,7 @@ namespace Landis.Extension.Scrapple
                     }
                     if (fire)
                     {
-                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Lightning.ToString(), logMaxNumLightningFires, actualNumLightningFires, day);
+                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, IgnitionType.Lightning.ToString(), logMaxNumLightningFires, actualNumLightningFires, day);
                     }
                 }
 
@@ -400,7 +400,7 @@ namespace Landis.Extension.Scrapple
 
                     while (numAnnualRxFires > 0 && maxNumDailyRxFires > 0)
                     {
-                        fire = IgniteEther(Ignition.Rx, weightedRxSites.Select(), day, landscapeAverageFireWeatherIndex);
+                        fire = IgniteEther(IgnitionType.Rx, weightedRxSites.Select(), day, landscapeAverageFireWeatherIndex);
                         if (fire)
                         {
                             numAnnualRxFires--;
@@ -410,12 +410,12 @@ namespace Landis.Extension.Scrapple
                     }
                     if (fire)
                     {
-                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, Ignition.Rx.ToString(), Parameters.RxNumberDailyFires, actualNumRxFires, day);
+                        LogIgnition(ModelCore.CurrentTime, landscapeAverageFireWeatherIndex, IgnitionType.Rx.ToString(), Parameters.RxNumberDailyFires, actualNumRxFires, day);
                     }
                 }
             }
 
-            modelCore.UI.WriteLine("   Done processing days.  Next, write maps and summary log files. ...");
+            modelCore.UI.WriteLine("   Done processing fire days.  Next, write fire maps and summary fire files. ...");
 
             WriteMaps(PlugIn.ModelCore.CurrentTime);
 
@@ -628,28 +628,28 @@ namespace Landis.Extension.Scrapple
 
         //  Determines the number of Ignitions per day
         //  Returns: 0 <= numIgnitons <= 3
-        private static int NumberOfIgnitions(Ignition ignitionType, double fireWeatherIndex)
+        private static int NumberOfIgnitions(IgnitionType ignitionType, double fireWeatherIndex)
         {
             double b0 = 0.0;
             double b1 = 0.0;
-            if(ignitionType == Ignition.Lightning)
+            if(ignitionType == IgnitionType.Lightning)
             {
                 b0 = Parameters.LightningIgnitionB0;
                 b1 = Parameters.LightningIgnitionB1;
             }
-            if (ignitionType == Ignition.Accidental)
+            if (ignitionType == IgnitionType.Accidental)
             {
                 b0 = Parameters.AccidentalFireIgnitionB0;
                 b1 = Parameters.AccidentalFireIgnitionB1;
             }
 
             int numIgnitions = 0;
-            if (!ZipTest)
+            if (IgnitionDist == IgnitionDistribution.ZeroInflatedPoisson)
             {
                 //Draw from a poisson distribution  with lambda equal to the log link (b0 +b0 *fireweather )
                 double possibleIgnitions = ModelCore.PoissonDistribution.Lambda = Math.Pow(Math.E, (b0 + (b1 * fireWeatherIndex)));
                // numIgnitions = (int) Math.Round(possibleIgnitions, 0);
-               //Because the LANDIS-II Lambda returns the population mean we transform it to the whole number + the probability of the remainder to get 
+               //Because the Core Poisson Distribution Lambda returns the population mean we transform it to the whole number + the probability of the remainder to get 
                // a integer as the response. 
                // Whole Number
                 int floorPossibleIginitions = (int)Math.Floor(possibleIgnitions);
@@ -662,12 +662,12 @@ namespace Landis.Extension.Scrapple
                 double binomb0 = 0.0;
                 double binomb1 = 0.0;
                 
-                if (ignitionType == Ignition.Lightning)
+                if (ignitionType == IgnitionType.Lightning)
                 {
                     binomb0 = Parameters.LightningIgnitionBinomialB0;
                     binomb1 = Parameters.LightningIgnitionBinomialB1;
                 }
-                if (ignitionType == Ignition.Accidental)
+                if (ignitionType == IgnitionType.Accidental)
                 {
                     binomb0 = Parameters.AccidentalFireIgnitionBinomialB0;
                     binomb1 = Parameters.AccidentalFireIgnitionBinomialB1;
@@ -683,7 +683,7 @@ namespace Landis.Extension.Scrapple
                 {
                     /// If yes the mean of possion draw with reverse log link of regression variables. 
                     double  possibleIgnitions=ModelCore.PoissonDistribution.Lambda = Math.Pow(Math.E, (b0 + (b1 * fireWeatherIndex)));
-                    ///Because the LANDIS-II Lambda returns the population mean we transform it to the whole number + the probability of the remainder to get 
+                    ///Because the the Core Poisson Distribution Lambda returns the population mean we transform it to the whole number + the probability of the remainder to get 
                     /// a integer as the response. 
                     /// 
                     /// Whole Number
@@ -702,7 +702,7 @@ namespace Landis.Extension.Scrapple
 
         //---------------------------------------------------------------------
         // Ignites and Spreads a fire
-        private static bool IgniteEther(Ignition ignitionType, ActiveSite site, int day, double fireWeatherIndex)
+        private static bool IgniteEther(IgnitionType ignitionType, ActiveSite site, int day, double fireWeatherIndex)
         {
             if (SiteVars.Disturbed[site])
                 return false;
@@ -718,7 +718,7 @@ namespace Landis.Extension.Scrapple
         }
 
         // This deprecated method uses a brute force sort that is much slower.
-        private static void Ignite(Ignition ignitionType, List<ActiveSite> shuffledFireSites, int day, double fireWeatherIndex)
+        private static void Ignite(IgnitionType ignitionType, List<ActiveSite> shuffledFireSites, int day, double fireWeatherIndex)
         {
             while (shuffledFireSites.Count() > 0 && SiteVars.Disturbed[shuffledFireSites.First()] == true)
             {

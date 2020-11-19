@@ -37,6 +37,7 @@ namespace Landis.Extension.Scrapple
         protected override IInputParameters Parse()
         {
             ReadLandisDataVar();
+            RegisterForInputValues();
 
             InputParameters parameters = new InputParameters();
             const string FireIntensityClass_1_DamageTable = "FireIntensityClass_1_DamageTable";
@@ -254,10 +255,10 @@ namespace Landis.Extension.Scrapple
             ReadVar(accidentalB1);
             parameters.AccidentalFireIgnitionB1 = accidentalB1.Value;
 
-            InputVar<bool> zip = new InputVar<bool>("ZIPTesting");
-            if (ReadOptionalVar(zip))
+            InputVar<IgnitionDistribution> igniteDist = new InputVar<IgnitionDistribution>("IgnitionDistribution");
+            if (ReadOptionalVar(igniteDist) && igniteDist.Value == IgnitionDistribution.ZeroInflatedPoisson)
             {
-                PlugIn.ZipTest = true;
+                PlugIn.IgnitionDist = IgnitionDistribution.ZeroInflatedPoisson;
 
                 InputVar<double> lightningBinomialB0 = new InputVar<double>("LightningIgnitionsBinomialB0");
                 ReadVar(lightningBinomialB0);
@@ -429,7 +430,7 @@ namespace Landis.Extension.Scrapple
                 ISuppressionTable suppressTable = new SuppressionTable();
 
                 ReadValue(ig, currentLine);
-                suppressTable.Type = IgnitionParse(ig.Value);
+                suppressTable.Type = IgnitionTypeParse(ig.Value);
 
                 ReadValue(fwib1, currentLine);
                 suppressTable.FWI_Break1 = fwib1.Value;
@@ -611,30 +612,40 @@ namespace Landis.Extension.Scrapple
         }
         //---------------------------------------------------------------------
 
-        public static Ignition IgnitionParse(string word)
+        public static IgnitionType IgnitionTypeParse(string word)
         {
             switch (word.ToLower())
             {
-                case "prescribed": return Ignition.Rx;
-                case "rx": return Ignition.Rx;
-                case "lightning": return Ignition.Lightning;
-                case "accidental": return Ignition.Accidental;
+                case "prescribed": return IgnitionType.Rx;
+                case "rx": return IgnitionType.Rx;
+                case "lightning": return IgnitionType.Lightning;
+                case "accidental": return IgnitionType.Accidental;
                 default: throw new System.FormatException("Valid Ignition Types: Prescribed, Rx, Lightening, Accidental");
             }
         }
 
+        //---------------------------------------------------------------------
+
+        public static IgnitionDistribution IgnitionDistributionParse(string word)
+        {
+            switch (word.ToLower())
+            {
+                case "poisson": return IgnitionDistribution.Poisson;
+                case "zeroinflatedpoisson": return IgnitionDistribution.ZeroInflatedPoisson;
+                default: throw new System.FormatException("Valid Ignition Distributions: Poisson, ZeroInflatedPoisson");
+            }
+        }
 
         //---------------------------------------------------------------------
 
         /// <summary>
         /// Registers the appropriate method for reading input values.
         /// </summary>
-        //public static void RegisterForInputValues()
-        //{
+        public static void RegisterForInputValues()
+        {
 
-        //    Edu.Wisc.Forest.Flel.Util.Type.SetDescription<Distribution>("Random Number Distribution");
-        //    InputValues.Register<Distribution>(DistParse);
-        //}
+            InputValues.Register<IgnitionDistribution>(IgnitionDistributionParse);
+        }
         //---------------------------------------------------------------------
 
         private void ValidatePath(InputValue<string> path)

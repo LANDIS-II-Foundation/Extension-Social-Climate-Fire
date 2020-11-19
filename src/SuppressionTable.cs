@@ -8,7 +8,7 @@ namespace Landis.Extension.Scrapple
     public interface ISuppressionTable
     {
         
-        Ignition Type {get;set;}
+        IgnitionType Type {get;set;}
         double FWI_Break1{get;set;}
         double FWI_Break2{get;set;}
         int EffectivenessLow{get;set;}
@@ -22,7 +22,7 @@ namespace Landis.Extension.Scrapple
     public class SuppressionTable
         : ISuppressionTable
     {
-        private Ignition type;
+        private IgnitionType type;
         private double fwi_Break1;
         private double fwi_Break2;
         private int effectivenessLow;
@@ -40,7 +40,7 @@ namespace Landis.Extension.Scrapple
         /// <summary>
         /// The ignition type
         /// </summary>
-        public Ignition Type
+        public IgnitionType Type
         {
             get {
                 return type;
