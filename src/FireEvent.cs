@@ -31,6 +31,7 @@ namespace Landis.Extension.Scrapple
 
         public int TotalSitesSpread;
         public int CohortsKilled;
+        public int AvailableCohorts;
         public double InitiationFireWeatherIndex;
         public Ignition IgnitionType;
         AnnualClimate_Daily annualWeatherData;
@@ -100,6 +101,7 @@ namespace Landis.Extension.Scrapple
             SiteVars.Disturbed[initiationSite] = true;
 
             this.CohortsKilled = 0;
+            this.AvailableCohorts = 0;
             this.TotalSitesSpread = 0;
             this.TotalSitesBurned = 0;
             this.InitiationFireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
@@ -506,12 +508,12 @@ namespace Landis.Extension.Scrapple
                 combustionBuoyancy = 50.0;
 
             double UaUb = windSpeed / combustionBuoyancy;
-            double slopeDegrees = (double)SiteVars.GroundSlope[site] / 180.0 * Math.PI; //convert from Radians to Degrees
+            double slopeRadians = (double)SiteVars.GroundSlope[site] / 180.0 * Math.PI; //convert from Degrees to Radians
             double slopeAngle = (double)SiteVars.UphillSlopeAzimuth[site];
             double relativeWindDirection = (windDirection - slopeAngle) / 180.0 * Math.PI;
 
             // From R.M. Nelson Intl J Wildland Fire, 2002
-            double effectiveWindSpeed = combustionBuoyancy * (Math.Pow(Math.Pow(UaUb, 2.0) + (2.0 * (UaUb) * Math.Sin(slopeDegrees) * Math.Cos(relativeWindDirection)) + Math.Pow(Math.Sin(slopeDegrees), 2.0), 0.5));
+            double effectiveWindSpeed = combustionBuoyancy * (Math.Pow(Math.Pow(UaUb, 2.0) + (2.0 * (UaUb) * Math.Sin(slopeRadians) * Math.Cos(relativeWindDirection)) + Math.Pow(Math.Sin(slopeRadians), 2.0), 0.5));
 
             siteEffectiveWindSpeed = effectiveWindSpeed;
 
@@ -567,6 +569,8 @@ namespace Landis.Extension.Scrapple
         //  A filter to determine which cohorts are removed.
         int IDisturbance.ReduceOrKillMarkedCohort(ICohort cohort)
         {
+            this.AvailableCohorts++;
+
             bool killCohort = false;
 
             List<IFireDamage> fireDamages = null;
@@ -632,6 +636,7 @@ namespace Landis.Extension.Scrapple
             el.MeanFWI = fireEvent.MeanFWI / (double)fireEvent.TotalSitesBurned;
             el.TotalSitesBurned = fireEvent.TotalSitesBurned;
             el.CohortsKilled = fireEvent.CohortsKilled;
+            el.AvailableCohorts = fireEvent.AvailableCohorts;
             el.MeanSeverity = fireEvent.MeanIntensity / (double) fireEvent.TotalSitesBurned;
             el.MeanWindDirection = fireEvent.MeanWindDirection / (double)fireEvent.TotalSitesBurned;
             el.MeanWindSpeed = fireEvent.MeanWindSpeed / (double)fireEvent.TotalSitesBurned;
