@@ -519,6 +519,8 @@ namespace Landis.Extension.Scrapple
             double relativeWindDirection = (windDirection - slopeAngle) / 180.0 * Math.PI;
 
             // From R.M. Nelson Intl J Wildland Fire, 2002
+            // Eq Number 5
+            // Uws=cb*((UaUb**2)+(2*(UaUb)*Sin(slopeRadians)*Cos(RWD)+Sin(slopeRadian)*2)**.5
             double effectiveWindSpeed = combustionBuoyancy * (Math.Pow(Math.Pow(UaUb, 2.0) + (2.0 * (UaUb) * Math.Sin(slopeRadians) * Math.Cos(relativeWindDirection)) + Math.Pow(Math.Sin(slopeRadians), 2.0), 0.5));
 
             siteEffectiveWindSpeed = effectiveWindSpeed;
