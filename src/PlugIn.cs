@@ -648,8 +648,7 @@ namespace Landis.Extension.Scrapple
             {
                 //Draw from a poisson distribution  with lambda equal to the log link (b0 +b0 *fireweather )
                 double possibleIgnitions = ModelCore.PoissonDistribution.Lambda = Math.Pow(Math.E, (b0 + (b1 * fireWeatherIndex)));
-               // numIgnitions = (int) Math.Round(possibleIgnitions, 0);
-               //Because the Core Poisson Distribution Lambda returns the population mean we transform it to the whole number + the probability of the remainder to get 
+               // Because the Core Poisson Distribution Lambda returns the population mean we transform it to the whole number + the probability of the remainder to get 
                // a integer as the response. 
                // Whole Number
                 int floorPossibleIginitions = (int)Math.Floor(possibleIgnitions);
@@ -658,7 +657,8 @@ namespace Landis.Extension.Scrapple
                 numIgnitions += (modelCore.GenerateUniform() <= (possibleIgnitions - (double)floorPossibleIginitions) ? 1 : 0);
                 //modelCore.UI.WriteLine("   Processing landscape for Fire events.  Possible={0}, Rounded={1}", possibleIgnitions, numIgnitions);
             } else
-            {/// Zero Inflated: Requires two additional variables 
+            {
+                // Zero Inflated: Requires two additional variables 
                 double binomb0 = 0.0;
                 double binomb1 = 0.0;
                 
