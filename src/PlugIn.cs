@@ -644,7 +644,7 @@ namespace Landis.Extension.Scrapple
             }
 
             int numIgnitions = 0;
-            if (IgnitionDist == IgnitionDistribution.ZeroInflatedPoisson)
+            if (IgnitionDist == IgnitionDistribution.Poisson)
             {
                 //Draw from a poisson distribution  with lambda equal to the log link (b0 +b0 *fireweather )
                 double possibleIgnitions = ModelCore.PoissonDistribution.Lambda = Math.Pow(Math.E, (b0 + (b1 * fireWeatherIndex)));
