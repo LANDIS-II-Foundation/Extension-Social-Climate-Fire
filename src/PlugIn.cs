@@ -4,7 +4,7 @@ using Landis.SpatialModeling;
 using Landis.Library.Climate;
 using Landis.Core;
 using Landis.Library.Metadata;
-using Ether.WeightedSelector;  // RMS Testing 8/2019
+using Ether.WeightedSelector;  
 
 using System;
 using System.Collections.Generic;
@@ -69,10 +69,6 @@ namespace Landis.Extension.Scrapple
         private List<IDynamicSuppressionMap> dynamicSuppress;
 
         public static IgnitionDistribution IgnitionDist = IgnitionDistribution.Poisson;
-
-        // VS: hasn't been properly integrated into Climate Library.
-        //int daysPerYear = (AnnualClimate.IsLeapYear(actualYear) ? true : false) ? 366 : 365;
-
 
         //---------------------------------------------------------------------
 
@@ -612,6 +608,29 @@ namespace Landis.Extension.Scrapple
                             pixel.MapCode.Value = SiteVars.EventID[site];
                         else
                             pixel.MapCode.Value = 0;
+                    }
+                    else
+                    {
+                        //  Inactive site
+                        pixel.MapCode.Value = 0;
+                    }
+                    outputRaster.WriteBufferPixel();
+                }
+            }
+            string[] paths9 = { "scrapple-fire", "fine-fuels-{timestep}.img" };
+            path = MapNames.ReplaceTemplateVars(Path.Combine(paths9), currentTime);
+            using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
+            {
+                IntPixel pixel = outputRaster.BufferPixel;
+                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                {
+                    if (site.IsActive)
+                    {
+                        pixel.MapCode.Value = (int) SiteVars.FineFuels[site];
+                        //if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
+                        //    pixel.MapCode.Value = SiteVars.EventID[site];
+                        //else
+                        //    pixel.MapCode.Value = 0;
                     }
                     else
                     {
