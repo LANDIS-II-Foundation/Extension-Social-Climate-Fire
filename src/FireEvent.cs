@@ -280,11 +280,22 @@ namespace Landis.Extension.Scrapple
             // (Clay%, ET, Windspeed, Water Deficit, and Fuel)
             // The function for the site level mortality is generalized linear model utilizing a gamma distribution with an inverse link.
 
+            IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[initiationSite];
+
             // Establish the variables 
             double Clay = 15.0;
-            double Previous_Year_ET = 20.0;
-            double EffectiveWindSpeed = 68.0;
-            double WaterDeficit = 500;
+            double Previous_Year_ET = 0.0;
+            try
+            {
+                Previous_Year_ET = Climate.Future_DailyData[PlugIn.ActualYear - 1][ecoregion.Index].AnnualAET;
+            }
+            catch
+            {
+                // Indicating that we're at the first year, without a prior year.
+                Previous_Year_ET = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].AnnualAET;
+            }
+
+            double WaterDeficit = SiteVars.ClimaticWaterDeficit[site];
             double TotalFuels = SiteVars.FineFuels[site] + ladderFuelBiomass;
 
             /// For delayed relative delta normalized burn ratio (DRdNBR) calculation 
@@ -293,12 +304,12 @@ namespace Landis.Extension.Scrapple
             double Beta_Clay = 0.0; //The parameter fit for site level clay % in Soil.
             double Beta_ET = 0.0; //The parameter fit for site level previous years annual ET
             double Beta_Windspeed = 0.0;// The parameter fit for site level Effective Windspeed 
-            double Beta_Water_Deficit = 0.0;//The parameter fit for site level P-ET
-            double Beta_Fuel = 0.0; //The parameter fit for site level P-ET
+            double Beta_Water_Deficit = 0.0;//The parameter fit for site level PET-AET
+            double Beta_Fuel = 0.0; //The parameter fit for site level fuels, here combining fine fuels and ladder fuels
 
             double siteMortality = Math.Pow((intercept + (Clay * Beta_Clay)
                 + (Previous_Year_ET * Beta_ET)
-                + (EffectiveWindSpeed * Beta_Windspeed)
+                + (siteEffectiveWindSpeed * Beta_Windspeed)
                 + (WaterDeficit * Beta_Water_Deficit)
                 + (TotalFuels * Beta_Fuel)), -1.0);
 
@@ -333,10 +344,37 @@ namespace Landis.Extension.Scrapple
 
             bool killCohort = false;
 
+            // Eventual User Inputs
+            double Beta_naught_m = 0.0; // Intercept parameter for mortality curve 
+            double Beta_Bark = 0.0; // The parameter fit for the relationship between bark thickness and mortality. 
+            double Beta_Site_Mortality = 0.0; // The parameter fit for the relationship between site level and individual level mortality. 
+
+            // From the input file each species will need 
+            // AgeDBH _Parameter is a parameter to scale Age and DBH estimated from a function in the form of 
+            // It is essentially the half-life of the MaxBarkThickness *Age relationship. 
+            // This is a logistic survival code with the MaxBarkThickness being asymptote. 
+            // As age increase DBH approaches MaxBarkThickness
+            double AgeDBH = 0.0;
+
+            // The maximum measured Bark thickness. The asymptote of the logistic survival curve. 
+            // This was calculated by using a species-specific bark DBH Coefficient described in Cansler 2020 and the maximum measured DBH form FIA. 
+            //  Cansler, C. A., Hood, S. M., Varner, J. M., van Mantgem, P. J., Agne, M. C., Andrus, R. A., ... & 
+            //  Bentz, B. J. (2020). The Fire and Tree Mortality Database, for empirical modeling of individual tree 
+            //  mortality after fire. Scientific data, 7(1), 1-14.
+            double MaxBarkThickness = 0.0;
+
+            //// CohortAge  The age of the cohort
+            double BarkThickness = (MaxBarkThickness * cohort.Age) / (cohort.Age + AgeDBH);
+
+            double Pm = Math.Exp(Beta_naught_m + (Beta_Bark * BarkThickness) + (Beta_Site_Mortality * siteMortality));
+
+            double probabilityMortality = Pm / (1.0 + Pm);
+
+
             double random = PlugIn.ModelCore.GenerateUniform();
-            if (damage.ProbablityMortality > random)
+            if (probabilityMortality > random)
             {
-                //PlugIn.ModelCore.UI.WriteLine("damage prob={0}, Random#={1}", damage.ProbablityMortality, random);
+                //PlugIn.ModelCore.UI.WriteLine("damage prob={0}, Random#={1}", ProbablityMortality, random);
                 killCohort = true;
                 this.TotalBiomassMortality += cohort.Biomass;
                 foreach (IDeadWood deadwood in PlugIn.Parameters.DeadWoodList)

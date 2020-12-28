@@ -35,6 +35,7 @@ namespace Landis.Extension.Scrapple
         public static ISiteVar<int> HarvestTime;
         public static ISiteVar<int> EventID;
         public static ISiteVar<int> RxZones;
+        public static ISiteVar<double> ClimaticWaterDeficit;
 
         //---------------------------------------------------------------------
 
@@ -69,6 +70,7 @@ namespace Landis.Extension.Scrapple
 
             SmolderConsumption = PlugIn.ModelCore.GetSiteVar<double>("Succession.SmolderConsumption");
             FlamingConsumption = PlugIn.ModelCore.GetSiteVar<double>("Succession.FlamingConsumption");
+            ClimaticWaterDeficit = PlugIn.ModelCore.GetSiteVar<double>("Succession.CWD");
             HarvestTime = PlugIn.ModelCore.GetSiteVar<int>("Harvest.TimeOfLastEvent");
 
             PlugIn.ModelCore.RegisterSiteVar(SiteVars.Intensity, "Fire.Severity");
