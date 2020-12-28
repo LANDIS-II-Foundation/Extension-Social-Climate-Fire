@@ -627,10 +627,6 @@ namespace Landis.Extension.Scrapple
                     if (site.IsActive)
                     {
                         pixel.MapCode.Value = (int) SiteVars.FineFuels[site];
-                        //if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
-                        //    pixel.MapCode.Value = SiteVars.EventID[site];
-                        //else
-                        //    pixel.MapCode.Value = 0;
                     }
                     else
                     {
