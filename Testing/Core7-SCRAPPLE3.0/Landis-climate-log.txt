@@ -1,0 +1,109 @@
+   Loading spin-up weather data from file LTB_91_10.csv ...
+   Converting raw data from text file: LTB_91_10.csv, Format=daily_temp-c_precip-mmday, Temporal=Daily.
+   Loading future weather data from file LTB_91_10.csv ...
+   Converting raw data from text file: LTB_91_10.csv, Format=daily_temp-c_precip-mmday, Temporal=Daily.
+Core.StartTime = 0, Core.EndTime = 10.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco1, SimulatedYear = 1991, actualYearUsed=1994.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1991, actualYear = 1994, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco1, SimulatedYear = 1992, actualYearUsed=1997.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1992, actualYear = 1997, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco1, SimulatedYear = 1993, actualYearUsed=1992.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1993, actualYear = 1992, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco1, SimulatedYear = 1994, actualYearUsed=2002.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1994, actualYear = 2002, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco1, SimulatedYear = 1995, actualYearUsed=1999.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1995, actualYear = 1999, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco1, SimulatedYear = 1996, actualYearUsed=2002.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1996, actualYear = 2002, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco1, SimulatedYear = 1997, actualYearUsed=2000.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1997, actualYear = 2000, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco1, SimulatedYear = 1998, actualYearUsed=2007.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1998, actualYear = 2007, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco1, SimulatedYear = 1999, actualYearUsed=1995.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1999, actualYear = 1995, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco1, SimulatedYear = 2000, actualYearUsed=2009.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 2000, actualYear = 2009, phase = Future_Climate.
+Core.StartTime = 0, Core.EndTime = 10.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco2, SimulatedYear = 1991, actualYearUsed=1994.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1991, actualYear = 1994, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco2, SimulatedYear = 1992, actualYearUsed=1997.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1992, actualYear = 1997, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco2, SimulatedYear = 1993, actualYearUsed=1992.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1993, actualYear = 1992, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco2, SimulatedYear = 1994, actualYearUsed=2002.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1994, actualYear = 2002, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco2, SimulatedYear = 1995, actualYearUsed=1999.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1995, actualYear = 1999, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco2, SimulatedYear = 1996, actualYearUsed=2002.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1996, actualYear = 2002, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco2, SimulatedYear = 1997, actualYearUsed=2000.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1997, actualYear = 2000, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco2, SimulatedYear = 1998, actualYearUsed=2007.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1998, actualYear = 2007, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco2, SimulatedYear = 1999, actualYearUsed=1995.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1999, actualYear = 1995, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco2, SimulatedYear = 2000, actualYearUsed=2009.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 2000, actualYear = 2009, phase = Future_Climate.
+Core.StartTime = 0, Core.EndTime = 10.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco3, SimulatedYear = 1991, actualYearUsed=1994.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1991, actualYear = 1994, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco3, SimulatedYear = 1992, actualYearUsed=1997.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1992, actualYear = 1997, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco3, SimulatedYear = 1993, actualYearUsed=1992.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1993, actualYear = 1992, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco3, SimulatedYear = 1994, actualYearUsed=2002.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1994, actualYear = 2002, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco3, SimulatedYear = 1995, actualYearUsed=1999.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1995, actualYear = 1999, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco3, SimulatedYear = 1996, actualYearUsed=2002.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1996, actualYear = 2002, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco3, SimulatedYear = 1997, actualYearUsed=2000.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1997, actualYear = 2000, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco3, SimulatedYear = 1998, actualYearUsed=2007.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1998, actualYear = 2007, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco3, SimulatedYear = 1999, actualYearUsed=1995.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1999, actualYear = 1995, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco3, SimulatedYear = 2000, actualYearUsed=2009.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 2000, actualYear = 2009, phase = Future_Climate.
+Core.StartTime = 0, Core.EndTime = 10.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco4, SimulatedYear = 1991, actualYearUsed=1994.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1991, actualYear = 1994, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco4, SimulatedYear = 1992, actualYearUsed=1997.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1992, actualYear = 1997, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco4, SimulatedYear = 1993, actualYearUsed=1992.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1993, actualYear = 1992, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco4, SimulatedYear = 1994, actualYearUsed=2002.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1994, actualYear = 2002, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco4, SimulatedYear = 1995, actualYearUsed=1999.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1995, actualYear = 1999, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco4, SimulatedYear = 1996, actualYearUsed=2002.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1996, actualYear = 2002, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco4, SimulatedYear = 1997, actualYearUsed=2000.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1997, actualYear = 2000, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco4, SimulatedYear = 1998, actualYearUsed=2007.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1998, actualYear = 2007, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco4, SimulatedYear = 1999, actualYearUsed=1995.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1999, actualYear = 1995, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco4, SimulatedYear = 2000, actualYearUsed=2009.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 2000, actualYear = 2009, phase = Future_Climate.
+Core.StartTime = 0, Core.EndTime = 10.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco5, SimulatedYear = 1991, actualYearUsed=1994.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1991, actualYear = 1994, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco5, SimulatedYear = 1992, actualYearUsed=1997.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1992, actualYear = 1997, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco5, SimulatedYear = 1993, actualYearUsed=1992.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1993, actualYear = 1992, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco5, SimulatedYear = 1994, actualYearUsed=2002.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1994, actualYear = 2002, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco5, SimulatedYear = 1995, actualYearUsed=1999.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1995, actualYear = 1999, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco5, SimulatedYear = 1996, actualYearUsed=2002.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1996, actualYear = 2002, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco5, SimulatedYear = 1997, actualYearUsed=2000.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1997, actualYear = 2000, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco5, SimulatedYear = 1998, actualYearUsed=2007.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1998, actualYear = 2007, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco5, SimulatedYear = 1999, actualYearUsed=1995.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 1999, actualYear = 1995, phase = Future_Climate.
+  Completed calculations for Future_Climate using Daily_RandomYear. Ecoregion = eco5, SimulatedYear = 2000, actualYearUsed=2009.
+  AnnualClimate_Daily: Daily_RandomYear: timeStep = 2000, actualYear = 2009, phase = Future_Climate.

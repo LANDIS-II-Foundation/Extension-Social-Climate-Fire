@@ -40,7 +40,7 @@ namespace Landis.Extension.Scrapple
             ReadLandisDataVar();
             RegisterForInputValues();
 
-            InputParameters parameters = new InputParameters();
+            InputParameters parameters = new InputParameters(speciesDataset);
             //const string FireIntensityClass_1_DamageTable = "FireIntensityClass_1_DamageTable";
             //const string FireIntensityClass_2_DamageTable = "FireIntensityClass_2_DamageTable";
             //const string FireIntensityClass_3_DamageTable = "FireIntensityClass_3_DamageTable";
@@ -54,7 +54,6 @@ namespace Landis.Extension.Scrapple
             PlugIn.ModelCore.UI.WriteLine("   Begin parsing NECN SPECIES table.");
 
             InputVar<string> csv = new InputVar<string>("Species_CSV_File");
-            ReadName("SpeciesParameters");
             ReadVar(csv);
 
             CSVParser speciesParser = new CSVParser();
@@ -63,7 +62,7 @@ namespace Landis.Extension.Scrapple
             {
                 ISpecies species = ReadSpecies(System.Convert.ToString(row["SpeciesCode"]));
                 parameters.AgeDBH[species] = System.Convert.ToDouble(row["AgeDBH"]);
-                parameters.MaximumBarkThickness[species] = System.Convert.ToDouble(row["MaxDrought"]);
+                parameters.MaximumBarkThickness[species] = System.Convert.ToDouble(row["MaximumBarkThickness"]);
             }
 
             InputVar<string> humanIgnitionsMapFile = new InputVar<string>("AccidentalIgnitionsMap");

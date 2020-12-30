@@ -312,11 +312,17 @@ namespace Landis.Extension.Scrapple
                 + (WaterDeficit * Beta_Water_Deficit)
                 + (TotalFuels * Beta_Fuel)), -1.0);
 
+            siteMortality = Math.Max(siteMortality, 0.0);  // In the long-run, this shouldn't be necessary.  But useful for testing.
+
             int siteCohortsKilled = 0;
             this.siteMortality = (int) siteMortality;
 
+            int standardSeverityIndex = Math.Max((int) siteMortality / 100, 1);
+            SiteVars.Intensity[site] = (byte) Math.Min(standardSeverityIndex, 5);  // must range from 1-5.
             SiteVars.Mortality[site] = (int) siteMortality;
             SiteVars.TypeOfIginition[site] = (int)this.IgnitionType;
+            //PlugIn.ModelCore.UI.WriteLine("  dNBR: {0}, severity={1}.", siteMortality, standardSeverityIndex);
+
 
             currentSite = site;
             siteCohortsKilled = Damage(site);

@@ -95,6 +95,7 @@ namespace Landis.Extension.Scrapple
         : IInputParameters
     {
         private int timestep;
+        private ISpeciesDataset speciesDataset;
 
         private Landis.Library.Parameters.Species.AuxParm<double> ageDBH;
         private Landis.Library.Parameters.Species.AuxParm<double> maximumBarkThickness;
@@ -839,8 +840,10 @@ namespace Landis.Extension.Scrapple
 
         //---------------------------------------------------------------------
 
-        public InputParameters()
+        public InputParameters(ISpeciesDataset speciesDataset)
         {
+            this.speciesDataset = speciesDataset;
+
             ladderFuelSpeciesList = new List<ISpecies>();
             deadWoodList = new List<IDeadWood>();
             suppressionFWI_Table = new List<ISuppressionTable>();
@@ -851,6 +854,9 @@ namespace Landis.Extension.Scrapple
             dynamicLightningIgnitions = new List<IDynamicIgnitionMap>();
             dynamicAccidentalIgnitions = new List<IDynamicIgnitionMap>();
             dynamicSuppression = new List<IDynamicSuppressionMap>();
+            ageDBH = new Landis.Library.Parameters.Species.AuxParm<double>(speciesDataset);
+            maximumBarkThickness = new Landis.Library.Parameters.Species.AuxParm<double>(speciesDataset);
+
         }
         //---------------------------------------------------------------------
 
