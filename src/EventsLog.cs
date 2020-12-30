@@ -66,8 +66,10 @@ namespace Landis.Extension.Scrapple
         public double MeanSpreadProbability { set; get; }
 
         [DataFieldAttribute(Unit = FieldUnits.Severity_Rank, Desc = "Mean Severity (1-5)", Format = "0.00")]
-        public double MeanSeverity { set; get; }
+        public double MeanDNBR { set; get; }
 
+        [DataFieldAttribute(Desc = "Mean DNBR", Format = "0.0")]
+        public double MeanSeverity { set; get; }
         [DataFieldAttribute(Desc = "Mortality Biomass")]
         public double TotalBiomassMortality { set; get; }
 
@@ -80,13 +82,17 @@ namespace Landis.Extension.Scrapple
         [DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cells Intensity 3")]
         public double NumberCellsSeverity3 { set; get; }
 
-        [DataFieldAttribute(Unit = FieldUnits.Percentage, Desc = "Percent of Cells Intensity Factor 1")]
-        public double PercentsCellsIntensityFactor1 { set; get; }
+        [DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cells Intensity 4")]
+        public double NumberCellsSeverity4 { set; get; }
+        [DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cells Intensity 5")]
+        public double NumberCellsSeverity5 { set; get; }
+        //[DataFieldAttribute(Unit = FieldUnits.Percentage, Desc = "Percent of Cells Intensity Factor 1")]
+        //public double PercentsCellsIntensityFactor1 { set; get; }
 
-        [DataFieldAttribute(Unit = FieldUnits.Percentage, Desc = "Percent of Cells Intensity Factor 2")]
-        public double PercentsCellsIntensityFactor2 { set; get; }
+        //[DataFieldAttribute(Unit = FieldUnits.Percentage, Desc = "Percent of Cells Intensity Factor 2")]
+        //public double PercentsCellsIntensityFactor2 { set; get; }
 
-        [DataFieldAttribute(Unit = FieldUnits.Percentage, Desc = "Percent of Cells Intensity Factor 3")]
-        public double PercentsCellsIntensityFactor3 { set; get; }
+        //[DataFieldAttribute(Unit = FieldUnits.Percentage, Desc = "Percent of Cells Intensity Factor 3")]
+        //public double PercentsCellsIntensityFactor3 { set; get; }
     }
 }

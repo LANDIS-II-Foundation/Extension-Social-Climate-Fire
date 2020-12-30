@@ -47,12 +47,15 @@ namespace Landis.Extension.Scrapple
         public static int ActualYear;
         public static int EventID = 0;
 
+        private static int[] dNBR;
         private static int[] totalBurnedSites;
         private static int[] numberOfFire;
         private static int[] totalBiomassMortality;
         private static int numCellsSeverity1;
         private static int numCellsSeverity2;
         private static int numCellsSeverity3;
+        private static int numCellsSeverity4;
+        private static int numCellsSeverity5;
 
         public static IInputParameters Parameters;
         private static ICore modelCore;
@@ -234,6 +237,7 @@ namespace Landis.Extension.Scrapple
             }
 
             AnnualClimate_Daily weatherData = null;
+            dNBR = new int[3];
             totalBurnedSites = new int[3];
             numberOfFire = new int[3];
             totalBiomassMortality = new int[3];
@@ -719,9 +723,12 @@ namespace Landis.Extension.Scrapple
             totalBurnedSites[(int)ignitionType] += fireEvent.TotalSitesBurned;
             numberOfFire[(int)ignitionType]++;
             totalBiomassMortality[(int)ignitionType] += (int)fireEvent.TotalBiomassMortality;
+            dNBR[(int)ignitionType] += (int)fireEvent.SiteMortality;
             numCellsSeverity1 += fireEvent.NumberCellsSeverity1;
             numCellsSeverity2 += fireEvent.NumberCellsSeverity2;
             numCellsSeverity3 += fireEvent.NumberCellsSeverity3;
+            numCellsSeverity4 += fireEvent.NumberCellsSeverity4;
+            numCellsSeverity5 += fireEvent.NumberCellsSeverity5;
             return true;
         }
 
@@ -888,6 +895,8 @@ namespace Landis.Extension.Scrapple
             sl.NumberCellsSeverity1 = numCellsSeverity1;
             sl.NumberCellsSeverity2 = numCellsSeverity2;
             sl.NumberCellsSeverity3 = numCellsSeverity3;
+            sl.NumberCellsSeverity4 = numCellsSeverity4;
+            sl.NumberCellsSeverity5 = numCellsSeverity5;
 
 
             summaryLog.AddObject(sl);

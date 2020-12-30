@@ -49,15 +49,18 @@ namespace Landis.Extension.Scrapple
         public double MeanEffectiveWindSpeed;
         public double MeanSuppression;
         public double MeanSpreadProbability;
+        public double MeanDNBR;
         public double MeanFWI;
         public double TotalBiomassMortality;
         public ActiveSite currentSite;
         public int NumberCellsSeverity1;
         public int NumberCellsSeverity2;
         public int NumberCellsSeverity3;
-        public int NumberCellsIntensityFactor1;
-        public int NumberCellsIntensityFactor2;
-        public int NumberCellsIntensityFactor3;
+        public int NumberCellsSeverity4;
+        public int NumberCellsSeverity5;
+        //public int NumberCellsIntensityFactor1;
+        //public int NumberCellsIntensityFactor2;
+        //public int NumberCellsIntensityFactor3;
         public int TotalSitesBurned;
         public int MaxSpreadArea;
 
@@ -65,7 +68,7 @@ namespace Landis.Extension.Scrapple
 
         public int maxDay;
         public int siteIntensity = 1;  //default is low intensity
-        public int siteMortality = 0;
+        public int SiteMortality = 0;
         private double siteWindDirection = -999;
         private double siteWindSpeed = 0;
         private double siteFireWeatherIndex = 0;
@@ -118,17 +121,20 @@ namespace Landis.Extension.Scrapple
             this.MeanWindSpeed = 0.0;
             this.MeanEffectiveWindSpeed = 0.0;
             this.MeanSpreadProbability = 0.0;
+            this.MeanDNBR = 0.0;
             this.MeanSuppression = 0.0;
             this.MeanFWI = 0.0;
             this.TotalBiomassMortality = 0.0;
             this.NumberCellsSeverity1 = 0;
             this.NumberCellsSeverity2 = 0;
             this.NumberCellsSeverity3 = 0;
+            this.NumberCellsSeverity4 = 0;
+            this.NumberCellsSeverity5 = 0;
             this.currentSite = initiationSite;
             this.maxDay = day;
-            this.NumberCellsIntensityFactor1 = 0;
-            this.NumberCellsIntensityFactor2 = 0;
-            this.NumberCellsIntensityFactor3 = 0;
+            //this.NumberCellsIntensityFactor1 = 0;
+            //this.NumberCellsIntensityFactor2 = 0;
+            //this.NumberCellsIntensityFactor3 = 0;
 
         }
 
@@ -315,10 +321,23 @@ namespace Landis.Extension.Scrapple
             siteMortality = Math.Max(siteMortality, 0.0);  // In the long-run, this shouldn't be necessary.  But useful for testing.
 
             int siteCohortsKilled = 0;
-            this.siteMortality = (int) siteMortality;
+            this.MeanDNBR += (int) siteMortality;
+            this.SiteMortality = (int) siteMortality;
 
             int standardSeverityIndex = Math.Max((int) siteMortality / 100, 1);
             SiteVars.Intensity[site] = (byte) Math.Min(standardSeverityIndex, 5);  // must range from 1-5.
+            if (SiteVars.Intensity[site] == 1)
+                this.NumberCellsSeverity1++;
+            if (SiteVars.Intensity[site] == 2)
+                this.NumberCellsSeverity2++;
+            if (SiteVars.Intensity[site] == 3)
+                this.NumberCellsSeverity3++;
+            if (SiteVars.Intensity[site] == 4)
+                this.NumberCellsSeverity4++;
+            if (SiteVars.Intensity[site] == 5)
+                this.NumberCellsSeverity5++;
+
+
             SiteVars.Mortality[site] = (int) siteMortality;
             SiteVars.TypeOfIginition[site] = (int)this.IgnitionType;
             //PlugIn.ModelCore.UI.WriteLine("  dNBR: {0}, severity={1}.", siteMortality, standardSeverityIndex);
@@ -371,7 +390,7 @@ namespace Landis.Extension.Scrapple
             //// CohortAge  The age of the cohort
             double BarkThickness = (MaxBarkThickness * cohort.Age) / (cohort.Age + AgeDBH);
 
-            double Pm = Math.Exp(Beta_naught_m + (Beta_Bark * BarkThickness) + (Beta_Site_Mortality * siteMortality));
+            double Pm = Math.Exp(Beta_naught_m + (Beta_Bark * BarkThickness) + (Beta_Site_Mortality * SiteMortality));
 
             double probabilityMortality = Pm / (1.0 + Pm);
 
@@ -781,6 +800,7 @@ namespace Landis.Extension.Scrapple
             el.CohortsKilled = fireEvent.CohortsKilled;
             el.AvailableCohorts = fireEvent.AvailableCohorts;
             el.MeanSeverity = fireEvent.MeanIntensity / (double) fireEvent.TotalSitesBurned;
+            el.MeanDNBR = fireEvent.MeanDNBR / (double)fireEvent.TotalSitesBurned;
             el.MeanWindDirection = fireEvent.MeanWindDirection / (double)fireEvent.TotalSitesBurned;
             el.MeanWindSpeed = fireEvent.MeanWindSpeed / (double)fireEvent.TotalSitesBurned;
             el.MeanEffectiveWindSpeed = fireEvent.MeanEffectiveWindSpeed / (double)fireEvent.TotalSitesBurned;
@@ -789,9 +809,11 @@ namespace Landis.Extension.Scrapple
             el.NumberCellsSeverity1 = fireEvent.NumberCellsSeverity1;
             el.NumberCellsSeverity2 = fireEvent.NumberCellsSeverity2;
             el.NumberCellsSeverity3 = fireEvent.NumberCellsSeverity3;
-            el.PercentsCellsIntensityFactor1 = (double) fireEvent.NumberCellsIntensityFactor1 / (double)fireEvent.TotalSitesBurned;
-            el.PercentsCellsIntensityFactor2 = (double)fireEvent.NumberCellsIntensityFactor2 / (double)fireEvent.TotalSitesBurned;
-            el.PercentsCellsIntensityFactor3 = (double)fireEvent.NumberCellsIntensityFactor3 / (double)fireEvent.TotalSitesBurned;
+            el.NumberCellsSeverity4 = fireEvent.NumberCellsSeverity4;
+            el.NumberCellsSeverity5 = fireEvent.NumberCellsSeverity5;
+            //el.PercentsCellsIntensityFactor1 = (double) fireEvent.NumberCellsIntensityFactor1 / (double)fireEvent.TotalSitesBurned;
+            //el.PercentsCellsIntensityFactor2 = (double)fireEvent.NumberCellsIntensityFactor2 / (double)fireEvent.TotalSitesBurned;
+            //el.PercentsCellsIntensityFactor3 = (double)fireEvent.NumberCellsIntensityFactor3 / (double)fireEvent.TotalSitesBurned;
 
             PlugIn.eventLog.AddObject(el);
             PlugIn.eventLog.WriteToFile();
