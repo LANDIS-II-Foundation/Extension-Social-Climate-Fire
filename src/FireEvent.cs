@@ -280,10 +280,10 @@ namespace Landis.Extension.Scrapple
             // (Clay%, ET, Windspeed, Water Deficit, and Fuel)
             // The function for the site level mortality is generalized linear model utilizing a gamma distribution with an inverse link.
 
-            IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[initiationSite];
+            IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
 
             // Establish the variables 
-            double Clay = 15.0;
+            double Clay = SiteVars.Clay[site];
             double Previous_Year_ET = 0.0;
             try
             {
@@ -299,13 +299,12 @@ namespace Landis.Extension.Scrapple
             double TotalFuels = SiteVars.FineFuels[site] + ladderFuelBiomass;
 
             /// For delayed relative delta normalized burn ratio (DRdNBR) calculation 
-            //R-  These will come from the input file
-            double intercept = 0.0; //The parameter fit for the intercept 
-            double Beta_Clay = 0.0; //The parameter fit for site level clay % in Soil.
-            double Beta_ET = 0.0; //The parameter fit for site level previous years annual ET
-            double Beta_Windspeed = 0.0;// The parameter fit for site level Effective Windspeed 
-            double Beta_Water_Deficit = 0.0;//The parameter fit for site level PET-AET
-            double Beta_Fuel = 0.0; //The parameter fit for site level fuels, here combining fine fuels and ladder fuels
+            double intercept = PlugIn.Parameters.SiteMortalityB0; //The parameter fit for the intercept 
+            double Beta_Clay = PlugIn.Parameters.SiteMortalityB1; //The parameter fit for site level clay % in Soil.
+            double Beta_ET = PlugIn.Parameters.SiteMortalityB2; //The parameter fit for site level previous years annual ET
+            double Beta_Windspeed = PlugIn.Parameters.SiteMortalityB3;// The parameter fit for site level Effective Windspeed 
+            double Beta_Water_Deficit = PlugIn.Parameters.SiteMortalityB4;//The parameter fit for site level PET-AET
+            double Beta_Fuel = PlugIn.Parameters.SiteMortalityB5; //The parameter fit for site level fuels, here combining fine fuels and ladder fuels
 
             double siteMortality = Math.Pow((intercept + (Clay * Beta_Clay)
                 + (Previous_Year_ET * Beta_ET)
@@ -344,24 +343,24 @@ namespace Landis.Extension.Scrapple
 
             bool killCohort = false;
 
-            // Eventual User Inputs
-            double Beta_naught_m = 0.0; // Intercept parameter for mortality curve 
-            double Beta_Bark = 0.0; // The parameter fit for the relationship between bark thickness and mortality. 
-            double Beta_Site_Mortality = 0.0; // The parameter fit for the relationship between site level and individual level mortality. 
+            // User Inputs
+            double Beta_naught_m = PlugIn.Parameters.CohortMortalityB0; // Intercept parameter for mortality curve 
+            double Beta_Bark = PlugIn.Parameters.CohortMortalityB1; // The parameter fit for the relationship between bark thickness and mortality. 
+            double Beta_Site_Mortality = PlugIn.Parameters.CohortMortalityB2; // The parameter fit for the relationship between site level and individual level mortality. 
 
             // From the input file each species will need 
             // AgeDBH _Parameter is a parameter to scale Age and DBH estimated from a function in the form of 
             // It is essentially the half-life of the MaxBarkThickness *Age relationship. 
             // This is a logistic survival code with the MaxBarkThickness being asymptote. 
             // As age increase DBH approaches MaxBarkThickness
-            double AgeDBH = 0.0;
+            double AgeDBH = SpeciesData.AgeDBH[cohort.Species];
 
             // The maximum measured Bark thickness. The asymptote of the logistic survival curve. 
             // This was calculated by using a species-specific bark DBH Coefficient described in Cansler 2020 and the maximum measured DBH form FIA. 
             //  Cansler, C. A., Hood, S. M., Varner, J. M., van Mantgem, P. J., Agne, M. C., Andrus, R. A., ... & 
             //  Bentz, B. J. (2020). The Fire and Tree Mortality Database, for empirical modeling of individual tree 
             //  mortality after fire. Scientific data, 7(1), 1-14.
-            double MaxBarkThickness = 0.0;
+            double MaxBarkThickness = SpeciesData.MaximumBarkThickness[cohort.Species];
 
             //// CohortAge  The age of the cohort
             double BarkThickness = (MaxBarkThickness * cohort.Age) / (cohort.Age + AgeDBH);

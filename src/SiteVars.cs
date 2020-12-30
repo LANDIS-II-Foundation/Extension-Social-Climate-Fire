@@ -20,6 +20,7 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<bool> disturbed;
         private static ISiteVar<ushort> groundSlope;
         private static ISiteVar<ushort> uphillSlopeAzimuth;
+        private static ISiteVar<ushort> clay;
         private static ISiteVar<ISiteCohorts> cohorts;
         private static ISiteVar<double> fineFuels;
         private static ISiteVar<Pool> tempFineFuels;
@@ -55,7 +56,8 @@ namespace Landis.Extension.Scrapple
 
             groundSlope          = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
             uphillSlopeAzimuth   = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
-            lightningFireWeight  = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
+            clay = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
+            lightningFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             rxFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             accidentalFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
 
@@ -226,6 +228,15 @@ namespace Landis.Extension.Scrapple
         {
             get {
                 return uphillSlopeAzimuth;
+            }
+        }
+        //---------------------------------------------------------------------
+
+        public static ISiteVar<ushort> Clay
+        {
+            get
+            {
+                return clay;
             }
         }
         //---------------------------------------------------------------------

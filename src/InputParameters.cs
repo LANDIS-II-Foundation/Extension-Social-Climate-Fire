@@ -14,6 +14,8 @@ namespace Landis.Extension.Scrapple
     public interface IInputParameters
     {
         int Timestep{get;set;}
+        Landis.Library.Parameters.Species.AuxParm<double> AgeDBH { get; }
+        Landis.Library.Parameters.Species.AuxParm<double> MaximumBarkThickness { get; }
         string LighteningFireMap { get; set; }
         string RxFireMap { get; set; }
         string AccidentalFireMap { get; set; }
@@ -21,6 +23,7 @@ namespace Landis.Extension.Scrapple
         string LighteningSuppressionMap { get; set; }
         string RxSuppressionMap { get; set; }
         string AccidentalSuppressionMap { get; set; }
+        string ClayMap { get; set; }
 
         double LightningIgnitionB0 { get; set; }
         double LightningIgnitionB1 { get; set; }
@@ -58,18 +61,27 @@ namespace Landis.Extension.Scrapple
         double SpreadProbabilityB2 { get; set; }
         double SpreadProbabilityB3 { get; set; }
 
+        double SiteMortalityB0 { get; set; }
+        double SiteMortalityB1 { get; set; }
+        double SiteMortalityB2 { get; set; }
+        double SiteMortalityB3 { get; set; }
+        double SiteMortalityB4 { get; set; }
+        double SiteMortalityB5 { get; set; }
+        double CohortMortalityB0 { get; set; }
+        double CohortMortalityB1 { get; set; }
+        double CohortMortalityB2 { get; set; }
         int LadderFuelMaxAge { get; set; }
-        double IntensityFactor_LadderFuelBiomass { get; set; }
-        double IntensityFactor_FineFuelPercent { get; set; }
 
         int SuppressionMaxWindSpeed { get; set; }
         List<ISuppressionTable> SuppressionFWI_Table { get; }
         List<ISpecies> LadderFuelSpeciesList { get; }
         List<IDeadWood> DeadWoodList { get; }
 
-        List<IFireDamage> FireDamages_Severity1 { get; }
-        List<IFireDamage> FireDamages_Severity2 { get; }
-        List<IFireDamage> FireDamages_Severity3 { get; }
+        //double IntensityFactor_LadderFuelBiomass { get; set; }
+        //double IntensityFactor_FineFuelPercent { get; set; }
+        //List<IFireDamage> FireDamages_Severity1 { get; }
+        //List<IFireDamage> FireDamages_Severity2 { get; }
+        //List<IFireDamage> FireDamages_Severity3 { get; }
 
     }
 }
@@ -83,7 +95,9 @@ namespace Landis.Extension.Scrapple
         : IInputParameters
     {
         private int timestep;
-        
+
+        private Landis.Library.Parameters.Species.AuxParm<double> ageDBH;
+        private Landis.Library.Parameters.Species.AuxParm<double> maximumBarkThickness;
         private string lighteningFireMap;
         private string accidentalFireMap;
         private string rxFireMap;
@@ -95,6 +109,7 @@ namespace Landis.Extension.Scrapple
         private string lighteningSuppressionMap;
         private string accidentalSuppressionMap;
         private string rxSuppressionMap;
+        private string clayMap;
 
         private double lightningIgnitionB0;
         private double lightningIgnitionB1;
@@ -128,18 +143,29 @@ namespace Landis.Extension.Scrapple
         private double spreadProbabilityB2;
         private double spreadProbabilityB3;
 
+        private double siteMortalityB0;
+        private double siteMortalityB1;
+        private double siteMortalityB2;
+        private double siteMortalityB3;
+        private double siteMortalityB4;
+        private double siteMortalityB5;
+
+        private double cohortMortalityB0;
+        private double cohortMortalityB1;
+        private double cohortMortalityB2;
+
         private int ladderFuelMaxAge;
-        private double intensityFactor_LadderFuelBiomass;
-        private double intensityFactor_FineFuelPercentage;
+        //private double intensityFactor_LadderFuelBiomass;
+        //private double intensityFactor_FineFuelPercentage;
 
         private int suppressionMaxWindSpeed;
         private List<ISuppressionTable> suppressionFWI_Table;
         private List<ISpecies> ladderFuelSpeciesList;
         private List<IDeadWood> deadWoodList;
 
-        private List<IFireDamage> damages_severity1;
-        private List<IFireDamage> damages_severity2;
-        private List<IFireDamage> damages_severity3;
+        //private List<IFireDamage> damages_severity1;
+        //private List<IFireDamage> damages_severity2;
+        //private List<IFireDamage> damages_severity3;
 
 
 
@@ -159,6 +185,16 @@ namespace Landis.Extension.Scrapple
                                                       "Value must be = or > 0.");
                 timestep = value;
             }
+        }
+        public Landis.Library.Parameters.Species.AuxParm<double> AgeDBH
+        {
+            get { return ageDBH; }
+            set { ageDBH = value; }
+        }
+        public Landis.Library.Parameters.Species.AuxParm<double> MaximumBarkThickness
+        {
+            get { return maximumBarkThickness; }
+            set { maximumBarkThickness = value; }
         }
         //---------------------------------------------------------------------
         public List<ISpecies> LadderFuelSpeciesList
@@ -191,6 +227,18 @@ namespace Landis.Extension.Scrapple
             set
             {
                 rxFireMap = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public string ClayMap
+        {
+            get
+            {
+                return clayMap;
+            }
+            set
+            {
+                clayMap = value;
             }
         }
         //---------------------------------------------------------------------
@@ -622,6 +670,78 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
+        public double SiteMortalityB0
+        {
+            get { return siteMortalityB0;}
+            set { siteMortalityB0 = value;}
+        }
+        //---------------------------------------------------------------------
+        public double SiteMortalityB1
+        {
+            get {return siteMortalityB1;}
+            set {siteMortalityB1 = value;}
+        }
+        //---------------------------------------------------------------------
+        public double SiteMortalityB2
+        {
+            get {return siteMortalityB2;}
+            set {siteMortalityB2 = value;}
+        }
+        //---------------------------------------------------------------------
+        public double SiteMortalityB3
+        {
+            get
+            {
+                return siteMortalityB3;
+            }
+            set
+            {
+                siteMortalityB3 = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public double SiteMortalityB4
+        {
+            get
+            {
+                return siteMortalityB4;
+            }
+            set
+            {
+                siteMortalityB4 = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public double SiteMortalityB5
+        {
+            get
+            {
+                return siteMortalityB5;
+            }
+            set
+            {
+                siteMortalityB5 = value;
+            }
+        }
+        //---------------------------------------------------------------------
+        public double CohortMortalityB0
+        {
+            get { return cohortMortalityB0; }
+            set { cohortMortalityB0 = value; }
+        }
+        //---------------------------------------------------------------------
+        public double CohortMortalityB1
+        {
+            get { return cohortMortalityB1; }
+            set { cohortMortalityB1 = value; }
+        }
+        //---------------------------------------------------------------------
+        public double CohortMortalityB2
+        {
+            get { return cohortMortalityB2; }
+            set { cohortMortalityB2 = value; }
+        }
+        //---------------------------------------------------------------------
         public int LadderFuelMaxAge
         {
             get
@@ -634,29 +754,29 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public double IntensityFactor_LadderFuelBiomass
-        {
-            get
-            {
-                return intensityFactor_LadderFuelBiomass;
-            }
-            set
-            {
-                intensityFactor_LadderFuelBiomass = value;
-            }
-        }
-        //---------------------------------------------------------------------
-        public double IntensityFactor_FineFuelPercent
-        {
-            get
-            {
-                return intensityFactor_FineFuelPercentage;
-            }
-            set
-            {
-                intensityFactor_FineFuelPercentage = value;
-            }
-        }
+        //public double IntensityFactor_LadderFuelBiomass
+        //{
+        //    get
+        //    {
+        //        return intensityFactor_LadderFuelBiomass;
+        //    }
+        //    set
+        //    {
+        //        intensityFactor_LadderFuelBiomass = value;
+        //    }
+        //}
+        ////---------------------------------------------------------------------
+        //public double IntensityFactor_FineFuelPercent
+        //{
+        //    get
+        //    {
+        //        return intensityFactor_FineFuelPercentage;
+        //    }
+        //    set
+        //    {
+        //        intensityFactor_FineFuelPercentage = value;
+        //    }
+        //}
 
 
         //---------------------------------------------------------------------
@@ -692,30 +812,30 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public List<IFireDamage> FireDamages_Severity1
-        {
-            get
-            {
-                return damages_severity1;
-            }
-        }
+        //public List<IFireDamage> FireDamages_Severity1
+        //{
+        //    get
+        //    {
+        //        return damages_severity1;
+        //    }
+        //}
 
-        //---------------------------------------------------------------------
-        public List<IFireDamage> FireDamages_Severity2
-        {
-            get
-            {
-                return damages_severity2;
-            }
-        }
-        //---------------------------------------------------------------------
-        public List<IFireDamage> FireDamages_Severity3
-        {
-            get
-            {
-                return damages_severity3;
-            }
-        }
+        ////---------------------------------------------------------------------
+        //public List<IFireDamage> FireDamages_Severity2
+        //{
+        //    get
+        //    {
+        //        return damages_severity2;
+        //    }
+        //}
+        ////---------------------------------------------------------------------
+        //public List<IFireDamage> FireDamages_Severity3
+        //{
+        //    get
+        //    {
+        //        return damages_severity3;
+        //    }
+        //}
 
         //---------------------------------------------------------------------
 
@@ -724,9 +844,9 @@ namespace Landis.Extension.Scrapple
             ladderFuelSpeciesList = new List<ISpecies>();
             deadWoodList = new List<IDeadWood>();
             suppressionFWI_Table = new List<ISuppressionTable>();
-            damages_severity1 = new List<IFireDamage>();
-            damages_severity2 = new List<IFireDamage>();
-            damages_severity3 = new List<IFireDamage>();
+            //damages_severity1 = new List<IFireDamage>();
+            //damages_severity2 = new List<IFireDamage>();
+            //damages_severity3 = new List<IFireDamage>();
             dynamicRxIgnitions = new List<IDynamicIgnitionMap>();
             dynamicLightningIgnitions = new List<IDynamicIgnitionMap>();
             dynamicAccidentalIgnitions = new List<IDynamicIgnitionMap>();
