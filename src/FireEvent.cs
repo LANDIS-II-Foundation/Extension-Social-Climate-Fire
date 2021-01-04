@@ -312,12 +312,12 @@ namespace Landis.Extension.Scrapple
             double Beta_Windspeed = PlugIn.Parameters.SiteMortalityB3;// The parameter fit for site level Effective Windspeed 
             double Beta_Water_Deficit = PlugIn.Parameters.SiteMortalityB4;//The parameter fit for site level PET-AET
             double Beta_Fuel = PlugIn.Parameters.SiteMortalityB5; //The parameter fit for site level fuels, here combining fine fuels and ladder fuels
-
-            double siteMortality = Math.Pow((intercept + (Clay * Beta_Clay)
+           
+           double siteMortality = Math.Pow(Math.Max((intercept + (Clay * Beta_Clay)
                 + (Previous_Year_ET * Beta_ET)
                 + (siteEffectiveWindSpeed * Beta_Windspeed)
                 + (WaterDeficit * Beta_Water_Deficit)
-                + (TotalFuels * Beta_Fuel)), -1.0);
+                + (TotalFuels * Beta_Fuel)), .0005), -1.0);
 
             siteMortality = Math.Max(siteMortality, 0.0);  // In the long-run, this shouldn't be necessary.  But useful for testing.
 
