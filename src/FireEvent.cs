@@ -290,17 +290,18 @@ namespace Landis.Extension.Scrapple
 
             // Establish the variables 
             double Clay = SiteVars.Clay[site];
-            double Previous_Year_ET = 0.0;
-            try
-            {
-                Previous_Year_ET = Climate.Future_DailyData[PlugIn.ActualYear - 1][ecoregion.Index].AnnualAET;
-            }
-            catch
-            {
-                // Indicating that we're at the first year, without a prior year.
-                Previous_Year_ET = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].AnnualAET;
-            }
+            //double Previous_Year_ET = 0.0;
+            //try
+            //{
+            //    Previous_Year_ET = Climate.Future_DailyData[PlugIn.ActualYear - 1][ecoregion.Index].AnnualAET;
+            //}
+            //catch
+            //{
+            //    // Indicating that we're at the first year, without a prior year.
+            //    Previous_Year_ET = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].AnnualAET;
+            //}
 
+            double Previous_Year_ET = SiteVars.PotentialEvapotranspiration[site];
             double WaterDeficit = SiteVars.ClimaticWaterDeficit[site];
             double TotalFuels = SiteVars.FineFuels[site] + ladderFuelBiomass;
 
