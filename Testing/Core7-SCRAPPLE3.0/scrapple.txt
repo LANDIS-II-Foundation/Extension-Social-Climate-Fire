@@ -60,19 +60,19 @@ MaximumSpreadAreaB2	-2.5 <<-2.5  <<effective wind speed
 
 SpreadProbabilityB0 -1.79 << Intercept
 SpreadProbabilityB1 0.06  <<FWI
-SpreadProbabilityB2  -.915 << relativized fine fuels. 
+SpreadProbabilityB2  -0.915 << relativized fine fuels. 
 SpreadProbabilityB3 0.0126 << effective wind speed. 
 
-SiteMortalityB0 -1.79 << Intercept
-SiteMortalityB1 0.06  << The parameter fit for site level clay % in Soil.
-SiteMortalityB2  -.915 << The parameter fit for site level previous years annual ET. 
-SiteMortalityB3 0.0126 << The parameter fit for site level Effective Windspeed. 
-SiteMortalityB4 0.0126 << The parameter fit for site level Climatic Water Deficit (PET-AET). 
-SiteMortalityB5 0.0126 << The parameter fit for fine fuels (including ladder fuels). 
+SiteMortalityB0  0.0059<< Intercept
+SiteMortalityB1   0.00050 << The parameter fit for site level clay % in Soil.
+SiteMortalityB2  -0.000010  << The parameter fit for site level previous years annual ET. 
+SiteMortalityB3 -0.0002200  << The parameter fit for site level Effective Windspeed. 
+SiteMortalityB4  -0.00000050 << The parameter fit for site level Climatic Water Deficit (PET-AET). 
+SiteMortalityB5 0.00000  << The parameter fit for fine fuels (including ladder fuels). 
 
-CohortMortalityB0 -1.79 << Intercept
-CohortMortalityB1 0.06  << The parameter fit for the relationship between bark thickness and cohort mortality.
-CohortMortalityB2  -.915 << The parameter fit for the relationship between site mortality and cohort mortality. 
+CohortMortalityB0 -0.703 << Intercept
+CohortMortalityB1 -0.9908 << The parameter fit for the relationship between bark thickness and cohort mortality.
+CohortMortalityB2  0.009 << The parameter fit for the relationship between site mortality and cohort mortality. 
 
 >>IntensityFactor:FineFuelPercent  0.1
 >>IntensityFactor:LadderFuelMaxAge 40
