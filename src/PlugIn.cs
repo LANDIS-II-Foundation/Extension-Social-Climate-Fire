@@ -633,8 +633,7 @@ namespace Landis.Extension.Scrapple
                     outputRaster.WriteBufferPixel();
                 }
             }
-        }
-         string[] paths10 = { "scrapple-fire", "siteMortality-{timestep}.img" };
+            string[] paths10 = { "scrapple-fire", "site-mortality-{timestep}.img" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths10), currentTime);
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
@@ -644,7 +643,7 @@ namespace Landis.Extension.Scrapple
                     if (site.IsActive)
                     {
                         if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
-                            pixel.MapCode.Value = SiteVars.siteMortality[site];
+                            pixel.MapCode.Value = SiteVars.Mortality[site];
                         else
                             pixel.MapCode.Value = 0;
                     }
@@ -656,6 +655,7 @@ namespace Landis.Extension.Scrapple
                     outputRaster.WriteBufferPixel();
                 }
             }
+        }
 
         //---------------------------------------------------------------------
 

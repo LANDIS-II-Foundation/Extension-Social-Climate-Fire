@@ -96,10 +96,10 @@ namespace Landis.Extension.Scrapple
         internal static void ReadClayMap(string path)
         {
             PlugIn.ModelCore.UI.WriteLine("   Reading in {0}", path);
-            IInputRaster<IntPixel> map;
+            IInputRaster<DoublePixel> map;
             try
             {
-                map = PlugIn.ModelCore.OpenRaster<IntPixel>(path);
+                map = PlugIn.ModelCore.OpenRaster<DoublePixel>(path);
             }
             catch (FileNotFoundException)
             {
@@ -115,7 +115,7 @@ namespace Landis.Extension.Scrapple
 
             using (map)
             {
-                IntPixel pixel = map.BufferPixel;
+                DoublePixel pixel = map.BufferPixel;
                 foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
                 {
                     map.ReadBufferPixel();
@@ -127,7 +127,7 @@ namespace Landis.Extension.Scrapple
                             string mesg = string.Format("Ground Slope invalid map code: {0}", mapCode);
                             throw new System.ApplicationException(mesg);
                         }
-                        SiteVars.Clay[site] = (ushort)mapCode;
+                        SiteVars.Clay[site] = mapCode;
                     }
                 }
             }
