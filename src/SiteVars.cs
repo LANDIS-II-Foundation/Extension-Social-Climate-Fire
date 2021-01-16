@@ -27,9 +27,9 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<int> specialDeadWood;  // potential snags, specifically
         private static ISiteVar<double> spreadProbablity;
 
-        private static ISiteVar<double> lightningSuppressionIndex;
-        private static ISiteVar<double> rxSuppressionIndex;
-        private static ISiteVar<double> accidentalSuppressionIndex;
+        private static ISiteVar<int> lightningSuppressionIndex;
+        private static ISiteVar<int> rxSuppressionIndex;
+        private static ISiteVar<int> accidentalSuppressionIndex;
 
         public static ISiteVar<double> SmolderConsumption;
         public static ISiteVar<double> FlamingConsumption;
@@ -62,9 +62,9 @@ namespace Landis.Extension.Scrapple
             rxFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             accidentalFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
 
-            lightningSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
-            rxSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
-            accidentalSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
+            lightningSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
+            rxSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
+            accidentalSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             typeOfIginition = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             disturbed = PlugIn.ModelCore.Landscape.NewSiteVar<bool>();
             specialDeadWood = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
@@ -126,7 +126,7 @@ namespace Landis.Extension.Scrapple
         }
 
         //---------------------------------------------------------------------
-        public static ISiteVar<double> LightningSuppressionIndex
+        public static ISiteVar<int> LightningSuppressionIndex
         {
             get
             {
@@ -134,7 +134,7 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public static ISiteVar<double> RxSuppressionIndex
+        public static ISiteVar<int> RxSuppressionIndex
         {
             get
             {
@@ -142,7 +142,7 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public static ISiteVar<double> AccidentalSuppressionIndex
+        public static ISiteVar<int> AccidentalSuppressionIndex
         {
             get
             {

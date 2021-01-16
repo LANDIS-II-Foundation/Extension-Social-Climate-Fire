@@ -73,7 +73,7 @@ namespace Landis.Extension.Scrapple
         int LadderFuelMaxAge { get; set; }
 
         int SuppressionMaxWindSpeed { get; set; }
-        List<ISuppressionTable> SuppressionFWI_Table { get; }
+        Dictionary<int, ISuppressionTable> SuppressionFWI_Table { get; }
         List<ISpecies> LadderFuelSpeciesList { get; }
         List<IDeadWood> DeadWoodList { get; }
 
@@ -160,7 +160,8 @@ namespace Landis.Extension.Scrapple
         //private double intensityFactor_FineFuelPercentage;
 
         private int suppressionMaxWindSpeed;
-        private List<ISuppressionTable> suppressionFWI_Table;
+        //private List<ISuppressionTable> suppressionFWI_Table;
+        private Dictionary<int, ISuppressionTable> suppressionFWI_Table;
         private List<ISpecies> ladderFuelSpeciesList;
         private List<IDeadWood> deadWoodList;
 
@@ -793,7 +794,8 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public List<ISuppressionTable> SuppressionFWI_Table
+        //public List<ISuppressionTable> SuppressionFWI_Table
+        public Dictionary<int, ISuppressionTable> SuppressionFWI_Table
         {
             get
             {
@@ -846,7 +848,7 @@ namespace Landis.Extension.Scrapple
 
             ladderFuelSpeciesList = new List<ISpecies>();
             deadWoodList = new List<IDeadWood>();
-            suppressionFWI_Table = new List<ISuppressionTable>();
+            suppressionFWI_Table = new Dictionary<int, ISuppressionTable>();
             //damages_severity1 = new List<IFireDamage>();
             //damages_severity2 = new List<IFireDamage>();
             //damages_severity3 = new List<IFireDamage>();

@@ -473,46 +473,74 @@ namespace Landis.Extension.Scrapple
             ReadVar(smws);
             parameters.SuppressionMaxWindSpeed = smws.Value;
 
-            ReadName("SuppressionTable");
+            //ReadName("SuppressionTable");
 
-            InputVar<string> ig = new InputVar<string>("Ignition Type");
-            InputVar<double> fwib1 = new InputVar<double>("FWI_Break1");
-            InputVar<double> fwib2 = new InputVar<double>("FWI_Break2");
-            InputVar<int> suppeff1 = new InputVar<int>("SuppressionEffectiveness1");
-            InputVar<int> suppeff2 = new InputVar<int>("SuppressionEffectiveness2");
-            InputVar<int> suppeff3 = new InputVar<int>("SuppressionEffectiveness3");
+            //InputVar<string> ig = new InputVar<string>("Ignition Type");
+            //InputVar<double> fwib1 = new InputVar<double>("FWI_Break1");
+            //InputVar<double> fwib2 = new InputVar<double>("FWI_Break2");
+            //InputVar<int> suppeff1 = new InputVar<int>("SuppressionEffectiveness1");
+            //InputVar<int> suppeff2 = new InputVar<int>("SuppressionEffectiveness2");
+            //InputVar<int> suppeff3 = new InputVar<int>("SuppressionEffectiveness3");
 
-            while (!AtEndOfInput && CurrentName != "DeadWoodTable")
+            InputVar<string> csv_suppress = new InputVar<string>("Suppression_CSV_File");
+            ReadVar(csv_suppress);
+
+            CSVParser suppressionParser = new CSVParser();
+            DataTable suppressionTable = suppressionParser.ParseToDataTable(csv_suppress.Value);
+            foreach (DataRow row in suppressionTable.Rows)
             {
-                StringReader currentLine = new StringReader(CurrentLine);
-
                 ISuppressionTable suppressTable = new SuppressionTable();
 
-                ReadValue(ig, currentLine);
-                suppressTable.Type = IgnitionTypeParse(ig.Value);
+                suppressTable.Type = IgnitionTypeParse(System.Convert.ToString(row["IgnitionType"]));
+                suppressTable.MapCode = System.Convert.ToInt32(row["MapCode"]);
+                suppressTable.FWI_Break1 = System.Convert.ToDouble(row["FWI_Break_1"]);
+                suppressTable.FWI_Break2 = System.Convert.ToDouble(row["FWI_Break_2"]);
+                suppressTable.Suppression0 = System.Convert.ToInt32(row["Suppress_Category_0"]);
+                suppressTable.Suppression1 = System.Convert.ToInt32(row["Suppress_Category_1"]);
+                suppressTable.Suppression2 = System.Convert.ToInt32(row["Suppress_Category_2"]);
 
-                ReadValue(fwib1, currentLine);
-                suppressTable.FWI_Break1 = fwib1.Value;
+                int index = suppressTable.MapCode + ((int)suppressTable.Type * 3);
 
-                ReadValue(fwib2, currentLine);
-                suppressTable.FWI_Break2 = fwib2.Value;
+                //Dictionary<int, ISuppressionTable> temp = new Dictionary<int, ISuppressionTable>();
+                //temp.Add(suppressTable.MapCode, suppressTable);
+                //parameters.SuppressionFWI_Table.Add((int) suppressTable.Type, temp);
 
-                ReadValue(suppeff1, currentLine);
-                suppressTable.EffectivenessLow = suppeff1.Value;
+                parameters.SuppressionFWI_Table.Add(index, suppressTable);
 
-                ReadValue(suppeff2, currentLine);
-                suppressTable.EffectivenessMedium = suppeff2.Value;
-
-                ReadValue(suppeff3, currentLine);
-                suppressTable.EffectivenessHigh = suppeff3.Value;
-
-                parameters.SuppressionFWI_Table.Add(suppressTable);
-
-                CheckNoDataAfter("the " + suppeff3.Name + " column", currentLine);
-                GetNextLine();
             }
-            if (parameters.SuppressionFWI_Table.Count != 3)
-                throw NewParseException("EXACTLY THREE suppression levels must be defined: accidental, prescribed, lightening.");
+
+
+            //while (!AtEndOfInput && CurrentName != "DeadWoodTable")
+            //{
+            //    StringReader currentLine = new StringReader(CurrentLine);
+
+            //    ISuppressionTable suppressTable = new SuppressionTable();
+
+            //    ReadValue(ig, currentLine);
+            //    suppressTable.Type = IgnitionTypeParse(ig.Value);
+
+            //    ReadValue(fwib1, currentLine);
+            //    suppressTable.FWI_Break1 = fwib1.Value;
+
+            //    ReadValue(fwib2, currentLine);
+            //    suppressTable.FWI_Break2 = fwib2.Value;
+
+            //    ReadValue(suppeff1, currentLine);
+            //    suppressTable.Suppression0 = suppeff1.Value;
+
+            //    ReadValue(suppeff2, currentLine);
+            //    suppressTable.Suppression1 = suppeff2.Value;
+
+            //    ReadValue(suppeff3, currentLine);
+            //    suppressTable.Suppression2 = suppeff3.Value;
+
+            //    parameters.SuppressionFWI_Table.Add(suppressTable);
+
+            //    CheckNoDataAfter("the " + suppeff3.Name + " column", currentLine);
+            //    GetNextLine();
+            //}
+            //if (parameters.SuppressionFWI_Table.Count != 3)
+            //    throw NewParseException("EXACTLY THREE suppression levels must be defined: accidental, prescribed, lightening.");
 
             //-------------------------------------------------------------------
             //  Read table of Fire Damage classes.

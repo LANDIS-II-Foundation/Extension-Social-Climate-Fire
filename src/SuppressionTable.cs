@@ -9,15 +9,15 @@ namespace Landis.Extension.Scrapple
     {
         
         IgnitionType Type {get;set;}
+        int MapCode { get; set; }
         double FWI_Break1{get;set;}
         double FWI_Break2{get;set;}
-        int EffectivenessLow{get;set;}
-        int EffectivenessMedium{get;set;}
-        int EffectivenessHigh{get;set;}
+        int Suppression0{get;set;}
+        int Suppression1{get;set;}
+        int Suppression2{get;set;}
     }
 
     /// <summary>
-    /// Definition of the probability of germination under different light levels for 5 shade classes.
     /// </summary>
     public class SuppressionTable
         : ISuppressionTable
@@ -25,14 +25,21 @@ namespace Landis.Extension.Scrapple
         private IgnitionType type;
         private double fwi_Break1;
         private double fwi_Break2;
-        private int effectivenessLow;
-        private int effectivenessMedium;
-        private int effectivenessHigh;
+        private int suppression0;
+        private int suppression1;
+        private int suppression2;
+        private int mapCode;
         
         //---------------------------------------------------------------------
 
         public SuppressionTable()
         {
+            fwi_Break1 = 0.0;
+            fwi_Break2 = 0.0;
+            suppression0 = 0;
+            suppression1 = 0;
+            suppression2 = 0;
+            mapCode = 0;
         }
         //---------------------------------------------------------------------
 
@@ -75,41 +82,57 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public int EffectivenessLow
+        public int Suppression0
         {
             get {
-                return effectivenessLow;
+                return suppression0;
             }
             set {
                 if (value < 0 || value > 100)
                     throw new InputValueException(value.ToString(), "Value must be between 0 and 100");
-                effectivenessLow = value;
+                suppression0 = value;
             }
         }
         //---------------------------------------------------------------------
-        public int EffectivenessMedium
+        public int Suppression1
         {
             get {
-                return effectivenessMedium;
+                return suppression1;
             }
             set {
                 if (value < 0 || value > 100)
                     throw new InputValueException(value.ToString(), "Value must be between 0 and 100");
-                effectivenessMedium = value;
+                suppression1 = value;
             }
         }
         //---------------------------------------------------------------------
-        public int EffectivenessHigh
+        public int Suppression2
         {
             get {
-                return effectivenessHigh;
+                return suppression2;
             }
             set {
                 if (value < 00 || value > 100)
                     throw new InputValueException(value.ToString(), "Value must be between 0 and 100");
-                effectivenessHigh = value;
+                suppression2 = value;
             }
         }
+
+        //---------------------------------------------------------------------
+        public int MapCode
+        {
+            get
+            {
+                return mapCode;
+            }
+            set
+            {
+                if (value < 0 || value > 3)
+                    throw new InputValueException(value.ToString(), "Value must be between 0 and 3");
+                mapCode = value;
+            }
+        }
+
 
     }
 }

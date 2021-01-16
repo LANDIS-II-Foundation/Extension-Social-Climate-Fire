@@ -82,11 +82,7 @@ LadderFuelSpeciesList
 AbieConc AbieMagn PinuJeff PinuCont
 
 SuppressionMaxWindSpeed 100
-SuppressionTable  << Currently must be entered in this exact order
->>Type		FWI1	FWI2	Lo	Md	High-Effectiveness
-Accidental	20	40	0	65	95
-Lightning	20	40	0	65	95
-Rx		20	40	0	65	95
+Suppression_CSV_File Example_Suppression_Input.csv
 
 DeadWoodTable
 PinuJeff  22
