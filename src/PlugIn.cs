@@ -302,9 +302,24 @@ namespace Landis.Extension.Scrapple
 
                         try
                         {
+                            // modelCore.UI.WriteLine(" Fire Weather Check Daily={0}, Average={1}", weatherData.DailyFireWeatherIndex[day], landscapeAverageFireWeatherIndex);
+
                             landscapeAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * climateRegionFractionSites;
                             landscapeAverageTemperature += weatherData.DailyMaxTemp[day] * climateRegionFractionSites;
-                            landscapeAverageRelHumidity += weatherData.DailyMinRH[day] * climateRegionFractionSites;
+                            if (weatherData.DailyMinRH[day] == -99.0)
+                            {
+                                double relativeHumidity = AnnualClimate_Daily.ConvertSHtoRH(weatherData.DailySpecificHumidity[day], weatherData.DailyTemp[day]);
+                                if (relativeHumidity > 100)
+                                {
+                                    relativeHumidity = 100.0;
+                                }
+                                landscapeAverageRelHumidity += relativeHumidity * climateRegionFractionSites;
+                            }
+                            else
+                            {
+                                landscapeAverageRelHumidity += weatherData.DailyMinRH[day] * climateRegionFractionSites;
+                            }
+                            //landscapeAverageRelHumidity += weatherData.DailyMinRH[day] * climateRegionFractionSites;
                            // modelCore.UI.WriteLine("  Fire Weather Check Daily={0}, Average={1}", weatherData.DailyFireWeatherIndex[day], landscapeAverageFireWeatherIndex);
                         }
                         catch
