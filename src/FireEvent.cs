@@ -125,11 +125,11 @@ namespace Landis.Extension.Scrapple
             this.MeanSuppression = 0.0;
             this.MeanFWI = 0.0;
             this.TotalBiomassMortality = 0.0;
-            this.NumberCellsSeverity1 = 0;
-            this.NumberCellsSeverity2 = 0;
-            this.NumberCellsSeverity3 = 0;
-            this.NumberCellsSeverity4 = 0;
-            this.NumberCellsSeverity5 = 0;
+            //this.NumberCellsSeverity1 = 0;
+            //this.NumberCellsSeverity2 = 0;
+            //this.NumberCellsSeverity3 = 0;
+            //this.NumberCellsSeverity4 = 0;
+            //this.NumberCellsSeverity5 = 0;
             this.currentSite = initiationSite;
             this.maxDay = day;
             //this.NumberCellsIntensityFactor1 = 0;
@@ -326,17 +326,17 @@ namespace Landis.Extension.Scrapple
             this.SiteMortality = (int) siteMortality;
 
             int standardSeverityIndex = Math.Max((int) siteMortality / 100, 1);
-            SiteVars.Intensity[site] = (byte) Math.Min(standardSeverityIndex, 5);  // must range from 1-5.
-            if (SiteVars.Intensity[site] == 1)
-                this.NumberCellsSeverity1++;
-            if (SiteVars.Intensity[site] == 2)
-                this.NumberCellsSeverity2++;
-            if (SiteVars.Intensity[site] == 3)
-                this.NumberCellsSeverity3++;
-            if (SiteVars.Intensity[site] == 4)
-                this.NumberCellsSeverity4++;
-            if (SiteVars.Intensity[site] == 5)
-                this.NumberCellsSeverity5++;
+            SiteVars.Intensity[site] = (byte) Math.Min(standardSeverityIndex, 10);  // must range from 1-10.
+            //if (SiteVars.Intensity[site] == 1)
+                //this.NumberCellsSeverity1++;
+            //if (SiteVars.Intensity[site] == 2)
+            //    this.NumberCellsSeverity2++;
+            //if (SiteVars.Intensity[site] == 3)
+            //    this.NumberCellsSeverity3++;
+            //if (SiteVars.Intensity[site] == 4)
+            //    this.NumberCellsSeverity4++;
+            //if (SiteVars.Intensity[site] == 5)
+            //    this.NumberCellsSeverity5++;
 
 
             SiteVars.Mortality[site] = (int) siteMortality;
@@ -733,11 +733,11 @@ namespace Landis.Extension.Scrapple
             siteFireWeatherIndex = fireWeatherIndex;
 
             double combustionBuoyancy = 10.0;  // Cannot be zero, also very insensitive when UaUb > 5.
-            if (SiteVars.Intensity[sourceSite] == 1)
-                combustionBuoyancy = 10.0;
-            if (SiteVars.Intensity[sourceSite] == 2)
+            //if (SiteVars.Intensity[sourceSite] <= 3)
+            //    combustionBuoyancy = 10.0;
+            if (SiteVars.Intensity[sourceSite] > 3)
                 combustionBuoyancy = 25.0;
-            if (SiteVars.Intensity[sourceSite] == 3)
+            if (SiteVars.Intensity[sourceSite] > 6)
                 combustionBuoyancy = 50.0;
 
             double UaUb = windSpeed / combustionBuoyancy;
@@ -825,11 +825,11 @@ namespace Landis.Extension.Scrapple
             el.MeanEffectiveWindSpeed = fireEvent.MeanEffectiveWindSpeed / (double)fireEvent.TotalSitesBurned;
             el.MeanSuppressionEffectiveness = fireEvent.MeanSuppression / (double)fireEvent.TotalSitesSpread;
             el.TotalBiomassMortality = fireEvent.TotalBiomassMortality;
-            el.NumberCellsSeverity1 = fireEvent.NumberCellsSeverity1;
-            el.NumberCellsSeverity2 = fireEvent.NumberCellsSeverity2;
-            el.NumberCellsSeverity3 = fireEvent.NumberCellsSeverity3;
-            el.NumberCellsSeverity4 = fireEvent.NumberCellsSeverity4;
-            el.NumberCellsSeverity5 = fireEvent.NumberCellsSeverity5;
+            //el.NumberCellsSeverity1 = fireEvent.NumberCellsSeverity1;
+            //el.NumberCellsSeverity2 = fireEvent.NumberCellsSeverity2;
+            //el.NumberCellsSeverity3 = fireEvent.NumberCellsSeverity3;
+            //el.NumberCellsSeverity4 = fireEvent.NumberCellsSeverity4;
+            //el.NumberCellsSeverity5 = fireEvent.NumberCellsSeverity5;
             //el.PercentsCellsIntensityFactor1 = (double) fireEvent.NumberCellsIntensityFactor1 / (double)fireEvent.TotalSitesBurned;
             //el.PercentsCellsIntensityFactor2 = (double)fireEvent.NumberCellsIntensityFactor2 / (double)fireEvent.TotalSitesBurned;
             //el.PercentsCellsIntensityFactor3 = (double)fireEvent.NumberCellsIntensityFactor3 / (double)fireEvent.TotalSitesBurned;
