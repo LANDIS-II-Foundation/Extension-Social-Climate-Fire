@@ -303,7 +303,7 @@ namespace Landis.Extension.Scrapple
 
             double Previous_Year_ET = SiteVars.PotentialEvapotranspiration[site];
             double WaterDeficit = SiteVars.ClimaticWaterDeficit[site];
-            double TotalFuels = SiteVars.FineFuels[site] + ladderFuelBiomass;
+            //double TotalFuels = SiteVars.FineFuels[site] + ladderFuelBiomass;
 
             /// For delayed relative delta normalized burn ratio (DRdNBR) calculation 
             double intercept = PlugIn.Parameters.SiteMortalityB0; //The parameter fit for the intercept 
@@ -312,12 +312,14 @@ namespace Landis.Extension.Scrapple
             double Beta_Windspeed = PlugIn.Parameters.SiteMortalityB3;// The parameter fit for site level Effective Windspeed 
             double Beta_Water_Deficit = PlugIn.Parameters.SiteMortalityB4;//The parameter fit for site level PET-AET
             double Beta_Fuel = PlugIn.Parameters.SiteMortalityB5; //The parameter fit for site level fuels, here combining fine fuels and ladder fuels
-           
-           double siteMortality = Math.Pow(Math.Max((intercept + (Clay * Beta_Clay)
+            double Beta_LadderFuels = PlugIn.Parameters.SiteMortalityB6;
+
+            double siteMortality = Math.Pow(Math.Max((intercept + (Clay * Beta_Clay)
                 + (Previous_Year_ET * Beta_ET)
                 + (siteEffectiveWindSpeed * Beta_Windspeed)
                 + (WaterDeficit * Beta_Water_Deficit)
-                + (TotalFuels * Beta_Fuel)), .0005), -1.0);
+                + (ladderFuelBiomass * Beta_LadderFuels)
+                + (fineFuelPercent * Beta_Fuel)), .0005), -1.0);
 
             siteMortality = Math.Max(siteMortality, 0.0);  // In the long-run, this shouldn't be necessary.  But useful for testing.
 
@@ -327,17 +329,6 @@ namespace Landis.Extension.Scrapple
 
             int standardSeverityIndex = Math.Max((int) siteMortality / 100, 1);
             SiteVars.Intensity[site] = (byte) Math.Min(standardSeverityIndex, 10);  // must range from 1-10.
-            //if (SiteVars.Intensity[site] == 1)
-                //this.NumberCellsSeverity1++;
-            //if (SiteVars.Intensity[site] == 2)
-            //    this.NumberCellsSeverity2++;
-            //if (SiteVars.Intensity[site] == 3)
-            //    this.NumberCellsSeverity3++;
-            //if (SiteVars.Intensity[site] == 4)
-            //    this.NumberCellsSeverity4++;
-            //if (SiteVars.Intensity[site] == 5)
-            //    this.NumberCellsSeverity5++;
-
 
             SiteVars.Mortality[site] = (int) siteMortality;
             SiteVars.TypeOfIginition[site] = (int)this.IgnitionType;
@@ -413,40 +404,6 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-
-            //List<IFireDamage> fireDamages = null;
-            //if (siteIntensity == 1)
-            //    fireDamages = PlugIn.Parameters.FireDamages_Severity1;
-            //if (siteIntensity == 2)
-            //    fireDamages = PlugIn.Parameters.FireDamages_Severity2;
-            //if (siteIntensity == 3)
-            //    fireDamages = PlugIn.Parameters.FireDamages_Severity3;
-
-            //foreach (IFireDamage damage in fireDamages)
-            //{
-            //    if (cohort.Species == damage.DamageSpecies && cohort.Age >= damage.MinAge && cohort.Age < damage.MaxAge)
-            //    {
-            //        double random = PlugIn.ModelCore.GenerateUniform();
-            //        if (damage.ProbablityMortality > random)
-            //        {
-            //            //PlugIn.ModelCore.UI.WriteLine("damage prob={0}, Random#={1}", damage.ProbablityMortality, random);
-            //            killCohort = true;
-            //            this.TotalBiomassMortality += cohort.Biomass;
-            //            foreach (IDeadWood deadwood in PlugIn.Parameters.DeadWoodList)
-            //            {
-            //                if (cohort.Species == deadwood.Species && cohort.Age >= deadwood.MinAge)
-            //                {
-            //                    SiteVars.SpecialDeadWood[this.currentSite] += cohort.Biomass;
-            //                    //PlugIn.ModelCore.UI.WriteLine("special dead = {0}, site={1}.", SiteVars.SpecialDeadWood[this.Current_damage_site], this.Current_damage_site);
-
-            //                }
-            //            }
-            //        }
-            //        break;  // No need to search further
-
-            //    }
-            //}
-
             if (killCohort)
             {
                 this.CohortsKilled++;
@@ -457,87 +414,6 @@ namespace Landis.Extension.Scrapple
 
         }
 
-
-
-        //private void CalculateIntensity(ActiveSite site, ActiveSite sourceSite)
-        //{
-
-        //    //PlugIn.ModelCore.UI.WriteLine("  Calculate Intensity: {0}.", site);
-
-        //    double fineFuelPercent = 0.0;
-        //    try
-        //    {
-        //        fineFuelPercent = Math.Min(SiteVars.FineFuels[site] / PlugIn.Parameters.MaxFineFuels, 1.0);
-        //    }
-        //    catch
-        //    {
-        //        PlugIn.ModelCore.UI.WriteLine("NOTE: FINE FUELS NOT OPERATIONAL.  DEFAULT IS ZERO.");
-        //    }
-
-        //    // LADDER FUELS ************************
-        //    double ladderFuelBiomass = 0.0;
-        //    foreach (ISpeciesCohorts speciesCohorts in SiteVars.Cohorts[site])
-        //        foreach (ICohort cohort in speciesCohorts)
-        //            if (PlugIn.Parameters.LadderFuelSpeciesList.Contains(cohort.Species) && cohort.Age <= PlugIn.Parameters.LadderFuelMaxAge)
-        //                ladderFuelBiomass += cohort.Biomass;
-        //    // End LADDER FUELS ************************
-
-        //    // INTENSITY calculation **************************
-        //    // Next, determine severity (0 = none, 1 = <4', 2 = 4-8', 3 = >8'.
-        //    // Severity a function of ladder fuels, fine fuels, source spread intensity.
-        //    siteIntensity = 1;
-        //    int highSeverityRiskFactors = 0;
-
-        //    if (fineFuelPercent > PlugIn.Parameters.IntensityFactor_FineFuelPercent)
-        //    {
-        //        highSeverityRiskFactors++;
-        //        NumberCellsIntensityFactor1++;
-        //    }
-        //    if (ladderFuelBiomass > PlugIn.Parameters.IntensityFactor_LadderFuelBiomass)
-        //    {
-        //        highSeverityRiskFactors++;
-        //        NumberCellsIntensityFactor2++;
-        //    }
-        //    if (SiteVars.Intensity[sourceSite] == 3)
-        //    {
-        //        highSeverityRiskFactors++;
-        //        NumberCellsIntensityFactor3++;
-        //    }
-
-        //    if (highSeverityRiskFactors == 1)
-        //        siteIntensity = 2;
-        //    if (highSeverityRiskFactors > 1)
-        //        siteIntensity = 3;
-        //    // End INTENSITY calculation **************************
-
-        //    if (this.IgnitionType == IgnitionType.Rx)
-        //        siteIntensity = Math.Min(siteIntensity, PlugIn.Parameters.RxMaxFireIntensity);
-
-        //    int siteCohortsKilled = 0;
-
-        //    SiteVars.Intensity[site] = (byte)siteIntensity;
-        //    SiteVars.TypeOfIginition[site] = (int)this.IgnitionType;
-
-        //    currentSite = site;
-        //    siteCohortsKilled = Damage(site);
-
-        //    this.MeanIntensity += siteIntensity;
-        //    if (siteIntensity == 1)
-        //        this.NumberCellsSeverity1++;
-        //    if (siteIntensity == 2)
-        //        this.NumberCellsSeverity2++;
-        //    if (siteIntensity == 3)
-        //        this.NumberCellsSeverity3++;
-
-        //    this.TotalSitesBurned++;
-        //    this.MeanWindDirection += siteWindDirection;
-        //    this.MeanWindSpeed += siteWindSpeed;
-        //    this.MeanFWI += siteFireWeatherIndex;
-        //    this.MeanEffectiveWindSpeed += siteEffectiveWindSpeed;
-
-        //    SiteVars.EventID[site] = PlugIn.EventID;  
-
-        //}
 
         private bool CanSpread(ActiveSite site, ActiveSite sourceSite, int day, double fireWeatherIndex, double effectiveWindSpeed)
         {
@@ -596,90 +472,6 @@ namespace Landis.Extension.Scrapple
                     suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[index].Suppression1 / 100.0);
                 else if (fireWeatherIndex >= fwi2)
                     suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[index].Suppression2 / 100.0);
-            //if (this.IgnitionType == IgnitionType.Accidental)
-            //{
-            //    switch (SiteVars.AccidentalSuppressionIndex[site])
-            //    {
-            //        case 1:  // suppression map code = 1
-            //            suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].Suppression0 / 100.0);
-            //            break;
-            //        case 2:  // suppression map code = 2
-            //            suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].Suppression0 / 100.0);
-
-            //            if (fireWeatherIndex > PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].FWI_Break1)
-            //                suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].Suppression1 / 100.0);
-            //            break;
-            //        case 3:  // suppression map code = 3
-            //            suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].Suppression0 / 100.0);
-
-            //            if (fireWeatherIndex > PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].FWI_Break1)
-            //                suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].Suppression1 / 100.0);
-
-            //            if (fireWeatherIndex > PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].FWI_Break2)
-            //                suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].Suppression2 / 100.0);
-            //            break;
-            //        default:  // suppression map code = 0
-            //            suppressEffect = 1.0;  // None
-            //            break;
-
-            //    }
-            //}
-            //if (this.IgnitionType == IgnitionType.Lightning)
-            //{
-            //    switch (SiteVars.LightningSuppressionIndex[site])
-            //    {
-            //        case 1:
-            //            suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].Suppression0 / 100.0);
-            //            break;
-            //        case 2:
-            //            suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].Suppression0 / 100.0);
-
-            //            if (fireWeatherIndex > PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].FWI_Break1)
-            //                suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].Suppression1 / 100.0);
-            //            break;
-            //        case 3:
-            //            suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].Suppression0 / 100.0);
-
-            //            if (fireWeatherIndex > PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].FWI_Break1)
-            //                suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].Suppression1 / 100.0);
-
-            //            if (fireWeatherIndex > PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].FWI_Break2)
-            //                suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].Suppression2 / 100.0);
-            //            break;
-            //        default:
-            //            suppressEffect = 1.0;  // None
-            //            break;
-
-            //    }
-            //}
-            //if (this.IgnitionType == IgnitionType.Rx)
-            //{
-            //    switch (SiteVars.RxSuppressionIndex[site])
-            //    {
-            //        case 1:
-            //            suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].Suppression0 / 100.0);
-            //            break;
-            //        case 2:
-            //            suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].Suppression0 / 100.0);
-
-            //            if (fireWeatherIndex > PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].FWI_Break1)
-            //                suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].Suppression1 / 100.0);
-            //            break;
-            //        case 3:
-            //            suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].Suppression0 / 100.0);
-
-            //            if (fireWeatherIndex > PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].FWI_Break1)
-            //                suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].Suppression1 / 100.0);
-
-            //            if (fireWeatherIndex > PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].FWI_Break2)
-            //                suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[(int)this.IgnitionType].Suppression2 / 100.0);
-            //            break;
-            //        default:
-            //            suppressEffect = 1.0;  // None
-            //            break;
-
-            //    }
-            //}
 
             // NO suppression above a given wind speed due to dangers to firefighters and aircraft.
             if (effectiveWindSpeed > PlugIn.Parameters.SuppressionMaxWindSpeed)

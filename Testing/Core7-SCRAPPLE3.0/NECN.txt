@@ -108,6 +108,11 @@ FireReductionParameters
 	3		0.4		1.0	0.2		1.0		0.5
 	4		0.4		1.0	0.2		1.0		0.5
 	5		0.4		1.0	0.2		1.0		0.5
+	6		0.4		1.0	0.2		1.0		0.5
+	7		0.4		1.0	0.2		1.0		0.5
+	8		0.4		1.0	0.2		1.0		0.5
+	9		0.4		1.0	0.2		1.0		0.5
+	10		0.4		1.0	0.2		1.0		0.5
 
 HarvestReductionParameters
 >>	Name		WoodLitter	Litter	SOM		CohortWood	CohortLeaf

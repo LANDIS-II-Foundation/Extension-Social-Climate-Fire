@@ -68,7 +68,8 @@ SiteMortalityB1   0.00050 << The parameter fit for site level clay % in Soil.
 SiteMortalityB2  -0.000010  << The parameter fit for site level previous years annual ET. 
 SiteMortalityB3 -0.0002200  << The parameter fit for site level Effective Windspeed. 
 SiteMortalityB4  -0.00000050 << The parameter fit for site level Climatic Water Deficit (PET-AET). 
-SiteMortalityB5 0.00000  << The parameter fit for fine fuels (including ladder fuels). 
+SiteMortalityB5 0.00000  << The parameter fit for fine fuels (a percentage of the maximum, from above). 
+SiteMortalityB6 0.00000  << The parameter fit for ladder fuels. 
 
 CohortMortalityB0 -0.703 << Intercept
 CohortMortalityB1 -0.9908 << The parameter fit for the relationship between bark thickness and cohort mortality.

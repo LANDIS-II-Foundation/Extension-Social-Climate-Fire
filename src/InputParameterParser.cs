@@ -415,6 +415,10 @@ namespace Landis.Extension.Scrapple
             ReadVar(sm5);
             parameters.SiteMortalityB5 = sm5.Value;
 
+            InputVar<double> sm6 = new InputVar<double>("SiteMortalityB6");
+            ReadVar(sm6);
+            parameters.SiteMortalityB6 = sm6.Value;
+
             InputVar<double> cm0 = new InputVar<double>("CohortMortalityB0");
             ReadVar(cm0);
             parameters.CohortMortalityB0 = cm0.Value;
