@@ -503,7 +503,7 @@ namespace Landis.Extension.Scrapple
                 suppressTable.Suppression1 = System.Convert.ToInt32(row["Suppress_Category_1"]);
                 suppressTable.Suppression2 = System.Convert.ToInt32(row["Suppress_Category_2"]);
 
-                int index = suppressTable.MapCode + ((int)suppressTable.Type * 3);
+                int index = suppressTable.MapCode + ((int)suppressTable.Type * 10);
 
                 //Dictionary<int, ISuppressionTable> temp = new Dictionary<int, ISuppressionTable>();
                 //temp.Add(suppressTable.MapCode, suppressTable);

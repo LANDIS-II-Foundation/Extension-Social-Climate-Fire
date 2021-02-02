@@ -458,20 +458,47 @@ namespace Landis.Extension.Scrapple
             int index = 0;
 
             if (this.IgnitionType == IgnitionType.Accidental)
-                index = SiteVars.AccidentalSuppressionIndex[site] + ((int)this.IgnitionType * 3);
+            {
+                try
+                {
+                    index = SiteVars.AccidentalSuppressionIndex[site] + ((int)this.IgnitionType * 10);
+                }
+                catch
+                {
+                    PlugIn.ModelCore.UI.WriteLine("NOTE: No table entry for Suppression MapCode {0}, Ignition Type {1}.  DEFAULT NO SUPPRESSION.", SiteVars.AccidentalSuppressionIndex[site], this.IgnitionType.ToString());
+                }
+            }
             if (this.IgnitionType == IgnitionType.Lightning)
-                index = SiteVars.LightningSuppressionIndex[site] + ((int)this.IgnitionType * 3);
+                try
+                {
+                    index = SiteVars.LightningSuppressionIndex[site] + ((int)this.IgnitionType * 10);
+                }
+                catch
+                {
+                    PlugIn.ModelCore.UI.WriteLine("NOTE: No table entry for Suppression MapCode {0}, Ignition Type {1}.  DEFAULT NO SUPPRESSION.", SiteVars.AccidentalSuppressionIndex[site], this.IgnitionType.ToString());
+                }
             if (this.IgnitionType == IgnitionType.Rx)
-                index = SiteVars.RxSuppressionIndex[site] + ((int)this.IgnitionType * 3);
+                try
+                {
+                    index = SiteVars.RxSuppressionIndex[site] + ((int)this.IgnitionType * 10);
+                }
+                catch
+                {
+                    PlugIn.ModelCore.UI.WriteLine("NOTE: No table entry for Suppression MapCode {0}, Ignition Type {1}.  DEFAULT NO SUPPRESSION.", SiteVars.AccidentalSuppressionIndex[site], this.IgnitionType.ToString());
+                }
 
-            fwi1 = PlugIn.Parameters.SuppressionFWI_Table[index].FWI_Break1;
-            fwi2 = PlugIn.Parameters.SuppressionFWI_Table[index].FWI_Break2;
-            if (fireWeatherIndex < fwi1)
+            if (index > 0)
+            {
+                fwi1 = PlugIn.Parameters.SuppressionFWI_Table[index].FWI_Break1;
+                fwi2 = PlugIn.Parameters.SuppressionFWI_Table[index].FWI_Break2;
+
+                if (fireWeatherIndex < fwi1)
                     suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[index].Suppression0 / 100.0);
                 else if (fireWeatherIndex >= fwi1 && fireWeatherIndex < fwi2)
                     suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[index].Suppression1 / 100.0);
                 else if (fireWeatherIndex >= fwi2)
                     suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[index].Suppression2 / 100.0);
+            }
 
             // NO suppression above a given wind speed due to dangers to firefighters and aircraft.
             if (effectiveWindSpeed > PlugIn.Parameters.SuppressionMaxWindSpeed)
