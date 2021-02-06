@@ -238,12 +238,25 @@ namespace Landis.Extension.Scrapple
                 if (day < PlugIn.DaysPerYear)
                 {
                     sourceSite = targetSite;  // the target becomes the source
-                    List<ActiveSite> neighbors = Get8ActiveNeighbors(targetSite);
+                    List<ActiveSite> neighbors = Get4CardinalActiveNeighbors(targetSite);
                     //neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor]);
 
                     foreach (ActiveSite neighborSite in neighbors)
                     {
-                        if (CanSpread(neighborSite, sourceSite, day, fireWeatherIndex, effectiveWindSpeed))
+                        if (CanSpread(neighborSite, sourceSite, day, fireWeatherIndex, effectiveWindSpeed, 1.0))
+                        {
+
+                            ActiveSite[] spread = new ActiveSite[] { neighborSite, sourceSite };
+                            fireSites.Add(spread);
+                            this.TotalSitesSpread++;
+                        }
+                    }
+                    neighbors = Get4DiagonalNeighbors(targetSite);
+                    //neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor]);
+
+                    foreach (ActiveSite neighborSite in neighbors)
+                    {
+                        if (CanSpread(neighborSite, sourceSite, day, fireWeatherIndex, effectiveWindSpeed, 0.71))
                         {
 
                             ActiveSite[] spread = new ActiveSite[] { neighborSite, sourceSite };
@@ -415,7 +428,7 @@ namespace Landis.Extension.Scrapple
         }
 
 
-        private bool CanSpread(ActiveSite site, ActiveSite sourceSite, int day, double fireWeatherIndex, double effectiveWindSpeed)
+        private bool CanSpread(ActiveSite site, ActiveSite sourceSite, int day, double fireWeatherIndex, double effectiveWindSpeed, double distanceWeight)
         {
             bool spread = false;
 
@@ -518,6 +531,9 @@ namespace Landis.Extension.Scrapple
 
             double Pspread = Math.Pow(Math.E, -1.0 * (spreadB0 + (spreadB1 * fireWeatherIndex) + (spreadB2 * fineFuelPercent) + (spreadB3 * effectiveWindSpeed)));
             Pspread = 1.0 / (1.0 + Pspread);
+            //The distance weight accounts for the longer centroid distance between diagonal spread 
+            // as compared to cardinal spread.  This is intended to correct the 'square effect' when Pspread is relatively uniform. 
+            Pspread *= distanceWeight;
 
             if (this.IgnitionType == IgnitionType.Rx)
                 Pspread = 1.0;
@@ -575,38 +591,6 @@ namespace Landis.Extension.Scrapple
         }
 
         //---------------------------------------------------------------------
-        private static List<ActiveSite> Get8ActiveNeighbors(Site srcSite)
-        {
-            if (!srcSite.IsActive)
-                throw new ApplicationException("Source site is not active.");
-
-            List<ActiveSite> neighbors = new List<ActiveSite>();
-
-            RelativeLocation[] neighborhood = new RelativeLocation[]
-            {
-                new RelativeLocation(-1,  0),  // north
-                new RelativeLocation( 0,  1),  // east
-                new RelativeLocation( 1,  0),  // south
-                new RelativeLocation( 0, -1),  // west
-                new RelativeLocation(-1,  1),  // northwest
-                new RelativeLocation( 1,  1),  // northeast
-                new RelativeLocation( 1,  -1),  // southeast
-                new RelativeLocation( -1, -1),  // southwest
-            };
-
-            foreach (RelativeLocation relativeLoc in neighborhood)
-            {
-                Site neighbor = srcSite.GetNeighbor(relativeLoc);
-
-                if (neighbor != null && neighbor.IsActive && !SiteVars.Disturbed[neighbor])
-                {
-                    neighbors.Add((ActiveSite) neighbor);
-                }
-            }
-
-            return neighbors; 
-        }
-        //---------------------------------------------------------------------
 
         private int Damage(ActiveSite site)
         {
@@ -658,6 +642,94 @@ namespace Landis.Extension.Scrapple
 
         }
 
+        //---------------------------------------------------------------------
+        private static List<ActiveSite> Get8ActiveNeighbors(Site srcSite)
+        {
+            if (!srcSite.IsActive)
+                throw new ApplicationException("Source site is not active.");
+
+            List<ActiveSite> neighbors = new List<ActiveSite>();
+
+            RelativeLocation[] neighborhood = new RelativeLocation[]
+            {
+                new RelativeLocation(-1,  0),  // north
+                new RelativeLocation( 0,  1),  // east
+                new RelativeLocation( 1,  0),  // south
+                new RelativeLocation( 0, -1),  // west
+                new RelativeLocation(-1,  1),  // northwest
+                new RelativeLocation( 1,  1),  // northeast
+                new RelativeLocation( 1,  -1),  // southeast
+                new RelativeLocation( -1, -1),  // southwest
+            };
+
+            foreach (RelativeLocation relativeLoc in neighborhood)
+            {
+                Site neighbor = srcSite.GetNeighbor(relativeLoc);
+
+                if (neighbor != null && neighbor.IsActive && !SiteVars.Disturbed[neighbor])
+                {
+                    neighbors.Add((ActiveSite)neighbor);
+                }
+            }
+
+            return neighbors;
+        }
+        //---------------------------------------------------------------------
+        private static List<ActiveSite> Get4CardinalActiveNeighbors(Site srcSite)
+        {
+            if (!srcSite.IsActive)
+                throw new ApplicationException("Source site is not active.");
+
+            List<ActiveSite> neighbors = new List<ActiveSite>();
+
+            RelativeLocation[] neighborhood = new RelativeLocation[]
+            {
+                new RelativeLocation(-1,  0),  // north
+                new RelativeLocation( 0,  1),  // east
+                new RelativeLocation( 1,  0),  // south
+                new RelativeLocation( 0, -1),  // west
+            };
+
+            foreach (RelativeLocation relativeLoc in neighborhood)
+            {
+                Site neighbor = srcSite.GetNeighbor(relativeLoc);
+
+                if (neighbor != null && neighbor.IsActive && !SiteVars.Disturbed[neighbor])
+                {
+                    neighbors.Add((ActiveSite)neighbor);
+                }
+            }
+
+            return neighbors;
+        }
+        //---------------------------------------------------------------------
+        private static List<ActiveSite> Get4DiagonalNeighbors(Site srcSite)
+        {
+            if (!srcSite.IsActive)
+                throw new ApplicationException("Source site is not active.");
+
+            List<ActiveSite> neighbors = new List<ActiveSite>();
+
+            RelativeLocation[] neighborhood = new RelativeLocation[]
+            {
+                new RelativeLocation(-1,  1),  // northwest
+                new RelativeLocation( 1,  1),  // northeast
+                new RelativeLocation( 1,  -1),  // southeast
+                new RelativeLocation( -1, -1),  // southwest
+            };
+
+            foreach (RelativeLocation relativeLoc in neighborhood)
+            {
+                Site neighbor = srcSite.GetNeighbor(relativeLoc);
+
+                if (neighbor != null && neighbor.IsActive && !SiteVars.Disturbed[neighbor])
+                {
+                    neighbors.Add((ActiveSite)neighbor);
+                }
+            }
+
+            return neighbors;
+        }
         //---------------------------------------------------------------------
         /// <summary>
         /// Compares weights
