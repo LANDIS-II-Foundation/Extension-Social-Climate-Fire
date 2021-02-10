@@ -15,25 +15,29 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<double> accidentalFireWeight;
         private static ISiteVar<int> typeOfIginition;
         private static ISiteVar<byte> intensity;
+        private static ISiteVar<int> dNBR;
         private static ISiteVar<ushort> dayOfFire;
         private static ISiteVar<bool> disturbed;
         private static ISiteVar<ushort> groundSlope;
         private static ISiteVar<ushort> uphillSlopeAzimuth;
+        private static ISiteVar<double> clay;
         private static ISiteVar<ISiteCohorts> cohorts;
         private static ISiteVar<double> fineFuels;
         private static ISiteVar<Pool> tempFineFuels;
         private static ISiteVar<int> specialDeadWood;  // potential snags, specifically
         private static ISiteVar<double> spreadProbablity;
 
-        private static ISiteVar<double> lightningSuppressionIndex;
-        private static ISiteVar<double> rxSuppressionIndex;
-        private static ISiteVar<double> accidentalSuppressionIndex;
+        private static ISiteVar<int> lightningSuppressionIndex;
+        private static ISiteVar<int> rxSuppressionIndex;
+        private static ISiteVar<int> accidentalSuppressionIndex;
 
         public static ISiteVar<double> SmolderConsumption;
         public static ISiteVar<double> FlamingConsumption;
         public static ISiteVar<int> HarvestTime;
         public static ISiteVar<int> EventID;
         public static ISiteVar<int> RxZones;
+        public static ISiteVar<double> ClimaticWaterDeficit;
+        public static ISiteVar<double> PotentialEvapotranspiration;
 
         //---------------------------------------------------------------------
 
@@ -46,19 +50,21 @@ namespace Landis.Extension.Scrapple
 
             eventVar = PlugIn.ModelCore.Landscape.NewSiteVar<FireEvent>(InactiveSiteMode.DistinctValues);
             timeOfLastFire       = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
-            intensity         = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
+            dNBR = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
+            intensity = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
             spreadProbablity = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             dayOfFire = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
 
             groundSlope          = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
             uphillSlopeAzimuth   = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
-            lightningFireWeight  = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
+            clay = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
+            lightningFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             rxFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             accidentalFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
 
-            lightningSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
-            rxSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
-            accidentalSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
+            lightningSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
+            rxSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
+            accidentalSuppressionIndex = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             typeOfIginition = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             disturbed = PlugIn.ModelCore.Landscape.NewSiteVar<bool>();
             specialDeadWood = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
@@ -67,6 +73,8 @@ namespace Landis.Extension.Scrapple
 
             SmolderConsumption = PlugIn.ModelCore.GetSiteVar<double>("Succession.SmolderConsumption");
             FlamingConsumption = PlugIn.ModelCore.GetSiteVar<double>("Succession.FlamingConsumption");
+            ClimaticWaterDeficit = PlugIn.ModelCore.GetSiteVar<double>("Succession.CWD");
+            PotentialEvapotranspiration = PlugIn.ModelCore.GetSiteVar<double>("Succession.PET");
             HarvestTime = PlugIn.ModelCore.GetSiteVar<int>("Harvest.TimeOfLastEvent");
 
             PlugIn.ModelCore.RegisterSiteVar(SiteVars.Intensity, "Fire.Severity");
@@ -118,7 +126,7 @@ namespace Landis.Extension.Scrapple
         }
 
         //---------------------------------------------------------------------
-        public static ISiteVar<double> LightningSuppressionIndex
+        public static ISiteVar<int> LightningSuppressionIndex
         {
             get
             {
@@ -126,7 +134,7 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public static ISiteVar<double> RxSuppressionIndex
+        public static ISiteVar<int> RxSuppressionIndex
         {
             get
             {
@@ -134,7 +142,7 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public static ISiteVar<double> AccidentalSuppressionIndex
+        public static ISiteVar<int> AccidentalSuppressionIndex
         {
             get
             {
@@ -185,6 +193,14 @@ namespace Landis.Extension.Scrapple
         }
 
         //---------------------------------------------------------------------
+        public static ISiteVar<int> Mortality
+        {
+            get
+            {
+                return dNBR;
+            }
+        }
+        //---------------------------------------------------------------------
         public static ISiteVar<ushort> DayOfFire
         {
             get
@@ -214,6 +230,15 @@ namespace Landis.Extension.Scrapple
         {
             get {
                 return uphillSlopeAzimuth;
+            }
+        }
+        //---------------------------------------------------------------------
+
+        public static ISiteVar<double> Clay
+        {
+            get
+            {
+                return clay;
             }
         }
         //---------------------------------------------------------------------

@@ -47,12 +47,15 @@ namespace Landis.Extension.Scrapple
         public static int ActualYear;
         public static int EventID = 0;
 
+        private static int[] dNBR;
         private static int[] totalBurnedSites;
         private static int[] numberOfFire;
         private static int[] totalBiomassMortality;
-        private static int numCellsSeverity1;
-        private static int numCellsSeverity2;
-        private static int numCellsSeverity3;
+        //private static int numCellsSeverity1;
+        //private static int numCellsSeverity2;
+        //private static int numCellsSeverity3;
+        //private static int numCellsSeverity4;
+        //private static int numCellsSeverity5;
 
         public static IInputParameters Parameters;
         private static ICore modelCore;
@@ -126,7 +129,8 @@ namespace Landis.Extension.Scrapple
 
             modelCore.UI.WriteLine("Initializing SCRAPPLE Fire...");
 
-            dynamicRxIgns           = Parameters.DynamicRxIgnitionMaps;
+            SpeciesData.Initialize(Parameters);
+            dynamicRxIgns = Parameters.DynamicRxIgnitionMaps;
             dynamicLightningIgns    = Parameters.DynamicLightningIgnitionMaps;
             dynamicAccidentalIgns   = Parameters.DynamicAccidentalIgnitionMaps;
             dynamicSuppress = Parameters.DynamicSuppressionMaps;
@@ -158,14 +162,6 @@ namespace Landis.Extension.Scrapple
             }
 
             SiteVars.TimeOfLastFire.ActiveSiteValues = -999;  // default value to distinguish from recent fires.
-
-            //double totalWeight = 0.0;
-            //activeRxSites = PreShuffle(SiteVars.RxFireWeight, out totalWeight);
-            //rxTotalWeight = totalWeight;
-            //activeAccidentalSites = PreShuffle(SiteVars.AccidentalFireWeight, out totalWeight);
-            //accidentalTotalWeight = totalWeight;
-            //activeLightningSites = PreShuffle(SiteVars.LightningFireWeight, out totalWeight);
-            //lightningTotalWeight = totalWeight;
 
         }
 
@@ -241,12 +237,13 @@ namespace Landis.Extension.Scrapple
             }
 
             AnnualClimate_Daily weatherData = null;
+            dNBR = new int[3];
             totalBurnedSites = new int[3];
             numberOfFire = new int[3];
             totalBiomassMortality = new int[3];
-            numCellsSeverity1 = 0;
-            numCellsSeverity2 = 0;
-            numCellsSeverity3 = 0;
+            //numCellsSeverity1 = 0;
+            //numCellsSeverity2 = 0;
+            //numCellsSeverity3 = 0;
 
             modelCore.UI.WriteLine("   Processing landscape for Fire events ...");
 
@@ -305,9 +302,24 @@ namespace Landis.Extension.Scrapple
 
                         try
                         {
+                            // modelCore.UI.WriteLine(" Fire Weather Check Daily={0}, Average={1}", weatherData.DailyFireWeatherIndex[day], landscapeAverageFireWeatherIndex);
+
                             landscapeAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * climateRegionFractionSites;
                             landscapeAverageTemperature += weatherData.DailyMaxTemp[day] * climateRegionFractionSites;
-                            landscapeAverageRelHumidity += weatherData.DailyMinRH[day] * climateRegionFractionSites;
+                            if (weatherData.DailyMinRH[day] == -99.0)
+                            {
+                                double relativeHumidity = AnnualClimate_Daily.ConvertSHtoRH(weatherData.DailySpecificHumidity[day], weatherData.DailyTemp[day]);
+                                if (relativeHumidity > 100)
+                                {
+                                    relativeHumidity = 100.0;
+                                }
+                                landscapeAverageRelHumidity += relativeHumidity * climateRegionFractionSites;
+                            }
+                            else
+                            {
+                                landscapeAverageRelHumidity += weatherData.DailyMinRH[day] * climateRegionFractionSites;
+                            }
+                            //landscapeAverageRelHumidity += weatherData.DailyMinRH[day] * climateRegionFractionSites;
                            // modelCore.UI.WriteLine("  Fire Weather Check Daily={0}, Average={1}", weatherData.DailyFireWeatherIndex[day], landscapeAverageFireWeatherIndex);
                         }
                         catch
@@ -339,7 +351,7 @@ namespace Landis.Extension.Scrapple
                     while (maxNumAccidentalFires > 0)
                     {
                         //Ignite(Ignition.Accidental, shuffledAccidentalFireSites, day, landscapeAverageFireWeatherIndex);
-                        fire = IgniteEther(IgnitionType.Accidental, weightedAccidentalSites.Select(), day, landscapeAverageFireWeatherIndex);
+                        fire = Ignite(IgnitionType.Accidental, weightedAccidentalSites.Select(), day, landscapeAverageFireWeatherIndex);
                         if (fire)
                         {
                             maxNumAccidentalFires--;
@@ -363,7 +375,7 @@ namespace Landis.Extension.Scrapple
                     while(maxNumLightningFires > 0)
                     {
                         //Ignite(Ignition.Lightning, shuffledLightningFireSites, day, landscapeAverageFireWeatherIndex);
-                        fire = IgniteEther(IgnitionType.Lightning, weightedLightningSites.Select(), day, landscapeAverageFireWeatherIndex);
+                        fire = Ignite(IgnitionType.Lightning, weightedLightningSites.Select(), day, landscapeAverageFireWeatherIndex);
                         if (fire)
                         {
                             maxNumLightningFires--;
@@ -396,7 +408,7 @@ namespace Landis.Extension.Scrapple
 
                     while (numAnnualRxFires > 0 && maxNumDailyRxFires > 0)
                     {
-                        fire = IgniteEther(IgnitionType.Rx, weightedRxSites.Select(), day, landscapeAverageFireWeatherIndex);
+                        fire = Ignite(IgnitionType.Rx, weightedRxSites.Select(), day, landscapeAverageFireWeatherIndex);
                         if (fire)
                         {
                             numAnnualRxFires--;
@@ -538,7 +550,7 @@ namespace Landis.Extension.Scrapple
                         if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
                             pixel.MapCode.Value = (short) (SiteVars.DayOfFire[site] + 1);
                         else
-                            pixel.MapCode.Value = 1;
+                            pixel.MapCode.Value = 999;  // distinguish from January 1
                     }
                     else
                     {
@@ -636,8 +648,29 @@ namespace Landis.Extension.Scrapple
                     outputRaster.WriteBufferPixel();
                 }
             }
+            string[] paths10 = { "scrapple-fire", "site-mortality-{timestep}.img" };
+            path = MapNames.ReplaceTemplateVars(Path.Combine(paths10), currentTime);
+            using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
+            {
+                IntPixel pixel = outputRaster.BufferPixel;
+                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                {
+                    if (site.IsActive)
+                    {
+                        if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
+                            pixel.MapCode.Value = SiteVars.Mortality[site];
+                        else
+                            pixel.MapCode.Value = 0;
+                    }
+                    else
+                    {
+                        //  Inactive site
+                        pixel.MapCode.Value = 0;
+                    }
+                    outputRaster.WriteBufferPixel();
+                }
+            }
         }
-
 
         //---------------------------------------------------------------------
 
@@ -717,40 +750,43 @@ namespace Landis.Extension.Scrapple
 
         //---------------------------------------------------------------------
         // Ignites and Spreads a fire
-        private static bool IgniteEther(IgnitionType ignitionType, ActiveSite site, int day, double fireWeatherIndex)
+        private static bool Ignite(IgnitionType ignitionType, ActiveSite site, int day, double fireWeatherIndex)
         {
             if (SiteVars.Disturbed[site])
                 return false;
-                FireEvent fireEvent = FireEvent.Initiate(site, modelCore.CurrentTime, day, ignitionType);
+            FireEvent fireEvent = FireEvent.Initiate(site, modelCore.CurrentTime, day, ignitionType);
 
-                totalBurnedSites[(int)ignitionType] += fireEvent.TotalSitesBurned;
-                numberOfFire[(int)ignitionType]++;
-                totalBiomassMortality[(int)ignitionType] += (int)fireEvent.TotalBiomassMortality;
-                numCellsSeverity1 += fireEvent.NumberCellsSeverity1;
-                numCellsSeverity2 += fireEvent.NumberCellsSeverity2;
-                numCellsSeverity3 += fireEvent.NumberCellsSeverity3;
+            totalBurnedSites[(int)ignitionType] += fireEvent.TotalSitesBurned;
+            numberOfFire[(int)ignitionType]++;
+            totalBiomassMortality[(int)ignitionType] += (int)fireEvent.TotalBiomassMortality;
+            dNBR[(int)ignitionType] += (int)fireEvent.SiteMortality;
+            //numCellsSeverity1 += fireEvent.NumberCellsSeverity1;
+            //numCellsSeverity2 += fireEvent.NumberCellsSeverity2;
+            //numCellsSeverity3 += fireEvent.NumberCellsSeverity3;
+            //numCellsSeverity4 += fireEvent.NumberCellsSeverity4;
+            //numCellsSeverity5 += fireEvent.NumberCellsSeverity5;
             return true;
         }
 
         // This deprecated method uses a brute force sort that is much slower.
-        private static void Ignite(IgnitionType ignitionType, List<ActiveSite> shuffledFireSites, int day, double fireWeatherIndex)
-        {
-            while (shuffledFireSites.Count() > 0 && SiteVars.Disturbed[shuffledFireSites.First()] == true)
-            {
-                shuffledFireSites.Remove(shuffledFireSites.First());
-            }
-            if (shuffledFireSites.Count() > 0)
-            {
-                FireEvent fireEvent = FireEvent.Initiate(shuffledFireSites.First(), modelCore.CurrentTime, day, ignitionType);
+        //private static void Ignite(IgnitionType ignitionType, List<ActiveSite> shuffledFireSites, int day, double fireWeatherIndex)
+        //{
+        //    while (shuffledFireSites.Count() > 0 && SiteVars.Disturbed[shuffledFireSites.First()] == true)
+        //    {
+        //        shuffledFireSites.Remove(shuffledFireSites.First());
+        //    }
+        //    if (shuffledFireSites.Count() > 0)
+        //    {
+        //        FireEvent fireEvent = FireEvent.Initiate(shuffledFireSites.First(), modelCore.CurrentTime, day, ignitionType);
 
-                totalBurnedSites[(int) ignitionType] += fireEvent.TotalSitesBurned;
-                numberOfFire[(int)ignitionType]++;
-                totalBiomassMortality[(int)ignitionType] += (int)fireEvent.TotalBiomassMortality;
-                numCellsSeverity1 += fireEvent.NumberCellsSeverity1;
-                numCellsSeverity2 += fireEvent.NumberCellsSeverity2;
-                numCellsSeverity3 += fireEvent.NumberCellsSeverity3;
-            }
-        }
+        //        totalBurnedSites[(int) ignitionType] += fireEvent.TotalSitesBurned;
+        //        numberOfFire[(int)ignitionType]++;
+        //        totalBiomassMortality[(int)ignitionType] += (int)fireEvent.TotalBiomassMortality;
+        //        numCellsSeverity1 += fireEvent.NumberCellsSeverity1;
+        //        numCellsSeverity2 += fireEvent.NumberCellsSeverity2;
+        //        numCellsSeverity3 += fireEvent.NumberCellsSeverity3;
+        //    }
+        //}
 
         //---------------------------------------------------------------------
 
@@ -782,7 +818,10 @@ namespace Landis.Extension.Scrapple
 
 
 
-        // RMS Testing Open-source sort routine 8/2019
+        //---------------------------------------------------------------------
+        // A helper function to shuffle a list of ActiveSties: Algorithm may be improved.
+        // Sites are weighted for ignition in the Shuffle method, based on the respective inputs maps.
+        // This function uses a fast open-source sort routine: 8/2019
         private static WeightedSelector<ActiveSite> PreShuffleEther(ISiteVar<double> weightedSiteVar, out int numSites)
         {
             WeightedSelector<ActiveSite> wselector = new WeightedSelector<ActiveSite>();
@@ -889,9 +928,11 @@ namespace Landis.Extension.Scrapple
             sl.TotalBiomassMortalityAccidental = totalBiomassMortality[0];
             sl.TotalBiomassMortalityLightning = totalBiomassMortality[1];
             sl.TotalBiomassMortalityRx = totalBiomassMortality[2];
-            sl.NumberCellsSeverity1 = numCellsSeverity1;
-            sl.NumberCellsSeverity2 = numCellsSeverity2;
-            sl.NumberCellsSeverity3 = numCellsSeverity3;
+            //sl.NumberCellsSeverity1 = numCellsSeverity1;
+            //sl.NumberCellsSeverity2 = numCellsSeverity2;
+            //sl.NumberCellsSeverity3 = numCellsSeverity3;
+            //sl.NumberCellsSeverity4 = numCellsSeverity4;
+            //sl.NumberCellsSeverity5 = numCellsSeverity5;
 
 
             summaryLog.AddObject(sl);
