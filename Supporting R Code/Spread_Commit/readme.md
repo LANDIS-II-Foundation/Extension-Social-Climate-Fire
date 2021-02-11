@@ -6,7 +6,7 @@ R Notebook
 This the code provides a simple example of how to use geomac shape files
 to estimate the fire spread parameters needed for scrpple. Please raise
 an issue on this github page if you have corrections or questions. No
-warranty on parameters. This is only to serve as a educational tool
+warranty on parameters. This is only to serve as an educational tool
 
 ZJ Robbins 2021 \#\#\#\#\#\#\#\#\#\#\#\#\#\#
 
@@ -76,15 +76,15 @@ ZJ Robbins 2021 \#\#\#\#\#\#\#\#\#\#\#\#\#\#
 w_dir <- "Inputs/"
 ```
 
-Here we are looking to fit a binomial model as to how probability of
-spread is related to the FWI, wind, and fuels.
+Here we are looking to fit a binomial model relating the probability to
+fire weather index (FWI), wind, and fuels.
 
 For this we have wind data and Fire weather index data located to
 climate regions in LANDIS-II This is Gridmet data from the University of
 Idaho <http://www.climatologylab.org/gridmet.html>
 [meta](https://cida.usgs.gov/thredds/dodsC/UofIMETDATA.html)
 
-The ecoregion map is used to locate the windspeed and the fwi data for
+The ecoregion map is used to locate the windspeed and the FWI data for
 each time step.
 
 ``` r
@@ -107,8 +107,8 @@ plot(wind_map)
 ![](Spread_commit_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 We also have a fuel map representing landscape level fuels for the study
-area as well as an uphill azimuth map and a slope map (used to calculate
-the direction of spread)
+area, as well as an uphill azimuth map and a slope map (used to
+calculate the direction of windspeed)
 
 ``` r
 ### Here is an outline raster.
@@ -160,7 +160,7 @@ and here <https://www.geomac.gov/GeoMACTransition.shtml> and here
 <https://data-nifc.opendata.arcgis.com/>
 
 These are shape files for each days fire boundary, gathered together by
-fire. These are used to measure cells for which spread occurs and which
+fire. They are used to measure cells for which spread occurs and which
 it does not.
 
 ``` r
@@ -398,7 +398,8 @@ for (i in 1:length(fire_names_manydays)){
 write.csv(climate_day_mat,"Example.csv")
 ```
 
-Looking at the number of successful versus not successful
+Here is a table of thenumber of successful spread events versus not
+successfull spread events
 
 ``` r
 table(climate_day_mat$spread_success)

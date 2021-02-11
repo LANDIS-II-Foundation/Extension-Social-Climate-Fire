@@ -6,7 +6,7 @@ R Notebook
 This the code provides a simple example of how to assimilate feild and
 remote sensing data to create inputs for the Scrpple mortality model.
 Please raise an issue on this github page if you have corrections or
-questions. No warranty on parameters. This is only to serve as a
+questions. No warranty on parameters. This is only to serve as an
 educational tool
 
 ZJ Robbins 2021 \#\#\#\#\#\#\#\#\#\#\#\#\#\#
@@ -16,8 +16,13 @@ ZJ Robbins 2021 \#\#\#\#\#\#\#\#\#\#\#\#\#\#
 Here we have feild data for three species, across 100 sites. This
 includes the estimated Age, DBH and whether the tree was dead. We have
 included here an emperical constant for the relationship between bark
-thickness and DBH (BT\_coeff). This is used to calculate the column
-Bark.
+thickness and DBH (BT\_coeff). The example used here come from
+
+[The fire and tree mortality
+database](https://www.nrs.fs.fed.us/pubs/60342)
+
+This is used to calculate the column Bark, which represents the bark
+thickness.
 
 ``` r
 library(raster)
@@ -44,12 +49,12 @@ FD_write$Bark<-FD_write$BT_coeff*FD_write$DBH
 
 ### Raster data
 
-We also have (example) rasters for the area of these sites. These
+We also have (example) raster data for the area of these sites. These
 include the previous years climatic water deficit, the effective wind
 speed on the day of,estimations of fuels, and the post fire RDNBR. These
 are constructed into a dataframe and joined with the plot level data by
 site name. Note: Here every site represents a pixel in the feild, this
-will have to be adjusted to fit data coverage.
+will likely have to be adjusted to fit data coverage for real data.
 
 ``` r
 Rasters<-stack(paste0("Practice_Data/",list.files("Practice_Data/",pattern="\\.tif$")))
@@ -64,6 +69,9 @@ TestingSet<-merge(FD_write,R_df,by="SiteNumbers",all.x=T)
 ```
 
 ### Fitting the individual level mortality
+
+Here we fit a general linear model to Bark and RDNBR (which we are using
+for site level mortality)
 
 ``` r
 glm1<-with(TestingSet,glm(Dead~Bark+RDNBR,family="binomial"))  
@@ -134,37 +142,42 @@ legend(6.5,1.0,legend=c("High DNBR (1400)","Mean DNBR (548)","Low DNBR(200)"),lt
 
 ![](Calculating_Mortality_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
+This captures the relative influence of species level characteristics as
+compared to site level fire effects.
+
 ### Fitting DBHAge and Maximum Bark coefficents.
 
-This section estimates the parameters for DBHAge and Maximum Bark
-thickness, used at the species level to relate age to dbh to bark
+This section estimates the parameters for “DBHAge” and “Maximum Bark
+Thickness”, used at the species level to relate age to dbh to bark
 thickness.
 
 ``` r
+### Here is the function used in the model 
 FitDBHfunction<-function(Age,par,Obs){
   DBH_out<-(par[1]*Age)/(Age+par[2])
   return(-sum(dnorm(DBH_out,mean=Obs,sd=3,log=TRUE)))
 }
-#?optim
+
 DF<-NULL
 
 for( i in unique(FD_write$Species)){
+  ## Isolate one species
   OneSp<-FD_write[FD_write$Species==i,]
-  
-  
+  ### Optimize the function to the data 
   opt1=optim(c(60,400),f=FitDBHfunction,
                 Age=as.numeric(OneSp$Age),
                 Obs=as.numeric(OneSp$DBH))
-  
+  ## Get parameters
   par1<-as.numeric(opt1$par[1])
   par2<-as.numeric(opt1$par[2])
-  #par2<-400
+  ### Look at the plot
   DBH_out<-(par1*OneSp$Age)/(OneSp$Age+par2)
   plot(OneSp$Age,DBH_out,main=paste0("Species ",i))
   points(OneSp$Age,OneSp$DBH,col="red")
   MaxBark<-par1*OneSp$BT_coeff
   
   score<-summary(lm(DBH_out~OneSp$DBH))$r.squared
+  ### create a dataframe of values
   OutRow<-data.frame(Spp=i,
                      maxDBH=par2,MaxBark=MaxBark[1],score=score)
   DF<-rbind(OutRow,DF)
@@ -184,9 +197,10 @@ print(DF)
 
 ### Fitting site level mortlaity
 
-Here we fit the site level mortality, for this study we are using RDNBR
-as the measure of that. We test that against the effective windspeed,
-fuels, and climatic water deficit
+Here we fit the site level mortality predictors, for this study we are
+using RDNBR as the measure of site level mortality, though maps of
+intensity could also be used. We test that against the effective
+windspeed, fuels, and climatic water deficit
 
 ``` r
 glm2<-with(TestingSet,glm(RDNBR~Eff_Windspeed+Fuels+Climatic_Water_Deficit))
@@ -218,7 +232,7 @@ summary(glm2)
     ## 
     ## Number of Fisher Scoring iterations: 2
 
-It seems there is no relationship with climatic water deficit.We can
+It seems there is no relationship with climatic water deficit. We can
 refit the model without it.
 
 ``` r
