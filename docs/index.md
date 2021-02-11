@@ -7,7 +7,7 @@ The purpose of the Social-Climate Related Pyrogenic Processes and their Landscap
 - Latest release: Version 3.0 — February 2021
 
 - Full release details found in the User Guide and on GitHub.
-- [View User Guide](https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/blob/master/docs/LANDIS-II%20SCRAPPLE%20v3.0%20User%20Guide.docx).
+- [View User Guide](https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/blob/master/docs/LANDIS-II%20SCRAPPLE%20v3.0%20User%20Guide.pdf).
 
 - Copyright: The LANDIS-II Foundation
 
