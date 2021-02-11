@@ -26,7 +26,7 @@ You need:
 
 LANDIS-II requires a global parameter file for your scenario, and separate parameter files for each extension.
 
-Example files can be [downloaded from GitHub]((https://downgit.github.io/#/home?url=https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/tree/master/Testing/Core7-SCRAPPLE3.0).
+Example files can be [downloaded from GitHub](https://downgit.github.io/#/home?url=https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/tree/master/Testing/Core7-SCRAPPLE3.0).
 
 # Citation
 
