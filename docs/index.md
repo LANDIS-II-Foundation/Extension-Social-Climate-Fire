@@ -28,6 +28,10 @@ LANDIS-II requires a global parameter file for your scenario, and separate param
 
 Example files can be [downloaded from GitHub](https://downgit.github.io/#/home?url=https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/tree/master/Testing/Core7-SCRAPPLE3.0).
 
+# Supporting R-Code
+
+We also provide R-code that has been used to parameterize SCRPPLE.  This R-code is provided 'as is' and no support is implied.  [R code on GitHub](https://downgit.github.io/#/home?url=https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/tree/master/Supporting%20R%20Code)
+
 # Citation
 
 Scheller, R.M., A. Kretchun, T.J. Hawbaker, P.D. Henne. 2019. A landscape model of variable social-ecological fire regimes. Ecological Modelling 401: 85-93.
