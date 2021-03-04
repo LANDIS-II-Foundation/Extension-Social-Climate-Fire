@@ -500,7 +500,7 @@ namespace Landis.Extension.Scrapple
                     PlugIn.ModelCore.UI.WriteLine("NOTE: No table entry for Suppression MapCode {0}, Ignition Type {1}.  DEFAULT NO SUPPRESSION.", SiteVars.AccidentalSuppressionIndex[site], this.IgnitionType.ToString());
                 }
 
-            if (index >= 10)
+            if (index > 10)
             {
                 fwi1 = PlugIn.Parameters.SuppressionFWI_Table[index].FWI_Break1;
                 fwi2 = PlugIn.Parameters.SuppressionFWI_Table[index].FWI_Break2;
