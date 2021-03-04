@@ -500,7 +500,7 @@ namespace Landis.Extension.Scrapple
                     PlugIn.ModelCore.UI.WriteLine("NOTE: No table entry for Suppression MapCode {0}, Ignition Type {1}.  DEFAULT NO SUPPRESSION.", SiteVars.AccidentalSuppressionIndex[site], this.IgnitionType.ToString());
                 }
 
-            if (index > 0)
+            if (index >= 10)
             {
                 fwi1 = PlugIn.Parameters.SuppressionFWI_Table[index].FWI_Break1;
                 fwi2 = PlugIn.Parameters.SuppressionFWI_Table[index].FWI_Break2;
@@ -511,7 +511,8 @@ namespace Landis.Extension.Scrapple
                     suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[index].Suppression1 / 100.0);
                 else if (fireWeatherIndex >= fwi2)
                     suppressEffect = 1.0 - ((double)PlugIn.Parameters.SuppressionFWI_Table[index].Suppression2 / 100.0);
-            }
+            } else
+                PlugIn.ModelCore.UI.WriteLine("NOTE: No table entry for Suppression MapCode {0}.  DEFAULT NO SUPPRESSION.", SiteVars.AccidentalSuppressionIndex[site]);
 
             // NO suppression above a given wind speed due to dangers to firefighters and aircraft.
             if (effectiveWindSpeed > PlugIn.Parameters.SuppressionMaxWindSpeed)

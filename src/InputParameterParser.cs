@@ -477,15 +477,6 @@ namespace Landis.Extension.Scrapple
             ReadVar(smws);
             parameters.SuppressionMaxWindSpeed = smws.Value;
 
-            //ReadName("SuppressionTable");
-
-            //InputVar<string> ig = new InputVar<string>("Ignition Type");
-            //InputVar<double> fwib1 = new InputVar<double>("FWI_Break1");
-            //InputVar<double> fwib2 = new InputVar<double>("FWI_Break2");
-            //InputVar<int> suppeff1 = new InputVar<int>("SuppressionEffectiveness1");
-            //InputVar<int> suppeff2 = new InputVar<int>("SuppressionEffectiveness2");
-            //InputVar<int> suppeff3 = new InputVar<int>("SuppressionEffectiveness3");
-
             InputVar<string> csv_suppress = new InputVar<string>("Suppression_CSV_File");
             ReadVar(csv_suppress);
 
@@ -504,10 +495,6 @@ namespace Landis.Extension.Scrapple
                 suppressTable.Suppression2 = System.Convert.ToInt32(row["Suppress_Category_2"]);
 
                 int index = suppressTable.MapCode + ((int)suppressTable.Type * 10);
-
-                //Dictionary<int, ISuppressionTable> temp = new Dictionary<int, ISuppressionTable>();
-                //temp.Add(suppressTable.MapCode, suppressTable);
-                //parameters.SuppressionFWI_Table.Add((int) suppressTable.Type, temp);
 
                 parameters.SuppressionFWI_Table.Add(index, suppressTable);
 
