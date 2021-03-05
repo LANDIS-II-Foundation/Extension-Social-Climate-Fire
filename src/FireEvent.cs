@@ -44,6 +44,11 @@ namespace Landis.Extension.Scrapple
         public int NumberOfDays;
         public int IgnitionDay;
         public double MeanIntensity;
+        public double MeanPET;
+        public double MeanWD;
+        public double MeanClay;
+        public double MeanFineFuels;
+        public double MeanLadderFuels;
         public double MeanWindDirection;
         public double MeanWindSpeed;
         public double MeanEffectiveWindSpeed;
@@ -117,6 +122,11 @@ namespace Landis.Extension.Scrapple
             this.InitiationFireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
             this.NumberOfDays = 1;
             this.MeanIntensity = 0.0;
+            this.MeanPET = 0.0;
+            this.MeanWD = 0.0;
+            this.MeanClay = 0.0;
+            this.MeanFineFuels = 0.0;
+            this.MeanLadderFuels = 0.0;
             this.MeanWindDirection = 0.0;
             this.MeanWindSpeed = 0.0;
             this.MeanEffectiveWindSpeed = 0.0;
@@ -338,7 +348,12 @@ namespace Landis.Extension.Scrapple
 
             int siteCohortsKilled = 0;
             this.MeanDNBR += (int) siteMortality;
-            this.SiteMortality = (int) siteMortality;
+            this.MeanWD += WaterDeficit;
+            this.MeanPET += Previous_Year_ET;
+            this.MeanClay += Clay;
+            this.MeanLadderFuels += ladderFuelBiomass;
+            this.MeanFineFuels += fineFuelPercent;
+            this.SiteMortality =(int)siteMortality;
 
             int standardSeverityIndex = Math.Max((int) siteMortality / 100, 1);
             SiteVars.Intensity[site] = (byte) Math.Min(standardSeverityIndex, 10);  // must range from 1-10.
@@ -625,6 +640,11 @@ namespace Landis.Extension.Scrapple
             el.CohortsKilled = fireEvent.CohortsKilled;
             el.AvailableCohorts = fireEvent.AvailableCohorts;
             el.MeanSeverity = fireEvent.MeanIntensity / (double) fireEvent.TotalSitesBurned;
+            el.MeanPET=fireEvent.MeanPET / (double)fireEvent.TotalSitesBurned;
+            el.MeanWD = fireEvent.MeanWD / (double)fireEvent.TotalSitesBurned;
+            el.MeanClay = fireEvent.MeanClay / (double)fireEvent.TotalSitesBurned;
+            el.MeanFineFuels = fireEvent.MeanFineFuels / (double)fireEvent.TotalSitesBurned;
+            el.MeanLadderFuels = fireEvent.MeanLadderFuels / (double)fireEvent.TotalSitesBurned;
             el.MeanDNBR = fireEvent.MeanDNBR / (double)fireEvent.TotalSitesBurned;
             el.MeanWindDirection = fireEvent.MeanWindDirection / (double)fireEvent.TotalSitesBurned;
             el.MeanWindSpeed = fireEvent.MeanWindSpeed / (double)fireEvent.TotalSitesBurned;
