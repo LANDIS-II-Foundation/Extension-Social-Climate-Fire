@@ -431,18 +431,9 @@ namespace Landis.Extension.Scrapple
             ReadVar(cm2);
             parameters.CohortMortalityB2 = cm2.Value;
 
-
-            //InputVar<double> sf_ff = new InputVar<double>("IntensityFactor:FineFuelPercent");
-            //ReadVar(sf_ff);
-            //parameters.IntensityFactor_FineFuelPercent = sf_ff.Value;
-
-            //InputVar<int> lfma = new InputVar<int>("IntensityFactor:LadderFuelMaxAge");
-            //ReadVar(lfma);
-            //parameters.LadderFuelMaxAge = lfma.Value;
-
-            //InputVar<double> sf_lf = new InputVar<double>("IntensityFactor:LadderFuelBiomass");
-            //ReadVar(sf_lf);
-            //parameters.IntensityFactor_LadderFuelBiomass = sf_lf.Value;
+            InputVar<int> lfma = new InputVar<int>("LadderFuelMaxAge");
+            ReadVar(lfma);
+            parameters.LadderFuelMaxAge = lfma.Value;
 
             //  Read the species list for ladderfuels:
             List<string> speciesNames = new List<string>();
@@ -501,37 +492,6 @@ namespace Landis.Extension.Scrapple
             }
 
 
-            //while (!AtEndOfInput && CurrentName != "DeadWoodTable")
-            //{
-            //    StringReader currentLine = new StringReader(CurrentLine);
-
-            //    ISuppressionTable suppressTable = new SuppressionTable();
-
-            //    ReadValue(ig, currentLine);
-            //    suppressTable.Type = IgnitionTypeParse(ig.Value);
-
-            //    ReadValue(fwib1, currentLine);
-            //    suppressTable.FWI_Break1 = fwib1.Value;
-
-            //    ReadValue(fwib2, currentLine);
-            //    suppressTable.FWI_Break2 = fwib2.Value;
-
-            //    ReadValue(suppeff1, currentLine);
-            //    suppressTable.Suppression0 = suppeff1.Value;
-
-            //    ReadValue(suppeff2, currentLine);
-            //    suppressTable.Suppression1 = suppeff2.Value;
-
-            //    ReadValue(suppeff3, currentLine);
-            //    suppressTable.Suppression2 = suppeff3.Value;
-
-            //    parameters.SuppressionFWI_Table.Add(suppressTable);
-
-            //    CheckNoDataAfter("the " + suppeff3.Name + " column", currentLine);
-            //    GetNextLine();
-            //}
-            //if (parameters.SuppressionFWI_Table.Count != 3)
-            //    throw NewParseException("EXACTLY THREE suppression levels must be defined: accidental, prescribed, lightening.");
 
             //-------------------------------------------------------------------
             //  Read table of Fire Damage classes.

@@ -58,14 +58,11 @@ namespace Landis.Extension.Scrapple
         public double MeanFWI;
         public double TotalBiomassMortality;
         public ActiveSite currentSite;
-        public int NumberCellsSeverity1;
-        public int NumberCellsSeverity2;
-        public int NumberCellsSeverity3;
-        public int NumberCellsSeverity4;
-        public int NumberCellsSeverity5;
-        //public int NumberCellsIntensityFactor1;
-        //public int NumberCellsIntensityFactor2;
-        //public int NumberCellsIntensityFactor3;
+        //public int NumberCellsSeverity1;
+        //public int NumberCellsSeverity2;
+        //public int NumberCellsSeverity3;
+        //public int NumberCellsSeverity4;
+        //public int NumberCellsSeverity5;
         public int TotalSitesBurned;
         public int MaxSpreadArea;
 
@@ -135,16 +132,8 @@ namespace Landis.Extension.Scrapple
             this.MeanSuppression = 0.0;
             this.MeanFWI = 0.0;
             this.TotalBiomassMortality = 0.0;
-            //this.NumberCellsSeverity1 = 0;
-            //this.NumberCellsSeverity2 = 0;
-            //this.NumberCellsSeverity3 = 0;
-            //this.NumberCellsSeverity4 = 0;
-            //this.NumberCellsSeverity5 = 0;
             this.currentSite = initiationSite;
             this.maxDay = day;
-            //this.NumberCellsIntensityFactor1 = 0;
-            //this.NumberCellsIntensityFactor2 = 0;
-            //this.NumberCellsIntensityFactor3 = 0;
 
         }
 
