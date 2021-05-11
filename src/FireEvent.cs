@@ -346,8 +346,13 @@ namespace Landis.Extension.Scrapple
 
             int standardSeverityIndex = Math.Max((int) siteMortality / 100, 1);
             SiteVars.Intensity[site] = (byte) Math.Min(standardSeverityIndex, 10);  // must range from 1-10.
+            if(this.IgnitionType == IgnitionType.Rx)
+            {
+                SiteVars.Intensity[site] = Math.Min(SiteVars.Intensity[site], (byte) PlugIn.Parameters.RxMaxFireIntensity);
+                this.SiteMortality = standardSeverityIndex * 100;
+            }
 
-            SiteVars.Mortality[site] = (int) siteMortality;
+            SiteVars.Mortality[site] = this.SiteMortality;
             SiteVars.TypeOfIginition[site] = (int)this.IgnitionType;
             //PlugIn.ModelCore.UI.WriteLine("  dNBR: {0}, severity={1}.", siteMortality, standardSeverityIndex);
 
