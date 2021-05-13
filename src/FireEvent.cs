@@ -118,7 +118,7 @@ namespace Landis.Extension.Scrapple
             this.TotalSitesBurned = 0;
             this.InitiationFireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
             this.NumberOfDays = 1;
-            this.MeanIntensity = 0.0;
+            //this.MeanIntensity = 0.0;
             this.MeanPET = 0.0;
             this.MeanWD = 0.0;
             this.MeanClay = 0.0;
@@ -618,7 +618,7 @@ namespace Landis.Extension.Scrapple
             el.TotalSitesBurned = fireEvent.TotalSitesBurned;
             el.CohortsKilled = fireEvent.CohortsKilled;
             el.AvailableCohorts = fireEvent.AvailableCohorts;
-            el.MeanSeverity = fireEvent.MeanIntensity / (double) fireEvent.TotalSitesBurned;
+            //el.MeanSeverity = fireEvent.MeanIntensity / (double) fireEvent.TotalSitesBurned;
             el.MeanPET=fireEvent.MeanPET / (double)fireEvent.TotalSitesBurned;
             el.MeanWD = fireEvent.MeanWD / (double)fireEvent.TotalSitesBurned;
             el.MeanClay = fireEvent.MeanClay / (double)fireEvent.TotalSitesBurned;

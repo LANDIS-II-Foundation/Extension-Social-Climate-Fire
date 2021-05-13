@@ -80,11 +80,11 @@ namespace Landis.Extension.Scrapple
         [DataFieldAttribute(Desc = "Mean Ladder Fuels ")]
         public double MeanLadderFuels { set; get; }
 
-        [DataFieldAttribute(Unit = FieldUnits.Severity_Rank, Desc = "Mean Severity (1-5)", Format = "0.00")]
+        [DataFieldAttribute(Unit = FieldUnits.Severity_Rank, Desc = "Mean DNBR (1-5)", Format = "0.00")]
         public double MeanDNBR { set; get; }
 
-        [DataFieldAttribute(Desc = "Mean DNBR", Format = "0.0")]
-        public double MeanSeverity { set; get; }
+        //[DataFieldAttribute(Desc = "Mean Severity", Format = "0.0")]
+        //public double MeanSeverity { set; get; }
         [DataFieldAttribute(Desc = "Mortality Biomass")]
         public double TotalBiomassMortality { set; get; }
 
