@@ -203,93 +203,96 @@ intensity could also be used. We test that against the effective
 windspeed, fuels, and climatic water deficit
 
 ``` r
-glm2<-with(TestingSet,glm(RDNBR~Eff_Windspeed+Fuels+Climatic_Water_Deficit))
+glm2<-with(TestingSet,glm(RDNBR~Eff_Windspeed+Fuels+Climatic_Water_Deficit,family=Gamma(link="inverse")))
 summary(glm2)
 ```
 
     ## 
     ## Call:
-    ## glm(formula = RDNBR ~ Eff_Windspeed + Fuels + Climatic_Water_Deficit)
+    ## glm(formula = RDNBR ~ Eff_Windspeed + Fuels + Climatic_Water_Deficit, 
+    ##     family = Gamma(link = "inverse"))
     ## 
     ## Deviance Residuals: 
     ##      Min        1Q    Median        3Q       Max  
-    ## -230.423   -14.735     4.784    18.536   130.182  
+    ## -0.38602  -0.11152   0.01961   0.11720   0.27201  
     ## 
     ## Coefficients:
-    ##                         Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)            68.592943   3.570643  19.210   <2e-16 ***
-    ## Eff_Windspeed          15.047521   0.092446 162.772   <2e-16 ***
-    ## Fuels                   0.689426   0.008716  79.097   <2e-16 ***
-    ## Climatic_Water_Deficit -0.006007   0.009111  -0.659     0.51    
+    ##                          Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)             3.178e-03  1.930e-05  164.63  < 2e-16 ***
+    ## Eff_Windspeed          -3.542e-05  3.570e-07  -99.19  < 2e-16 ***
+    ## Fuels                  -1.744e-06  3.577e-08  -48.74  < 2e-16 ***
+    ## Climatic_Water_Deficit -1.765e-07  4.863e-08   -3.63 0.000291 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## (Dispersion parameter for gaussian family taken to be 2414.999)
+    ## (Dispersion parameter for Gamma family taken to be 0.02216914)
     ## 
-    ##     Null deviance: 79382737  on 1999  degrees of freedom
-    ## Residual deviance:  4820338  on 1996  degrees of freedom
-    ## AIC: 21261
+    ##     Null deviance: 245.618  on 1999  degrees of freedom
+    ## Residual deviance:  47.326  on 1996  degrees of freedom
+    ## AIC: 23187
     ## 
-    ## Number of Fisher Scoring iterations: 2
+    ## Number of Fisher Scoring iterations: 4
 
-It seems there is no relationship with climatic water deficit. We can
-refit the model without it.
+We can test other models to see which performs best.
 
 ``` r
-glm3<-with(TestingSet,glm(RDNBR~Eff_Windspeed+Fuels))
+glm3<-with(TestingSet,glm(RDNBR~Eff_Windspeed+Fuels,family=gaussian(link="inverse")))
 summary(glm3)
 ```
 
     ## 
     ## Call:
-    ## glm(formula = RDNBR ~ Eff_Windspeed + Fuels)
+    ## glm(formula = RDNBR ~ Eff_Windspeed + Fuels, family = gaussian(link = "inverse"))
     ## 
     ## Deviance Residuals: 
     ##      Min        1Q    Median        3Q       Max  
-    ## -230.195   -15.790     4.442    19.143   129.221  
+    ## -226.181   -61.645     6.286    56.858   164.540  
     ## 
     ## Coefficients:
-    ##                Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)   67.324847   3.007829   22.38   <2e-16 ***
-    ## Eff_Windspeed 15.048738   0.092414  162.84   <2e-16 ***
-    ## Fuels          0.689148   0.008705   79.17   <2e-16 ***
+    ##                 Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)    2.922e-03  1.455e-05   200.8   <2e-16 ***
+    ## Eff_Windspeed -3.007e-05  2.619e-07  -114.8   <2e-16 ***
+    ## Fuels         -1.581e-06  2.332e-08   -67.8   <2e-16 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## (Dispersion parameter for gaussian family taken to be 2414.315)
+    ## (Dispersion parameter for gaussian family taken to be 6091.288)
     ## 
     ##     Null deviance: 79382737  on 1999  degrees of freedom
-    ## Residual deviance:  4821387  on 1997  degrees of freedom
-    ## AIC: 21259
+    ## Residual deviance: 12164244  on 1997  degrees of freedom
+    ## AIC: 23110
     ## 
-    ## Number of Fisher Scoring iterations: 2
+    ## Number of Fisher Scoring iterations: 6
 
 Lets take a look of that relationship.
 
 ``` r
 ### Plotting the model 
-ysim_No<-with(TestingSet,predict(glm3,
-                      data.frame(Eff_Windspeed = Eff_Windspeed,Fuels=(rep(0,length(Eff_Windspeed)))) ,
-                      type="response",se=T))
-ysim_Median<-with(TestingSet,predict(glm3,
-                 data.frame(Eff_Windspeed = Eff_Windspeed,Fuels=(rep(median(Fuels),length(Eff_Windspeed)))) ,
-                 type="response",se=T))
-ysim_Max<-with(TestingSet,predict(glm3,
-                     data.frame(Eff_Windspeed = Eff_Windspeed,Fuels=(rep(max(Fuels),length(Eff_Windspeed)))) ,
-                     type="response",se=T))
+ysim_No<-predict(glm3,
+                      data.frame(Eff_Windspeed = TestingSet$Eff_Windspeed[order(TestingSet$Eff_Windspeed)],Fuels=(rep(0,length(TestingSet$Eff_Windspeed)))) ,
+                      type="response",se=T)
+ysim_Median<-predict(glm3,
+                      data.frame(Eff_Windspeed = TestingSet$Eff_Windspeed[order(TestingSet$Eff_Windspeed)],Fuels=(rep(median(TestingSet$Fuels),length(TestingSet$Eff_Windspeed))))  ,
+                      type="response",se=T)
+ysim_Max<-predict(glm3,
+                      data.frame(Eff_Windspeed = TestingSet$Eff_Windspeed[order(TestingSet$Eff_Windspeed)],Fuels=(rep(quantile(TestingSet$Fuels,.95),length(TestingSet$Eff_Windspeed)))) ,
+                      type="response",se=T)
 
 
 plot(TestingSet$Eff_Windspeed,TestingSet$RDNBR,  pch = 16, xlab = "Effective Windspeed", ylab = "RDNBR")
-lines(TestingSet$Eff_Windspeed,ysim_Median$fit+ysim_Median$se.fit,col="black",lwd=1.0,lty=3.0)
-lines(TestingSet$Eff_Windspeed,ysim_Median$fit,col="orange",lwd=3.0)
-lines(TestingSet$Eff_Windspeed,ysim_Median$fit-ysim_Median$se.fit,col="black",lwd=1.0,lty=3.0)
-lines(TestingSet$Eff_Windspeed,ysim_Max$fit+ysim_Max$se.fit,col="red",lwd=1.0,lty=3.0)
-lines(TestingSet$Eff_Windspeed,ysim_Max$fit,col="red",lwd=3.0)
-lines(TestingSet$Eff_Windspeed,ysim_Max$fit-ysim_Max$se.fit,col="red",lwd=1.0,lty=3.0)
-lines(TestingSet$Eff_Windspeed,ysim_No$fit+ysim_No$se.fit,col="blue",lwd=1.0,lty=3.0)
-lines(TestingSet$Eff_Windspeed,ysim_No$fit,col="blue",lwd=3.0)
-lines(TestingSet$Eff_Windspeed,ysim_No$fit-ysim_No$se.fit,col="blue",lwd=1.0,lty=3.0)
-legend(40,600.0,legend=c("Maximum Fuels","Median Fuels","Minimum Fuels"),
+lines(TestingSet$Eff_Windspeed[order(TestingSet$Eff_Windspeed)],ysim_No$fit+ysim_No$se.fit,col="blue",lwd=1.0,lty=3.0)
+
+
+lines(TestingSet$Eff_Windspeed[order(TestingSet$Eff_Windspeed)],ysim_Median$fit+ysim_Median$se.fit,col="black",lwd=1.0,lty=3.0)
+lines(TestingSet$Eff_Windspeed[order(TestingSet$Eff_Windspeed)],ysim_Median$fit,col="orange",lwd=3.0)
+lines(TestingSet$Eff_Windspeed[order(TestingSet$Eff_Windspeed)],ysim_Median$fit-ysim_Median$se.fit,col="black",lwd=1.0,lty=3.0)
+lines(TestingSet$Eff_Windspeed[order(TestingSet$Eff_Windspeed)],ysim_Max$fit+ysim_Max$se.fit,col="red",lwd=1.0,lty=3.0)
+lines(TestingSet$Eff_Windspeed[order(TestingSet$Eff_Windspeed)],ysim_Max$fit,col="red",lwd=3.0)
+lines(TestingSet$Eff_Windspeed[order(TestingSet$Eff_Windspeed)],ysim_Max$fit-ysim_Max$se.fit,col="red",lwd=1.0,lty=3.0)
+
+lines(TestingSet$Eff_Windspeed[order(TestingSet$Eff_Windspeed)],ysim_No$fit,col="blue",lwd=3.0)
+lines(TestingSet$Eff_Windspeed[order(TestingSet$Eff_Windspeed)],ysim_No$fit-ysim_No$se.fit,col="blue",lwd=1.0,lty=3.0)
+legend(40,600.0,legend=c("High Fuels","Median Fuels","Minimum Fuels"),
        lty=c(1,1,1),col=c("red","black","blue")) 
 ```
 
@@ -297,7 +300,7 @@ legend(40,600.0,legend=c("Maximum Fuels","Median Fuels","Minimum Fuels"),
 
 This analysis provides us with the following parameters.
 
-  - SiteMortalityB0 68.592943 \<\< Intercept
+  - SiteMortalityB0 2.922e-03 \<\< Intercept
 
   - SiteMortalityB1 0.00 \<\< The parameter fit for site level clay % in
     Soil.
@@ -305,13 +308,13 @@ This analysis provides us with the following parameters.
   - SiteMortalityB2 0.00 \<\< The parameter fit for site level previous
     years annual ET.
 
-  - SiteMortalityB3 15.047521 \<\< The parameter fit for site level
+  - SiteMortalityB3 -3.007e-05 \<\< The parameter fit for site level
     Effective Windspeed.
 
   - SiteMortalityB4 0.00.0 \<\< The parameter fit for site level
     Climatic Water Deficit (PET-AET).
 
-  - SiteMortalityB5 0.689426 \<\< The parameter fit for fine fuels.
+  - SiteMortalityB5 -1.581e-06 \<\< The parameter fit for fine fuels.
 
   - SiteMortalityB6 0.0 \<\< The parameter fit for ladder fuels.
 
