@@ -103,7 +103,7 @@ namespace Landis.Extension.Scrapple
                 Type = OutputType.Map,
                 Name = "IgnitionType",
                 FilePath = Path.Combine(paths3),
-                Map_DataType = MapDataType.Continuous,
+                Map_DataType = MapDataType.Nominal,
                 Map_Unit = FieldUnits.None,
                 Visualize = true,
             };
@@ -127,12 +127,35 @@ namespace Landis.Extension.Scrapple
                 Type = OutputType.Map,
                 Name = "DayOfFire",
                 FilePath = Path.Combine(paths5),
-                Map_DataType = MapDataType.Continuous,
+                Map_DataType = MapDataType.Ordinal,
                 Map_Unit = "Day of Year",
                 Visualize = true,
             };
             Extension.OutputMetadatas.Add(mapOut_fireDay);
 
+            string[] paths6 = { @"social-climate-fire", "event-ID-{timestep}.img" };
+            OutputMetadata mapOut_eventID = new OutputMetadata()
+            {
+                Type = OutputType.Map,
+                Name = "EventID",
+                FilePath = Path.Combine(paths6),
+                Map_DataType = MapDataType.Nominal,
+                Map_Unit = "Index",
+                Visualize = true,
+            };
+            Extension.OutputMetadatas.Add(mapOut_eventID);
+
+            string[] paths7 = { @"social-climate-fire", "fine-fuels-{timestep}.img" };
+            OutputMetadata mapOut_fineFuels = new OutputMetadata()
+            {
+                Type = OutputType.Map,
+                Name = "FineFuels",
+                FilePath = Path.Combine(paths7),
+                Map_DataType = MapDataType.Continuous,
+                Map_Unit = FieldUnits.g_C_m2,
+                Visualize = true,
+            };
+            Extension.OutputMetadatas.Add(mapOut_fineFuels);
 
             //---------------------------------------
             MetadataProvider mp = new MetadataProvider(Extension);
