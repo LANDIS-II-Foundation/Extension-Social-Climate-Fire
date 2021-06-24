@@ -352,7 +352,7 @@ namespace Landis.Extension.Scrapple
                 this.SiteMortality = standardSeverityIndex * 100;
             }
 
-            SiteVars.Mortality[site] = this.SiteMortality;
+            //SiteVars.Mortality[site] = this.SiteMortality;
             SiteVars.TypeOfIginition[site] = (int)this.IgnitionType;
             //PlugIn.ModelCore.UI.WriteLine("  dNBR: {0}, severity={1}.", siteMortality, standardSeverityIndex);
 

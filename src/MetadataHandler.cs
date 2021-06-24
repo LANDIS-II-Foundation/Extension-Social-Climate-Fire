@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using Landis.Library.Metadata;
 using Landis.Utilities;
 using Landis.Core;
@@ -72,39 +73,67 @@ namespace Landis.Extension.Scrapple
             //---------------------------------------            
             //          map outputs:         
             //---------------------------------------
-            string intensityMapFileName = "scrapple-intensity.img";
+            string[] paths = { @"social-climate-fire", "fire-intensity-{timestep}.img" };
             OutputMetadata mapOut_Intensity = new OutputMetadata()
             {
                 Type = OutputType.Map,
                 Name = "Intensity",
-                FilePath = @intensityMapFileName,
+                FilePath = Path.Combine(paths),
                 Map_DataType = MapDataType.Ordinal,
                 Map_Unit = FieldUnits.Severity_Rank,
                 Visualize = true,
             };
             Extension.OutputMetadatas.Add(mapOut_Intensity);
 
-            //string specialDeadWoodMapFileName = "scrapple-dead-wood.img";
-            //OutputMetadata mapOut_SpecialDead = new OutputMetadata()
-            //{
-            //    Type = OutputType.Map,
-            //    Name = "SpecialDeadWood",
-            //    FilePath = @specialDeadWoodMapFileName,
-            //    Map_DataType = MapDataType.Continuous,
-            //    Map_Unit = FieldUnits.g_C_m2,
-            //    Visualize = true,
-            //};
-            //Extension.OutputMetadatas.Add(mapOut_Intensity);
-            //OutputMetadata mapOut_Time = new OutputMetadata()
-            //{
-            //    Type = OutputType.Map,
-            //    Name = "TimeLastFire",
-            //    FilePath = @TimeMapFileName,
-            //    Map_DataType = MapDataType.Continuous,
-            //    Map_Unit = FieldUnits.Year,
-            //    Visualize = true,
-            //};
-            //Extension.OutputMetadatas.Add(mapOut_Time);
+            string[] paths2 = { @"social-climate-fire", "special-dead-wood-{timestep}.img" };
+            OutputMetadata mapOut_SpecialDead = new OutputMetadata()
+            {
+                Type = OutputType.Map,
+                Name = "SpecialDeadWood",
+                FilePath = Path.Combine(paths2),
+                Map_DataType = MapDataType.Continuous,
+                Map_Unit = FieldUnits.g_C_m2,
+                Visualize = true,
+            };
+            Extension.OutputMetadatas.Add(mapOut_SpecialDead);
+
+            string[] paths3 = { @"social-climate-fire", "ignitions-type-{timestep}.img" };
+            OutputMetadata mapOut_IgType = new OutputMetadata()
+            {
+                Type = OutputType.Map,
+                Name = "IgnitionType",
+                FilePath = Path.Combine(paths3),
+                Map_DataType = MapDataType.Continuous,
+                Map_Unit = FieldUnits.None,
+                Visualize = true,
+            };
+            Extension.OutputMetadatas.Add(mapOut_IgType);
+
+            string[] paths4 = { @"social-climate-fire", "fire-spread-probability-{timestep}.img" };
+            OutputMetadata mapOut_fireSpread = new OutputMetadata()
+            {
+                Type = OutputType.Map,
+                Name = "FireSpreadProbability",
+                FilePath = Path.Combine(paths4),
+                Map_DataType = MapDataType.Continuous,
+                Map_Unit = FieldUnits.None,
+                Visualize = true,
+            };
+            Extension.OutputMetadatas.Add(mapOut_fireSpread);
+
+            string[] paths5 = { @"social-climate-fire", "day-of-fire-{timestep}.img" };
+            OutputMetadata mapOut_fireDay = new OutputMetadata()
+            {
+                Type = OutputType.Map,
+                Name = "DayOfFire",
+                FilePath = Path.Combine(paths5),
+                Map_DataType = MapDataType.Continuous,
+                Map_Unit = "Day of Year",
+                Visualize = true,
+            };
+            Extension.OutputMetadatas.Add(mapOut_fireDay);
+
+
             //---------------------------------------
             MetadataProvider mp = new MetadataProvider(Extension);
             mp.WriteMetadataToXMLFile("Metadata", Extension.Name, Extension.Name);

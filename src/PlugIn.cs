@@ -51,11 +51,6 @@ namespace Landis.Extension.Scrapple
         private static int[] totalBurnedSites;
         private static int[] numberOfFire;
         private static int[] totalBiomassMortality;
-        //private static int numCellsSeverity1;
-        //private static int numCellsSeverity2;
-        //private static int numCellsSeverity3;
-        //private static int numCellsSeverity4;
-        //private static int numCellsSeverity5;
 
         public static IInputParameters Parameters;
         private static ICore modelCore;
@@ -241,9 +236,6 @@ namespace Landis.Extension.Scrapple
             totalBurnedSites = new int[3];
             numberOfFire = new int[3];
             totalBiomassMortality = new int[3];
-            //numCellsSeverity1 = 0;
-            //numCellsSeverity2 = 0;
-            //numCellsSeverity3 = 0;
 
             modelCore.UI.WriteLine("   Processing landscape for Fire events ...");
 
@@ -268,12 +260,7 @@ namespace Landis.Extension.Scrapple
             weightedLightningSites = PreShuffleEther(SiteVars.LightningFireWeight, out numSites);
             int numLightningSites = numSites;
 
-            // Deprecated shuffling:
-            //List < ActiveSite> shuffledLightningFireSites = Shuffle(activeLightningSites, SiteVars.LightningFireWeight, lightningTotalWeight);
-            //List<ActiveSite> shuffledRxFireSites = Shuffle(activeRxSites, SiteVars.RxFireWeight, rxTotalWeight);
-            //List<ActiveSite> shuffledAccidentalFireSites = Shuffle(activeAccidentalSites, SiteVars.AccidentalFireWeight, accidentalTotalWeight);
-
-            modelCore.UI.WriteLine("   Next, loop through each day to start fires...");
+            //modelCore.UI.WriteLine("   Next, loop through each day to start fires...");
 
             int numAnnualRxFires = Parameters.RxNumberAnnualFires;
 
@@ -288,7 +275,6 @@ namespace Landis.Extension.Scrapple
                 {
                     if (sitesPerClimateRegion.ContainsKey(climateRegion.Index))
                     {
-                        //if (sitesPerEcoregions.ContainsKey(ecoregion.Index))
                         double climateRegionFractionSites = (double) fractionSitesPerClimateRegion[climateRegion.Index];
 
                         try
@@ -435,8 +421,7 @@ namespace Landis.Extension.Scrapple
 
         private void WriteMaps(int currentTime)
         {
-            string[] paths = { "scrapple-fire", "special-dead-wood-{timestep}.img" };
-            //string path = MapNames.ReplaceTemplateVars("scrapple-fire/special-dead-wood-{timestep}.img", currentTime);
+            string[] paths = { "social-climate-fire", "special-dead-wood-{timestep}.img" };
             string path = MapNames.ReplaceTemplateVars(Path.Combine(paths), currentTime);
 
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
@@ -461,8 +446,7 @@ namespace Landis.Extension.Scrapple
                     outputRaster.WriteBufferPixel();
                 }
             }
-            string[] paths2 = { "scrapple-fire", "ignition-type-{timestep}.img" };
-            //path = MapNames.ReplaceTemplateVars("scrapple-fire/ignition-type-{timestep}.img", currentTime);
+            string[] paths2 = { "social-climate-fire", "ignition-type-{timestep}.img" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths2), currentTime);
 
 
@@ -489,7 +473,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            string[] paths3 = { "scrapple-fire", "fire-intensity-{timestep}.img" };
+            string[] paths3 = { "social-climate-fire", "fire-intensity-{timestep}.img" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths3), currentTime);
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
@@ -645,28 +629,28 @@ namespace Landis.Extension.Scrapple
                     outputRaster.WriteBufferPixel();
                 }
             }
-            string[] paths10 = { "scrapple-fire", "site-mortality-{timestep}.img" };
-            path = MapNames.ReplaceTemplateVars(Path.Combine(paths10), currentTime);
-            using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
-            {
-                IntPixel pixel = outputRaster.BufferPixel;
-                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
-                {
-                    if (site.IsActive)
-                    {
-                        if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
-                            pixel.MapCode.Value = SiteVars.Mortality[site];
-                        else
-                            pixel.MapCode.Value = 0;
-                    }
-                    else
-                    {
-                        //  Inactive site
-                        pixel.MapCode.Value = 0;
-                    }
-                    outputRaster.WriteBufferPixel();
-                }
-            }
+            //string[] paths10 = { "scrapple-fire", "site-mortality-{timestep}.img" };
+            //path = MapNames.ReplaceTemplateVars(Path.Combine(paths10), currentTime);
+            //using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
+            //{
+            //    IntPixel pixel = outputRaster.BufferPixel;
+            //    foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+            //    {
+            //        if (site.IsActive)
+            //        {
+            //            if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
+            //                pixel.MapCode.Value = SiteVars.Mortality[site];
+            //            else
+            //                pixel.MapCode.Value = 0;
+            //        }
+            //        else
+            //        {
+            //            //  Inactive site
+            //            pixel.MapCode.Value = 0;
+            //        }
+            //        outputRaster.WriteBufferPixel();
+            //    }
+            //}
         }
 
         //---------------------------------------------------------------------
@@ -757,11 +741,7 @@ namespace Landis.Extension.Scrapple
             numberOfFire[(int)ignitionType]++;
             totalBiomassMortality[(int)ignitionType] += (int)fireEvent.TotalBiomassMortality;
             dNBR[(int)ignitionType] += (int)fireEvent.SiteMortality;
-            //numCellsSeverity1 += fireEvent.NumberCellsSeverity1;
-            //numCellsSeverity2 += fireEvent.NumberCellsSeverity2;
-            //numCellsSeverity3 += fireEvent.NumberCellsSeverity3;
-            //numCellsSeverity4 += fireEvent.NumberCellsSeverity4;
-            //numCellsSeverity5 += fireEvent.NumberCellsSeverity5;
+
             return true;
         }
 
@@ -840,13 +820,11 @@ namespace Landis.Extension.Scrapple
         // Sites are weighted for ignition in the Shuffle method, based on the respective inputs maps.
         private static List<ActiveSite> PreShuffle(ISiteVar<double> weightedSiteVar, out double totalWeight)
         {
-            //WeightedSelector<ActiveSite> wselector = new WeightedSelector<ActiveSite>();
             List<ActiveSite> list = new List<ActiveSite>(); 
             foreach (ActiveSite site in PlugIn.ModelCore.Landscape.ActiveSites)
                 if (weightedSiteVar[site] > 0.0)
                     list.Add(site);
 
-            //List<ActiveSite> shuffledList = new List<ActiveSite>();
             totalWeight = 0.0;
             foreach (ActiveSite site in list)
             {
@@ -925,29 +903,10 @@ namespace Landis.Extension.Scrapple
             sl.TotalBiomassMortalityAccidental = totalBiomassMortality[0];
             sl.TotalBiomassMortalityLightning = totalBiomassMortality[1];
             sl.TotalBiomassMortalityRx = totalBiomassMortality[2];
-            //sl.NumberCellsSeverity1 = numCellsSeverity1;
-            //sl.NumberCellsSeverity2 = numCellsSeverity2;
-            //sl.NumberCellsSeverity3 = numCellsSeverity3;
-            //sl.NumberCellsSeverity4 = numCellsSeverity4;
-            //sl.NumberCellsSeverity5 = numCellsSeverity5;
-
 
             summaryLog.AddObject(sl);
             summaryLog.WriteToFile();
         }
-
-        /*
-         * VS:: THIS MAY BE NEEDED
-         * 
-        private static List<ActiveSite> Sort<T>(List<ActiveSite> list, ISiteVar<T> type)
-        {
-            List<ActiveSite> sortedList = new List<ActiveSite>();
-            foreach(ActiveSite site in list)
-            {
-                type[site] 
-            }
-        }
-        */
 
     }
 }

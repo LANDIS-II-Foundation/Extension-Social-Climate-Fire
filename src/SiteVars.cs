@@ -192,14 +192,14 @@ namespace Landis.Extension.Scrapple
             }
         }
 
-        //---------------------------------------------------------------------
-        public static ISiteVar<int> Mortality
-        {
-            get
-            {
-                return dNBR;
-            }
-        }
+        ////---------------------------------------------------------------------
+        //public static ISiteVar<int> Mortality
+        //{
+        //    get
+        //    {
+        //        return dNBR;
+        //    }
+        //}
         //---------------------------------------------------------------------
         public static ISiteVar<ushort> DayOfFire
         {
