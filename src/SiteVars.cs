@@ -44,9 +44,9 @@ namespace Landis.Extension.Scrapple
         public static void Initialize()
         {
 
+            InitializeDisturbances();
             cohorts = PlugIn.ModelCore.GetSiteVar<ISiteCohorts>("Succession.BiomassCohorts");
-            fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.FineFuels");
-            //tempFineFuels = PlugIn.ModelCore.GetSiteVar<Pool>("Succession.Litter");
+            //fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.FineFuels");
 
             eventVar = PlugIn.ModelCore.Landscape.NewSiteVar<FireEvent>(InactiveSiteMode.DistinctValues);
             timeOfLastFire       = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
