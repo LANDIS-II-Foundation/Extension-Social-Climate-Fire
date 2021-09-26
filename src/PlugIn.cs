@@ -496,6 +496,30 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
+            string[] paths31 = { "social-climate-fire", "fire-dnbr-{timestep}.img" };
+            path = MapNames.ReplaceTemplateVars(Path.Combine(paths31), currentTime);
+            using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
+            {
+                IntPixel pixel = outputRaster.BufferPixel;
+                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                {
+                    if (site.IsActive)
+                    {
+                        if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
+                            pixel.MapCode.Value = (int)(SiteVars.DNBR[site]);
+                        else
+                            pixel.MapCode.Value = 1;
+                    }
+                    else
+                    {
+                        //  Inactive site
+                        pixel.MapCode.Value = 0;
+                    }
+                    outputRaster.WriteBufferPixel();
+                }
+            }
+
+
             string[] paths4 = { "social-climate-fire", "fire-spread-probability-{timestep}.img" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths4), currentTime);
             using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))

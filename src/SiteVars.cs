@@ -15,7 +15,6 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<double> accidentalFireWeight;
         private static ISiteVar<int> typeOfIginition;
         private static ISiteVar<byte> intensity;
-        private static ISiteVar<int> dNBR;
         private static ISiteVar<ushort> dayOfFire;
         private static ISiteVar<bool> disturbed;
         private static ISiteVar<ushort> groundSlope;
@@ -38,6 +37,7 @@ namespace Landis.Extension.Scrapple
         public static ISiteVar<int> RxZones;
         public static ISiteVar<double> ClimaticWaterDeficit;
         public static ISiteVar<double> PotentialEvapotranspiration;
+        public static ISiteVar<int> DNBR;
 
         //---------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ namespace Landis.Extension.Scrapple
 
             eventVar = PlugIn.ModelCore.Landscape.NewSiteVar<FireEvent>(InactiveSiteMode.DistinctValues);
             timeOfLastFire       = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
-            dNBR = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
+            DNBR = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             intensity = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
             spreadProbablity = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             dayOfFire = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
