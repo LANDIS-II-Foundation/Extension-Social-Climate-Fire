@@ -168,8 +168,8 @@ namespace Landis.Extension.Scrapple
         public override void Run()
         {
 
-            //if (PlugIn.ModelCore.CurrentTime > 0)
-            //    SiteVars.InitializeDisturbances();
+            if (PlugIn.ModelCore.CurrentTime > 0)
+                SiteVars.InitializeDisturbances();
 
             SiteVars.Disturbed.ActiveSiteValues = false;
             SiteVars.Intensity.ActiveSiteValues = 0;

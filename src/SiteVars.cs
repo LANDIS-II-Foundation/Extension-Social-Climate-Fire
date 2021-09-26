@@ -164,6 +164,10 @@ namespace Landis.Extension.Scrapple
             {
                 return fineFuels;
             }
+            set
+            {
+                fineFuels = value;
+            }
         }
         //---------------------------------------------------------------------
         public static ISiteVar<int> TypeOfIginition
