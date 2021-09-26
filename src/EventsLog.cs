@@ -47,10 +47,10 @@ namespace Landis.Extension.Scrapple
         [DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Available Cohorts")]
         public int AvailableCohorts { set; get; }
 
-        [DataFieldAttribute(Desc = "Average Wind Speed")]
+        [DataFieldAttribute(Unit = "kilometers / hour", Desc = "Average Wind Speed")]
         public double MeanWindSpeed { set; get; }
 
-        [DataFieldAttribute(Desc = "Average Effective Wind Speed")]
+        [DataFieldAttribute(Unit = "kilometers / hour", Desc = "Average Effective Wind Speed")]
         public double MeanEffectiveWindSpeed { set; get; }
 
         [DataFieldAttribute(Desc = "Average Wind Direction")]

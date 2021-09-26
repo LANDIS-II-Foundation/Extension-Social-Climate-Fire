@@ -41,20 +41,5 @@ namespace Landis.Extension.Scrapple
         [DataFieldAttribute(Unit = FieldUnits.g_B_m2, Desc = "Biomass Killed Rx")]
         public int TotalBiomassMortalityRx { set; get; }
 
-        //[DataFieldAttribute(Desc = "Average dNBR")]
-        //public int AverageDNBR { set; get; }
-        //[DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cells Intensity 1")]
-        //public double NumberCellsSeverity1 { set; get; }
-
-        //[DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cells Intensity 2")]
-        //public double NumberCellsSeverity2 { set; get; }
-
-        //[DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cells Intensity 3")]
-        //public double NumberCellsSeverity3 { set; get; }
-
-        //[DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cells Intensity 4")]
-        //public double NumberCellsSeverity4 { set; get; }
-        //[DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cells Intensity 5")]
-        //public double NumberCellsSeverity5 { set; get; }
     }
 }

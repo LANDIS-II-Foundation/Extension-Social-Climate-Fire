@@ -8,7 +8,7 @@ Scheller, R.M., A. Kretchun, T.J. Hawbaker, P.D. Henne. 2019. A landscape model 
 
 # Release Notes
 
-- Latest release: Version 3.1.3 — June 2021
+- Latest release: Version 3.2 — October 2021
 
 - Full release details found in the User Guide and on GitHub.
 - [View User Guide](https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/blob/master/docs/LANDIS-II%20SCRAPPLE%20v3.1%20User%20Guide.pdf).
@@ -24,13 +24,13 @@ You need:
 
 # Download
 
-- The latest version of SCRPPLE can be [downloaded from GitHub](https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/blob/master/deploy/installer/LANDIS-II-V7%20SCRAPPLE%203.1.3-setup.exe). To install it on your computer, launch the installer.
+- The latest version of SCRPPLE can be [downloaded from GitHub](https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/blob/master/deploy/installer/LANDIS-II-V7%20SCRAPPLE%203.2-setup.exe). To install it on your computer, launch the installer.
 
 # Example Files
 
 LANDIS-II requires a global parameter file for your scenario, and separate parameter files for each extension.
 
-Example files can be [downloaded from GitHub](https://downgit.github.io/#/home?url=https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/tree/master/Testing/Core7-SCRAPPLE3.1).
+Example files can be [downloaded from GitHub](https://downgit.github.io/#/home?url=https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/tree/master/Testing/Core7-SCRAPPLE3.2).
 
 # Supporting R-Code
 
