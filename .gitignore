@@ -6,6 +6,8 @@
 *.user
 *.sln.docstates
 *.xml
+*.dll
+*.v2
 
 # Build results
 
