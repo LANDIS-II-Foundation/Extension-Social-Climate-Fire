@@ -260,7 +260,7 @@ namespace Landis.Extension.Scrapple
             weightedLightningSites = PreShuffleEther(SiteVars.LightningFireWeight, out numSites);
             int numLightningSites = numSites;
 
-            //modelCore.UI.WriteLine("   Next, loop through each day to start fires...");
+            modelCore.UI.WriteLine("   Next, loop through each day to start fires...");
 
             int numAnnualRxFires = Parameters.RxNumberAnnualFires;
 
@@ -406,7 +406,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            modelCore.UI.WriteLine("   Done processing fire days.  Next, write fire maps and summary fire files. ...");
+            modelCore.UI.WriteLine("   Fire for the year completed.  Next, write fire maps and summary fire files. ...");
 
             WriteMaps(PlugIn.ModelCore.CurrentTime);
 
