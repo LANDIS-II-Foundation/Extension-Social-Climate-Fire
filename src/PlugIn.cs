@@ -803,8 +803,7 @@ namespace Landis.Extension.Scrapple
         // This function uses a fast open-source sort routine: 8/2019
         private static WeightedSelector<ActiveSite> PreShuffleEther(ISiteVar<double> weightedSiteVar, out int numSites)
         {
-            WeightedSelector<ActiveSite> wselector = new WeightedSelector<ActiveSite>();
-            //List<ActiveSite> list = new List<ActiveSite>();
+            WeightedSelector<ActiveSite> wselector = new WeightedSelector<ActiveSite>(new SelectorOptions() { Seed = (int) PlugIn.ModelCore.GenerateSeed() });
             numSites = 0;
             foreach (ActiveSite site in PlugIn.ModelCore.Landscape.ActiveSites)
                 if (weightedSiteVar[site] > 0.0)
@@ -839,16 +838,6 @@ namespace Landis.Extension.Scrapple
 
         private static List<ActiveSite> Shuffle(List<ActiveSite> list, ISiteVar<double> weightedSiteVar, double totalWeight)
         {
-            //List<ActiveSite> list = new List<ActiveSite>(); ;
-            //foreach (ActiveSite site in PlugIn.ModelCore.Landscape.ActiveSites)
-            //    if (weightedSiteVar[site] > 0.0)
-            //        list.Add(site);
-
-            //double totalWeight = 0;
-            //foreach (ActiveSite site in list)
-            //{
-            //    totalWeight += weightedSiteVar[site];
-            //}
 
             List<ActiveSite> shuffledList = new List<ActiveSite>();
             while (list.Count > 0)
