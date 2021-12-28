@@ -1,7 +1,7 @@
 R Notebook
 ================
 
-# 
+############## 
 
 This the code provides a simple example of how to use geomac shape files
 to estimate the fire spread parameters needed for scrpple. Please raise
@@ -98,9 +98,15 @@ wind_map<- raster::raster(paste(w_dir,"11_Ecoregions.tif",sep=""))
     ##  but +towgs84= values preserved
 
 ``` r
-### Wind map
+### Wind speed map
 wsv_dat <- read.csv(paste(w_dir,"Wind_1028.csv",sep=""),stringsAsFactors = FALSE)
 colnames(wsv_dat) <- c("date", "eco1", 'eco2', 'eco3', 'eco4','eco5','eco6','eco8','eco9','eco10','eco11')
+wdir_dat <- read.csv(paste(w_dir,"Winddir.csv",sep=""),stringsAsFactors = FALSE)
+colnames(wdir_dat) <- c("date", "eco1", 'eco2', 'eco3', 'eco4','eco5','eco6','eco8','eco9','eco10','eco11')
+
+
+
+
 plot(wind_map)
 ```
 
@@ -223,7 +229,7 @@ colnames(fwi_dat)
 
 ``` r
 fwi_date_info <- with(fwi_dat_slim, paste(Year, Timestep))
-fwi_dates <- strptime(fwi_date_info, "%Y %j") #COnverting from julian day to 
+fwi_dates <- strptime(fwi_date_info, "%Y %j") #Converting from julian day to 
 fwi_date_dat <- cbind(as.POSIXct(fwi_dates), fwi_dat_slim[,3:4]) #attaching 
 colnames(fwi_date_dat) <- c("Date", "Ecoregion", "FWI")
 fwi_date_dat$Ecoregion<-gsub("eco","",fwi_date_dat$Ecoregion)
@@ -268,7 +274,8 @@ for (i in 1:length(fire_names_manydays)){
   ### this will indicate when to tell th algorithim to consider the remaining cells failed spread. 
   
   for(j in 1:(length(fire_days)-1)){
-    ## Day t shape
+
+     ## Day t shape
     fire_day_select <- subset(fire_select, fire_select$TrueDate == fire_days[j])# selecting the first day of the fire
     fire_day_select<-fire_day_select[order(fire_day_select$acres),]
     fire_day_select <- fire_day_select[1,] #selecting the first fire perim from that date, in case there are multiples
@@ -308,23 +315,27 @@ for (i in 1:length(fire_names_manydays)){
     
     ### Here we associate the wind and fire weather index, and reclassify the 
     ### raster to associate with spread/not spread cells
+    WindMap<-climate_stack$X11_Ecoregions
+ 
     wind_today<-wsv_dat_df %>%
       subset(date==gsub("/","-",paste0(fire_days[j],'T00:00:00Z')))
-    WindMap<-climate_stack$X11_Ecoregions
-    WindTrans=as.matrix(data.frame(was=c(1,2,3,4,5,6,8,9,10,11),
+    WindTrans=as.matrix(data.frame(was=c(2,3,4,5,6,7,8,9,10,11),
                is=as.numeric(t(wind_today[2:11]))))
     Wind_Reclas<-reclassify(WindMap,WindTrans)
-    
+    windir_today<-wdir_dat %>%
+      subset(date==gsub("/","-",paste0(fire_days[j],'T00:00:00Z')))
+    WindDirRe=as.matrix(data.frame(was=c(2,3,4,5,6,7,8,9,10,11),
+               is=as.numeric(t(windir_today[2:11]))))
+    WindDir_Reclas<-reclassify(WindMap,WindDirRe)
     fire_today<-fwi_date_dat%>%
       subset(Date ==gsub("/","-",paste0(fire_days[j],'T00:00:00Z')))%>%
       arrange(Ecoregion)
     FireMap<-climate_stack$X11_Ecoregions
-    FireTrans=as.matrix(data.frame(was=c(1,2,3,4,5,6,8,9,10,11),
+    FireTrans=as.matrix(data.frame(was=c(2,3,4,5,6,7,8,9,10,11),
                is=fire_today$FWI))
     FireWeather<-reclassify(FireMap,FireTrans)  
-    End_stack<-stack(climate_stack,FireWeather)
-    End_stack<-stack(End_stack,Wind_Reclas)
-    
+    End_stack<-stack(climate_stack,FireWeather,Wind_Reclas,WindDir_Reclas)
+   
     #Creating vector of fire dates. It doesnt work when I bind them below for some reason 
     date_char <- as.POSIXct(as.character(fire_day_select$TrueDate)) 
     
@@ -362,10 +373,14 @@ for (i in 1:length(fire_names_manydays)){
     ### Creating the same wind and fire weather index as above. 
     wind_today<-wsv_dat_df %>%
       subset(date==gsub("/","-",paste0(fire_days[j],'T00:00:00Z')))
-    WindMap<-climate_stack$X11_Ecoregions
-    WindTrans=as.matrix(data.frame(was=c(1,2,3,4,5,6,8,9,10,11),
+    WindTrans=as.matrix(data.frame(was=c(2,3,4,5,6,7,8,9,10,11),
                is=as.numeric(t(wind_today[2:11]))))
     Wind_Reclas<-reclassify(WindMap,WindTrans)
+    windir_today<-wdir_dat %>%
+      subset(date==gsub("/","-",paste0(fire_days[j],'T00:00:00Z')))
+    WindDirRe=as.matrix(data.frame(was=c(2,3,4,5,6,7,8,9,10,11),
+               is=as.numeric(t(windir_today[2:11]))))
+    WindDir_Reclas<-reclassify(WindMap,WindDirRe)
     
     fire_today<-fwi_date_dat%>%
       subset(Date ==gsub("/","-",paste0(fire_days[j],'T00:00:00Z')))%>%
@@ -374,8 +389,7 @@ for (i in 1:length(fire_names_manydays)){
     FireTrans=as.matrix(data.frame(was=c(1,2,3,4,5,6,8,9,10,11),
                is=fire_today$FWI))
     FireWeather<-reclassify(FireMap,FireTrans)  
-    End_stack<-stack(climate_stack,FireWeather)
-    End_stack<-stack(End_stack,Wind_Reclas)
+    End_stack<-stack(climate_stack,FireWeather,Wind_Reclas,WindDir_Reclas)
     EndCells<-adjacent(End_stack,day2$cell,directions=4, pairs=TRUE,id=TRUE)
     EndCells<-unique(EndCells[,3])
     EndCells<-EndCells[!EndCells %in% storedcells]
@@ -395,7 +409,7 @@ for (i in 1:length(fire_names_manydays)){
   
 }
 ## Save for future analysis
-write.csv(climate_day_mat,"Example.csv")
+write.csv(climate_day_mat,"Inputs/Example.csv")
 ```
 
 Here is a table of thenumber of successful spread events versus not
@@ -415,8 +429,9 @@ climate_day_mat<-read.csv("Inputs/Example.csv")
 climate_day_total<-climate_day_mat[-1]
 
 ### Looking at files that have all the nessecary data 
-climate_day_total<-climate_day_total[climate_day_total$X11_Ecoregions.1!=0,]
-climate_day_complete <- climate_day_total[complete.cases(climate_day_total[2:10]),]
+climate_day_total<-climate_day_total[!climate_day_total$X11_Ecoregions.1==1,]
+#colnames(climate_day_complete)
+climate_day_complete <- climate_day_total[complete.cases(climate_day_total[2:11]),]
 
 ##Attaching a unique ID to each row in case we need it later
 climate_day_complete <- cbind(1:nrow(climate_day_complete), climate_day_complete)
@@ -424,16 +439,16 @@ climate_day_complete <- cbind(1:nrow(climate_day_complete), climate_day_complete
 ##Renaming columns
 #climate_day_complete<-climate_day_complete[,-1]
 colnames(climate_day_complete) <- c("ID","FireName",  "date", "wind_region", "fuel_number", "uphill_azi", "slope",
-                               "FWI","WSPD" , "spread","expansion")
+                               "FWI","WSPD" ,"Winddir","spread","expansion")
 climate_day_complete$expansion<-climate_day_complete$expansion*0.404686 ## To hectares
-climate_day_complete$fuel_number<-climate_day_complete$fuel_number/3000
+climate_day_complete$fuel_number<-climate_day_complete$fuel_number/2000
 climate_day_complete$fuel_number[climate_day_complete$fuel_number >1.0]<-1.0
 
 
 
 U_b <- 5 # This changes based on fire severity. Combustion bounancy.
 ### Caculating windspeed in direction of spread 
-relative_wd <- as.numeric(climate_day_complete$WSPD) - as.numeric(climate_day_complete$uphill_azi)
+relative_wd <- as.numeric(climate_day_complete$Winddir) - as.numeric(climate_day_complete$uphill_azi)
 ### Calculating effective wind speed. 
 climate_day_complete$effective_wsv <- U_b * ((fix(climate_day_complete$WSPD)/U_b) ^ 2 + 2*(fix(climate_day_complete$WSPD)/U_b) *  
                 sin(fix(climate_day_complete$slope)) * cos(relative_wd) + (sin(fix(climate_day_complete$slope))^2)^0.5)
@@ -441,20 +456,20 @@ climate_day_complete$effective_wsv <- U_b * ((fix(climate_day_complete$WSPD)/U_b
 head(climate_day_complete)
 ```
 
-    ##   ID FireName       date wind_region fuel_number uphill_azi    slope   FWI
-    ## 1  1  BOTELER 2016-11-01           1   0.5153333   151.4595 54.83991 22.26
-    ## 2  2  BOTELER 2016-11-01           1   0.5476667   145.3944 56.86004 22.26
-    ## 3  3  BOTELER 2016-11-01           1   0.5980000   137.9744 53.96480 22.26
-    ## 4  4  BOTELER 2016-11-01           1   0.4790000   121.1148 58.76532 22.26
-    ## 5  5  BOTELER 2016-11-01           1   0.6153333   142.9772 34.39577 22.26
-    ## 6  6  BOTELER 2016-11-01           1   0.5306667   181.8610 38.66940 22.26
-    ##       WSPD spread expansion effective_wsv
-    ## 1 3.961008      0  197.1839     15.841470
-    ## 2 3.961008      0  197.1839      2.247329
-    ## 3 3.961008      0  197.1839      7.778363
-    ## 4 3.961008      0  197.1839      3.272490
-    ## 5 3.961008      0  197.1839      4.844688
-    ## 6 3.961008      0  197.1839      4.718093
+    ##    ID FireName       date wind_region fuel_number uphill_azi    slope   FWI
+    ## 9   1  BOTELER 2016-11-01           5      0.8860   232.2488 43.30616 25.47
+    ## 13  2  BOTELER 2016-11-01           5      1.0000   204.2328 23.99407 25.47
+    ## 21  3  BOTELER 2016-11-01           5      0.6965   123.2074 37.86884 25.47
+    ## 23  4  BOTELER 2016-11-01           5      0.7595   118.5899 39.93214 25.47
+    ## 26  5  BOTELER 2016-11-01           5      0.4940   245.8933 31.40399 25.47
+    ## 27  6  BOTELER 2016-11-01           5      0.5605   112.6909 42.11644 25.47
+    ##        WSPD  Winddir spread expansion effective_wsv
+    ## 9  4.255419 165.1072      0  197.1839      8.837817
+    ## 13 4.255419 165.1072      0  197.1839      7.050638
+    ## 21 4.255419 165.1072      1  197.1839      3.762459
+    ## 23 4.255419 165.1072      1  197.1839      2.050219
+    ## 26 4.255419 165.1072      1  197.1839      3.617881
+    ## 27 4.255419 165.1072      1  197.1839     12.868410
 
 ``` r
 ### Looking at variable response. 
@@ -496,7 +511,7 @@ table(spread_vars_short$spread)
 
     ## 
     ##    0    1 
-    ## 6846 7368
+    ## 5770 6203
 
 ``` r
 Full_logit <- glm(spread ~fix(FWI)+fix(effective_wsv)+fix(fuel_number), 
@@ -510,23 +525,23 @@ summary(Full_logit)
     ##     family = "binomial", data = spread_vars_short)
     ## 
     ## Deviance Residuals: 
-    ##     Min       1Q   Median       3Q      Max  
-    ## -1.7302  -1.1820   0.9038   1.1366   1.6276  
+    ##    Min      1Q  Median      3Q     Max  
+    ## -1.687  -1.183   0.949   1.142   1.512  
     ## 
     ## Coefficients:
     ##                     Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)        -1.262049   0.087115 -14.487  < 2e-16 ***
-    ## fix(FWI)            0.039686   0.003054  12.994  < 2e-16 ***
-    ## fix(effective_wsv) -0.008376   0.003361  -2.492   0.0127 *  
-    ## fix(fuel_number)    0.681696   0.093127   7.320 2.48e-13 ***
+    ## (Intercept)        -1.315036   0.111668 -11.776  < 2e-16 ***
+    ## fix(FWI)            0.038531   0.003466  11.118  < 2e-16 ***
+    ## fix(effective_wsv) -0.011289   0.003720  -3.035  0.00241 ** 
+    ## fix(fuel_number)    0.583197   0.100051   5.829 5.58e-09 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for binomial family taken to be 1)
     ## 
-    ##     Null deviance: 19686  on 14213  degrees of freedom
-    ## Residual deviance: 19424  on 14210  degrees of freedom
-    ## AIC: 19432
+    ##     Null deviance: 16582  on 11972  degrees of freedom
+    ## Residual deviance: 16401  on 11969  degrees of freedom
+    ## AIC: 16409
     ## 
     ## Number of Fisher Scoring iterations: 4
 
@@ -534,7 +549,7 @@ summary(Full_logit)
 AIC(Full_logit)
 ```
 
-    ## [1] 19431.87
+    ## [1] 16408.62
 
 Effective windspeed seems to have a suppressive effect, lets look at a
 model without it.
@@ -552,21 +567,21 @@ summary(Par_logit)
     ## 
     ## Deviance Residuals: 
     ##     Min       1Q   Median       3Q      Max  
-    ## -1.7373  -1.1810   0.9002   1.1367   1.5321  
+    ## -1.6606  -1.1797   0.9579   1.1428   1.4793  
     ## 
     ## Coefficients:
     ##                   Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)      -1.259443   0.087121 -14.456  < 2e-16 ***
-    ## fix(FWI)          0.036959   0.002849  12.974  < 2e-16 ***
-    ## fix(fuel_number)  0.694115   0.092975   7.466 8.29e-14 ***
+    ## (Intercept)      -1.294769   0.111461 -11.616  < 2e-16 ***
+    ## fix(FWI)          0.034397   0.003183  10.805  < 2e-16 ***
+    ## fix(fuel_number)  0.592386   0.099958   5.926  3.1e-09 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for binomial family taken to be 1)
     ## 
-    ##     Null deviance: 19686  on 14213  degrees of freedom
-    ## Residual deviance: 19430  on 14211  degrees of freedom
-    ## AIC: 19436
+    ##     Null deviance: 16582  on 11972  degrees of freedom
+    ## Residual deviance: 16410  on 11970  degrees of freedom
+    ## AIC: 16416
     ## 
     ## Number of Fisher Scoring iterations: 4
 
@@ -574,19 +589,19 @@ summary(Par_logit)
 AIC(Par_logit)
 ```
 
-    ## [1] 19436.07
+    ## [1] 16415.82
 
 ### Here is what that second model looks like.
 
 ``` r
 FWI<-seq(0,max(spread_vars_short$FWI),.5)
-xB<-exp(( -1.259443 )+ 0.036959*(FWI)+2.271e-04*max(spread_vars_short$fuel_number))
+xB<-exp(( -1.51693 )+ 0.035977*(FWI)+0.778676 *max(spread_vars_short$fuel_number))
 binomial2<-xB/(1+xB)
 
-xB<-exp(( -1.259443 )+ 0.036959*(FWI)+2.271e-04*min(spread_vars_short$fuel_number))
+xB<-exp((-1.51693 )+ 0.035977*(FWI)+0.778676 *min(spread_vars_short$fuel_number))
 binomial2min<-xB/(1+xB)
 
-xB<-exp(( -1.259443 )+ 0.036959*(FWI)+2.271e-04*mean(spread_vars_short$fuel_number))
+xB<-exp(( -1.51693 )+ 0.035977*(FWI)+0.778676 *mean(0.5))
 binomial2mean<-xB/(1+xB)
 
 plot(FWI,binomial2,xlab="Fire Weather Index",ylab="Spread Probability",ylim=c(0,1),col="red",type="l",lwd=3.0,cex=1.2,cex.axis=1.2,cex.lab=1.2,
@@ -635,26 +650,28 @@ plot(fix(check$expansion)~fix(check$Ws),xlab="Wind Speed",ylab="Spread",pch=19,c
 ![](Spread_commit_files/figure-gfm/unnamed-chunk-16-2.png)<!-- -->
 
 ``` r
-Expansionfull<-lm(fix(expansion) ~FWI , data =check)
+Expansionfull<-lm(fix(expansion) ~Ws , data =check)
 summary(Expansionfull)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = fix(expansion) ~ FWI, data = check)
+    ## lm(formula = fix(expansion) ~ Ws, data = check)
     ## 
     ## Residuals:
     ##    Min     1Q Median     3Q    Max 
-    ## -480.4 -301.7 -146.2  146.6 3248.5 
+    ## -427.3 -298.8 -159.4  145.5 3264.5 
     ## 
     ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)  282.877    206.852   1.368    0.174
-    ## FWI            5.059      8.086   0.626    0.533
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)  388.207    113.544   3.419 0.000861 ***
+    ## Ws             3.091     15.360   0.201 0.840859    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 496.6 on 119 degrees of freedom
-    ## Multiple R-squared:  0.003278,   Adjusted R-squared:  -0.005098 
-    ## F-statistic: 0.3914 on 1 and 119 DF,  p-value: 0.5328
+    ## Residual standard error: 497.3 on 119 degrees of freedom
+    ## Multiple R-squared:  0.0003402,  Adjusted R-squared:  -0.00806 
+    ## F-statistic: 0.0405 on 1 and 119 DF,  p-value: 0.8409
 
 Not a particularly predictive model.
 
