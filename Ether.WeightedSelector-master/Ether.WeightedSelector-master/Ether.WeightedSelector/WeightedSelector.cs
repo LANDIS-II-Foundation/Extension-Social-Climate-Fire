@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using Ether.WeightedSelector.Algorithm;
+using Landis.Core;
+
 
 namespace Ether.WeightedSelector
 {
@@ -13,11 +15,14 @@ namespace Ether.WeightedSelector
 
         internal int[] CumulativeWeights = null;   //used for binary search. 
         private Boolean IsCumulativeWeightsStale;  //forces recalc of CumulativeWeights any time our list of WeightedItems changes.
-                                       
-        public WeightedSelector(SelectorOptions options = null)
+        public ICore ModelCore;
+
+        public WeightedSelector(ICore mCore, SelectorOptions options = null)
         {
             if (options == null)
                 options = new SelectorOptions();
+
+            ModelCore = mCore;
 
             this.Options = options; 
             IsCumulativeWeightsStale = false;

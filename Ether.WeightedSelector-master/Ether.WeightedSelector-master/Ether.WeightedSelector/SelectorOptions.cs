@@ -19,10 +19,11 @@ namespace Ether.WeightedSelector
         /// </summary>
         public Boolean DropZeroWeightItems { get; set; } 
 
-        public int Seed { get; set; }
+        //public int Seed { get; set; }
 
         public SelectorOptions()
         {
+            //Seed = 1968;
             AllowDuplicates = false;
             DropZeroWeightItems = true;
         }

@@ -19,4 +19,10 @@ In one of the examples, we implement a game AI that decides between attacking, f
     <PackageLicenseExpression></PackageLicenseExpression>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Landis.Core" Version="2.0.0" />
+    <PackageReference Include="Landis.Core.Implementation" Version="2.0.0" />
+  </ItemGroup>
+
+
 </Project>

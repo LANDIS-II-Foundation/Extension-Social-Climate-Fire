@@ -58,7 +58,8 @@ Source: {#BuildDir}\Landis.Library.Metadata-v2.dll; DestDir: {#ExtDir}; Flags: u
 Source: {#BuildDir}\Landis.Library.Parameters-v2.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
 Source: {#BuildDir}\Landis.Library.Biomass-v2.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
 Source: {#BuildDir}\Landis.Library.Climate-v4.3.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
-Source: {#BuildDir}\Ether.WeightedSelector.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
+Source: {#BuildDir}\Ether.WeightedSelector.dll; DestDir: {#ExtDir}; 
+Source: {#BuildDir}\Ether.WeightedSelector.pdb; DestDir: {#ExtDir}; 
 
 
 ; LANDIS-II identifies the extension with the info in this .txt file
