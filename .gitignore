@@ -8,6 +8,9 @@
 *.xml
 *.dll
 *.v2
+.dtbcache
+db.lock
+storage.ide
 
 # Build results
 
