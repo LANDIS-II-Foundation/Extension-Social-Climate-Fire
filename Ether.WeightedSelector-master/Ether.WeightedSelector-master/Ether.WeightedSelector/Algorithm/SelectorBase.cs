@@ -14,7 +14,7 @@ namespace Ether.WeightedSelector.Algorithm
         {
             WeightedSelector = weightedSelector;
             //Rng = new Random();
-            Rng = new Random((int) WeightedSelector.ModelCore.GenerateSeed());
+            Rng = new Random((int) WeightedSelector.ModelCore.NextDouble() * 100);
         }
 
         protected int GetSeed(List<WeightedItem<T>> items)
