@@ -13,8 +13,12 @@ namespace Ether.WeightedSelector.Algorithm
         internal SelectorBase(WeightedSelector<T> weightedSelector)
         {
             WeightedSelector = weightedSelector;
+            //int randomInt = (int) WeightedSelector.ModelCore.GenerateSeed();
+            double randomD = WeightedSelector.ModelCore.NextDouble();
+            int randomInt = (int) (randomD * 1000.0);
+            //WeightedSelector.ModelCore.UI.WriteLine("   New double = {0}, integer = {1}", randomD, randomInt);
             //Rng = new Random();
-            Rng = new Random((int) WeightedSelector.ModelCore.NextDouble() * 100);
+            Rng = new Random(randomInt);
         }
 
         protected int GetSeed(List<WeightedItem<T>> items)

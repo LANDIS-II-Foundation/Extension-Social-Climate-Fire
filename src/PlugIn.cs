@@ -55,9 +55,9 @@ namespace Landis.Extension.Scrapple
         public static IInputParameters Parameters;
         private static ICore modelCore;
 
-        public static double MaximumSpreadAreaB0;
-        public static double MaximumSpreadAreaB1;
-        public static double MaximumSpreadAreaB2;
+        //public static double MaximumSpreadAreaB0;
+        //public static double MaximumSpreadAreaB1;
+        //public static double MaximumSpreadAreaB2;
 
         public static int DaysPerYear = 364;
 
@@ -249,18 +249,19 @@ namespace Landis.Extension.Scrapple
                 throw new UninitializedClimateData(string.Format("Could not initilize the actual year {0} from climate data", ActualYear));
             }
 
-            modelCore.UI.WriteLine("   Next, shuffle ignition sites...");
+            // modelCore.UI.WriteLine("   Next, shuffle ignition sites...");
             // Get the active sites from the landscape and shuffle them 
             // Sites are weighted for ignition in the Ether.WeightedSelector Shuffle method, based on the respective inputs maps.
             int numSites = 0;
             weightedRxSites = PreShuffleEther(SiteVars.RxFireWeight, out numSites);
             int numRxSites = numSites;
+            //modelCore.UI.WriteLine("   Number Rx sites = {0}", numRxSites);
             weightedAccidentalSites = PreShuffleEther(SiteVars.AccidentalFireWeight, out numSites);
             int numAccidentalSites = numSites;
             weightedLightningSites = PreShuffleEther(SiteVars.LightningFireWeight, out numSites);
             int numLightningSites = numSites;
 
-            modelCore.UI.WriteLine("   Next, loop through each day to start fires...");
+            //modelCore.UI.WriteLine("   Next, loop through each day to start fires...");
 
             int numAnnualRxFires = Parameters.RxNumberAnnualFires;
 
@@ -373,7 +374,7 @@ namespace Landis.Extension.Scrapple
                 }
 
                 // Ignite a single Rx fire per day
-                //PlugIn.ModelCore.UI.WriteLine("   Generating prescribed fire...");
+                //PlugIn.ModelCore.UI.WriteLine("   Generating prescribed fires...");
 
                 if (numRxSites > 0 &&
                     numAnnualRxFires > 0 &&
@@ -388,10 +389,20 @@ namespace Landis.Extension.Scrapple
                     int maxNumDailyRxFires = Parameters.RxNumberDailyFires;
                     int actualNumRxFires = 0;
                     bool fire = false;
+                    int maxIgnitionFailures = 20;
+                    int actualIgnitionFailures = 0;
 
                     while (numAnnualRxFires > 0 && maxNumDailyRxFires > 0)
                     {
-                        fire = Ignite(IgnitionType.Rx, weightedRxSites.Select(), day, landscapeAverageFireWeatherIndex);
+                        ActiveSite site = weightedRxSites.Select();
+
+                        if (SiteVars.Disturbed[site])
+                            actualIgnitionFailures++;
+                        if (actualIgnitionFailures > maxIgnitionFailures)
+                            break;
+
+                        //PlugIn.ModelCore.UI.WriteLine("   Ignite prescribed fires...");
+                        fire = Ignite(IgnitionType.Rx, site, day, landscapeAverageFireWeatherIndex);
                         if (fire)
                         {
                             numAnnualRxFires--;
@@ -406,7 +417,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            modelCore.UI.WriteLine("   Fire for the year completed.  Next, write fire maps and summary fire files. ...");
+            modelCore.UI.WriteLine("  Fire for the year completed.  Next, write fire maps and summary fire files. ...");
 
             WriteMaps(PlugIn.ModelCore.CurrentTime);
 
@@ -416,6 +427,21 @@ namespace Landis.Extension.Scrapple
                 modelCore.UI.WriteLine("Done running extension");
         }
 
+        //---------------------------------------------------------------------
+        // Ignites and Spreads a fire
+        private static bool Ignite(IgnitionType ignitionType, ActiveSite site, int day, double fireWeatherIndex)
+        {
+            if (SiteVars.Disturbed[site])
+                return false;
+            FireEvent fireEvent = FireEvent.Initiate(site, modelCore.CurrentTime, day, ignitionType);
+
+            totalBurnedSites[(int)ignitionType] += fireEvent.TotalSitesBurned;
+            numberOfFire[(int)ignitionType]++;
+            totalBiomassMortality[(int)ignitionType] += (int)fireEvent.TotalBiomassMortality;
+            dNBR[(int)ignitionType] += (int)fireEvent.SiteMortality;
+
+            return true;
+        }
 
         //---------------------------------------------------------------------
 
@@ -731,41 +757,6 @@ namespace Landis.Extension.Scrapple
             return numIgnitions;
         }
 
-        //---------------------------------------------------------------------
-        // Ignites and Spreads a fire
-        private static bool Ignite(IgnitionType ignitionType, ActiveSite site, int day, double fireWeatherIndex)
-        {
-            if (SiteVars.Disturbed[site])
-                return false;
-            FireEvent fireEvent = FireEvent.Initiate(site, modelCore.CurrentTime, day, ignitionType);
-
-            totalBurnedSites[(int)ignitionType] += fireEvent.TotalSitesBurned;
-            numberOfFire[(int)ignitionType]++;
-            totalBiomassMortality[(int)ignitionType] += (int)fireEvent.TotalBiomassMortality;
-            dNBR[(int)ignitionType] += (int)fireEvent.SiteMortality;
-
-            return true;
-        }
-
-        // This deprecated method uses a brute force sort that is much slower.
-        //private static void Ignite(IgnitionType ignitionType, List<ActiveSite> shuffledFireSites, int day, double fireWeatherIndex)
-        //{
-        //    while (shuffledFireSites.Count() > 0 && SiteVars.Disturbed[shuffledFireSites.First()] == true)
-        //    {
-        //        shuffledFireSites.Remove(shuffledFireSites.First());
-        //    }
-        //    if (shuffledFireSites.Count() > 0)
-        //    {
-        //        FireEvent fireEvent = FireEvent.Initiate(shuffledFireSites.First(), modelCore.CurrentTime, day, ignitionType);
-
-        //        totalBurnedSites[(int) ignitionType] += fireEvent.TotalSitesBurned;
-        //        numberOfFire[(int)ignitionType]++;
-        //        totalBiomassMortality[(int)ignitionType] += (int)fireEvent.TotalBiomassMortality;
-        //        numCellsSeverity1 += fireEvent.NumberCellsSeverity1;
-        //        numCellsSeverity2 += fireEvent.NumberCellsSeverity2;
-        //        numCellsSeverity3 += fireEvent.NumberCellsSeverity3;
-        //    }
-        //}
 
         //---------------------------------------------------------------------
 

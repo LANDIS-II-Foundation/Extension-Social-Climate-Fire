@@ -211,9 +211,11 @@ namespace Landis.Extension.Scrapple
                 }
                 else
                 {
-                    this.MaxSpreadArea = (int) (PlugIn.Parameters.MaximumSpreadAreaB0 +
+                    this.MaxSpreadArea = (int)(PlugIn.Parameters.MaximumSpreadAreaB0 +
                     (PlugIn.Parameters.MaximumSpreadAreaB1 * fireWeatherIndex) +
                     (PlugIn.Parameters.MaximumSpreadAreaB2 * effectiveWindSpeed));
+
+
 
                     //PlugIn.ModelCore.UI.WriteLine("   Day={0}, spreadAreaMaxHectares={1}, dailySpreadArea={2}, FWI={3}, WS={4}", day, spreadAreaMaxHectares, dailySpreadArea, fireWeatherIndex, effectiveWindSpeed);
 
