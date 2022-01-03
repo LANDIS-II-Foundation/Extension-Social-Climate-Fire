@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.2.0</Version>
+    <Version>2.0.0</Version>
     <Authors>Brian MacKay</Authors>
     <Company>Kinetiq</Company>
     <PackageProjectUrl>https://github.com/kinetiq/Ether.WeightedSelector</PackageProjectUrl>
