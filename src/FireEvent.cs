@@ -315,8 +315,21 @@ namespace Landis.Extension.Scrapple
             //    Previous_Year_ET = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].AnnualAET;
             //}
 
-            double Previous_Year_ET = SiteVars.PotentialEvapotranspiration[site];
+            double Previous_Year_PET = SiteVars.PotentialEvapotranspiration[site];
+
+            //double Previous_Year_PET = 0.0;
+            //if (SiteVars.PotentialEvapotranspiration[site] > 0)
+            //    Previous_Year_PET = SiteVars.PotentialEvapotranspiration[site];
+            //else
+            //    Previous_Year_PET = PlugIn.Parameters.TimeZeroPET;
+
             double WaterDeficit = SiteVars.ClimaticWaterDeficit[site];
+            //double WaterDeficit = 0.0;
+            //if (SiteVars.ClimaticWaterDeficit[site] > 0)
+            //    WaterDeficit = SiteVars.ClimaticWaterDeficit[site];
+            //else
+            //    WaterDeficit = PlugIn.Parameters.TimeZeroCWD;
+            
             //double TotalFuels = SiteVars.FineFuels[site] + ladderFuelBiomass;
 
             /// For delayed relative delta normalized burn ratio (DRdNBR) calculation 
@@ -329,7 +342,7 @@ namespace Landis.Extension.Scrapple
             double Beta_LadderFuels = PlugIn.Parameters.SiteMortalityB6;
 
             double siteMortality = Math.Pow(Math.Max((intercept + (Clay * Beta_Clay)
-                + (Previous_Year_ET * Beta_ET)
+                + (Previous_Year_PET * Beta_ET)
                 + (siteEffectiveWindSpeed * Beta_Windspeed)
                 + (WaterDeficit * Beta_Water_Deficit)
                 + (ladderFuelBiomass * Beta_LadderFuels)
@@ -340,7 +353,7 @@ namespace Landis.Extension.Scrapple
             int siteCohortsKilled = 0;
             this.MeanDNBR += (int) siteMortality;
             this.MeanWD += WaterDeficit;
-            this.MeanPET += Previous_Year_ET;
+            this.MeanPET += Previous_Year_PET;
             this.MeanClay += Clay;
             this.MeanLadderFuels += ladderFuelBiomass;
             this.MeanFineFuels += fineFuelPercent;

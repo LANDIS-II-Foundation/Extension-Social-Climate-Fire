@@ -78,11 +78,9 @@ namespace Landis.Extension.Scrapple
         List<ISpecies> LadderFuelSpeciesList { get; }
         List<IDeadWood> DeadWoodList { get; }
 
-        //double IntensityFactor_LadderFuelBiomass { get; set; }
-        //double IntensityFactor_FineFuelPercent { get; set; }
-        //List<IFireDamage> FireDamages_Severity1 { get; }
-        //List<IFireDamage> FireDamages_Severity2 { get; }
-        //List<IFireDamage> FireDamages_Severity3 { get; }
+        double TimeZeroPET { get; set; }
+        double TimeZeroCWD { get; set; }
+
 
     }
 }
@@ -158,18 +156,15 @@ namespace Landis.Extension.Scrapple
         private double cohortMortalityB2;
 
         private int ladderFuelMaxAge;
-        //private double intensityFactor_LadderFuelBiomass;
-        //private double intensityFactor_FineFuelPercentage;
 
         private int suppressionMaxWindSpeed;
-        //private List<ISuppressionTable> suppressionFWI_Table;
         private Dictionary<int, ISuppressionTable> suppressionFWI_Table;
         private List<ISpecies> ladderFuelSpeciesList;
         private List<IDeadWood> deadWoodList;
 
-        //private List<IFireDamage> damages_severity1;
-        //private List<IFireDamage> damages_severity2;
-        //private List<IFireDamage> damages_severity3;
+        private double timeZeroPET;
+        private double timeZeroCWD;
+
 
 
 
@@ -769,30 +764,6 @@ namespace Landis.Extension.Scrapple
                 ladderFuelMaxAge = value;
             }
         }
-        //---------------------------------------------------------------------
-        //public double IntensityFactor_LadderFuelBiomass
-        //{
-        //    get
-        //    {
-        //        return intensityFactor_LadderFuelBiomass;
-        //    }
-        //    set
-        //    {
-        //        intensityFactor_LadderFuelBiomass = value;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-        //public double IntensityFactor_FineFuelPercent
-        //{
-        //    get
-        //    {
-        //        return intensityFactor_FineFuelPercentage;
-        //    }
-        //    set
-        //    {
-        //        intensityFactor_FineFuelPercentage = value;
-        //    }
-        //}
 
 
         //---------------------------------------------------------------------
@@ -829,30 +800,19 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        //public List<IFireDamage> FireDamages_Severity1
-        //{
-        //    get
-        //    {
-        //        return damages_severity1;
-        //    }
-        //}
+        public double TimeZeroPET
+        {
+            get { return timeZeroPET; }
+            set { timeZeroPET = value; }
+        }
+        //---------------------------------------------------------------------
+        public double TimeZeroCWD
+        {
+            get { return timeZeroCWD; }
+            set { timeZeroCWD = value; }
+        }
 
-        ////---------------------------------------------------------------------
-        //public List<IFireDamage> FireDamages_Severity2
-        //{
-        //    get
-        //    {
-        //        return damages_severity2;
-        //    }
-        //}
-        ////---------------------------------------------------------------------
-        //public List<IFireDamage> FireDamages_Severity3
-        //{
-        //    get
-        //    {
-        //        return damages_severity3;
-        //    }
-        //}
+
 
         //---------------------------------------------------------------------
 
@@ -863,9 +823,6 @@ namespace Landis.Extension.Scrapple
             ladderFuelSpeciesList = new List<ISpecies>();
             deadWoodList = new List<IDeadWood>();
             suppressionFWI_Table = new Dictionary<int, ISuppressionTable>();
-            //damages_severity1 = new List<IFireDamage>();
-            //damages_severity2 = new List<IFireDamage>();
-            //damages_severity3 = new List<IFireDamage>();
             dynamicRxIgnitions = new List<IDynamicIgnitionMap>();
             dynamicLightningIgnitions = new List<IDynamicIgnitionMap>();
             dynamicAccidentalIgnitions = new List<IDynamicIgnitionMap>();
