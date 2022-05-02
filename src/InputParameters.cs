@@ -19,7 +19,6 @@ namespace Landis.Extension.Scrapple
         string LighteningFireMap { get; set; }
         string RxFireMap { get; set; }
         string AccidentalFireMap { get; set; }
-
         string LighteningSuppressionMap { get; set; }
         string RxSuppressionMap { get; set; }
         string AccidentalSuppressionMap { get; set; }

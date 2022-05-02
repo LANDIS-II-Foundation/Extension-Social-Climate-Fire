@@ -315,21 +315,21 @@ namespace Landis.Extension.Scrapple
             //    Previous_Year_ET = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].AnnualAET;
             //}
 
-            double Previous_Year_PET = SiteVars.PotentialEvapotranspiration[site];
+            //double Previous_Year_PET = SiteVars.PotentialEvapotranspiration[site];
 
-            //double Previous_Year_PET = 0.0;
-            //if (SiteVars.PotentialEvapotranspiration[site] > 0)
-            //    Previous_Year_PET = SiteVars.PotentialEvapotranspiration[site];
-            //else
-            //    Previous_Year_PET = PlugIn.Parameters.TimeZeroPET;
+            double Previous_Year_PET = 0.0;
+            if (SiteVars.PotentialEvapotranspiration[site] > 0)
+                Previous_Year_PET = SiteVars.PotentialEvapotranspiration[site];
+            else
+                Previous_Year_PET = PlugIn.Parameters.TimeZeroPET;
 
-            double WaterDeficit = SiteVars.ClimaticWaterDeficit[site];
-            //double WaterDeficit = 0.0;
-            //if (SiteVars.ClimaticWaterDeficit[site] > 0)
-            //    WaterDeficit = SiteVars.ClimaticWaterDeficit[site];
-            //else
-            //    WaterDeficit = PlugIn.Parameters.TimeZeroCWD;
-            
+            //double WaterDeficit = SiteVars.ClimaticWaterDeficit[site];
+            double WaterDeficit = 0.0;
+            if (SiteVars.ClimaticWaterDeficit[site] > 0)
+                WaterDeficit = SiteVars.ClimaticWaterDeficit[site];
+            else
+                WaterDeficit = PlugIn.Parameters.TimeZeroCWD;
+
             //double TotalFuels = SiteVars.FineFuels[site] + ladderFuelBiomass;
 
             /// For delayed relative delta normalized burn ratio (DRdNBR) calculation 
