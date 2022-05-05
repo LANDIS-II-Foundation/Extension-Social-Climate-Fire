@@ -25,7 +25,7 @@ You need:
 
 # Download
 
-- The latest version of SCRPPLE can be [downloaded from GitHub](https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/blob/master/deploy/installer/LANDIS-II-V7%20SCRAPPLE%203.2-setup.exe). To install it on your computer, launch the installer.
+- The latest version of SCRPPLE can be [downloaded from GitHub](https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/blob/master/deploy/installer/LANDIS-II-V7%20SCRAPPLE%203.2.2-setup.exe). To install it on your computer, launch the installer.
 
 # Example Files
 
