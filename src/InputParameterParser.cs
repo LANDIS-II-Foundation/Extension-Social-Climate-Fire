@@ -41,19 +41,22 @@ namespace Landis.Extension.Scrapple
             RegisterForInputValues();
 
             InputParameters parameters = new InputParameters(speciesDataset);
+            //const string FireIntensityClass_1_DamageTable = "FireIntensityClass_1_DamageTable";
+            //const string FireIntensityClass_2_DamageTable = "FireIntensityClass_2_DamageTable";
+            //const string FireIntensityClass_3_DamageTable = "FireIntensityClass_3_DamageTable";
 
             InputVar<int> timestep = new InputVar<int>("Timestep");
             ReadVar(timestep);
             parameters.Timestep = timestep.Value;
 
             InputVar<double> tzpet = new InputVar<double>("TimeZeroPET");
-            if(ReadOptionalVar(tzpet))
+            if (ReadOptionalVar(tzpet))
                 parameters.TimeZeroPET = tzpet.Value;
             else
                 parameters.TimeZeroPET = 0.0;
 
             InputVar<double> tzcwd = new InputVar<double>("TimeZeroCWD");
-            if (ReadOptionalVar(tzcwd)) 
+            if (ReadOptionalVar(tzcwd))
                 parameters.TimeZeroCWD = tzcwd.Value;
             else
                 parameters.TimeZeroCWD = 0.0;

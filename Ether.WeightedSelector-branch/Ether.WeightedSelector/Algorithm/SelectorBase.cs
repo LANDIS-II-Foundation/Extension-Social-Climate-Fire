@@ -18,6 +18,7 @@ namespace Ether.WeightedSelector.Algorithm
             int randomInt = (int) (randomD * 1000.0);
             //WeightedSelector.ModelCore.UI.WriteLine("   New double = {0}, integer = {1}", randomD, randomInt);
             //Rng = new Random();
+            Rng = new Random((int)WeightedSelector.ModelCore.NextDouble() * 100);
             Rng = new Random(randomInt);
         }
 
