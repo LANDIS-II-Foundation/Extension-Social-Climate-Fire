@@ -24,6 +24,7 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<double> fineFuels;
         private static ISiteVar<Pool> tempFineFuels;
         private static ISiteVar<int> specialDeadWood;  // potential snags, specifically
+        private static ISiteVar<int> biomassKilled;
         private static ISiteVar<double> spreadProbablity;
 
         private static ISiteVar<int> lightningSuppressionIndex;
@@ -68,6 +69,7 @@ namespace Landis.Extension.Scrapple
             typeOfIginition = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             disturbed = PlugIn.ModelCore.Landscape.NewSiteVar<bool>();
             specialDeadWood = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
+            biomassKilled = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             EventID = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             RxZones = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
 
@@ -251,6 +253,14 @@ namespace Landis.Extension.Scrapple
             get
             {
                 return specialDeadWood;
+            }
+        }
+
+        public static ISiteVar<int> BiomassKilled
+        {
+            get
+            {
+                return biomassKilled;
             }
         }
         //---------------------------------------------------------------------

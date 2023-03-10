@@ -415,6 +415,10 @@ namespace Landis.Extension.Scrapple
                 //PlugIn.ModelCore.UI.WriteLine("damage prob={0}, Random#={1}", ProbablityMortality, random);
                 killCohort = true;
                 this.TotalBiomassMortality += cohort.Biomass;
+
+                //SF add to site tracker
+                SiteVars.BiomassKilled[this.currentSite] += cohort.Biomass;
+
                 foreach (IDeadWood deadwood in PlugIn.Parameters.DeadWoodList)
                 {
                     if (cohort.Species == deadwood.Species && cohort.Age >= deadwood.MinAge)
