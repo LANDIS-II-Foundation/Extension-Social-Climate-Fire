@@ -53,10 +53,17 @@ The ecoregion map is used to locate the windspeed and the FWI data for each time
 fwi_dat <- read.csv(paste0(w_dir,"11_Eco_Climate.csv"),stringsAsFactors = FALSE)
 ### This is the climate regions we are using in the Southern APPS
 wind_map<- raster::raster(paste(w_dir,"11_Ecoregions.tif",sep=""))
-### Wind map
+### Wind speed map
 wsv_dat <- read.csv(paste(w_dir,"Wind_1028.csv",sep=""),stringsAsFactors = FALSE)
 colnames(wsv_dat) <- c("date", "eco1", 'eco2', 'eco3', 'eco4','eco5','eco6','eco8','eco9','eco10','eco11')
+wdir_dat <- read.csv(paste(w_dir,"Winddir.csv",sep=""),stringsAsFactors = FALSE)
+colnames(wdir_dat) <- c("date", "eco1", 'eco2', 'eco3', 'eco4','eco5','eco6','eco8','eco9','eco10','eco11')
+
+
+
+
 plot(wind_map)
+
 ```
 
 
@@ -129,7 +136,7 @@ plot(newfire,add=TRUE)
 fwi_dat_slim <- fwi_dat[,c(1,2,3,22)]
 colnames(fwi_dat)
 fwi_date_info <- with(fwi_dat_slim, paste(Year, Timestep))
-fwi_dates <- strptime(fwi_date_info, "%Y %j") #COnverting from julian day to 
+fwi_dates <- strptime(fwi_date_info, "%Y %j") #Converting from julian day to 
 fwi_date_dat <- cbind(as.POSIXct(fwi_dates), fwi_dat_slim[,3:4]) #attaching 
 colnames(fwi_date_dat) <- c("Date", "Ecoregion", "FWI")
 fwi_date_dat$Ecoregion<-gsub("eco","",fwi_date_dat$Ecoregion)
@@ -149,7 +156,6 @@ attributable to same area drawn seperately.
 SoundInc<-c("BOTELER","Halls Top","SILVER MINE",'Chestnut Knob',"Rough Ridge","DICK'S CREEK",'CLIFFSIDE','Rattlesnake Hollow','MAPLE SPRINGS','Rock Mountain',"OLD ROUGHY",
 "KNOB","Quarry Creek","DOBSON 3","CLEAR CREEK","TELLICO","TIMBER RIDGE","East Miller Cove","FEREBEE MEMORIAL","HORTON","CAMP BRANCH","DOBSON KNOB","Wolf Creek","HAPPY VALLEY RIDGE","WHITE CREEK",
 "Pinnacle Mountain","PARTY ROCK")
-
 ```
 
 Here is the algorithim that calculates the spread cells versus the non spread cells. 
@@ -179,7 +185,8 @@ for (i in 1:length(fire_names_manydays)){
   ### this will indicate when to tell th algorithim to consider the remaining cells failed spread. 
   
   for(j in 1:(length(fire_days)-1)){
-    ## Day t shape
+
+     ## Day t shape
     fire_day_select <- subset(fire_select, fire_select$TrueDate == fire_days[j])# selecting the first day of the fire
     fire_day_select<-fire_day_select[order(fire_day_select$acres),]
     fire_day_select <- fire_day_select[1,] #selecting the first fire perim from that date, in case there are multiples
@@ -219,23 +226,27 @@ for (i in 1:length(fire_names_manydays)){
     
     ### Here we associate the wind and fire weather index, and reclassify the 
     ### raster to associate with spread/not spread cells
+    WindMap<-climate_stack$X11_Ecoregions
+ 
     wind_today<-wsv_dat_df %>%
       subset(date==gsub("/","-",paste0(fire_days[j],'T00:00:00Z')))
-    WindMap<-climate_stack$X11_Ecoregions
-    WindTrans=as.matrix(data.frame(was=c(1,2,3,4,5,6,8,9,10,11),
+    WindTrans=as.matrix(data.frame(was=c(2,3,4,5,6,7,8,9,10,11),
                is=as.numeric(t(wind_today[2:11]))))
     Wind_Reclas<-reclassify(WindMap,WindTrans)
-    
+    windir_today<-wdir_dat %>%
+      subset(date==gsub("/","-",paste0(fire_days[j],'T00:00:00Z')))
+    WindDirRe=as.matrix(data.frame(was=c(2,3,4,5,6,7,8,9,10,11),
+               is=as.numeric(t(windir_today[2:11]))))
+    WindDir_Reclas<-reclassify(WindMap,WindDirRe)
     fire_today<-fwi_date_dat%>%
       subset(Date ==gsub("/","-",paste0(fire_days[j],'T00:00:00Z')))%>%
       arrange(Ecoregion)
     FireMap<-climate_stack$X11_Ecoregions
-    FireTrans=as.matrix(data.frame(was=c(1,2,3,4,5,6,8,9,10,11),
+    FireTrans=as.matrix(data.frame(was=c(2,3,4,5,6,7,8,9,10,11),
                is=fire_today$FWI))
     FireWeather<-reclassify(FireMap,FireTrans)  
-    End_stack<-stack(climate_stack,FireWeather)
-    End_stack<-stack(End_stack,Wind_Reclas)
-    
+    End_stack<-stack(climate_stack,FireWeather,Wind_Reclas,WindDir_Reclas)
+   
     #Creating vector of fire dates. It doesnt work when I bind them below for some reason 
     date_char <- as.POSIXct(as.character(fire_day_select$TrueDate)) 
     
@@ -273,10 +284,14 @@ for (i in 1:length(fire_names_manydays)){
     ### Creating the same wind and fire weather index as above. 
     wind_today<-wsv_dat_df %>%
       subset(date==gsub("/","-",paste0(fire_days[j],'T00:00:00Z')))
-    WindMap<-climate_stack$X11_Ecoregions
-    WindTrans=as.matrix(data.frame(was=c(1,2,3,4,5,6,8,9,10,11),
+    WindTrans=as.matrix(data.frame(was=c(2,3,4,5,6,7,8,9,10,11),
                is=as.numeric(t(wind_today[2:11]))))
     Wind_Reclas<-reclassify(WindMap,WindTrans)
+    windir_today<-wdir_dat %>%
+      subset(date==gsub("/","-",paste0(fire_days[j],'T00:00:00Z')))
+    WindDirRe=as.matrix(data.frame(was=c(2,3,4,5,6,7,8,9,10,11),
+               is=as.numeric(t(windir_today[2:11]))))
+    WindDir_Reclas<-reclassify(WindMap,WindDirRe)
     
     fire_today<-fwi_date_dat%>%
       subset(Date ==gsub("/","-",paste0(fire_days[j],'T00:00:00Z')))%>%
@@ -285,8 +300,7 @@ for (i in 1:length(fire_names_manydays)){
     FireTrans=as.matrix(data.frame(was=c(1,2,3,4,5,6,8,9,10,11),
                is=fire_today$FWI))
     FireWeather<-reclassify(FireMap,FireTrans)  
-    End_stack<-stack(climate_stack,FireWeather)
-    End_stack<-stack(End_stack,Wind_Reclas)
+    End_stack<-stack(climate_stack,FireWeather,Wind_Reclas,WindDir_Reclas)
     EndCells<-adjacent(End_stack,day2$cell,directions=4, pairs=TRUE,id=TRUE)
     EndCells<-unique(EndCells[,3])
     EndCells<-EndCells[!EndCells %in% storedcells]
@@ -306,7 +320,7 @@ for (i in 1:length(fire_names_manydays)){
   
 }
 ## Save for future analysis
-write.csv(climate_day_mat,"Example.csv")
+write.csv(climate_day_mat,"Inputs/Example.csv")
 ```
 
 Here is a table of thenumber of successful spread events versus not successfull spread events
@@ -325,8 +339,9 @@ climate_day_mat<-read.csv("Inputs/Example.csv")
 climate_day_total<-climate_day_mat[-1]
 
 ### Looking at files that have all the nessecary data 
-climate_day_total<-climate_day_total[climate_day_total$X11_Ecoregions.1!=0,]
-climate_day_complete <- climate_day_total[complete.cases(climate_day_total[2:10]),]
+climate_day_total<-climate_day_total[!climate_day_total$X11_Ecoregions.1==1,]
+#colnames(climate_day_complete)
+climate_day_complete <- climate_day_total[complete.cases(climate_day_total[2:11]),]
 
 ##Attaching a unique ID to each row in case we need it later
 climate_day_complete <- cbind(1:nrow(climate_day_complete), climate_day_complete)
@@ -334,16 +349,16 @@ climate_day_complete <- cbind(1:nrow(climate_day_complete), climate_day_complete
 ##Renaming columns
 #climate_day_complete<-climate_day_complete[,-1]
 colnames(climate_day_complete) <- c("ID","FireName",  "date", "wind_region", "fuel_number", "uphill_azi", "slope",
-                               "FWI","WSPD" , "spread","expansion")
+                               "FWI","WSPD" ,"Winddir","spread","expansion")
 climate_day_complete$expansion<-climate_day_complete$expansion*0.404686 ## To hectares
-climate_day_complete$fuel_number<-climate_day_complete$fuel_number/3000
+climate_day_complete$fuel_number<-climate_day_complete$fuel_number/2000
 climate_day_complete$fuel_number[climate_day_complete$fuel_number >1.0]<-1.0
 
 
 
 U_b <- 5 # This changes based on fire severity. Combustion bounancy.
 ### Caculating windspeed in direction of spread 
-relative_wd <- as.numeric(climate_day_complete$WSPD) - as.numeric(climate_day_complete$uphill_azi)
+relative_wd <- as.numeric(climate_day_complete$Winddir) - as.numeric(climate_day_complete$uphill_azi)
 ### Calculating effective wind speed. 
 climate_day_complete$effective_wsv <- U_b * ((fix(climate_day_complete$WSPD)/U_b) ^ 2 + 2*(fix(climate_day_complete$WSPD)/U_b) *  
                 sin(fix(climate_day_complete$slope)) * cos(relative_wd) + (sin(fix(climate_day_complete$slope))^2)^0.5)
@@ -390,13 +405,13 @@ AIC(Par_logit)
 
 ```{r}
 FWI<-seq(0,max(spread_vars_short$FWI),.5)
-xB<-exp(( -1.259443 )+ 0.036959*(FWI)+2.271e-04*max(spread_vars_short$fuel_number))
+xB<-exp(( -1.51693 )+ 0.035977*(FWI)+0.778676 *max(spread_vars_short$fuel_number))
 binomial2<-xB/(1+xB)
 
-xB<-exp(( -1.259443 )+ 0.036959*(FWI)+2.271e-04*min(spread_vars_short$fuel_number))
+xB<-exp((-1.51693 )+ 0.035977*(FWI)+0.778676 *min(spread_vars_short$fuel_number))
 binomial2min<-xB/(1+xB)
 
-xB<-exp(( -1.259443 )+ 0.036959*(FWI)+2.271e-04*mean(spread_vars_short$fuel_number))
+xB<-exp(( -1.51693 )+ 0.035977*(FWI)+0.778676 *mean(0.5))
 binomial2mean<-xB/(1+xB)
 
 plot(FWI,binomial2,xlab="Fire Weather Index",ylab="Spread Probability",ylim=c(0,1),col="red",type="l",lwd=3.0,cex=1.2,cex.axis=1.2,cex.lab=1.2,
@@ -418,9 +433,6 @@ Take the max spread per FWI and WS fit to that.
 
 ```{r}
 
-
-
-
 check<-aggregate(x=list(Ws=climate_day_complete$effective_wsv,FWI=as.numeric(climate_day_complete$FWI)),
           by=list(date=climate_day_complete$dat,expansion=as.numeric(climate_day_complete$expansion)),FUN=mean)
 
@@ -441,7 +453,7 @@ plot(fix(check$expansion)~fix(check$Ws),xlab="Wind Speed",ylab="Spread",pch=19,c
 
 
 ```{r}
-Expansionfull<-lm(fix(expansion) ~FWI , data =check)
+Expansionfull<-lm(fix(expansion) ~Ws , data =check)
 summary(Expansionfull)
 ```
 

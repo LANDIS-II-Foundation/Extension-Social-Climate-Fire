@@ -1,7 +1,7 @@
 ; LANDIS-II Extension infomation
 #define CoreRelease "LANDIS-II-V7"
 #define ExtensionName "SCRAPPLE"
-#define AppVersion "3.2"
+#define AppVersion "3.2.2"
 #define AppPublisher "LANDIS-II Foundation"
 #define AppURL "http://www.landis-ii.org/"
 
@@ -48,17 +48,16 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Source: {#BuildDir}\Landis.Extension.SCRAPPLE-v3.dll; DestDir: {#ExtDir}; Flags: ignoreversion
 Source: {#BuildDir}\Landis.Extension.SCRAPPLE-v3.pdb; DestDir: {#ExtDir}; Flags: ignoreversion
 
-; Requisite auxiliary libraries
-; NB. These libraries are used by other extensions and thus are never uninstalled.
+; Requisite auxiliary libraries.  These libraries may be used by other extensions and thus are never uninstalled.
 Source: {#BuildDir}\Landis.Library.AgeOnlyCohorts-v3.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
 Source: {#BuildDir}\Landis.Library.Cohorts-v2.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
 Source: {#BuildDir}\Landis.Library.BiomassCohorts-v3.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
-; Source: {#BuildDir}\Landis.Library.LeafBiomassCohorts-v2.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
 Source: {#BuildDir}\Landis.Library.Metadata-v2.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
 Source: {#BuildDir}\Landis.Library.Parameters-v2.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
 Source: {#BuildDir}\Landis.Library.Biomass-v2.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
 Source: {#BuildDir}\Landis.Library.Climate-v4.3.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
-Source: {#BuildDir}\Ether.WeightedSelector.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
+Source: {#BuildDir}\Ether.WeightedSelector.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall replacesameversion
+; Source: {#BuildDir}\Ether.WeightedSelector.pdb; DestDir: {#ExtDir}; Flags: uninsneveruninstall
 
 
 ; LANDIS-II identifies the extension with the info in this .txt file
