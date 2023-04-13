@@ -160,3 +160,5 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+src/.vs/scrapple/v16/Server/sqlite3/storage.ide-shm
+src/.vs/scrapple/v16/Server/sqlite3/storage.ide-wal
