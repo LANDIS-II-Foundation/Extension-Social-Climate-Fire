@@ -541,12 +541,13 @@ namespace Landis.Extension.Scrapple
 
             double Pspread = Math.Pow(Math.E, -1.0 * (spreadB0 + (spreadB1 * fireWeatherIndex) + (spreadB2 * fineFuelPercent) + (spreadB3 * effectiveWindSpeed)));
             Pspread = 1.0 / (1.0 + Pspread);
+            
             //The distance weight accounts for the longer centroid distance between diagonal spread 
             // as compared to cardinal spread.  This is intended to correct the 'square effect' when Pspread is relatively uniform. 
             Pspread *= distanceWeight;
 
             if (this.IgnitionType == IgnitionType.Rx)
-                Pspread = 1.0;
+                Pspread = 1.0 * distanceWeight;
 
             // End PROBABILITY OF SPREAD calculation **************************
 
