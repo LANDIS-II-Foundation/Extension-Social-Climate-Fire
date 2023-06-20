@@ -2055,3 +2055,15 @@ Testing/Test_NECN_H/scrapple_SetUp_s1e01.txt
 Testing/Test_NECN_H/species_LTB.txt
 Testing/Test_NECN_H/Test_suppress.img
 Testing/Test_NECN_H/UphillSlope.gis
+Testing/ManuscriptScenarios/NECN/AG_NPP-1.img
+Testing/ManuscriptScenarios/NECN/ANEE-1.img
+Testing/ManuscriptScenarios/NECN/Annual-water-budget-1.img
+Testing/ManuscriptScenarios/NECN/AvailableWater-1.img
+Testing/ManuscriptScenarios/NECN/ConiferNeedleBiomass-1.img
+Testing/ManuscriptScenarios/NECN/DeadWoodBiomass-1.img
+Testing/ManuscriptScenarios/NECN/LAI-1.img
+Testing/ManuscriptScenarios/NECN/SoilN-1.img
+Testing/ManuscriptScenarios/NECN/SOMTC-1.img
+Testing/ManuscriptScenarios/NECN/SurfaceDuffBiomass-1.img
+Testing/ManuscriptScenarios/NECN/SurfaceLitterBiomass-1.img
+Testing/ManuscriptScenarios/NECN/TotalC-1.img
