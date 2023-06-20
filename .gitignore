@@ -2067,3 +2067,7 @@ Testing/ManuscriptScenarios/NECN/SOMTC-1.img
 Testing/ManuscriptScenarios/NECN/SurfaceDuffBiomass-1.img
 Testing/ManuscriptScenarios/NECN/SurfaceLitterBiomass-1.img
 Testing/ManuscriptScenarios/NECN/TotalC-1.img
+Testing/Core7-SCRAPPLE3.2 - Test Rx Shape/scrapple-summary-log.csv
+Testing/Core7-SCRAPPLE3.2 - Test Rx Shape/scrapple-ignitions-log.csv
+Testing/Core7-SCRAPPLE3.2 - Test Rx Shape/scrapple-events-log.csv
+Testing/Core7-SCRAPPLE3.2 - Test Rx Shape/Landis-log.txt

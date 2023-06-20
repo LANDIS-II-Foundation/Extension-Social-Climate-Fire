@@ -1,0 +1,92 @@
+LandisData  "SCRAPPLE"
+
+>> Note:  All inputs are provided as examples only.  They are not intended to serve as default values.
+>>     Parameter                      Value
+>> ----------------------------       -------
+Timestep                            1
+
+Species_CSV_File	SCRPPLE_Spp_Table.csv
+
+AccidentalIgnitionsMap     ./Accidental_Ignition_Map.img
+LightningIgnitionsMap  ./Lightning_Ignition_Map.img
+RxIgnitionsMap  ./Lightning_Ignition_Map.img
+
+DynamicRxIgnitionMaps << Optional
+3 Lightning_Ignition_Map.img 
+5 Lightning_Ignition_Map.img
+13 Lightning_Ignition_Map.img
+
+AccidentalSuppressionMap	./suppress3.img
+LightningSuppressionMap		./suppress3.img
+RxSuppressionMap		./suppress3.img
+
+GroundSlopeMap GroundSlope.gis
+UphillSlopeAzimuthMap  UphillSlope.gis
+ClayMap random9.img
+
+LightningIgnitionsB0   0.0
+LightningIgnitionsB1   0.0
+AccidentalIgnitionsB0  0.0
+AccidentalIgnitionsB1  0.0
+
+IgnitionDistribution Poisson << Poisson or ZeroInflatedPoisson
+
+>> If ZeroInflatedPoisson, you must include the following, otherwise comment out these inputs
+>>LightningIgnitionsBinomialB0 -8.5
+>>LightningIgnitionsBinomialB1  0.03
+>>AccidentalIgnitionsBinomialB0 -8.5
+>>AccidentalIgnitionsBinomialB1 0.03
+
+>> A generic parameter, determines the fine-fuel scale from 0-1.0
+MaximumFineFuels 500.0
+
+>> Prescribed Fire Parameters
+MaximumRxWindSpeed 80.0
+MaximumRxFireWeatherIndex 80.0  << Optional
+MinimumRxFireWeatherIndex 1.0   << Optional
+MaximumRxTemperature 35.0	<< Optional
+>> MinimumRxRelativeHumidity 22.0	<< Optional
+MaximumRxFireIntensity 1
+NumberRxAnnualFires 10
+NumberRxDailyFires 1
+FirstDayRxFires 2
+LastDayRxFires 300
+TargetRxSize 40
+>> RxZonesMap fire-zones.gis  << Optional
+
+MaximumSpreadAreaB0	10
+MaximumSpreadAreaB1	-2.5 <<-3 <<FWI
+MaximumSpreadAreaB2	-2.5 <<-2.5  <<effective wind speed
+
+SpreadProbabilityB0 -1.79 << Intercept
+SpreadProbabilityB1 0.06  <<FWI
+SpreadProbabilityB2  -0.915 << relativized fine fuels. 
+SpreadProbabilityB3 0.0126 << effective wind speed. 
+
+SiteMortalityB0  0.0059<< Intercept
+SiteMortalityB1   0.00050 << The parameter fit for site level clay % in Soil.
+SiteMortalityB2  -0.000010  << The parameter fit for site level previous years annual ET. 
+SiteMortalityB3 -0.0002200  << The parameter fit for site level Effective Windspeed. 
+SiteMortalityB4  -0.00000050 << The parameter fit for site level Climatic Water Deficit (PET-AET). 
+SiteMortalityB5 0.00000  << The parameter fit for fine fuels (a percentage of the maximum, from above). 
+SiteMortalityB6 0.00000  << The parameter fit for ladder fuels. 
+
+CohortMortalityB0 -0.703 << Intercept
+CohortMortalityB1 -0.9908 << The parameter fit for the relationship between bark thickness and cohort mortality.
+CohortMortalityB2  0.009 << The parameter fit for the relationship between site mortality and cohort mortality. 
+
+LadderFuelMaxAge 40
+LadderFuelSpeciesList 
+AbieConc AbieMagn PinuJeff PinuCont
+
+SuppressionMaxWindSpeed 100
+Suppression_CSV_File Example_Suppression_Input.csv
+
+DeadWoodTable
+PinuJeff  22
+CaloDecu  33
+PinuCont  38
+PinuLamb  27
+AbieMagn  28
+AbieConc  29
+
