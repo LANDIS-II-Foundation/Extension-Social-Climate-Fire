@@ -177,6 +177,7 @@ namespace Landis.Extension.Scrapple
             SiteVars.DayOfFire.ActiveSiteValues = 0;
             SiteVars.TypeOfIginition.ActiveSiteValues = 0;
             SiteVars.SpecialDeadWood.ActiveSiteValues = 0;
+            SiteVars.BiomassKilled.ActiveSiteValues = 0;
             SiteVars.EventID.ActiveSiteValues = 0;
 
             foreach (IDynamicIgnitionMap dynamicRxIgnitions in dynamicRxIgns)
@@ -670,6 +671,31 @@ namespace Landis.Extension.Scrapple
                     if (site.IsActive)
                     {
                         pixel.MapCode.Value = (int) SiteVars.FineFuels[site];
+                    }
+                    else
+                    {
+                        //  Inactive site
+                        pixel.MapCode.Value = 0;
+                    }
+                    outputRaster.WriteBufferPixel();
+                }
+            }
+
+            string[] paths10 = { "social-climate-fire", "biomass-mortality-{timestep}.img" };
+            path = MapNames.ReplaceTemplateVars(Path.Combine(paths10), currentTime);
+            using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
+            {
+                IntPixel pixel = outputRaster.BufferPixel;
+                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                {
+                    if (site.IsActive)
+                    {
+                        if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
+                        {
+                            pixel.MapCode.Value = (int)(SiteVars.BiomassKilled[site]);
+                        }
+                        else
+                            pixel.MapCode.Value = 0;
                     }
                     else
                     {
