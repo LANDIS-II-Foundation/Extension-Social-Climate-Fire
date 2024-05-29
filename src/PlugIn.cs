@@ -614,7 +614,7 @@ namespace Landis.Extension.Scrapple
                     if (site.IsActive)
                     {
                         if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
-                            pixel.MapCode.Value = SiteVars.SmolderConsumption[site];
+                            pixel.MapCode.Value = (int) SiteVars.SmolderConsumption[site];
                         else
                             pixel.MapCode.Value = 0;
                     }
@@ -637,7 +637,7 @@ namespace Landis.Extension.Scrapple
                     if (site.IsActive)
                     {
                         if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
-                            pixel.MapCode.Value = SiteVars.FlamingConsumption[site];
+                            pixel.MapCode.Value = (int) SiteVars.FlamingConsumption[site];
                         else
                             pixel.MapCode.Value = 0;
                     }
