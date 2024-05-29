@@ -1,6 +1,6 @@
 //  Authors:  Robert M. Scheller, Alec Kretchun, Vincent Schuster
 
-using Landis.Library.BiomassCohorts;
+using Landis.Library.UniversalCohorts;
 using Landis.SpatialModeling;
 using Landis.Core;
 using Landis.Library.Climate;
@@ -291,8 +291,8 @@ namespace Landis.Extension.Scrapple
             double ladderFuelBiomass = 0.0;
             foreach (ISpeciesCohorts speciesCohorts in SiteVars.Cohorts[site])
                 foreach (ICohort cohort in speciesCohorts)
-                    if (PlugIn.Parameters.LadderFuelSpeciesList.Contains(cohort.Species) && cohort.Age <= PlugIn.Parameters.LadderFuelMaxAge)
-                        ladderFuelBiomass += cohort.Biomass;
+                    if (PlugIn.Parameters.LadderFuelSpeciesList.Contains(cohort.Species) && cohort.Data.Age <= PlugIn.Parameters.LadderFuelMaxAge)
+                        ladderFuelBiomass += cohort.Data.Biomass;
             // End LADDER FUELS ************************
 
             // dNBR / DRdNBR calculation SITE scale
@@ -417,7 +417,7 @@ namespace Landis.Extension.Scrapple
             double MaxBarkThickness = SpeciesData.MaximumBarkThickness[cohort.Species];
 
             //// CohortAge  The age of the cohort
-            double BarkThickness = (MaxBarkThickness * cohort.Age) / (cohort.Age + AgeDBH);
+            double BarkThickness = (MaxBarkThickness * cohort.Data.Age) / (cohort.Data.Age + AgeDBH);
 
             double Pm = Math.Exp(Beta_naught_m + (Beta_Bark * BarkThickness) + (Beta_Site_Mortality * SiteMortality));
 
@@ -429,16 +429,16 @@ namespace Landis.Extension.Scrapple
             {
                 //PlugIn.ModelCore.UI.WriteLine("damage prob={0}, Random#={1}", ProbablityMortality, random);
                 killCohort = true;
-                this.TotalBiomassMortality += cohort.Biomass;
+                this.TotalBiomassMortality += cohort.Data.Biomass;
 
                 //SF add to site tracker
-                SiteVars.BiomassKilled[this.currentSite] += cohort.Biomass;
+                SiteVars.BiomassKilled[this.currentSite] += cohort.Data.Biomass;
 
                 foreach (IDeadWood deadwood in PlugIn.Parameters.DeadWoodList)
                 {
-                    if (cohort.Species == deadwood.Species && cohort.Age >= deadwood.MinAge)
+                    if (cohort.Species == deadwood.Species && cohort.Data.Age >= deadwood.MinAge)
                     {
-                        SiteVars.SpecialDeadWood[this.currentSite] += cohort.Biomass;
+                        SiteVars.SpecialDeadWood[this.currentSite] += cohort.Data.Biomass;
                         //PlugIn.ModelCore.UI.WriteLine("special dead = {0}, site={1}.", SiteVars.SpecialDeadWood[this.Current_damage_site], this.Current_damage_site);
 
                     }
@@ -448,7 +448,7 @@ namespace Landis.Extension.Scrapple
             if (killCohort)
             {
                 this.CohortsKilled++;
-                return cohort.Biomass;
+                return cohort.Data.Biomass;
             }
 
             return 0;
@@ -487,8 +487,8 @@ namespace Landis.Extension.Scrapple
             double ladderFuelBiomass = 0.0;
             foreach (ISpeciesCohorts speciesCohorts in SiteVars.Cohorts[site])
                 foreach (ICohort cohort in speciesCohorts)
-                    if (PlugIn.Parameters.LadderFuelSpeciesList.Contains(cohort.Species) && cohort.Age <= PlugIn.Parameters.LadderFuelMaxAge)
-                        ladderFuelBiomass += cohort.Biomass;
+                    if (PlugIn.Parameters.LadderFuelSpeciesList.Contains(cohort.Species) && cohort.Data.Age <= PlugIn.Parameters.LadderFuelMaxAge)
+                        ladderFuelBiomass += cohort.Data.Biomass;
             // End LADDER FUELS ************************
 
 
@@ -613,7 +613,8 @@ namespace Landis.Extension.Scrapple
         {
             //PlugIn.ModelCore.UI.WriteLine("  Calculate Damage: {0}.", site);
             int previousCohortsKilled = this.CohortsKilled;
-            SiteVars.Cohorts[site].ReduceOrKillBiomassCohorts(this); 
+            //SiteVars.Cohorts[site].ReduceOrKillBiomassCohorts(this); 
+            SiteVars.Cohorts[site].ReduceOrKillCohorts(this);
             return this.CohortsKilled - previousCohortsKilled;
         }
 

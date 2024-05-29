@@ -84,7 +84,18 @@ namespace Landis.Extension.Scrapple
                 return modelCore;
             }
         }
-        
+
+        public override void AddCohortData()
+        {
+            //dynamic tempObject = additionalCohortParameters;
+            //tempObject.WoodBiomass = 0.0f;
+            //tempObject.LeafBiomass = 0.0f;
+            //tempObject.MineralNallocation = 0.0f;  // monthly allocation
+            //tempObject.MineralNfraction = 0.0f; // annual fraction
+            //tempObject.Nresorption = 0.0f;
+        }
+
+
         //---------------------------------------------------------------------
 
         public override void LoadParameters(string dataFile,

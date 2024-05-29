@@ -1,8 +1,8 @@
 //  Authors:  Robert M. Scheller, Alec Kretchun, Vincent Schuster
 
 using Landis.SpatialModeling;
-using Landis.Library.BiomassCohorts;
-using Landis.Library.Biomass;
+using Landis.Library.UniversalCohorts;
+//using Landis.Library.Biomass;
 
 namespace Landis.Extension.Scrapple
 {
