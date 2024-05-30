@@ -1,4 +1,4 @@
-//  Authors:  Robert M. Scheller, Alec Kretchun, Vincent Schuster
+//  Authors:  Robert M. Scheller, Alec Kretchun, Zachary Robbins
 
 using Landis.SpatialModeling;
 using Landis.Library.Climate;
@@ -55,10 +55,6 @@ namespace Landis.Extension.Scrapple
         public static IInputParameters Parameters;
         private static ICore modelCore;
 
-        //public static double MaximumSpreadAreaB0;
-        //public static double MaximumSpreadAreaB1;
-        //public static double MaximumSpreadAreaB2;
-
         public static int DaysPerYear = 364;
 
         private List<IDynamicIgnitionMap> dynamicRxIgns;
@@ -87,12 +83,7 @@ namespace Landis.Extension.Scrapple
 
         public override void AddCohortData()
         {
-            //dynamic tempObject = additionalCohortParameters;
-            //tempObject.WoodBiomass = 0.0f;
-            //tempObject.LeafBiomass = 0.0f;
-            //tempObject.MineralNallocation = 0.0f;  // monthly allocation
-            //tempObject.MineralNfraction = 0.0f; // annual fraction
-            //tempObject.Nresorption = 0.0f;
+            return;
         }
 
 
@@ -112,26 +103,6 @@ namespace Landis.Extension.Scrapple
         public override void Initialize()
         {
             Timestep = 1;  // RMS:  Initially we will force annual time step. parameters.Timestep;
-
-
-            ///******************** DEBUGGER LAUNCH *********************
-            /// 
-            /*
-            if (Debugger.Launch())
-            {
-                modelCore.UI.WriteLine("Debugger is attached");
-                if (Debugger.IsLogging())
-                {
-                    modelCore.UI.WriteLine("Debugging is logging");
-                }
-                Debugger.Break();
-            }
-            else
-            { 
-                modelCore.UI.WriteLine("Debugger not attached");
-            }
-            */
-            ///******************** DEBUGGER END *********************
 
             modelCore.UI.WriteLine("Initializing SCRAPPLE Fire...");
 
@@ -267,7 +238,6 @@ namespace Landis.Extension.Scrapple
             int numSites = 0;
             weightedRxSites = PreShuffleEther(SiteVars.RxFireWeight, out numSites);
             int numRxSites = numSites;
-            //modelCore.UI.WriteLine("   Number Rx sites = {0}", numRxSites);
             weightedAccidentalSites = PreShuffleEther(SiteVars.AccidentalFireWeight, out numSites);
             int numAccidentalSites = numSites;
             weightedLightningSites = PreShuffleEther(SiteVars.LightningFireWeight, out numSites);
@@ -318,8 +288,6 @@ namespace Landis.Extension.Scrapple
                             {
                                 landscapeAverageRelHumidity += weatherData.DailyMinRH[day] * climateRegionFractionSites;
                             }
-                            //landscapeAverageRelHumidity += weatherData.DailyMinRH[day] * climateRegionFractionSites;
-                           // modelCore.UI.WriteLine("  Fire Weather Check Daily={0}, Average={1}", weatherData.DailyFireWeatherIndex[day], landscapeAverageFireWeatherIndex);
                         }
                         catch
                         {
@@ -459,7 +427,7 @@ namespace Landis.Extension.Scrapple
 
         private void WriteMaps(int currentTime)
         {
-            string[] paths = { "social-climate-fire", "special-dead-wood-{timestep}.img" };
+            string[] paths = { "social-climate-fire", "special-dead-wood-{timestep}.tif" };
             string path = MapNames.ReplaceTemplateVars(Path.Combine(paths), currentTime);
 
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
@@ -484,7 +452,7 @@ namespace Landis.Extension.Scrapple
                     outputRaster.WriteBufferPixel();
                 }
             }
-            string[] paths2 = { "social-climate-fire", "ignition-type-{timestep}.img" };
+            string[] paths2 = { "social-climate-fire", "ignition-type-{timestep}.tif" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths2), currentTime);
 
 
@@ -511,7 +479,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            string[] paths3 = { "social-climate-fire", "fire-intensity-{timestep}.img" };
+            string[] paths3 = { "social-climate-fire", "fire-intensity-{timestep}.tif" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths3), currentTime);
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
@@ -534,7 +502,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            string[] paths31 = { "social-climate-fire", "fire-dnbr-{timestep}.img" };
+            string[] paths31 = { "social-climate-fire", "fire-dnbr-{timestep}.tif" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths31), currentTime);
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
@@ -558,7 +526,7 @@ namespace Landis.Extension.Scrapple
             }
 
 
-            string[] paths4 = { "social-climate-fire", "fire-spread-probability-{timestep}.img" };
+            string[] paths4 = { "social-climate-fire", "fire-spread-probability-{timestep}.tif" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths4), currentTime);
             using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
             {
@@ -581,7 +549,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            string[] paths5 = { "social-climate-fire", "day-of-fire-{timestep}.img" };
+            string[] paths5 = { "social-climate-fire", "day-of-fire-{timestep}.tif" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths5), currentTime);
             using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
             {
@@ -604,7 +572,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            string[] paths6 = { "social-climate-fire", "smolder-consumption-{timestep}.img" };
+            string[] paths6 = { "social-climate-fire", "smolder-consumption-{timestep}.tif" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths6), currentTime);
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
@@ -627,7 +595,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            string[] paths7 = { "social-climate-fire", "flaming-consumptions-{timestep}.img" };
+            string[] paths7 = { "social-climate-fire", "flaming-consumptions-{timestep}.tif" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths7), currentTime);
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
@@ -650,7 +618,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            string[] paths8 = { "social-climate-fire", "event-ID-{timestep}.img" };
+            string[] paths8 = { "social-climate-fire", "event-ID-{timestep}.tif" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths8), currentTime);
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
@@ -672,7 +640,7 @@ namespace Landis.Extension.Scrapple
                     outputRaster.WriteBufferPixel();
                 }
             }
-            string[] paths9 = { "social-climate-fire", "fine-fuels-{timestep}.img" };
+            string[] paths9 = { "social-climate-fire", "fine-fuels-{timestep}.tif" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths9), currentTime);
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
@@ -692,7 +660,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            string[] paths10 = { "social-climate-fire", "biomass-mortality-{timestep}.img" };
+            string[] paths10 = { "social-climate-fire", "biomass-mortality-{timestep}.tif" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths10), currentTime);
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {

@@ -18,7 +18,7 @@
     <Copyright>Landis-II-Foundation</Copyright>
     <Company>LANDIS-II Foundation</Company>
     <Description></Description>
-    <PackageReleaseNotes>.NET Standard 2.0 update</PackageReleaseNotes>
+    <PackageReleaseNotes>.NET Standard 2.1 update</PackageReleaseNotes>
     <PackageTags>LANDIS-II;Landis;Extension;fire;suppression;ignitions;spread</PackageTags>
     <PackageLicenseUrl>https://github.com/LANDIS-II-Foundation/Extension-SCRAPPLE/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>http://www.landis-ii.org</PackageProjectUrl>
