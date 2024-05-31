@@ -15,12 +15,12 @@ DynamicRxIgnitionMaps << Optional
 5 Lightning_Ignition_Map.tif
 13 Lightning_Ignition_Map.tif
 
-AccidentalSuppressionMap	./suppress3.tif
-LightningSuppressionMap		./suppress3.tif
-RxSuppressionMap		./suppress3.tif
+AccidentalSuppressionMap	Suppression_3Zones.tif
+LightningSuppressionMap		Suppression_3Zones.tif
+RxSuppressionMap		Suppression_3Zones.tif
 
-GroundSlopeMap GroundSlope.gis
-UphillSlopeAzimuthMap  UphillSlope.gis
+GroundSlopeMap GroundSlope.tif
+UphillSlopeAzimuthMap  UphillSlope.tif
 ClayMap random9.tif
 
 LightningIgnitionsB0   -8.5

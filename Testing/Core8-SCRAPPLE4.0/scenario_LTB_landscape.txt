@@ -1,7 +1,7 @@
 LandisData  Scenario
 
 
-Duration  50
+Duration  20
 
 Species   species_LTB.txt
 
@@ -29,7 +29,7 @@ CellLength  100 << meters, 100 x 100 m = 1 hectare
 >> Disturbance Extensions   Initialization File
 
 >> ----------------------   -------------------
-
+	"SCRAPPLE"              scrapple.txt
 
 >>   DisturbancesRandomOrder  yes  << optional parameter; default = no
 

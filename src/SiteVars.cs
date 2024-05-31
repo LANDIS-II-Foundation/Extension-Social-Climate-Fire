@@ -20,7 +20,7 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<ushort> groundSlope;
         private static ISiteVar<ushort> uphillSlopeAzimuth;
         private static ISiteVar<double> clay;
-        private static ISiteVar<ISiteCohorts> cohorts;
+        private static ISiteVar<SiteCohorts> cohorts;
         private static ISiteVar<double> fineFuels;
         private static ISiteVar<Pool> tempFineFuels;
         private static ISiteVar<int> specialDeadWood;  // potential snags, specifically
@@ -46,7 +46,7 @@ namespace Landis.Extension.Scrapple
         {
 
             InitializeDisturbances();
-            cohorts = PlugIn.ModelCore.GetSiteVar<ISiteCohorts>("Succession.BiomassCohorts");
+            cohorts = PlugIn.ModelCore.GetSiteVar<SiteCohorts>("Succession.UniversalCohorts");
             //fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.FineFuels");
 
             eventVar = PlugIn.ModelCore.Landscape.NewSiteVar<FireEvent>(InactiveSiteMode.DistinctValues);
@@ -283,7 +283,7 @@ namespace Landis.Extension.Scrapple
 
         //---------------------------------------------------------------------
 
-        public static ISiteVar<ISiteCohorts> Cohorts
+        public static ISiteVar<SiteCohorts> Cohorts
         {
             get
             {
