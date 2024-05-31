@@ -721,20 +721,5 @@ namespace Landis.Extension.Scrapple
             return species;
         }
 
-        /// <summary>
-        /// Reads a species name from the current line, and verifies the name.
-        /// </summary>
-        //private ISpecies ReadSpecies(StringReader currentLine)
-        //{
-
-        //    //int lineNumber;
-        //    //if (speciesLineNums.TryGetValue(species.Name, out lineNumber))
-        //    //    throw new InputValueException(speciesName.Value.String,
-        //    //                                  "The species {0} was previously used on line {1}",
-        //    //                                  speciesName.Value.String, lineNumber);
-        //    //else
-        //    //    speciesLineNums[species.Name] = LineNumber;
-        //    return species;
-        //}
     }
 }

@@ -58,11 +58,6 @@ namespace Landis.Extension.Scrapple
         public double MeanFWI;
         public double TotalBiomassMortality;
         public ActiveSite currentSite;
-        //public int NumberCellsSeverity1;
-        //public int NumberCellsSeverity2;
-        //public int NumberCellsSeverity3;
-        //public int NumberCellsSeverity4;
-        //public int NumberCellsSeverity5;
         public int TotalSitesBurned;
         public int MaxSpreadArea;
 
@@ -253,7 +248,6 @@ namespace Landis.Extension.Scrapple
                         }
                     }
                     neighbors = Get4DiagonalNeighbors(targetSite);
-                    //neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor]);
 
                     foreach (ActiveSite neighborSite in neighbors)
                     {
