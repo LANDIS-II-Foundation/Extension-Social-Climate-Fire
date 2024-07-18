@@ -8,29 +8,27 @@ Scheller, R.M., A. Kretchun, T.J. Hawbaker, P.D. Henne. 2019. A landscape model 
 
 # Release Notes
 
-- Latest release: Version 3.2.2 — May 2022
+- Latest release: Version 4.0 — August 2022
 - Full release details found in the User Guide and on GitHub.
-- [View User Guide](https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/blob/master/docs/LANDIS-II%20SCRAPPLE%20v3.2%20User%20Guide.pdf).
+- [View User Guide](https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/blob/master/docs/LANDIS-II%20SCRAPPLE%20v4.0%20User%20Guide.pdf).
 - SCRPPLE depends on the Climate Library, see: [User Guide for Climate Library](https://github.com/LANDIS-II-Foundation/Library-Climate/blob/master/docs/LANDIS-II%20Climate%20Library%20v4.2%20User%20Guide.pdf)
-
 - Copyright: The LANDIS-II Foundation
 
 # Requirements
 
 You need:
 
-- The [LANDIS-II model v7.0](http://www.landis-ii.org/install) installed on your computer.
+- The [LANDIS-II model v8.0](http://www.landis-ii.org/install) installed on your computer.
+- Extension Installer
 - Example files (see below)
 
-# Download
+# Download and Run the Extension Installer
 
-- The latest version of SCRPPLE can be [downloaded from GitHub](https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/blob/master/deploy/installer/LANDIS-II-V7%20SCRAPPLE%203.2.2-setup.exe). To install it on your computer, launch the installer.
+- The latest version can be [downloaded from GitHub](https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/blob/master/deploy/installer/LANDIS-II-V8%20SCRAPPLE%204.0-setup.exe). (Look for the download icon in the upper right corner.)  Launch the installer.
 
 # Example Files
 
-LANDIS-II requires a global parameter file for your scenario, and separate parameter files for each extension.
-
-Example files can be [downloaded from GitHub](https://downgit.github.io/#/home?url=https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/tree/master/Testing/Core7-SCRAPPLE3.2).
+Example files can be [downloaded from GitHub](https://downgit.github.io/#/home?url=https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/tree/master/Testing/Core8-SCRAPPLE4.0).
 
 # Supporting R-Code
 
