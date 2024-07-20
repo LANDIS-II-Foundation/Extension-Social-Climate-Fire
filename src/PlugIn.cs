@@ -479,7 +479,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            string[] paths3 = { "social-climate-fire", "fire-intensity-{timestep}.tif" };
+            string[] paths3 = { "social-climate-fire", "fire-severity-{timestep}.tif" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths3), currentTime);
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
