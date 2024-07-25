@@ -28,12 +28,12 @@ namespace Landis.Extension.Scrapple
         public static MetadataTable<IgnitionsLog> ignitionsLog;
         
         // Get the active sites from the landscape and shuffle them 
-        public List<ActiveSite> activeRxSites; 
-        public List<ActiveSite> activeAccidentalSites;
-        public List<ActiveSite> activeLightningSites;
-        public double rxTotalWeight;
-        public double accidentalTotalWeight;
-        public double lightningTotalWeight;
+        //public List<ActiveSite> activeRxSites; 
+        //public List<ActiveSite> activeAccidentalSites;
+        //public List<ActiveSite> activeLightningSites;
+        //public double rxTotalWeight;
+        //public double accidentalTotalWeight;
+        //public double lightningTotalWeight;
 
         // RMS Testing 8/2019
         public WeightedSelector<ActiveSite> weightedRxSites;
@@ -187,9 +187,9 @@ namespace Landis.Extension.Scrapple
                     PlugIn.ModelCore.UI.WriteLine("   Reading in new Ignitions Maps {0}.", dynamicRxIgnitions.MapName);
                     MapUtility.ReadMap(dynamicRxIgnitions.MapName, SiteVars.RxFireWeight);
 
-                    double totalWeight = 0.0;
-                    activeRxSites = PreShuffle(SiteVars.RxFireWeight, out totalWeight);
-                    rxTotalWeight = totalWeight;
+                    //double totalWeight = 0.0;
+                    //activeRxSites = PreShuffle(SiteVars.RxFireWeight, out totalWeight);
+                    //rxTotalWeight = totalWeight;
 
                 }
 
@@ -202,9 +202,9 @@ namespace Landis.Extension.Scrapple
                     PlugIn.ModelCore.UI.WriteLine("   Reading in new Ignitions Maps {0}.", dynamicLxIgns.MapName);
                     MapUtility.ReadMap(dynamicLxIgns.MapName, SiteVars.LightningFireWeight);
 
-                    double totalWeight = 0.0;
-                    activeLightningSites = PreShuffle(SiteVars.LightningFireWeight, out totalWeight);
-                    lightningTotalWeight = totalWeight;
+                    //double totalWeight = 0.0;
+                    //activeLightningSites = PreShuffle(SiteVars.LightningFireWeight, out totalWeight);
+                    //lightningTotalWeight = totalWeight;
 
                 }
 
@@ -216,9 +216,9 @@ namespace Landis.Extension.Scrapple
                     PlugIn.ModelCore.UI.WriteLine("   Reading in new Ignitions Maps {0}.", dynamicAxIgns.MapName);
                     MapUtility.ReadMap(dynamicAxIgns.MapName, SiteVars.AccidentalFireWeight);
 
-                    double totalWeight = 0.0;
-                    activeAccidentalSites = PreShuffle(SiteVars.AccidentalFireWeight, out totalWeight);
-                    accidentalTotalWeight = totalWeight;
+                    //double totalWeight = 0.0;
+                    //activeAccidentalSites = PreShuffle(SiteVars.AccidentalFireWeight, out totalWeight);
+                    //accidentalTotalWeight = totalWeight;
 
                 }
 
