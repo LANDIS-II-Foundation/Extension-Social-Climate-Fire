@@ -9,7 +9,7 @@ $master = "https://github.com/LANDIS-II-Foundation/Support-Library-Dlls-v8/raw/m
 $dlls = "Landis.Library.Metadata-v2.dll",
 "Landis.Library.Parameters-v2.dll",
 "Landis.Library.UniversalCohorts-v1.dll",
-"Landis.Library.Climate-v4.3.dll",
+"Landis.Library.Climate-v4.4.dll",
 "Ether.WeightedSelector.dll"
 
 #************************************************
