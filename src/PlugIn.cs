@@ -250,7 +250,7 @@ namespace Landis.Extension.Scrapple
                 throw new UninitializedClimateData(string.Format("Could not initilize the actual year {0} from climate data", ActualYear));
             }
 
-            // modelCore.UI.WriteLine("   Next, shuffle ignition sites...");
+            modelCore.UI.WriteLine("   Next, shuffle ignition sites...");
             // Get the active sites from the landscape and shuffle them 
             // Sites are weighted for ignition in the Ether.WeightedSelector Shuffle method, based on the respective inputs maps.
             int numSites = 0;
@@ -262,7 +262,7 @@ namespace Landis.Extension.Scrapple
             weightedLightningSites = PreShuffleEther(SiteVars.LightningFireWeight, out numSites);
             int numLightningSites = numSites;
 
-            //modelCore.UI.WriteLine("   Next, loop through each day to start fires...");
+            modelCore.UI.WriteLine("   Next, loop through each day to start fires...");
 
             int numAnnualRxFires = Parameters.RxNumberAnnualFires;
 
@@ -327,7 +327,7 @@ namespace Landis.Extension.Scrapple
 
              
                 
-                //PlugIn.ModelCore.UI.WriteLine("   Generating accidental fires...");
+                PlugIn.ModelCore.UI.WriteLine("   Generating accidental fires...");
                 if (numAccidentalSites > 0)
                 {
                     bool fire = false;
@@ -351,7 +351,7 @@ namespace Landis.Extension.Scrapple
                 }
 
                 /// Removed FWI threshold ZR 11-12-20
-                //PlugIn.ModelCore.UI.WriteLine("   Generating lightning fires...");
+                PlugIn.ModelCore.UI.WriteLine("   Generating lightning fires...");
                 if (numLightningSites > 0)
                 {
                     bool fire = false;
@@ -375,7 +375,7 @@ namespace Landis.Extension.Scrapple
                 }
 
                 // Ignite a single Rx fire per day
-                //PlugIn.ModelCore.UI.WriteLine("   Generating prescribed fires...");
+                PlugIn.ModelCore.UI.WriteLine("   Generating prescribed fires...");
 
                 if (numRxSites > 0 &&
                     numAnnualRxFires > 0 &&
