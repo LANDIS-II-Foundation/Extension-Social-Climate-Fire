@@ -5,9 +5,7 @@ using Landis.SpatialModeling;
 using Landis.Core;
 using Landis.Library.Climate;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Linq;
 
 namespace Landis.Extension.Scrapple
@@ -607,7 +605,6 @@ namespace Landis.Extension.Scrapple
         {
             //PlugIn.ModelCore.UI.WriteLine("  Calculate Damage: {0}.", site);
             int previousCohortsKilled = this.CohortsKilled;
-            //SiteVars.Cohorts[site].ReduceOrKillBiomassCohorts(this); 
             SiteVars.Cohorts[site].ReduceOrKillCohorts(this);
             return this.CohortsKilled - previousCohortsKilled;
         }
