@@ -32,8 +32,7 @@
     <Reference Include="Ether.WeightedSelector">
       <HintPath>lib\Ether.WeightedSelector.dll</HintPath>
     </Reference>
-    <Reference Include="Landis.Library.Climate-v4">
-      <HintPath>lib\Landis.Library.Climate-v4.4.dll</HintPath>
+    <Reference Include="Landis.Library.Climate-v5">
     </Reference>
     <Reference Include="Landis.Library.Metadata-v2">
       <HintPath>lib\Landis.Library.Metadata-v2.dll</HintPath>

@@ -214,18 +214,20 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            AnnualClimate_Daily weatherData = null;
+            AnnualClimate weatherData = null;
             dNBR = new int[3];
             totalBurnedSites = new int[3];
             numberOfFire = new int[3];
             totalBiomassMortality = new int[3];
 
             modelCore.UI.WriteLine("   Processing landscape for Fire events ...");
+            weatherData = Climate.FutureEcoregionYearClimate[0][0];
 
             ActualYear = 0;
             try
             {
-                ActualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_AllData.First().Key;
+                ActualYear = weatherData.CalendarYear;
+                //ActualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_AllData.First().Key;
             }
             catch
             {
@@ -262,7 +264,7 @@ namespace Landis.Extension.Scrapple
 
                         try
                         {
-                            weatherData = Climate.Future_DailyData[ActualYear][climateRegion.Index];
+                            weatherData = Climate.FutureEcoregionYearClimate[climateRegion.Index][ActualYear];
                         }
                         catch
                         {
@@ -275,26 +277,26 @@ namespace Landis.Extension.Scrapple
 
                             landscapeAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * climateRegionFractionSites;
                             landscapeAverageTemperature += weatherData.DailyMaxTemp[day] * climateRegionFractionSites;
-                            if (weatherData.DailyMinRH[day] == -99.0)
-                            {
-                                double relativeHumidity = AnnualClimate_Daily.ConvertSHtoRH(weatherData.DailySpecificHumidity[day], weatherData.DailyTemp[day]);
-                                if (relativeHumidity > 100)
-                                {
-                                    relativeHumidity = 100.0;
-                                }
-                                landscapeAverageRelHumidity += relativeHumidity * climateRegionFractionSites;
-                            }
-                            else
-                            {
+                            //if (weatherData.DailyMinRH[day] == -99.0)
+                            //{
+                            //    double relativeHumidity = Climate.ConvertSHtoRH(weatherData.DailySpecificHumidity[day], weatherData.DailyTemp[day]);
+                            //    if (relativeHumidity > 100)
+                            //    {
+                            //        relativeHumidity = 100.0;
+                            //    }
+                            //    landscapeAverageRelHumidity += relativeHumidity * climateRegionFractionSites;
+                            //}
+                            //else
+                            //{
                                 landscapeAverageRelHumidity += weatherData.DailyMinRH[day] * climateRegionFractionSites;
-                            }
+                            //}
                         }
                         catch
                         {
                             throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found in Run(). Year: {0}, day: {1}, climate region: {2}, NumSites={3}", ActualYear, day, climateRegion.Name, sitesPerClimateRegion[climateRegion.Index]));
                         }
 
-                        if (Climate.Future_DailyData[PlugIn.ActualYear][climateRegion.Index].DailyRH[day] < 0)
+                        if (Climate.FutureEcoregionYearClimate[climateRegion.Index][PlugIn.ActualYear].DailyRH[day] < 0)
                         {
                             string mesg = string.Format("Relative Humidity not included in the climate data.  (RH is required to calculate FWI.) Year: {0}, day: {1}, climate region: {2}, NumSites={3}", ActualYear, day, climateRegion.Name, sitesPerClimateRegion[climateRegion.Index]);
                             throw new System.ApplicationException(mesg);

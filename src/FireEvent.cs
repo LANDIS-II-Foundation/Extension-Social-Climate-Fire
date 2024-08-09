@@ -38,7 +38,7 @@ namespace Landis.Extension.Scrapple
         public int AvailableCohorts;
         public double InitiationFireWeatherIndex;
         public IgnitionType IgnitionType;
-        AnnualClimate_Daily annualWeatherData;
+        AnnualClimate annualWeatherData;
         public int NumberOfDays;
         public int IgnitionDay;
         public double MeanIntensity;
@@ -101,8 +101,8 @@ namespace Landis.Extension.Scrapple
             this.IgnitionType = ignitionType;
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[initiationSite];
 
-            int actualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_DailyData.First().Key;
-            this.annualWeatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
+            int actualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.FutureEcoregionYearClimate[ecoregion.Index][0].CalendarYear;
+            this.annualWeatherData = Climate.FutureEcoregionYearClimate[ecoregion.Index][actualYear];
             SiteVars.Disturbed[initiationSite] = true;
 
             this.CohortsKilled = 0;
@@ -175,7 +175,7 @@ namespace Landis.Extension.Scrapple
                 try
                 {
 
-                    fireWeatherIndex = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyFireWeatherIndex[day];
+                    fireWeatherIndex = Climate.FutureEcoregionYearClimate[ecoregion.Index][PlugIn.ActualYear].DailyFireWeatherIndex[day];
                 }
                 catch
                 {
@@ -568,8 +568,8 @@ namespace Landis.Extension.Scrapple
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
 
             // EFFECTIVE WIND SPEED ************************
-            double windSpeed = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyWindSpeed[day];
-            double windDirection = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyWindDirection[day];// / 180 * Math.PI;
+            double windSpeed = Climate.FutureEcoregionYearClimate[ecoregion.Index][PlugIn.ActualYear].DailyWindSpeed[day];
+            double windDirection = Climate.FutureEcoregionYearClimate[ecoregion.Index][PlugIn.ActualYear].DailyWindDirection[day];// / 180 * Math.PI;
             siteWindDirection = windDirection;
             siteWindSpeed = windSpeed;
             siteFireWeatherIndex = fireWeatherIndex;
