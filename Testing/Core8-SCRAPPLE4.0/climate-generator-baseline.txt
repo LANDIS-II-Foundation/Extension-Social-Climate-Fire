@@ -1,10 +1,10 @@
 LandisData "Climate Config"				
 		
 ClimateTimeSeries			Daily_RandomYears
-ClimateFile				LTB_ClimateInputs_91_10_corrected_v2.csv
+ClimateFile				LTB_ClimateInputs_91_10_corrected.csv
 
 SpinUpClimateTimeSeries			Daily_AverageAllYears
-SpinUpClimateFile			LTB_ClimateInputs_91_10_corrected_v2.csv
+SpinUpClimateFile			LTB_ClimateInputs_91_10_corrected.csv
 
 GenerateClimateOutputFiles		no
 UsingFireClimate			yes

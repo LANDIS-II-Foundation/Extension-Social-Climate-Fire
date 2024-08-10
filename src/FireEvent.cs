@@ -101,8 +101,7 @@ namespace Landis.Extension.Scrapple
             this.IgnitionType = ignitionType;
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[initiationSite];
 
-            int actualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.FutureEcoregionYearClimate[ecoregion.Index][0].CalendarYear;
-            this.annualWeatherData = Climate.FutureEcoregionYearClimate[ecoregion.Index][actualYear];
+            this.annualWeatherData = PlugIn.AnnualWeatherData; // Climate.FutureEcoregionYearClimate[ecoregion.Index][actualYear];
             SiteVars.Disturbed[initiationSite] = true;
 
             this.CohortsKilled = 0;
@@ -175,11 +174,12 @@ namespace Landis.Extension.Scrapple
                 try
                 {
 
-                    fireWeatherIndex = Climate.FutureEcoregionYearClimate[ecoregion.Index][PlugIn.ActualYear].DailyFireWeatherIndex[day];
+                    fireWeatherIndex = this.annualWeatherData.DailyFireWeatherIndex[day];
+                    //fireWeatherIndex = Climate.FutureEcoregionYearClimate[ecoregion.Index][PlugIn.CalendarActualYear].DailyFireWeatherIndex[day];
                 }
                 catch
                 {
-                    throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found in Spread().  Year: {0}, Day: {1}, Ecoregion: {2}.", PlugIn.ActualYear, day, ecoregion.Name));
+                    throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found in Spread().  Year: {0}, Day: {1}, Ecoregion: {2}.", PlugIn.CalendarActualYear, day, ecoregion.Name));
                 }
 
                 double effectiveWindSpeed = CalculateEffectiveWindSpeed(targetSite, sourceSite, fireWeatherIndex, day);
@@ -296,18 +296,6 @@ namespace Landis.Extension.Scrapple
 
             // Establish the variables 
             double Clay = SiteVars.Clay[site];
-            //double Previous_Year_ET = 0.0;
-            //try
-            //{
-            //    Previous_Year_ET = Climate.Future_DailyData[PlugIn.ActualYear - 1][ecoregion.Index].AnnualAET;
-            //}
-            //catch
-            //{
-            //    // Indicating that we're at the first year, without a prior year.
-            //    Previous_Year_ET = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].AnnualAET;
-            //}
-
-            //double Previous_Year_PET = SiteVars.PotentialEvapotranspiration[site];
 
             double Previous_Year_PET = 0.0;
             if (SiteVars.PotentialEvapotranspiration[site] > 0)
@@ -568,8 +556,8 @@ namespace Landis.Extension.Scrapple
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
 
             // EFFECTIVE WIND SPEED ************************
-            double windSpeed = Climate.FutureEcoregionYearClimate[ecoregion.Index][PlugIn.ActualYear].DailyWindSpeed[day];
-            double windDirection = Climate.FutureEcoregionYearClimate[ecoregion.Index][PlugIn.ActualYear].DailyWindDirection[day];// / 180 * Math.PI;
+            double windSpeed = this.annualWeatherData.DailyWindSpeed[day];
+            double windDirection = this.annualWeatherData.DailyWindDirection[day];
             siteWindDirection = windDirection;
             siteWindSpeed = windSpeed;
             siteFireWeatherIndex = fireWeatherIndex;
@@ -618,6 +606,7 @@ namespace Landis.Extension.Scrapple
             EventsLog el = new EventsLog();
             el.EventID = eventID;
             el.SimulationYear = currentTime;
+            el.FutureClimateYear = fireEvent.annualWeatherData.CalendarYear;
             el.InitRow = fireEvent.initiationSite.Location.Row;
             el.InitColumn = fireEvent.initiationSite.Location.Column;
             el.InitialFireWeatherIndex = fireEvent.InitiationFireWeatherIndex;

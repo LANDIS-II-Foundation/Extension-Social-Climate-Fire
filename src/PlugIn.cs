@@ -26,7 +26,8 @@ namespace Landis.Extension.Scrapple
         public static MetadataTable<EventsLog> eventLog;
         public static MetadataTable<SummaryLog> summaryLog;
         public static MetadataTable<IgnitionsLog> ignitionsLog;
-        
+        public static AnnualClimate AnnualWeatherData;
+
         // Get the active sites from the landscape and shuffle them 
         //public List<ActiveSite> activeRxSites; 
         //public List<ActiveSite> activeAccidentalSites;
@@ -44,7 +45,7 @@ namespace Landis.Extension.Scrapple
         public static int FutureClimateBaseYear;
         public static Dictionary<int, int> sitesPerClimateRegion;
         public static Dictionary<int, double> fractionSitesPerClimateRegion;
-        public static int ActualYear;
+        public static int CalendarActualYear;
         public static int EventID = 0;
 
         private static int[] dNBR;
@@ -119,6 +120,7 @@ namespace Landis.Extension.Scrapple
 
             sitesPerClimateRegion = new Dictionary<int, int>();
 
+            // This ensures that we're not including non-active ecoregions, where we might not have climate data
             foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
             {
                 IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
@@ -131,7 +133,7 @@ namespace Landis.Extension.Scrapple
 
             fractionSitesPerClimateRegion = new Dictionary<int, double>();
             foreach (IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
-            {
+            {                
                 if (sitesPerClimateRegion.ContainsKey(ecoregion.Index))
                 {
                     fractionSitesPerClimateRegion.Add(ecoregion.Index, ((double)sitesPerClimateRegion[ecoregion.Index] / (double)modelCore.Landscape.ActiveSiteCount));
@@ -168,11 +170,6 @@ namespace Landis.Extension.Scrapple
                 {
                     PlugIn.ModelCore.UI.WriteLine("   Reading in new Ignitions Maps {0}.", dynamicRxIgnitions.MapName);
                     MapUtility.ReadMap(dynamicRxIgnitions.MapName, SiteVars.RxFireWeight);
-
-                    //double totalWeight = 0.0;
-                    //activeRxSites = PreShuffle(SiteVars.RxFireWeight, out totalWeight);
-                    //rxTotalWeight = totalWeight;
-
                 }
 
             }
@@ -183,11 +180,6 @@ namespace Landis.Extension.Scrapple
                 {
                     PlugIn.ModelCore.UI.WriteLine("   Reading in new Ignitions Maps {0}.", dynamicLxIgns.MapName);
                     MapUtility.ReadMap(dynamicLxIgns.MapName, SiteVars.LightningFireWeight);
-
-                    //double totalWeight = 0.0;
-                    //activeLightningSites = PreShuffle(SiteVars.LightningFireWeight, out totalWeight);
-                    //lightningTotalWeight = totalWeight;
-
                 }
 
             }
@@ -197,11 +189,6 @@ namespace Landis.Extension.Scrapple
                 {
                     PlugIn.ModelCore.UI.WriteLine("   Reading in new Ignitions Maps {0}.", dynamicAxIgns.MapName);
                     MapUtility.ReadMap(dynamicAxIgns.MapName, SiteVars.AccidentalFireWeight);
-
-                    //double totalWeight = 0.0;
-                    //activeAccidentalSites = PreShuffle(SiteVars.AccidentalFireWeight, out totalWeight);
-                    //accidentalTotalWeight = totalWeight;
-
                 }
 
             }
@@ -214,24 +201,24 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            AnnualClimate weatherData = null;
+            
             dNBR = new int[3];
             totalBurnedSites = new int[3];
             numberOfFire = new int[3];
             totalBiomassMortality = new int[3];
 
             modelCore.UI.WriteLine("   Processing landscape for Fire events ...");
-            weatherData = Climate.FutureEcoregionYearClimate[0][0];
+            AnnualWeatherData = Climate.FutureEcoregionYearClimate[0][PlugIn.ModelCore.CurrentTime];  // according to notes in NECN.ClimateRegionData.cs, climatic year is a 1-based index
 
-            ActualYear = 0;
+            CalendarActualYear = 0;
             try
             {
-                ActualYear = weatherData.CalendarYear;
-                //ActualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_AllData.First().Key;
+                CalendarActualYear = AnnualWeatherData.CalendarYear;
+                modelCore.UI.WriteLine("   Fire data taken from year {0}.", CalendarActualYear);
             }
             catch
             {
-                throw new UninitializedClimateData(string.Format("Could not initilize the actual year {0} from climate data", ActualYear));
+                throw new UninitializedClimateData(string.Format("Could not initilize the actual year {0} from climate data", CalendarActualYear));
             }
 
             // modelCore.UI.WriteLine("   Next, shuffle ignition sites...");
@@ -260,23 +247,14 @@ namespace Landis.Extension.Scrapple
                 {
                     if (sitesPerClimateRegion.ContainsKey(climateRegion.Index))
                     {
-                        double climateRegionFractionSites = (double) fractionSitesPerClimateRegion[climateRegion.Index];
-
-                        try
-                        {
-                            weatherData = Climate.FutureEcoregionYearClimate[climateRegion.Index][ActualYear];
-                        }
-                        catch
-                        {
-                            throw new UninitializedClimateData(string.Format("Climate data could not be found in Run(). Year: {0} in ecoregion: {1}", ActualYear, climateRegion.Name));
-                        }
+                        double climateRegionFractionSites = fractionSitesPerClimateRegion[climateRegion.Index];
 
                         try
                         {
                             // modelCore.UI.WriteLine(" Fire Weather Check Daily={0}, Average={1}", weatherData.DailyFireWeatherIndex[day], landscapeAverageFireWeatherIndex);
 
-                            landscapeAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * climateRegionFractionSites;
-                            landscapeAverageTemperature += weatherData.DailyMaxTemp[day] * climateRegionFractionSites;
+                            landscapeAverageFireWeatherIndex += AnnualWeatherData.DailyFireWeatherIndex[day] * climateRegionFractionSites;
+                            landscapeAverageTemperature += AnnualWeatherData.DailyMaxTemp[day] * climateRegionFractionSites;
                             //if (weatherData.DailyMinRH[day] == -99.0)
                             //{
                             //    double relativeHumidity = Climate.ConvertSHtoRH(weatherData.DailySpecificHumidity[day], weatherData.DailyTemp[day]);
@@ -288,25 +266,23 @@ namespace Landis.Extension.Scrapple
                             //}
                             //else
                             //{
-                                landscapeAverageRelHumidity += weatherData.DailyMinRH[day] * climateRegionFractionSites;
+                                landscapeAverageRelHumidity += AnnualWeatherData.DailyMinRH[day] * climateRegionFractionSites;
                             //}
                         }
                         catch
                         {
-                            throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found in Run(). Year: {0}, day: {1}, climate region: {2}, NumSites={3}", ActualYear, day, climateRegion.Name, sitesPerClimateRegion[climateRegion.Index]));
+                            throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found in Run(). Year: {0}, day: {1}, climate region: {2}, NumSites={3}", CalendarActualYear, day, climateRegion.Name, sitesPerClimateRegion[climateRegion.Index]));
                         }
 
-                        if (Climate.FutureEcoregionYearClimate[climateRegion.Index][PlugIn.ActualYear].DailyRH[day] < 0)
+                        if (AnnualWeatherData.DailyRH[day] < 0)
                         {
-                            string mesg = string.Format("Relative Humidity not included in the climate data.  (RH is required to calculate FWI.) Year: {0}, day: {1}, climate region: {2}, NumSites={3}", ActualYear, day, climateRegion.Name, sitesPerClimateRegion[climateRegion.Index]);
+                            string mesg = string.Format("Relative Humidity not included in the climate data.  (RH is required to calculate FWI.) Year: {0}, day: {1}, climate region: {2}, NumSites={3}", CalendarActualYear, day, climateRegion.Name, sitesPerClimateRegion[climateRegion.Index]);
                             throw new System.ApplicationException(mesg);
                         }
 
 
                     }
                 }
-
-             
                 
                 //PlugIn.ModelCore.UI.WriteLine("   Generating accidental fires...");
                 if (numAccidentalSites > 0)
@@ -364,7 +340,7 @@ namespace Landis.Extension.Scrapple
                     landscapeAverageFireWeatherIndex < Parameters.RxMaxFireWeatherIndex &&
                     landscapeAverageTemperature < Parameters.RxMaxTemperature &&
                     landscapeAverageRelHumidity > Parameters.RxMinRelativeHumidity &&
-                    weatherData.DailyWindSpeed[day] < Parameters.RxMaxWindSpeed &&
+                    AnnualWeatherData.DailyWindSpeed[day] < Parameters.RxMaxWindSpeed &&
                     day >= Parameters.RxFirstDayFire &&
                     day < Parameters.RxLastDayFire)
                 {
@@ -399,7 +375,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            modelCore.UI.WriteLine("  Fire for the year completed.  Next, write fire maps and summary fire files. ...");
+            modelCore.UI.WriteLine("   Fire for the year completed.  Next, write fire maps and summary fire files. ...");
 
             WriteMaps(PlugIn.ModelCore.CurrentTime);
 

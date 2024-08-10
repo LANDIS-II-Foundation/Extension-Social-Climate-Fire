@@ -17,6 +17,9 @@ namespace Landis.Extension.Scrapple
         [DataFieldAttribute(Unit = FieldUnits.Year, Desc = "Year")]
         public int SimulationYear {set; get;}
 
+        [DataFieldAttribute(Unit = FieldUnits.Year, Desc = "Year")]
+        public int FutureClimateYear { set; get; }
+
         [DataFieldAttribute(Desc = "Initiation Row")]
         public int InitRow { set; get; }
 
