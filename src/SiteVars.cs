@@ -4,7 +4,7 @@ using Landis.SpatialModeling;
 using Landis.Library.UniversalCohorts;
 //using Landis.Library.Biomass;
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
     public static class SiteVars
     {

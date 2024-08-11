@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
 
     public enum IgnitionType : int
@@ -101,7 +101,7 @@ namespace Landis.Extension.Scrapple
             this.IgnitionType = ignitionType;
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[initiationSite];
 
-            this.annualWeatherData = PlugIn.AnnualWeatherData; // Climate.FutureEcoregionYearClimate[ecoregion.Index][actualYear];
+            this.annualWeatherData = Climate.FutureEcoregionYearClimate[ecoregion.Index][PlugIn.ModelCore.CurrentTime];
             SiteVars.Disturbed[initiationSite] = true;
 
             this.CohortsKilled = 0;
@@ -174,7 +174,7 @@ namespace Landis.Extension.Scrapple
                 try
                 {
 
-                    fireWeatherIndex = this.annualWeatherData.DailyFireWeatherIndex[day];
+                    fireWeatherIndex = Climate.FutureEcoregionYearClimate[ecoregion.Index][PlugIn.ModelCore.CurrentTime].DailyFireWeatherIndex[day];
                     //fireWeatherIndex = Climate.FutureEcoregionYearClimate[ecoregion.Index][PlugIn.CalendarActualYear].DailyFireWeatherIndex[day];
                 }
                 catch
@@ -208,10 +208,8 @@ namespace Landis.Extension.Scrapple
                     (PlugIn.Parameters.MaximumSpreadAreaB1 * fireWeatherIndex) +
                     (PlugIn.Parameters.MaximumSpreadAreaB2 * effectiveWindSpeed));
 
-
-
-                    //PlugIn.ModelCore.UI.WriteLine("   Day={0}, spreadAreaMaxHectares={1}, dailySpreadArea={2}, FWI={3}, WS={4}", day, spreadAreaMaxHectares, dailySpreadArea, fireWeatherIndex, effectiveWindSpeed);
-
+                    if (this.MaxSpreadArea <= 0)
+                        PlugIn.ModelCore.UI.WriteLine("   WARNING:  MaxSpreadArea < 0!  Day={0}, spreadAreaMaxHectares={1}, dailySpreadArea={2}, FWI={3}, WS={4}", day, this.MaxSpreadArea, dailySpreadArea, fireWeatherIndex, effectiveWindSpeed);
 
                     //  if spread-area > spread-area-max, day = day + 1, assuming that spreadAreaMax units are hectares:
                     if (dailySpreadArea > this.MaxSpreadArea)

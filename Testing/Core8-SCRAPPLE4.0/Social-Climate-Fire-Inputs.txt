@@ -1,10 +1,10 @@
-LandisData  "SCRAPPLE"
+LandisData  "Social Climate Fire"
 
 >> Note:  All inputs are provided as examples only.  They are not intended to serve as default values.
 
 Timestep                            1
 
-Species_CSV_File	SCRPPLE_Spp_Table.csv
+Species_CSV_File	Fire_Spp_Table.csv
 
 AccidentalIgnitionsMap     ./Accidental_Ignition_Map.tif
 LightningIgnitionsMap  ./Lightning_Ignition_Map.tif
@@ -53,9 +53,9 @@ LastDayRxFires 300
 TargetRxSize 40
 >> RxZonesMap fire-zones.gis  << Optional
 
-MaximumSpreadAreaB0	10
-MaximumSpreadAreaB1	-2.5 <<-3 <<FWI
-MaximumSpreadAreaB2	-2.5 <<-2.5  <<effective wind speed
+MaximumSpreadAreaB0	100
+MaximumSpreadAreaB1	-2.5 <<FWI
+MaximumSpreadAreaB2	-2.5 <<effective wind speed
 
 SpreadProbabilityB0 -1.79 << Intercept
 SpreadProbabilityB1 0.06  <<FWI

@@ -5,7 +5,7 @@ using Landis.Core;
 using System.Collections.Generic;
 using System.Data;
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
     /// <summary>
     /// A parser that reads the plug-in's parameters from text input.

@@ -9,7 +9,7 @@ using Landis.Library.Metadata;
 using Landis.Utilities;
 using Landis.Core;
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
     public static class MetadataHandler
     {
@@ -34,7 +34,7 @@ namespace Landis.Extension.Scrapple
             //          table outputs:   
             //---------------------------------------
 
-            PlugIn.ignitionsLog = new MetadataTable<IgnitionsLog>("scrapple-ignitions-log.csv");
+            PlugIn.ignitionsLog = new MetadataTable<IgnitionsLog>("socialclimatefire-ignitions-log.csv");
 
             OutputMetadata tblOut_igns = new OutputMetadata()
             {
@@ -46,7 +46,7 @@ namespace Landis.Extension.Scrapple
             tblOut_igns.RetriveFields(typeof(IgnitionsLog));
             Extension.OutputMetadatas.Add(tblOut_igns);
 
-            PlugIn.eventLog = new MetadataTable<EventsLog>("scrapple-events-log.csv");
+            PlugIn.eventLog = new MetadataTable<EventsLog>("socialclimatefire-events-log.csv");
 
             OutputMetadata tblOut_events = new OutputMetadata()
             {
@@ -58,7 +58,7 @@ namespace Landis.Extension.Scrapple
             tblOut_events.RetriveFields(typeof(EventsLog));
             Extension.OutputMetadatas.Add(tblOut_events);
 
-            PlugIn.summaryLog = new MetadataTable<SummaryLog>("scrapple-summary-log.csv");
+            PlugIn.summaryLog = new MetadataTable<SummaryLog>("socialclimatefire-summary-log.csv");
 
             OutputMetadata tblSummaryOut_events = new OutputMetadata()
             {

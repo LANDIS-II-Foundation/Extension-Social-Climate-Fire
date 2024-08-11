@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>Landis.Extension.Scrapple</RootNamespace>
-    <AssemblyName>Landis.Extension.Scrapple-v4</AssemblyName>
-    <AssemblyTitle>Landis.Extension.Scrapple-v4</AssemblyTitle>
+    <RootNamespace>Landis.Extension.SocialClimateFire</RootNamespace>
+    <AssemblyName>Landis.Extension.SocialClimateFire-v4</AssemblyName>
+    <AssemblyTitle>Landis.Extension.SocialClimateFire-v4</AssemblyTitle>
     <AssemblyCopyright>Landis-II-Foundation</AssemblyCopyright>
     <AssemblyVersion>4.0</AssemblyVersion>
     <Version>4.0</Version>
@@ -14,7 +14,7 @@
     <RepositoryType>git</RepositoryType>
     <NeutralLanguage>English</NeutralLanguage>
     <Authors>Robert Scheller, Zachary Robbins, Todd Hawbaker, Paul Henne, Alec Kretchun</Authors>
-    <Product>Landis.Extension.Scrapple-v4</Product>
+    <Product>Landis.Extension.SocialClimateFire-v4</Product>
     <Copyright>Landis-II-Foundation</Copyright>
     <Company>LANDIS-II Foundation</Company>
     <Description></Description>

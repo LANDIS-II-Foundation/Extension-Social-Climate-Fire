@@ -4,7 +4,7 @@ using Landis.SpatialModeling;
 using System.IO;
 
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
     public static class MapUtility
     {

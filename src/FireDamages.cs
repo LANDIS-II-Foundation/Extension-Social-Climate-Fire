@@ -4,7 +4,7 @@ using Landis.Utilities;
 using Landis.Core;
 
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
     /// <summary>
     /// Definition of a Fire Damage Class.
@@ -41,7 +41,7 @@ namespace Landis.Extension.Scrapple
 }
 
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
     /// <summary>
     /// Definition of a Fire Damage class.

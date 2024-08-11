@@ -4,7 +4,7 @@ using Landis.Utilities;
 using System.Collections.Generic;
 using Landis.Core;
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
 
 
@@ -84,7 +84,7 @@ namespace Landis.Extension.Scrapple
     }
 }
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
     /// <summary>
     /// Parameters for the plug-in.

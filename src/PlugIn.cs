@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
     ///<summary>
     /// A disturbance plug-in that simulates Fire disturbance.
@@ -22,19 +22,10 @@ namespace Landis.Extension.Scrapple
         private static readonly bool isDebugEnabled = true; 
 
         public static readonly ExtensionType ExtType = new ExtensionType("disturbance:fire");
-        public static readonly string ExtensionName = "SCRAPPLE";
+        public static readonly string ExtensionName = "Social Climate Fire";
         public static MetadataTable<EventsLog> eventLog;
         public static MetadataTable<SummaryLog> summaryLog;
         public static MetadataTable<IgnitionsLog> ignitionsLog;
-        public static AnnualClimate AnnualWeatherData;
-
-        // Get the active sites from the landscape and shuffle them 
-        //public List<ActiveSite> activeRxSites; 
-        //public List<ActiveSite> activeAccidentalSites;
-        //public List<ActiveSite> activeLightningSites;
-        //public double rxTotalWeight;
-        //public double accidentalTotalWeight;
-        //public double lightningTotalWeight;
 
         // RMS Testing 8/2019
         public WeightedSelector<ActiveSite> weightedRxSites;
@@ -105,7 +96,7 @@ namespace Landis.Extension.Scrapple
         {
             Timestep = 1;  // RMS:  Initially we will force annual time step. parameters.Timestep;
 
-            modelCore.UI.WriteLine("Initializing SCRAPPLE Fire...");
+            modelCore.UI.WriteLine("Initializing Fire...");
 
             SpeciesData.Initialize(Parameters);
             dynamicRxIgns = Parameters.DynamicRxIgnitionMaps;
@@ -208,12 +199,12 @@ namespace Landis.Extension.Scrapple
             totalBiomassMortality = new int[3];
 
             modelCore.UI.WriteLine("   Processing landscape for Fire events ...");
-            AnnualWeatherData = Climate.FutureEcoregionYearClimate[0][PlugIn.ModelCore.CurrentTime];  // according to notes in NECN.ClimateRegionData.cs, climatic year is a 1-based index
+            AnnualClimate WeatherData = Climate.FutureEcoregionYearClimate[0][PlugIn.ModelCore.CurrentTime];  // according to notes in NECN.ClimateRegionData.cs, climatic year is a 1-based index
 
             CalendarActualYear = 0;
             try
             {
-                CalendarActualYear = AnnualWeatherData.CalendarYear;
+                CalendarActualYear = WeatherData.CalendarYear;
                 modelCore.UI.WriteLine("   Fire data taken from year {0}.", CalendarActualYear);
             }
             catch
@@ -241,6 +232,7 @@ namespace Landis.Extension.Scrapple
                 double landscapeAverageFireWeatherIndex = 0.0;
                 double landscapeAverageTemperature = 0.0;
                 double landscapeAverageRelHumidity = 0.0;
+                double landscapeAverageWindSpeed = 0.0;
                 // number of fires get initilized to 0 every timestep
 
                 foreach (IEcoregion climateRegion in PlugIn.ModelCore.Ecoregions)
@@ -253,8 +245,10 @@ namespace Landis.Extension.Scrapple
                         {
                             // modelCore.UI.WriteLine(" Fire Weather Check Daily={0}, Average={1}", weatherData.DailyFireWeatherIndex[day], landscapeAverageFireWeatherIndex);
 
-                            landscapeAverageFireWeatherIndex += AnnualWeatherData.DailyFireWeatherIndex[day] * climateRegionFractionSites;
-                            landscapeAverageTemperature += AnnualWeatherData.DailyMaxTemp[day] * climateRegionFractionSites;
+                            landscapeAverageFireWeatherIndex += Climate.FutureEcoregionYearClimate[climateRegion.Index][PlugIn.ModelCore.CurrentTime].DailyFireWeatherIndex[day] * climateRegionFractionSites;
+                            landscapeAverageTemperature += Climate.FutureEcoregionYearClimate[climateRegion.Index][PlugIn.ModelCore.CurrentTime].DailyMaxTemp[day] * climateRegionFractionSites;
+                            landscapeAverageRelHumidity += Climate.FutureEcoregionYearClimate[climateRegion.Index][PlugIn.ModelCore.CurrentTime].DailyMinRH[day] * climateRegionFractionSites;
+                            landscapeAverageWindSpeed += Climate.FutureEcoregionYearClimate[climateRegion.Index][PlugIn.ModelCore.CurrentTime].DailyWindSpeed[day] * climateRegionFractionSites;
                             //if (weatherData.DailyMinRH[day] == -99.0)
                             //{
                             //    double relativeHumidity = Climate.ConvertSHtoRH(weatherData.DailySpecificHumidity[day], weatherData.DailyTemp[day]);
@@ -266,7 +260,6 @@ namespace Landis.Extension.Scrapple
                             //}
                             //else
                             //{
-                                landscapeAverageRelHumidity += AnnualWeatherData.DailyMinRH[day] * climateRegionFractionSites;
                             //}
                         }
                         catch
@@ -274,7 +267,7 @@ namespace Landis.Extension.Scrapple
                             throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found in Run(). Year: {0}, day: {1}, climate region: {2}, NumSites={3}", CalendarActualYear, day, climateRegion.Name, sitesPerClimateRegion[climateRegion.Index]));
                         }
 
-                        if (AnnualWeatherData.DailyRH[day] < 0)
+                        if (Climate.FutureEcoregionYearClimate[climateRegion.Index][PlugIn.ModelCore.CurrentTime].DailyRH[day] < 0)
                         {
                             string mesg = string.Format("Relative Humidity not included in the climate data.  (RH is required to calculate FWI.) Year: {0}, day: {1}, climate region: {2}, NumSites={3}", CalendarActualYear, day, climateRegion.Name, sitesPerClimateRegion[climateRegion.Index]);
                             throw new System.ApplicationException(mesg);
@@ -340,7 +333,7 @@ namespace Landis.Extension.Scrapple
                     landscapeAverageFireWeatherIndex < Parameters.RxMaxFireWeatherIndex &&
                     landscapeAverageTemperature < Parameters.RxMaxTemperature &&
                     landscapeAverageRelHumidity > Parameters.RxMinRelativeHumidity &&
-                    AnnualWeatherData.DailyWindSpeed[day] < Parameters.RxMaxWindSpeed &&
+                    landscapeAverageWindSpeed < Parameters.RxMaxWindSpeed &&
                     day >= Parameters.RxFirstDayFire &&
                     day < Parameters.RxLastDayFire)
                 {
