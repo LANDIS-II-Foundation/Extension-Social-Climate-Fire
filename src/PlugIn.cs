@@ -300,7 +300,7 @@ namespace Landis.Extension.SocialClimateFire
                     }
                 }
                 
-                PlugIn.ModelCore.UI.WriteLine("   Generating accidental fires...");
+                //PlugIn.ModelCore.UI.WriteLine("   Generating accidental fires...");
                 if (numAccidentalSites > 0)
                 {
                     bool fire = false;
@@ -324,7 +324,7 @@ namespace Landis.Extension.SocialClimateFire
                 }
 
                 /// Removed FWI threshold ZR 11-12-20
-                PlugIn.ModelCore.UI.WriteLine("   Generating lightning fires...");
+                //PlugIn.ModelCore.UI.WriteLine("   Generating lightning fires...");
                 if (numLightningSites > 0)
                 {
                     bool fire = false;
@@ -348,7 +348,7 @@ namespace Landis.Extension.SocialClimateFire
                 }
 
                 // Ignite a single Rx fire per day
-                PlugIn.ModelCore.UI.WriteLine("   Generating prescribed fires...");
+                //PlugIn.ModelCore.UI.WriteLine("   Generating prescribed fires...");
 
                 if (numRxSites > 0 &&
                     numAnnualRxFires > 0 &&
