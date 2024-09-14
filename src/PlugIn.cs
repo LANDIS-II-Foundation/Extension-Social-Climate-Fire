@@ -26,6 +26,14 @@ namespace Landis.Extension.SocialClimateFire
         public static MetadataTable<EventsLog> eventLog;
         public static MetadataTable<SummaryLog> summaryLog;
         public static MetadataTable<IgnitionsLog> ignitionsLog;
+        
+        // Get the active sites from the landscape and shuffle them 
+        //public List<ActiveSite> activeRxSites; 
+        //public List<ActiveSite> activeAccidentalSites;
+        //public List<ActiveSite> activeLightningSites;
+        //public double rxTotalWeight;
+        //public double accidentalTotalWeight;
+        //public double lightningTotalWeight;
 
         // RMS Testing 8/2019
         public WeightedSelector<ActiveSite> weightedRxSites;
@@ -161,6 +169,11 @@ namespace Landis.Extension.SocialClimateFire
                 {
                     PlugIn.ModelCore.UI.WriteLine("   Reading in new Ignitions Maps {0}.", dynamicRxIgnitions.MapName);
                     MapUtility.ReadMap(dynamicRxIgnitions.MapName, SiteVars.RxFireWeight);
+
+                    //double totalWeight = 0.0;
+                    //activeRxSites = PreShuffle(SiteVars.RxFireWeight, out totalWeight);
+                    //rxTotalWeight = totalWeight;
+
                 }
 
             }
@@ -171,6 +184,11 @@ namespace Landis.Extension.SocialClimateFire
                 {
                     PlugIn.ModelCore.UI.WriteLine("   Reading in new Ignitions Maps {0}.", dynamicLxIgns.MapName);
                     MapUtility.ReadMap(dynamicLxIgns.MapName, SiteVars.LightningFireWeight);
+
+                    //double totalWeight = 0.0;
+                    //activeLightningSites = PreShuffle(SiteVars.LightningFireWeight, out totalWeight);
+                    //lightningTotalWeight = totalWeight;
+
                 }
 
             }
@@ -180,6 +198,11 @@ namespace Landis.Extension.SocialClimateFire
                 {
                     PlugIn.ModelCore.UI.WriteLine("   Reading in new Ignitions Maps {0}.", dynamicAxIgns.MapName);
                     MapUtility.ReadMap(dynamicAxIgns.MapName, SiteVars.AccidentalFireWeight);
+
+                    //double totalWeight = 0.0;
+                    //activeAccidentalSites = PreShuffle(SiteVars.AccidentalFireWeight, out totalWeight);
+                    //accidentalTotalWeight = totalWeight;
+
                 }
 
             }
@@ -212,7 +235,7 @@ namespace Landis.Extension.SocialClimateFire
                 throw new UninitializedClimateData(string.Format("Could not initilize the actual year {0} from climate data", CalendarActualYear));
             }
 
-            // modelCore.UI.WriteLine("   Next, shuffle ignition sites...");
+            modelCore.UI.WriteLine("   Next, shuffle ignition sites...");
             // Get the active sites from the landscape and shuffle them 
             // Sites are weighted for ignition in the Ether.WeightedSelector Shuffle method, based on the respective inputs maps.
             int numSites = 0;
@@ -223,7 +246,7 @@ namespace Landis.Extension.SocialClimateFire
             weightedLightningSites = PreShuffleEther(SiteVars.LightningFireWeight, out numSites);
             int numLightningSites = numSites;
 
-            //modelCore.UI.WriteLine("   Next, loop through each day to start fires...");
+            modelCore.UI.WriteLine("   Next, loop through each day to start fires...");
 
             int numAnnualRxFires = Parameters.RxNumberAnnualFires;
 
@@ -277,7 +300,7 @@ namespace Landis.Extension.SocialClimateFire
                     }
                 }
                 
-                //PlugIn.ModelCore.UI.WriteLine("   Generating accidental fires...");
+                PlugIn.ModelCore.UI.WriteLine("   Generating accidental fires...");
                 if (numAccidentalSites > 0)
                 {
                     bool fire = false;
@@ -301,7 +324,7 @@ namespace Landis.Extension.SocialClimateFire
                 }
 
                 /// Removed FWI threshold ZR 11-12-20
-                //PlugIn.ModelCore.UI.WriteLine("   Generating lightning fires...");
+                PlugIn.ModelCore.UI.WriteLine("   Generating lightning fires...");
                 if (numLightningSites > 0)
                 {
                     bool fire = false;
@@ -325,7 +348,7 @@ namespace Landis.Extension.SocialClimateFire
                 }
 
                 // Ignite a single Rx fire per day
-                //PlugIn.ModelCore.UI.WriteLine("   Generating prescribed fires...");
+                PlugIn.ModelCore.UI.WriteLine("   Generating prescribed fires...");
 
                 if (numRxSites > 0 &&
                     numAnnualRxFires > 0 &&
