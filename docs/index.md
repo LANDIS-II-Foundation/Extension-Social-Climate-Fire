@@ -10,7 +10,7 @@ Scheller, R.M., A. Kretchun, T.J. Hawbaker, P.D. Henne. 2019. A landscape model 
 
 - Latest release: Version 4.0 — September 2024
 - Full release details found in the User Guide and on GitHub.
-- [View User Guide](https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/blob/master/docs/LANDIS-II%20SCRAPPLE%20v4.0%20User%20Guide.pdf).
+- [View User Guide](https://github.com/LANDIS-II-Foundation/Extension-Social-Climate-Fire/blob/master/docs/LANDIS-II%20SocialClimateFire%20v4.0%20User%20Guide.pdf).
 - SCRPPLE depends on the Climate Library, see: [Coming soon!](404)
 - Copyright: The LANDIS-II Foundation
 
@@ -24,20 +24,20 @@ You need:
 
 # Download and Install the Extension
 
-- The latest version can be [downloaded from GitHub](https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/blob/master/deploy/installer/LANDIS-II-V8%20SCRAPPLE%204.0-setup.exe). (Look for the download icon in the upper right corner.)  Launch the installer.
+- The latest version can be [downloaded from GitHub](https://github.com/LANDIS-II-Foundation/Extension-Social-Climate-Fire/blob/master/deploy/installer/LANDIS-II-V8%20SocialClimateFire%204.0-setup.exe). (Look for the download icon in the upper right corner.)  Launch the installer.
 
 # Example Files
 
-Example files can be [downloaded from GitHub](https://downgit.github.io/#/home?url=https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/tree/master/Testing/Core8-SCRAPPLE4.0).
+Example files can be [downloaded from GitHub](https://downgit.github.io/#/home?url=https://github.com/LANDIS-II-Foundation/Extension-Social-Climate-Fire/tree/master/Testing/Core8-SocialClimateFire4.0).
 
 # Supporting R-Code
 
-We also provide R-code that has been used to parameterize SCRPPLE.  This R-code is provided 'as is' and no support is implied.  [R code on GitHub](https://downgit.github.io/#/home?url=https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/tree/master/Supporting%20R%20Code)
+We also provide R-code that has been used to parameterize SCRPPLE.  This R-code is provided 'as is' and no support is implied.  [R code on GitHub](https://downgit.github.io/#/home?url=https://github.com/LANDIS-II-Foundation/Extension-Social-Climate-Fire/tree/master/Supporting%20R%20Code)
 
 # Support
 
 If you have a question, please contact Robert Scheller. 
 You can also ask for help in the [LANDIS-II users group](http://www.landis-ii.org/users).
 
-If you come across any issue or suspected bug, please post about it in the [issue section of the Github repository](https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/issues) (GitHub ID required).
+If you come across any issue or suspected bug, please post about it in the [issue section of the Github repository](https://github.com/LANDIS-II-Foundation/Extension-Social-Climate-Fire/issues) (GitHub ID required).
 
