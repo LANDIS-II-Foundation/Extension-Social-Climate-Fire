@@ -10,8 +10,8 @@ Scheller, R.M., A. Kretchun, T.J. Hawbaker, P.D. Henne. 2019. A landscape model 
 
 - Latest release: Version 4.0 — September 2024
 - Full release details found in the User Guide and on GitHub.
-- [View User Guide](https://github.com/LANDIS-II-Foundation/Extension-Social-Climate-Fire/blob/master/docs/LANDIS-II%20SocialClimateFire%20v4.0%20User%20Guide.pdf).
-- SCRPPLE depends on the Climate Library, see: [Coming soon!](404)
+- [View User Guide](https://github.com/LANDIS-II-Foundation/Extension-Social-Climate-Fire/blob/master/docs/LANDIS-II%20Social-Climate-Fire%20v4.0%20User%20Guide.pdf).
+- Social-Climate-Fire depends on the Climate Library, see: [Coming soon!](404)
 - Copyright: The LANDIS-II Foundation
 
 # Requirements
