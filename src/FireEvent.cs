@@ -1,16 +1,14 @@
 //  Authors:  Robert M. Scheller, Alec Kretchun, Vincent Schuster
 
-using Landis.Library.BiomassCohorts;
+using Landis.Library.UniversalCohorts;
 using Landis.SpatialModeling;
 using Landis.Core;
 using Landis.Library.Climate;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Linq;
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
 
     public enum IgnitionType : int
@@ -40,7 +38,7 @@ namespace Landis.Extension.Scrapple
         public int AvailableCohorts;
         public double InitiationFireWeatherIndex;
         public IgnitionType IgnitionType;
-        AnnualClimate_Daily annualWeatherData;
+        AnnualClimate annualWeatherData;
         public int NumberOfDays;
         public int IgnitionDay;
         public double MeanIntensity;
@@ -58,11 +56,6 @@ namespace Landis.Extension.Scrapple
         public double MeanFWI;
         public double TotalBiomassMortality;
         public ActiveSite currentSite;
-        //public int NumberCellsSeverity1;
-        //public int NumberCellsSeverity2;
-        //public int NumberCellsSeverity3;
-        //public int NumberCellsSeverity4;
-        //public int NumberCellsSeverity5;
         public int TotalSitesBurned;
         public int MaxSpreadArea;
 
@@ -108,8 +101,7 @@ namespace Landis.Extension.Scrapple
             this.IgnitionType = ignitionType;
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[initiationSite];
 
-            int actualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_DailyData.First().Key;
-            this.annualWeatherData = Climate.Future_DailyData[actualYear][ecoregion.Index];
+            this.annualWeatherData = Climate.FutureEcoregionYearClimate[ecoregion.Index][PlugIn.ModelCore.CurrentTime];
             SiteVars.Disturbed[initiationSite] = true;
 
             this.CohortsKilled = 0;
@@ -182,11 +174,12 @@ namespace Landis.Extension.Scrapple
                 try
                 {
 
-                    fireWeatherIndex = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyFireWeatherIndex[day];
+                    fireWeatherIndex = Climate.FutureEcoregionYearClimate[ecoregion.Index][PlugIn.ModelCore.CurrentTime].DailyFireWeatherIndex[day];
+                    //fireWeatherIndex = Climate.FutureEcoregionYearClimate[ecoregion.Index][PlugIn.CalendarActualYear].DailyFireWeatherIndex[day];
                 }
                 catch
                 {
-                    throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found in Spread().  Year: {0}, Day: {1}, Ecoregion: {2}.", PlugIn.ActualYear, day, ecoregion.Name));
+                    throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found in Spread().  Year: {0}, Day: {1}, Ecoregion: {2}.", PlugIn.CalendarActualYear, day, ecoregion.Name));
                 }
 
                 double effectiveWindSpeed = CalculateEffectiveWindSpeed(targetSite, sourceSite, fireWeatherIndex, day);
@@ -215,10 +208,8 @@ namespace Landis.Extension.Scrapple
                     (PlugIn.Parameters.MaximumSpreadAreaB1 * fireWeatherIndex) +
                     (PlugIn.Parameters.MaximumSpreadAreaB2 * effectiveWindSpeed));
 
-
-
-                    //PlugIn.ModelCore.UI.WriteLine("   Day={0}, spreadAreaMaxHectares={1}, dailySpreadArea={2}, FWI={3}, WS={4}", day, spreadAreaMaxHectares, dailySpreadArea, fireWeatherIndex, effectiveWindSpeed);
-
+                    if (this.MaxSpreadArea <= 0)
+                        PlugIn.ModelCore.UI.WriteLine("   WARNING:  MaxSpreadArea < 0!  Day={0}, spreadAreaMaxHectares={1}, dailySpreadArea={2}, FWI={3}, WS={4}", day, this.MaxSpreadArea, dailySpreadArea, fireWeatherIndex, effectiveWindSpeed);
 
                     //  if spread-area > spread-area-max, day = day + 1, assuming that spreadAreaMax units are hectares:
                     if (dailySpreadArea > this.MaxSpreadArea)
@@ -253,7 +244,6 @@ namespace Landis.Extension.Scrapple
                         }
                     }
                     neighbors = Get4DiagonalNeighbors(targetSite);
-                    //neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor]);
 
                     foreach (ActiveSite neighborSite in neighbors)
                     {
@@ -291,8 +281,8 @@ namespace Landis.Extension.Scrapple
             double ladderFuelBiomass = 0.0;
             foreach (ISpeciesCohorts speciesCohorts in SiteVars.Cohorts[site])
                 foreach (ICohort cohort in speciesCohorts)
-                    if (PlugIn.Parameters.LadderFuelSpeciesList.Contains(cohort.Species) && cohort.Age <= PlugIn.Parameters.LadderFuelMaxAge)
-                        ladderFuelBiomass += cohort.Biomass;
+                    if (PlugIn.Parameters.LadderFuelSpeciesList.Contains(cohort.Species) && cohort.Data.Age <= PlugIn.Parameters.LadderFuelMaxAge)
+                        ladderFuelBiomass += cohort.Data.Biomass;
             // End LADDER FUELS ************************
 
             // dNBR / DRdNBR calculation SITE scale
@@ -304,18 +294,6 @@ namespace Landis.Extension.Scrapple
 
             // Establish the variables 
             double Clay = SiteVars.Clay[site];
-            //double Previous_Year_ET = 0.0;
-            //try
-            //{
-            //    Previous_Year_ET = Climate.Future_DailyData[PlugIn.ActualYear - 1][ecoregion.Index].AnnualAET;
-            //}
-            //catch
-            //{
-            //    // Indicating that we're at the first year, without a prior year.
-            //    Previous_Year_ET = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].AnnualAET;
-            //}
-
-            //double Previous_Year_PET = SiteVars.PotentialEvapotranspiration[site];
 
             double Previous_Year_PET = 0.0;
             if (SiteVars.PotentialEvapotranspiration[site] > 0)
@@ -417,7 +395,7 @@ namespace Landis.Extension.Scrapple
             double MaxBarkThickness = SpeciesData.MaximumBarkThickness[cohort.Species];
 
             //// CohortAge  The age of the cohort
-            double BarkThickness = (MaxBarkThickness * cohort.Age) / (cohort.Age + AgeDBH);
+            double BarkThickness = (MaxBarkThickness * cohort.Data.Age) / (cohort.Data.Age + AgeDBH);
 
             double Pm = Math.Exp(Beta_naught_m + (Beta_Bark * BarkThickness) + (Beta_Site_Mortality * SiteMortality));
 
@@ -429,16 +407,16 @@ namespace Landis.Extension.Scrapple
             {
                 //PlugIn.ModelCore.UI.WriteLine("damage prob={0}, Random#={1}", ProbablityMortality, random);
                 killCohort = true;
-                this.TotalBiomassMortality += cohort.Biomass;
+                this.TotalBiomassMortality += cohort.Data.Biomass;
 
                 //SF add to site tracker
-                SiteVars.BiomassKilled[this.currentSite] += cohort.Biomass;
+                SiteVars.BiomassKilled[this.currentSite] += cohort.Data.Biomass;
 
                 foreach (IDeadWood deadwood in PlugIn.Parameters.DeadWoodList)
                 {
-                    if (cohort.Species == deadwood.Species && cohort.Age >= deadwood.MinAge)
+                    if (cohort.Species == deadwood.Species && cohort.Data.Age >= deadwood.MinAge)
                     {
-                        SiteVars.SpecialDeadWood[this.currentSite] += cohort.Biomass;
+                        SiteVars.SpecialDeadWood[this.currentSite] += cohort.Data.Biomass;
                         //PlugIn.ModelCore.UI.WriteLine("special dead = {0}, site={1}.", SiteVars.SpecialDeadWood[this.Current_damage_site], this.Current_damage_site);
 
                     }
@@ -448,7 +426,7 @@ namespace Landis.Extension.Scrapple
             if (killCohort)
             {
                 this.CohortsKilled++;
-                return cohort.Biomass;
+                return cohort.Data.Biomass;
             }
 
             return 0;
@@ -487,8 +465,8 @@ namespace Landis.Extension.Scrapple
             double ladderFuelBiomass = 0.0;
             foreach (ISpeciesCohorts speciesCohorts in SiteVars.Cohorts[site])
                 foreach (ICohort cohort in speciesCohorts)
-                    if (PlugIn.Parameters.LadderFuelSpeciesList.Contains(cohort.Species) && cohort.Age <= PlugIn.Parameters.LadderFuelMaxAge)
-                        ladderFuelBiomass += cohort.Biomass;
+                    if (PlugIn.Parameters.LadderFuelSpeciesList.Contains(cohort.Species) && cohort.Data.Age <= PlugIn.Parameters.LadderFuelMaxAge)
+                        ladderFuelBiomass += cohort.Data.Biomass;
             // End LADDER FUELS ************************
 
 
@@ -576,8 +554,8 @@ namespace Landis.Extension.Scrapple
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
 
             // EFFECTIVE WIND SPEED ************************
-            double windSpeed = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyWindSpeed[day];
-            double windDirection = Climate.Future_DailyData[PlugIn.ActualYear][ecoregion.Index].DailyWindDirection[day];// / 180 * Math.PI;
+            double windSpeed = this.annualWeatherData.DailyWindSpeed[day];
+            double windDirection = this.annualWeatherData.DailyWindDirection[day];
             siteWindDirection = windDirection;
             siteWindSpeed = windSpeed;
             siteFireWeatherIndex = fireWeatherIndex;
@@ -613,7 +591,7 @@ namespace Landis.Extension.Scrapple
         {
             //PlugIn.ModelCore.UI.WriteLine("  Calculate Damage: {0}.", site);
             int previousCohortsKilled = this.CohortsKilled;
-            SiteVars.Cohorts[site].ReduceOrKillBiomassCohorts(this); 
+            SiteVars.Cohorts[site].ReduceOrKillCohorts(this);
             return this.CohortsKilled - previousCohortsKilled;
         }
 
@@ -626,6 +604,7 @@ namespace Landis.Extension.Scrapple
             EventsLog el = new EventsLog();
             el.EventID = eventID;
             el.SimulationYear = currentTime;
+            el.FutureClimateYear = fireEvent.annualWeatherData.CalendarYear;
             el.InitRow = fireEvent.initiationSite.Location.Row;
             el.InitColumn = fireEvent.initiationSite.Location.Column;
             el.InitialFireWeatherIndex = fireEvent.InitiationFireWeatherIndex;

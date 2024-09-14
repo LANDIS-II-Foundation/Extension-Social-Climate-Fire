@@ -2,7 +2,7 @@
 
 using Landis.Utilities;
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
 
     public interface IDynamicSuppressionMap
@@ -12,7 +12,7 @@ namespace Landis.Extension.Scrapple
     }
 }
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
     public class DynamicSuppressionMap
     : IDynamicSuppressionMap

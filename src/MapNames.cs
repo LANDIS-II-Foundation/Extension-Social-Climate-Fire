@@ -4,7 +4,7 @@ using Landis.Utilities;
 using Landis.Core;
 using System.Collections.Generic;
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
 	/// <summary>
 	/// Methods for working with the template for map filenames.

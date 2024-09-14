@@ -1,58 +1,47 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>Landis.Extension.Scrapple</RootNamespace>
-    <AssemblyName>Landis.Extension.Scrapple-v3</AssemblyName>
-    <AssemblyTitle>Landis.Extension.Scrapple-v3</AssemblyTitle>
+    <RootNamespace>Landis.Extension.SocialClimateFire</RootNamespace>
+    <AssemblyName>Landis.Extension.SocialClimateFire-v4</AssemblyName>
+    <AssemblyTitle>Landis.Extension.SocialClimateFire-v4</AssemblyTitle>
     <AssemblyCopyright>Landis-II-Foundation</AssemblyCopyright>
-    <AssemblyVersion>3.2</AssemblyVersion>
-    <Version>3.2</Version>
-    <FileVersion>3.2</FileVersion>
+    <AssemblyVersion>4.0</AssemblyVersion>
+    <Version>4.0</Version>
+    <FileVersion>4.0</FileVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/LANDIS-II-Foundation/Extension-SCRAPPLE</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <NeutralLanguage>English</NeutralLanguage>
     <Authors>Robert Scheller, Zachary Robbins, Todd Hawbaker, Paul Henne, Alec Kretchun</Authors>
-    <Product>Landis.Extension.Scrapple-v3</Product>
+    <Product>Landis.Extension.SocialClimateFire-v4</Product>
     <Copyright>Landis-II-Foundation</Copyright>
     <Company>LANDIS-II Foundation</Company>
     <Description></Description>
-    <PackageReleaseNotes>.NET Standard 2.0 update</PackageReleaseNotes>
+    <PackageReleaseNotes>.NET Standard 2.1 update</PackageReleaseNotes>
     <PackageTags>LANDIS-II;Landis;Extension;fire;suppression;ignitions;spread</PackageTags>
     <PackageLicenseUrl>https://github.com/LANDIS-II-Foundation/Extension-SCRAPPLE/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>http://www.landis-ii.org</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Landis.Core" Version="2.0.0" />
-    <PackageReference Include="Landis.Core.Implementation" Version="2.0.0" />
+    <PackageReference Include="Landis.Core" Version="3.0.1" />
   </ItemGroup>
   
   <ItemGroup>
     <Reference Include="Ether.WeightedSelector">
       <HintPath>lib\Ether.WeightedSelector.dll</HintPath>
     </Reference>
-    <Reference Include="Landis.Library.AgeOnlyCohorts-v3">
-      <HintPath>lib\Landis.Library.AgeOnlyCohorts-v3.dll</HintPath>
-    </Reference>
-    <Reference Include="Landis.Library.Biomass-v2">
-      <HintPath>lib\Landis.Library.Biomass-v2.dll</HintPath>
-    </Reference>
-    <Reference Include="Landis.Library.BiomassCohorts-v3">
-      <HintPath>lib\Landis.Library.BiomassCohorts-v3.dll</HintPath>
-    </Reference>
-    <Reference Include="Landis.Library.Climate-v4">
-      <HintPath>lib\Landis.Library.Climate-v4.3.dll</HintPath>
-    </Reference>
-    <Reference Include="Landis.Library.Cohorts-v2">
-      <HintPath>lib\Landis.Library.Cohorts-v2.dll</HintPath>
+    <Reference Include="Landis.Library.Climate-v5">
     </Reference>
     <Reference Include="Landis.Library.Metadata-v2">
       <HintPath>lib\Landis.Library.Metadata-v2.dll</HintPath>
     </Reference>
     <Reference Include="Landis.Library.Parameters-v2">
       <HintPath>lib\Landis.Library.Parameters-v2.dll</HintPath>
+    </Reference>
+    <Reference Include="Landis.Library.UniversalCohorts-v1">
+      <HintPath>lib\Landis.Library.UniversalCohorts-v1.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
