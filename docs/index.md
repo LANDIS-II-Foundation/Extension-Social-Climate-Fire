@@ -1,6 +1,6 @@
-# What is the SCRPPLE Extension?
+# What is the Social-Climate Fire Extension?
 
-The purpose of the Social-Climate Related Pyrogenic Processes and their Landscape Effects (SCRPPLE) is to simulate fire regime change due to climatic and social factors.  The climate is represented primarily via a Fire Weather Index.  Social processes are represented as explicit representation of suppression, accidental ignitions, and prescribed fire.  Human manipulation of the vegetation is represented through fine fuels and ladder fuels.  SCRPPLE uses a very 'data first' philosophy:  The primary mechanisms (ignition, spread, site mortality, and cohort mortality) are parameterized via statistical analyses of landscape-scale data.
+The purpose of the Social-Climate Fire (or the Social Climate Related Pyrogenic Processes and their Landscape Effects: SCRPPLE) is to simulate fire regime change due to climatic and social factors.  The climate is represented primarily via a Fire Weather Index.  Social processes are represented as explicit representation of suppression, accidental ignitions, and prescribed fire.  Human manipulation of the vegetation is represented through fine fuels and ladder fuels.  SCRPPLE uses a very 'data first' philosophy:  The primary mechanisms (ignition, spread, site mortality, and cohort mortality) are parameterized via statistical analyses of landscape-scale data.
 
 # Citation
 
@@ -8,10 +8,10 @@ Scheller, R.M., A. Kretchun, T.J. Hawbaker, P.D. Henne. 2019. A landscape model 
 
 # Release Notes
 
-- Latest release: Version 4.0 — August 2022
+- Latest release: Version 4.0 — September 2024
 - Full release details found in the User Guide and on GitHub.
 - [View User Guide](https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/blob/master/docs/LANDIS-II%20SCRAPPLE%20v4.0%20User%20Guide.pdf).
-- SCRPPLE depends on the Climate Library, see: [User Guide for Climate Library](https://github.com/LANDIS-II-Foundation/Library-Climate/blob/master/docs/LANDIS-II%20Climate%20Library%20v4.2%20User%20Guide.pdf)
+- SCRPPLE depends on the Climate Library, see: [Coming soon!](404)
 - Copyright: The LANDIS-II Foundation
 
 # Requirements
@@ -22,7 +22,7 @@ You need:
 - Extension Installer
 - Example files (see below)
 
-# Download and Run the Extension Installer
+# Download and Install the Extension
 
 - The latest version can be [downloaded from GitHub](https://github.com/LANDIS-II-Foundation/Extension-SCRPPLE/blob/master/deploy/installer/LANDIS-II-V8%20SCRAPPLE%204.0-setup.exe). (Look for the download icon in the upper right corner.)  Launch the installer.
 
