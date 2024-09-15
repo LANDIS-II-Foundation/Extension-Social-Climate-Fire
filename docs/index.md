@@ -24,7 +24,7 @@ You need:
 
 # Download and Install the Extension
 
-- The latest version can be [downloaded from GitHub](https://github.com/LANDIS-II-Foundation/Extension-Social-Climate-Fire/blob/master/deploy/installer/LANDIS-II-V8%20SocialClimateFire%204.0-setup.exe). (Look for the download icon in the upper right corner.)  Launch the installer.
+- The latest version can be [downloaded from GitHub](https://github.com/LANDIS-II-Foundation/Extension-Social-Climate-Fire/blob/master/deploy/installer/LANDIS-II-V8%20Social%20Climate%20Fire%204.0-setup.exe). (Look for the download icon in the upper right corner.)  Launch the installer.
 
 # Example Files
 
