@@ -222,18 +222,20 @@ namespace Landis.Extension.SocialClimateFire
             totalBiomassMortality = new int[3];
 
             modelCore.UI.WriteLine("   Processing landscape for Fire events ...");
-            AnnualClimate WeatherData = Climate.FutureEcoregionYearClimate[0][PlugIn.ModelCore.CurrentTime];  // according to notes in NECN.ClimateRegionData.cs, climatic year is a 1-based index
+            //AnnualClimate WeatherData = Climate.FutureEcoregionYearClimate[0][PlugIn.ModelCore.CurrentTime];  // according to notes in NECN.ClimateRegionData.cs, climatic year is a 1-based index
 
-            CalendarActualYear = 0;
-            try
-            {
-                CalendarActualYear = WeatherData.CalendarYear;
-                modelCore.UI.WriteLine("   Fire data taken from year {0}.", CalendarActualYear);
-            }
-            catch
-            {
-                throw new UninitializedClimateData(string.Format("Could not initilize the actual year {0} from climate data", CalendarActualYear));
-            }
+            //CalendarActualYear = 0;
+            //try
+            //{
+            //    CalendarActualYear = WeatherData.CalendarYear;
+            //    modelCore.UI.WriteLine("   Fire data taken from year {0}.", CalendarActualYear);
+            //}
+            //catch
+            //{
+            //    throw new UninitializedClimateData(string.Format("Could not initilize the actual year {0} from climate data", CalendarActualYear));
+            //}
+
+            CalendarActualYear = Climate.FutureCalendarYear(PlugIn.ModelCore.CurrentTime);
 
             modelCore.UI.WriteLine("   Next, shuffle ignition sites...");
             // Get the active sites from the landscape and shuffle them 
