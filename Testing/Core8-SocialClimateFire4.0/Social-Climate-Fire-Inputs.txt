@@ -54,8 +54,8 @@ TargetRxSize 40
 >> RxZonesMap fire-zones.gis  << Optional
 
 MaximumSpreadAreaB0	100
-MaximumSpreadAreaB1	-2.5 <<FWI
-MaximumSpreadAreaB2	-2.5 <<effective wind speed
+MaximumSpreadAreaB1	0.5 <<FWI
+MaximumSpreadAreaB2	0.5 <<effective wind speed
 
 SpreadProbabilityB0 -1.79 << Intercept
 SpreadProbabilityB1 0.06  <<FWI

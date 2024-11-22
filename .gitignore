@@ -635,3 +635,7 @@ src/.vs/SocialClimateFire/v17/.futdcache.v2
 src/.vs/SocialClimateFire/v17/.suo
 src/.vs/SocialClimateFire/v17/DocumentLayout.json
 src/SocialClimateFire.sln
+src/.vs/SocialClimateFire/v16/.suo
+src/obj/Debug/netstandard2.0/SocialClimateFire.csproj.CopyComplete
+src/obj/Debug/netstandard2.0/SocialClimateFire.csprojAssemblyReference.cache
+src/obj/SocialClimateFire.csproj.nuget.cache
