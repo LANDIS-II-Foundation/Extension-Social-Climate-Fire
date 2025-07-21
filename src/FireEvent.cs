@@ -297,16 +297,25 @@ namespace Landis.Extension.SocialClimateFire
 
             double Previous_Year_PET = 0.0;
             if (SiteVars.PotentialEvapotranspiration[site] > 0)
-                Previous_Year_PET = SiteVars.PotentialEvapotranspiration[site];
+                Previous_Year_PET = SiteVars.PotentialEvapotranspiration[site]; // set the site var to the time zero PET so it appears in output maps
             else
+            {
                 Previous_Year_PET = PlugIn.Parameters.TimeZeroPET;
+                SiteVars.PotentialEvapotranspiration[site] = Previous_Year_PET;
+            }
+                
 
             //double WaterDeficit = SiteVars.ClimaticWaterDeficit[site];
             double WaterDeficit = 0.0;
             if (SiteVars.ClimaticWaterDeficit[site] > 0)
                 WaterDeficit = SiteVars.ClimaticWaterDeficit[site];
             else
+            {
                 WaterDeficit = PlugIn.Parameters.TimeZeroCWD;
+                SiteVars.ClimaticWaterDeficit[site] = WaterDeficit; // set the site var to the time zero CWD so it appears in output maps
+            }
+                
+            
 
             //double TotalFuels = SiteVars.FineFuels[site] + ladderFuelBiomass;
 
