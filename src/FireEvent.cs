@@ -347,6 +347,8 @@ namespace Landis.Extension.SocialClimateFire
 
             SiteVars.DNBR[site] = this.SiteMortality;
             SiteVars.TypeOfIginition[site] = (int)this.IgnitionType;
+            SiteVars.siteEWS[site] = siteEffectiveWindSpeed; 
+            SiteVars.siteLadderFuelBiomass[site] = ladderFuelBiomass;
             //PlugIn.ModelCore.UI.WriteLine("  dNBR: {0}, severity={1}.", siteMortality, standardSeverityIndex);
 
 
