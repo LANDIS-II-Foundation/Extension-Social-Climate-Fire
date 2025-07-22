@@ -30,19 +30,19 @@
   
   <ItemGroup>
     <Reference Include="Ether.WeightedSelector">
-      <HintPath>C:\Program Files\LANDIS-II-v8\extensions\Ether.WeightedSelector.dll</HintPath>
+      <HintPath>lib\Ether.WeightedSelector.dll</HintPath>
     </Reference>
     <Reference Include="Landis.Library.Climate-v5">
-      <HintPath>C:\Program Files\LANDIS-II-v8\extensions\Landis.Library.Climate-v5.dll</HintPath>
+      <HintPath>lib\Landis.Library.Climate-v5.dll</HintPath>
     </Reference>
     <Reference Include="Landis.Library.Metadata-v2">
-      <HintPath>C:\Program Files\LANDIS-II-v8\extensions\Landis.Library.Metadata-v2.dll</HintPath>
+      <HintPath>lib\Landis.Library.Metadata-v2.dll</HintPath>
     </Reference>
     <Reference Include="Landis.Library.Parameters-v2">
-      <HintPath>C:\Program Files\LANDIS-II-v8\extensions\Landis.Library.Parameters-v2.dll</HintPath>
+      <HintPath>lib\Landis.Library.Parameters-v2.dll</HintPath>
     </Reference>
     <Reference Include="Landis.Library.UniversalCohorts-v1">
-      <HintPath>C:\Program Files\LANDIS-II-v8\extensions\Landis.Library.UniversalCohorts-v1.dll</HintPath>
+      <HintPath>lib\Landis.Library.UniversalCohorts-v1.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
