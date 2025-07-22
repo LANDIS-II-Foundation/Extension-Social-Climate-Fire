@@ -500,6 +500,17 @@ namespace Landis.Extension.SocialClimateFire
 
             }
 
+            InputVar<bool> writednbrpreds = new InputVar<bool>("WriteDNBRPredictorMaps");
+            if (ReadOptionalVar(writednbrpreds))
+            {
+                parameters.WriteDNBRPredictorMaps = writednbrpreds.Value;
+                PlugIn.ModelCore.UI.WriteLine("Extra dNBR predictor maps = TRUE");
+            }
+            else
+            {
+                parameters.WriteDNBRPredictorMaps = false;
+                PlugIn.ModelCore.UI.WriteLine("Extra dNBR predictor maps = FALSE");
+            }
 
 
             //-------------------------------------------------------------------
@@ -532,17 +543,7 @@ namespace Landis.Extension.SocialClimateFire
                 GetNextLine();
             }
 
-            InputVar<bool> writednbrpreds = new InputVar<bool>("WriteDNBRPredictorMaps");
-            if (ReadOptionalVar(writednbrpreds))
-            {
-                parameters.WriteDNBRPredictorMaps = writednbrpreds.Value;
-                PlugIn.ModelCore.UI.WriteLine("Extra dNBR predictor maps = TRUE");
-            }
-            else
-            {
-                parameters.WriteDNBRPredictorMaps = false;
-                PlugIn.ModelCore.UI.WriteLine("Extra dNBR predictor maps = FALSE");
-            }
+
                 
 
             //-------------------------------------------------------------------
