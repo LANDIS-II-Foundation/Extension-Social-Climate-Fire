@@ -641,3 +641,5 @@ src/obj/Debug/netstandard2.0/SocialClimateFire.csprojAssemblyReference.cache
 src/obj/SocialClimateFire.csproj.nuget.cache
 src/.vs/SocialClimateFire/FileContentIndex/b58c9cbb-7214-498c-aac8-465bc85f9101.vsidx
 src/.vs/SocialClimateFire/v17/DocumentLayout.backup.json
+settings.json
+Extension-Social-Climate-Fire.sln
