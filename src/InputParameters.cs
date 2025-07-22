@@ -80,7 +80,7 @@ namespace Landis.Extension.SocialClimateFire
         double TimeZeroPET { get; set; }
         double TimeZeroCWD { get; set; }
 
-
+        bool WriteDNBRPredictorMaps { get; set; }  // boolean input (Y or N)
     }
 }
 
@@ -164,9 +164,7 @@ namespace Landis.Extension.SocialClimateFire
         private double timeZeroPET;
         private double timeZeroCWD;
 
-
-
-
+        private bool writeDNBRPredictorMaps;
         //---------------------------------------------------------------------
 
         /// <summary>
@@ -174,13 +172,15 @@ namespace Landis.Extension.SocialClimateFire
         /// </summary>
         public int Timestep
         {
-            get {
+            get
+            {
                 return timestep;
             }
-            set {
-                    if (value < 0)
-                        throw new InputValueException(value.ToString(),
-                                                      "Value must be = or > 0.");
+            set
+            {
+                if (value < 0)
+                    throw new InputValueException(value.ToString(),
+                                                  "Value must be = or > 0.");
                 timestep = value;
             }
         }
@@ -811,9 +811,13 @@ namespace Landis.Extension.SocialClimateFire
             set { timeZeroCWD = value; }
         }
 
-
-
         //---------------------------------------------------------------------
+
+        public bool WriteDNBRPredictorMaps
+        {
+            get { return writeDNBRPredictorMaps; }
+            set { writeDNBRPredictorMaps = value; }
+        }
 
         public InputParameters(ISpeciesDataset speciesDataset)
         {
