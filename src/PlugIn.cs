@@ -26,20 +26,9 @@ namespace Landis.Extension.SocialClimateFire
         public static MetadataTable<EventsLog> eventLog;
         public static MetadataTable<SummaryLog> summaryLog;
         public static MetadataTable<IgnitionsLog> ignitionsLog;
-        
-        // Get the active sites from the landscape and shuffle them 
-        //public List<ActiveSite> activeRxSites; 
-        //public List<ActiveSite> activeAccidentalSites;
-        //public List<ActiveSite> activeLightningSites;
-        //public double rxTotalWeight;
-        //public double accidentalTotalWeight;
-        //public double lightningTotalWeight;
-
-        // RMS Testing 8/2019
         public WeightedSelector<ActiveSite> weightedRxSites;
         public WeightedSelector<ActiveSite> weightedAccidentalSites;
         public WeightedSelector<ActiveSite> weightedLightningSites;
-
 
         public static int FutureClimateBaseYear;
         public static Dictionary<int, int> sitesPerClimateRegion;
@@ -171,11 +160,6 @@ namespace Landis.Extension.SocialClimateFire
                 {
                     PlugIn.ModelCore.UI.WriteLine("   Reading in new Ignitions Maps {0}.", dynamicRxIgnitions.MapName);
                     MapUtility.ReadMap(dynamicRxIgnitions.MapName, SiteVars.RxFireWeight);
-
-                    //double totalWeight = 0.0;
-                    //activeRxSites = PreShuffle(SiteVars.RxFireWeight, out totalWeight);
-                    //rxTotalWeight = totalWeight;
-
                 }
 
             }
@@ -186,11 +170,6 @@ namespace Landis.Extension.SocialClimateFire
                 {
                     PlugIn.ModelCore.UI.WriteLine("   Reading in new Ignitions Maps {0}.", dynamicLxIgns.MapName);
                     MapUtility.ReadMap(dynamicLxIgns.MapName, SiteVars.LightningFireWeight);
-
-                    //double totalWeight = 0.0;
-                    //activeLightningSites = PreShuffle(SiteVars.LightningFireWeight, out totalWeight);
-                    //lightningTotalWeight = totalWeight;
-
                 }
 
             }
@@ -200,11 +179,6 @@ namespace Landis.Extension.SocialClimateFire
                 {
                     PlugIn.ModelCore.UI.WriteLine("   Reading in new Ignitions Maps {0}.", dynamicAxIgns.MapName);
                     MapUtility.ReadMap(dynamicAxIgns.MapName, SiteVars.AccidentalFireWeight);
-
-                    //double totalWeight = 0.0;
-                    //activeAccidentalSites = PreShuffle(SiteVars.AccidentalFireWeight, out totalWeight);
-                    //accidentalTotalWeight = totalWeight;
-
                 }
 
             }
@@ -224,18 +198,6 @@ namespace Landis.Extension.SocialClimateFire
             totalBiomassMortality = new int[3];
 
             modelCore.UI.WriteLine("   Processing landscape for Fire events ...");
-            //AnnualClimate WeatherData = Climate.FutureEcoregionYearClimate[0][PlugIn.ModelCore.CurrentTime];  // according to notes in NECN.ClimateRegionData.cs, climatic year is a 1-based index
-
-            //CalendarActualYear = 0;
-            //try
-            //{
-            //    CalendarActualYear = WeatherData.CalendarYear;
-            //    modelCore.UI.WriteLine("   Fire data taken from year {0}.", CalendarActualYear);
-            //}
-            //catch
-            //{
-            //    throw new UninitializedClimateData(string.Format("Could not initilize the actual year {0} from climate data", CalendarActualYear));
-            //}
 
             CalendarActualYear = Climate.FutureCalendarYear(PlugIn.ModelCore.CurrentTime);
 
@@ -276,18 +238,6 @@ namespace Landis.Extension.SocialClimateFire
                             landscapeAverageTemperature += Climate.FutureEcoregionYearClimate[climateRegion.Index][PlugIn.ModelCore.CurrentTime].DailyMaxTemp[day] * climateRegionFractionSites;
                             landscapeAverageRelHumidity += Climate.FutureEcoregionYearClimate[climateRegion.Index][PlugIn.ModelCore.CurrentTime].DailyMinRH[day] * climateRegionFractionSites;
                             landscapeAverageWindSpeed += Climate.FutureEcoregionYearClimate[climateRegion.Index][PlugIn.ModelCore.CurrentTime].DailyWindSpeed[day] * climateRegionFractionSites;
-                            //if (weatherData.DailyMinRH[day] == -99.0)
-                            //{
-                            //    double relativeHumidity = Climate.ConvertSHtoRH(weatherData.DailySpecificHumidity[day], weatherData.DailyTemp[day]);
-                            //    if (relativeHumidity > 100)
-                            //    {
-                            //        relativeHumidity = 100.0;
-                            //    }
-                            //    landscapeAverageRelHumidity += relativeHumidity * climateRegionFractionSites;
-                            //}
-                            //else
-                            //{
-                            //}
                         }
                         catch
                         {
@@ -311,15 +261,19 @@ namespace Landis.Extension.SocialClimateFire
                     int maxNumAccidentalFires = NumberOfIgnitions(IgnitionType.Accidental, landscapeAverageFireWeatherIndex);
                     int logMaxNumAccidentalFires = maxNumAccidentalFires;
                     int actualNumAccidentalFires = 0;
-                    while (maxNumAccidentalFires > 0)
+                    int ignitionAttemptsFailsAllowed = 100;
+
+                    while (maxNumAccidentalFires > 0 && ignitionAttemptsFailsAllowed > 0)
                     {
-                        //Ignite(Ignition.Accidental, shuffledAccidentalFireSites, day, landscapeAverageFireWeatherIndex);
                         fire = Ignite(IgnitionType.Accidental, weightedAccidentalSites.Select(), day, landscapeAverageFireWeatherIndex);
                         if (fire)
                         {
                             maxNumAccidentalFires--;
                             actualNumAccidentalFires++;
                         }
+                        else
+                            ignitionAttemptsFailsAllowed--;
+
                     }
                     if (fire)
                     {
@@ -335,15 +289,17 @@ namespace Landis.Extension.SocialClimateFire
                     int maxNumLightningFires = NumberOfIgnitions(IgnitionType.Lightning, landscapeAverageFireWeatherIndex);
                     int logMaxNumLightningFires = maxNumLightningFires;
                     int actualNumLightningFires = 0;
-                    while(maxNumLightningFires > 0)
+                    int ignitionAttemptsFailsAllowed = 100;
+                    while(maxNumLightningFires > 0 && ignitionAttemptsFailsAllowed > 0)
                     {
-                        //Ignite(Ignition.Lightning, shuffledLightningFireSites, day, landscapeAverageFireWeatherIndex);
                         fire = Ignite(IgnitionType.Lightning, weightedLightningSites.Select(), day, landscapeAverageFireWeatherIndex);
                         if (fire)
                         {
                             maxNumLightningFires--;
                             actualNumLightningFires++;
                         }
+                        else
+                            ignitionAttemptsFailsAllowed--;
                     }
                     if (fire)
                     {

@@ -5,9 +5,9 @@
     <AssemblyName>Landis.Extension.SocialClimateFire-v4</AssemblyName>
     <AssemblyTitle>Landis.Extension.SocialClimateFire-v4</AssemblyTitle>
     <AssemblyCopyright>Landis-II-Foundation</AssemblyCopyright>
-    <AssemblyVersion>4.0.1</AssemblyVersion>
-    <Version>4.0.1</Version>
-    <FileVersion>4.0.1</FileVersion>
+    <AssemblyVersion>4.0.2</AssemblyVersion>
+    <Version>4.0.2</Version>
+    <FileVersion>4.0.2</FileVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/LANDIS-II-Foundation/Extension-SCRAPPLE</RepositoryUrl>
@@ -18,7 +18,7 @@
     <Copyright>Landis-II-Foundation</Copyright>
     <Company>LANDIS-II Foundation</Company>
     <Description></Description>
-    <PackageReleaseNotes>.NET Standard 2.1 update</PackageReleaseNotes>
+    <PackageReleaseNotes>Core v8 update</PackageReleaseNotes>
     <PackageTags>LANDIS-II;Landis;Extension;fire;suppression;ignitions;spread</PackageTags>
     <PackageLicenseUrl>https://github.com/LANDIS-II-Foundation/Extension-SCRAPPLE/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>http://www.landis-ii.org</PackageProjectUrl>
