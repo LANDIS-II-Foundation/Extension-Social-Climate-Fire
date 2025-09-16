@@ -8,16 +8,16 @@ Species_CSV_File	Fire_Spp_Table.csv
 
 AccidentalIgnitionsMap     ./Accidental_Ignition_Map.tif
 LightningIgnitionsMap  ./Lightning_Ignition_Map.tif
-RxIgnitionsMap  ./Lightning_Ignition_Map.tif
+RxIgnitionsMap  ./Rx_Ignition_Map.tif
 
 DynamicRxIgnitionMaps << Optional
-3 Lightning_Ignition_Map.tif 
-5 Lightning_Ignition_Map.tif
-13 Lightning_Ignition_Map.tif
+3 Rx_Ignition_Map.tif 
+5 Rx_Ignition_Map.tif
+13 Rx_Ignition_Map.tif
 
-AccidentalSuppressionMap	Suppression_3Zones.tif
-LightningSuppressionMap		Suppression_3Zones.tif
-RxSuppressionMap		Suppression_3Zones.tif
+AccidentalSuppressionMap	Suppression_Accidental_3Zones.tif
+LightningSuppressionMap		Suppression_Lightning_3Zones.tif
+RxSuppressionMap		Suppression_Rx_3Zones.tif
 
 GroundSlopeMap GroundSlope.tif
 UphillSlopeAzimuthMap  UphillSlope.tif
@@ -30,7 +30,7 @@ AccidentalIgnitionsB1  0.03
 
 IgnitionDistribution ZeroInflatedPoisson << Poisson or ZeroInflatedPoisson
 
->> If ZeroInflatedPoisson, you must include the following, otherwise comment out these inputs
+>> If ZeroInflatedPoisson, you must include the following additional two parameters, otherwise comment out these inputs
 LightningIgnitionsBinomialB0 -8.5
 LightningIgnitionsBinomialB1  0.03
 AccidentalIgnitionsBinomialB0 -8.5
