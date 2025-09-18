@@ -512,6 +512,19 @@ namespace Landis.Extension.SocialClimateFire
                 PlugIn.ModelCore.UI.WriteLine("Extra dNBR predictor maps = FALSE");
             }
 
+            InputVar<bool> writeSpecialMaps = new InputVar<bool>("WriteSpecialMaps");
+            if (ReadOptionalVar(writeSpecialMaps))
+            {
+                parameters.WriteDNBRPredictorMaps = writeSpecialMaps.Value;
+                PlugIn.ModelCore.UI.WriteLine("Extra Special maps = TRUE");
+            }
+            else
+            {
+                parameters.WriteDNBRPredictorMaps = false;
+                PlugIn.ModelCore.UI.WriteLine("Extra Specieal maps = FALSE");
+            }
+
+
 
             //-------------------------------------------------------------------
             //  Read table of Fire Damage classes.

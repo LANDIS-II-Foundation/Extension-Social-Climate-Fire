@@ -165,6 +165,7 @@ namespace Landis.Extension.SocialClimateFire
         private double timeZeroCWD;
 
         private bool writeDNBRPredictorMaps;
+        private bool writeSpecialMaps;
         //---------------------------------------------------------------------
 
         /// <summary>
@@ -818,6 +819,13 @@ namespace Landis.Extension.SocialClimateFire
             get { return writeDNBRPredictorMaps; }
             set { writeDNBRPredictorMaps = value; }
         }
+
+        public bool WriteSpecialMaps
+        {
+            get { return writeSpecialMaps; }
+            set { writeSpecialMaps = value; }
+        }
+
 
         public InputParameters(ISpeciesDataset speciesDataset)
         {
