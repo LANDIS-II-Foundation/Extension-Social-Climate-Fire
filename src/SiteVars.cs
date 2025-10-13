@@ -253,7 +253,7 @@ namespace Landis.Extension.SocialClimateFire
             }
         }
         //---------------------------------------------------------------------
-        public static ISiteVar<int> SpecialDeadWood
+        public static ISiteVar<int> StandingDeadWood
         {
             get
             {

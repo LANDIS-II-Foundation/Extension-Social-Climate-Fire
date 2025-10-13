@@ -75,7 +75,7 @@ namespace Landis.Extension.SocialClimateFire
         int SuppressionMaxWindSpeed { get; set; }
         Dictionary<int, ISuppressionTable> SuppressionFWI_Table { get; }
         List<ISpecies> LadderFuelSpeciesList { get; }
-        List<IDeadWood> DeadWoodList { get; }
+        List<IDeadWood> StandingDeadWoodList { get; }
 
         double TimeZeroPET { get; set; }
         double TimeZeroCWD { get; set; }
@@ -792,7 +792,7 @@ namespace Landis.Extension.SocialClimateFire
             //}
         }
         //---------------------------------------------------------------------
-        public List<IDeadWood> DeadWoodList
+        public List<IDeadWood> StandingDeadWoodList
         {
             get
             {

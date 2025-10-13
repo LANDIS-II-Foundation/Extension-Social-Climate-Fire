@@ -536,11 +536,11 @@ namespace Landis.Extension.SocialClimateFire
             InputVar<int> dw_minAge = new InputVar<int>("Min Interval Age");
 
             ReadName("DeadWoodTable");
-            while (!AtEndOfInput)// && CurrentName != FireIntensityClass_1_DamageTable)
+            while (!AtEndOfInput)
             {
                 StringReader currentLine = new StringReader(CurrentLine);
                 IDeadWood dead_wood_list = new DeadWood();
-                parameters.DeadWoodList.Add(dead_wood_list);
+                parameters.StandingDeadWoodList.Add(dead_wood_list);
 
                 ReadValue(dw_spp, currentLine);
                 ISpecies species = PlugIn.ModelCore.Species[dw_spp.Value.Actual];

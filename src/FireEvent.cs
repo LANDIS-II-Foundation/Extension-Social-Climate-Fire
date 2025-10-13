@@ -423,11 +423,11 @@ namespace Landis.Extension.SocialClimateFire
                 //SF add to site tracker
                 SiteVars.BiomassKilled[this.currentSite] += cohort.Data.Biomass;
 
-                foreach (IDeadWood deadwood in PlugIn.Parameters.DeadWoodList)
+                foreach (IDeadWood deadwood in PlugIn.Parameters.StandingDeadWoodList)
                 {
                     if (cohort.Species == deadwood.Species && cohort.Data.Age >= deadwood.MinAge)
                     {
-                        SiteVars.SpecialDeadWood[this.currentSite] += cohort.Data.Biomass;
+                        SiteVars.StandingDeadWood[this.currentSite] += cohort.Data.Biomass;
                         //PlugIn.ModelCore.UI.WriteLine("special dead = {0}, site={1}.", SiteVars.SpecialDeadWood[this.Current_damage_site], this.Current_damage_site);
 
                     }

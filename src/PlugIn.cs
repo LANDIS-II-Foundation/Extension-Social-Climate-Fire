@@ -149,7 +149,7 @@ namespace Landis.Extension.SocialClimateFire
             SiteVars.SpreadProbability.ActiveSiteValues = 0.0;
             SiteVars.DayOfFire.ActiveSiteValues = 0;
             SiteVars.TypeOfIginition.ActiveSiteValues = 0;
-            SiteVars.SpecialDeadWood.ActiveSiteValues = 0;
+            SiteVars.StandingDeadWood.ActiveSiteValues = 0;
             SiteVars.BiomassKilled.ActiveSiteValues = 0;
             SiteVars.EventID.ActiveSiteValues = 0;
             SiteVars.siteLadderFuelBiomass.ActiveSiteValues = 0;  // clear values for a new year
@@ -384,7 +384,7 @@ namespace Landis.Extension.SocialClimateFire
         {
             string path;
             // Some maps are now optional
-            if (OptionalMaps)
+            if (OptionalMaps && PlugIn.Parameters.StandingDeadWoodList.Any())
             {
                 string[] paths = { "social-climate-fire", "snag-dead-wood-{timestep}.tif" };
                 path = MapNames.ReplaceTemplateVars(Path.Combine(paths), currentTime);
@@ -398,7 +398,7 @@ namespace Landis.Extension.SocialClimateFire
                         {
                             if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
                             {
-                                pixel.MapCode.Value = (int)(SiteVars.SpecialDeadWood[site]);
+                                pixel.MapCode.Value = (int)(SiteVars.StandingDeadWood[site]);
                             }
                             else
                                 pixel.MapCode.Value = 0;
