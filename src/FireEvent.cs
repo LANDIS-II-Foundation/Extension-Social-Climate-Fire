@@ -164,12 +164,13 @@ namespace Landis.Extension.SocialClimateFire
             //PlugIn.ModelCore.UI.WriteLine("   Fire spread function...");
             float dailySpreadArea = 0.0f;
             // First, take the first site off the list, ensuring that days are sequential from the beginning.
-            while (fireSites.Count() > 0)
+            while (fireSites.Count() > 0 && day<350)
             {
                 ActiveSite targetSite = fireSites.First()[0];
                 ActiveSite sourceSite = fireSites.First()[1];
 
                 IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[targetSite];
+
                 double fireWeatherIndex = 0.0;
                 try
                 {
@@ -179,7 +180,7 @@ namespace Landis.Extension.SocialClimateFire
                 }
                 catch
                 {
-                    throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found in Spread().  Year: {0}, Day: {1}, Ecoregion: {2}.", PlugIn.CalendarActualYear, day, ecoregion.Name));
+                    fireWeatherIndex = 0;
                 }
 
                 double effectiveWindSpeed = CalculateEffectiveWindSpeed(targetSite, sourceSite, fireWeatherIndex, day);
@@ -192,8 +193,7 @@ namespace Landis.Extension.SocialClimateFire
                 SiteVars.TimeOfLastFire[targetSite] = PlugIn.ModelCore.CurrentTime;
                 dailySpreadArea += PlugIn.ModelCore.CellArea;
 
-                if (day > PlugIn.DaysPerYear)
-                    return;
+
 
                 // DAY OF FIRE *****************************
                 //      Calculate spread-area-max 
@@ -218,7 +218,7 @@ namespace Landis.Extension.SocialClimateFire
                         dailySpreadArea = 0;
                     }
 
-                    if (day > maxDay)
+                    if (day <365)
                     {
                         maxDay = day;
                         NumberOfDays++;
@@ -252,9 +252,12 @@ namespace Landis.Extension.SocialClimateFire
 
                             ActiveSite[] spread = new ActiveSite[] { neighborSite, sourceSite };
                             fireSites.Add(spread);
+                           
                             this.TotalSitesSpread++;
                         }
                     }
+                  //  ActiveSite[]gout = new ActiveSite[] { sourceSite };
+                 //   fireSites.Remove(gout);
                 }
                 // SPREAD to neighbors ***********************
             }
@@ -314,7 +317,7 @@ namespace Landis.Extension.SocialClimateFire
                 WaterDeficit = PlugIn.Parameters.TimeZeroCWD;
                 SiteVars.ClimaticWaterDeficit[site] = WaterDeficit; // set the site var to the time zero CWD so it appears in output maps
             }
-                
+
             
 
             //double TotalFuels = SiteVars.FineFuels[site] + ladderFuelBiomass;
@@ -360,7 +363,7 @@ namespace Landis.Extension.SocialClimateFire
             SiteVars.siteLadderFuelBiomass[site] = ladderFuelBiomass;
             //PlugIn.ModelCore.UI.WriteLine("  dNBR: {0}, severity={1}.", siteMortality, standardSeverityIndex);
 
-
+            SiteVars.Disturbed[site] = true;
             currentSite = site;
             siteCohortsKilled = Damage(site);
 
@@ -455,7 +458,7 @@ namespace Landis.Extension.SocialClimateFire
                 return false;
             }
 
-            SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
+           // SiteVars.Disturbed[site] = true;  // set to true, regardless of whether fire burns; this prevents endless checking of the same site.
 
             double fineFuelPercent = 0.0;
             double fineFuelPercent_harvest = 1.0;
