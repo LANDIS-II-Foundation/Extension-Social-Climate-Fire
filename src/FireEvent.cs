@@ -256,8 +256,8 @@ namespace Landis.Extension.SocialClimateFire
                             this.TotalSitesSpread++;
                         }
                     }
-                  //  ActiveSite[]gout = new ActiveSite[] { sourceSite };
-                 //   fireSites.Remove(gout);
+                    ActiveSite[]gout = new ActiveSite[] { sourceSite };
+                    fireSites.Remove(gout);
                 }
                 // SPREAD to neighbors ***********************
             }
