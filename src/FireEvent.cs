@@ -171,6 +171,8 @@ namespace Landis.Extension.SocialClimateFire
 
                 IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[targetSite];
                 double fireWeatherIndex = 0.0;
+                if (day > PlugIn.DaysPerYear-1)
+                    return;
                 try
                 {
 
@@ -192,8 +194,7 @@ namespace Landis.Extension.SocialClimateFire
                 SiteVars.TimeOfLastFire[targetSite] = PlugIn.ModelCore.CurrentTime;
                 dailySpreadArea += PlugIn.ModelCore.CellArea;
 
-                if (day > PlugIn.DaysPerYear)
-                    return;
+
 
                 // DAY OF FIRE *****************************
                 //      Calculate spread-area-max 
