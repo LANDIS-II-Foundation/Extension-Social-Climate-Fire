@@ -164,7 +164,7 @@ namespace Landis.Extension.SocialClimateFire
             //PlugIn.ModelCore.UI.WriteLine("   Fire spread function...");
             float dailySpreadArea = 0.0f;
             // First, take the first site off the list, ensuring that days are sequential from the beginning.
-            while (fireSites.Count() > 0)
+            while (fireSites.Count() > 0 && day <= PlugIn.DaysPerYear)
             {
                 ActiveSite targetSite = fireSites.First()[0];
                 ActiveSite sourceSite = fireSites.First()[1];
@@ -192,8 +192,8 @@ namespace Landis.Extension.SocialClimateFire
                 SiteVars.TimeOfLastFire[targetSite] = PlugIn.ModelCore.CurrentTime;
                 dailySpreadArea += PlugIn.ModelCore.CellArea;
 
-                if (day > PlugIn.DaysPerYear)
-                    return;
+                //if (day > PlugIn.DaysPerYear)
+                //    return;
 
                 // DAY OF FIRE *****************************
                 //      Calculate spread-area-max 
