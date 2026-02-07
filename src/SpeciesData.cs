@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
     public class SpeciesData 
     {

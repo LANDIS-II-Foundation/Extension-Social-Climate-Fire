@@ -1,4 +1,4 @@
-//  Authors:  Robert M. Scheller, Alec Kretchun, Vincent Schuster
+//  Authors:  Robert M. Scheller, Alec Kretchun, Zachary Robbins
 
 using Landis.SpatialModeling;
 using Landis.Library.Climate;
@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
     ///<summary>
     /// A disturbance plug-in that simulates Fire disturbance.
@@ -22,29 +22,18 @@ namespace Landis.Extension.Scrapple
         private static readonly bool isDebugEnabled = true; 
 
         public static readonly ExtensionType ExtType = new ExtensionType("disturbance:fire");
-        public static readonly string ExtensionName = "SCRAPPLE";
+        public static readonly string ExtensionName = "Social Climate Fire";
         public static MetadataTable<EventsLog> eventLog;
         public static MetadataTable<SummaryLog> summaryLog;
         public static MetadataTable<IgnitionsLog> ignitionsLog;
-        
-        // Get the active sites from the landscape and shuffle them 
-        public List<ActiveSite> activeRxSites; 
-        public List<ActiveSite> activeAccidentalSites;
-        public List<ActiveSite> activeLightningSites;
-        public double rxTotalWeight;
-        public double accidentalTotalWeight;
-        public double lightningTotalWeight;
-
-        // RMS Testing 8/2019
         public WeightedSelector<ActiveSite> weightedRxSites;
         public WeightedSelector<ActiveSite> weightedAccidentalSites;
         public WeightedSelector<ActiveSite> weightedLightningSites;
 
-
         public static int FutureClimateBaseYear;
         public static Dictionary<int, int> sitesPerClimateRegion;
         public static Dictionary<int, double> fractionSitesPerClimateRegion;
-        public static int ActualYear;
+        public static int CalendarActualYear;
         public static int EventID = 0;
 
         private static int[] dNBR;
@@ -55,11 +44,8 @@ namespace Landis.Extension.Scrapple
         public static IInputParameters Parameters;
         private static ICore modelCore;
 
-        //public static double MaximumSpreadAreaB0;
-        //public static double MaximumSpreadAreaB1;
-        //public static double MaximumSpreadAreaB2;
-
         public static int DaysPerYear = 364;
+        private static bool OptionalMaps = true;
 
         private List<IDynamicIgnitionMap> dynamicRxIgns;
         private List<IDynamicIgnitionMap> dynamicLightningIgns;
@@ -84,7 +70,13 @@ namespace Landis.Extension.Scrapple
                 return modelCore;
             }
         }
-        
+
+        public override void AddCohortData()
+        {
+            return;
+        }
+
+
         //---------------------------------------------------------------------
 
         public override void LoadParameters(string dataFile,
@@ -102,27 +94,7 @@ namespace Landis.Extension.Scrapple
         {
             Timestep = 1;  // RMS:  Initially we will force annual time step. parameters.Timestep;
 
-
-            ///******************** DEBUGGER LAUNCH *********************
-            /// 
-            /*
-            if (Debugger.Launch())
-            {
-                modelCore.UI.WriteLine("Debugger is attached");
-                if (Debugger.IsLogging())
-                {
-                    modelCore.UI.WriteLine("Debugging is logging");
-                }
-                Debugger.Break();
-            }
-            else
-            { 
-                modelCore.UI.WriteLine("Debugger not attached");
-            }
-            */
-            ///******************** DEBUGGER END *********************
-
-            modelCore.UI.WriteLine("Initializing SCRAPPLE Fire...");
+            modelCore.UI.WriteLine("Initializing Fire...");
 
             SpeciesData.Initialize(Parameters);
             dynamicRxIgns = Parameters.DynamicRxIgnitionMaps;
@@ -137,6 +109,7 @@ namespace Landis.Extension.Scrapple
 
             sitesPerClimateRegion = new Dictionary<int, int>();
 
+            // This ensures that we're not including non-active ecoregions, where we might not have climate data
             foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
             {
                 IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
@@ -149,7 +122,7 @@ namespace Landis.Extension.Scrapple
 
             fractionSitesPerClimateRegion = new Dictionary<int, double>();
             foreach (IEcoregion ecoregion in PlugIn.ModelCore.Ecoregions)
-            {
+            {                
                 if (sitesPerClimateRegion.ContainsKey(ecoregion.Index))
                 {
                     fractionSitesPerClimateRegion.Add(ecoregion.Index, ((double)sitesPerClimateRegion[ecoregion.Index] / (double)modelCore.Landscape.ActiveSiteCount));
@@ -176,8 +149,11 @@ namespace Landis.Extension.Scrapple
             SiteVars.SpreadProbability.ActiveSiteValues = 0.0;
             SiteVars.DayOfFire.ActiveSiteValues = 0;
             SiteVars.TypeOfIginition.ActiveSiteValues = 0;
-            SiteVars.SpecialDeadWood.ActiveSiteValues = 0;
+            SiteVars.StandingDeadWood.ActiveSiteValues = 0;
+            SiteVars.BiomassKilled.ActiveSiteValues = 0;
             SiteVars.EventID.ActiveSiteValues = 0;
+            SiteVars.siteLadderFuelBiomass.ActiveSiteValues = 0;  // clear values for a new year
+            SiteVars.siteEWS.ActiveSiteValues = 0;  // clear values for a new year
 
             foreach (IDynamicIgnitionMap dynamicRxIgnitions in dynamicRxIgns)
             {
@@ -185,11 +161,6 @@ namespace Landis.Extension.Scrapple
                 {
                     PlugIn.ModelCore.UI.WriteLine("   Reading in new Ignitions Maps {0}.", dynamicRxIgnitions.MapName);
                     MapUtility.ReadMap(dynamicRxIgnitions.MapName, SiteVars.RxFireWeight);
-
-                    double totalWeight = 0.0;
-                    activeRxSites = PreShuffle(SiteVars.RxFireWeight, out totalWeight);
-                    rxTotalWeight = totalWeight;
-
                 }
 
             }
@@ -200,11 +171,6 @@ namespace Landis.Extension.Scrapple
                 {
                     PlugIn.ModelCore.UI.WriteLine("   Reading in new Ignitions Maps {0}.", dynamicLxIgns.MapName);
                     MapUtility.ReadMap(dynamicLxIgns.MapName, SiteVars.LightningFireWeight);
-
-                    double totalWeight = 0.0;
-                    activeLightningSites = PreShuffle(SiteVars.LightningFireWeight, out totalWeight);
-                    lightningTotalWeight = totalWeight;
-
                 }
 
             }
@@ -214,11 +180,6 @@ namespace Landis.Extension.Scrapple
                 {
                     PlugIn.ModelCore.UI.WriteLine("   Reading in new Ignitions Maps {0}.", dynamicAxIgns.MapName);
                     MapUtility.ReadMap(dynamicAxIgns.MapName, SiteVars.AccidentalFireWeight);
-
-                    double totalWeight = 0.0;
-                    activeAccidentalSites = PreShuffle(SiteVars.AccidentalFireWeight, out totalWeight);
-                    accidentalTotalWeight = totalWeight;
-
                 }
 
             }
@@ -231,7 +192,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            AnnualClimate_Daily weatherData = null;
+            
             dNBR = new int[3];
             totalBurnedSites = new int[3];
             numberOfFire = new int[3];
@@ -239,29 +200,20 @@ namespace Landis.Extension.Scrapple
 
             modelCore.UI.WriteLine("   Processing landscape for Fire events ...");
 
-            ActualYear = 0;
-            try
-            {
-                ActualYear = (PlugIn.ModelCore.CurrentTime - 1) + Climate.Future_AllData.First().Key;
-            }
-            catch
-            {
-                throw new UninitializedClimateData(string.Format("Could not initilize the actual year {0} from climate data", ActualYear));
-            }
+            CalendarActualYear = Climate.FutureCalendarYear(PlugIn.ModelCore.CurrentTime);
 
-            // modelCore.UI.WriteLine("   Next, shuffle ignition sites...");
+            modelCore.UI.WriteLine("   Next, shuffle ignition sites...");
             // Get the active sites from the landscape and shuffle them 
             // Sites are weighted for ignition in the Ether.WeightedSelector Shuffle method, based on the respective inputs maps.
             int numSites = 0;
             weightedRxSites = PreShuffleEther(SiteVars.RxFireWeight, out numSites);
             int numRxSites = numSites;
-            //modelCore.UI.WriteLine("   Number Rx sites = {0}", numRxSites);
             weightedAccidentalSites = PreShuffleEther(SiteVars.AccidentalFireWeight, out numSites);
             int numAccidentalSites = numSites;
             weightedLightningSites = PreShuffleEther(SiteVars.LightningFireWeight, out numSites);
             int numLightningSites = numSites;
 
-            //modelCore.UI.WriteLine("   Next, loop through each day to start fires...");
+            modelCore.UI.WriteLine("   Next, loop through each day to start fires...");
 
             int numAnnualRxFires = Parameters.RxNumberAnnualFires;
 
@@ -270,61 +222,38 @@ namespace Landis.Extension.Scrapple
                 double landscapeAverageFireWeatherIndex = 0.0;
                 double landscapeAverageTemperature = 0.0;
                 double landscapeAverageRelHumidity = 0.0;
+                double landscapeAverageWindSpeed = 0.0;
                 // number of fires get initilized to 0 every timestep
 
                 foreach (IEcoregion climateRegion in PlugIn.ModelCore.Ecoregions)
                 {
                     if (sitesPerClimateRegion.ContainsKey(climateRegion.Index))
                     {
-                        double climateRegionFractionSites = (double) fractionSitesPerClimateRegion[climateRegion.Index];
-
-                        try
-                        {
-                            weatherData = Climate.Future_DailyData[ActualYear][climateRegion.Index];
-                        }
-                        catch
-                        {
-                            throw new UninitializedClimateData(string.Format("Climate data could not be found in Run(). Year: {0} in ecoregion: {1}", ActualYear, climateRegion.Name));
-                        }
+                        double climateRegionFractionSites = fractionSitesPerClimateRegion[climateRegion.Index];
 
                         try
                         {
                             // modelCore.UI.WriteLine(" Fire Weather Check Daily={0}, Average={1}", weatherData.DailyFireWeatherIndex[day], landscapeAverageFireWeatherIndex);
 
-                            landscapeAverageFireWeatherIndex += weatherData.DailyFireWeatherIndex[day] * climateRegionFractionSites;
-                            landscapeAverageTemperature += weatherData.DailyMaxTemp[day] * climateRegionFractionSites;
-                            if (weatherData.DailyMinRH[day] == -99.0)
-                            {
-                                double relativeHumidity = AnnualClimate_Daily.ConvertSHtoRH(weatherData.DailySpecificHumidity[day], weatherData.DailyTemp[day]);
-                                if (relativeHumidity > 100)
-                                {
-                                    relativeHumidity = 100.0;
-                                }
-                                landscapeAverageRelHumidity += relativeHumidity * climateRegionFractionSites;
-                            }
-                            else
-                            {
-                                landscapeAverageRelHumidity += weatherData.DailyMinRH[day] * climateRegionFractionSites;
-                            }
-                            //landscapeAverageRelHumidity += weatherData.DailyMinRH[day] * climateRegionFractionSites;
-                           // modelCore.UI.WriteLine("  Fire Weather Check Daily={0}, Average={1}", weatherData.DailyFireWeatherIndex[day], landscapeAverageFireWeatherIndex);
+                            landscapeAverageFireWeatherIndex += Climate.FutureEcoregionYearClimate[climateRegion.Index][PlugIn.ModelCore.CurrentTime].DailyFireWeatherIndex[day] * climateRegionFractionSites;
+                            landscapeAverageTemperature += Climate.FutureEcoregionYearClimate[climateRegion.Index][PlugIn.ModelCore.CurrentTime].DailyMaxTemp[day] * climateRegionFractionSites;
+                            landscapeAverageRelHumidity += Climate.FutureEcoregionYearClimate[climateRegion.Index][PlugIn.ModelCore.CurrentTime].DailyMinRH[day] * climateRegionFractionSites;
+                            landscapeAverageWindSpeed += Climate.FutureEcoregionYearClimate[climateRegion.Index][PlugIn.ModelCore.CurrentTime].DailyWindSpeed[day] * climateRegionFractionSites;
                         }
                         catch
                         {
-                            throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found in Run(). Year: {0}, day: {1}, climate region: {2}, NumSites={3}", ActualYear, day, climateRegion.Name, sitesPerClimateRegion[climateRegion.Index]));
+                            throw new UninitializedClimateData(string.Format("Fire Weather Index could not be found in Run(). Year: {0}, day: {1}, climate region: {2}, NumSites={3}", CalendarActualYear, day, climateRegion.Name, sitesPerClimateRegion[climateRegion.Index]));
                         }
 
-                        if (Climate.Future_DailyData[PlugIn.ActualYear][climateRegion.Index].DailyRH[day] < 0)
+                        if (Climate.FutureEcoregionYearClimate[climateRegion.Index][PlugIn.ModelCore.CurrentTime].DailyRH[day] < 0)
                         {
-                            string mesg = string.Format("Relative Humidity not included in the climate data.  (RH is required to calculate FWI.) Year: {0}, day: {1}, climate region: {2}, NumSites={3}", ActualYear, day, climateRegion.Name, sitesPerClimateRegion[climateRegion.Index]);
+                            string mesg = string.Format("Relative Humidity not included in the climate data.  (RH is required to calculate FWI.) Year: {0}, day: {1}, climate region: {2}, NumSites={3}", CalendarActualYear, day, climateRegion.Name, sitesPerClimateRegion[climateRegion.Index]);
                             throw new System.ApplicationException(mesg);
                         }
 
 
                     }
                 }
-
-             
                 
                 //PlugIn.ModelCore.UI.WriteLine("   Generating accidental fires...");
                 if (numAccidentalSites > 0)
@@ -333,15 +262,19 @@ namespace Landis.Extension.Scrapple
                     int maxNumAccidentalFires = NumberOfIgnitions(IgnitionType.Accidental, landscapeAverageFireWeatherIndex);
                     int logMaxNumAccidentalFires = maxNumAccidentalFires;
                     int actualNumAccidentalFires = 0;
-                    while (maxNumAccidentalFires > 0)
+                    int ignitionAttemptsFailsAllowed = 100;
+
+                    while (maxNumAccidentalFires > 0 && ignitionAttemptsFailsAllowed > 0)
                     {
-                        //Ignite(Ignition.Accidental, shuffledAccidentalFireSites, day, landscapeAverageFireWeatherIndex);
                         fire = Ignite(IgnitionType.Accidental, weightedAccidentalSites.Select(), day, landscapeAverageFireWeatherIndex);
                         if (fire)
                         {
                             maxNumAccidentalFires--;
                             actualNumAccidentalFires++;
                         }
+                        else
+                            ignitionAttemptsFailsAllowed--;
+
                     }
                     if (fire)
                     {
@@ -357,15 +290,17 @@ namespace Landis.Extension.Scrapple
                     int maxNumLightningFires = NumberOfIgnitions(IgnitionType.Lightning, landscapeAverageFireWeatherIndex);
                     int logMaxNumLightningFires = maxNumLightningFires;
                     int actualNumLightningFires = 0;
-                    while(maxNumLightningFires > 0)
+                    int ignitionAttemptsFailsAllowed = 100;
+                    while(maxNumLightningFires > 0 && ignitionAttemptsFailsAllowed > 0)
                     {
-                        //Ignite(Ignition.Lightning, shuffledLightningFireSites, day, landscapeAverageFireWeatherIndex);
                         fire = Ignite(IgnitionType.Lightning, weightedLightningSites.Select(), day, landscapeAverageFireWeatherIndex);
                         if (fire)
                         {
                             maxNumLightningFires--;
                             actualNumLightningFires++;
                         }
+                        else
+                            ignitionAttemptsFailsAllowed--;
                     }
                     if (fire)
                     {
@@ -382,7 +317,7 @@ namespace Landis.Extension.Scrapple
                     landscapeAverageFireWeatherIndex < Parameters.RxMaxFireWeatherIndex &&
                     landscapeAverageTemperature < Parameters.RxMaxTemperature &&
                     landscapeAverageRelHumidity > Parameters.RxMinRelativeHumidity &&
-                    weatherData.DailyWindSpeed[day] < Parameters.RxMaxWindSpeed &&
+                    landscapeAverageWindSpeed < Parameters.RxMaxWindSpeed &&
                     day >= Parameters.RxFirstDayFire &&
                     day < Parameters.RxLastDayFire)
                 {
@@ -417,7 +352,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            modelCore.UI.WriteLine("  Fire for the year completed.  Next, write fire maps and summary fire files. ...");
+            modelCore.UI.WriteLine("   Fire for the year completed.  Next, write fire maps and summary fire files. ...");
 
             WriteMaps(PlugIn.ModelCore.CurrentTime);
 
@@ -447,35 +382,39 @@ namespace Landis.Extension.Scrapple
 
         private void WriteMaps(int currentTime)
         {
-            string[] paths = { "social-climate-fire", "special-dead-wood-{timestep}.img" };
-            string path = MapNames.ReplaceTemplateVars(Path.Combine(paths), currentTime);
-
-            using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
+            string path;
+            // Some maps are now optional
+            if (OptionalMaps && PlugIn.Parameters.StandingDeadWoodList.Any())
             {
-                IntPixel pixel = outputRaster.BufferPixel;
-                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                string[] paths = { "social-climate-fire", "snag-dead-wood-{timestep}.tif" };
+                path = MapNames.ReplaceTemplateVars(Path.Combine(paths), currentTime);
+
+                using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
                 {
-                    if (site.IsActive)
+                    IntPixel pixel = outputRaster.BufferPixel;
+                    foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
                     {
-                        if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
+                        if (site.IsActive)
                         {
-                            pixel.MapCode.Value = (int)(SiteVars.SpecialDeadWood[site]);
+                            if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
+                            {
+                                pixel.MapCode.Value = (int)(SiteVars.StandingDeadWood[site]);
+                            }
+                            else
+                                pixel.MapCode.Value = 0;
                         }
                         else
+                        {
+                            //  Inactive site
                             pixel.MapCode.Value = 0;
+                        }
+                        outputRaster.WriteBufferPixel();
                     }
-                    else
-                    {
-                        //  Inactive site
-                        pixel.MapCode.Value = 0;
-                    }
-                    outputRaster.WriteBufferPixel();
                 }
             }
-            string[] paths2 = { "social-climate-fire", "ignition-type-{timestep}.img" };
+
+            string[] paths2 = { "social-climate-fire", "ignition-type-{timestep}.tif" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths2), currentTime);
-
-
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
                 IntPixel pixel = outputRaster.BufferPixel;
@@ -499,7 +438,7 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            string[] paths3 = { "social-climate-fire", "fire-intensity-{timestep}.img" };
+            string[] paths3 = { "social-climate-fire", "fire-severity-{timestep}.tif" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths3), currentTime);
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
@@ -509,7 +448,7 @@ namespace Landis.Extension.Scrapple
                     if (site.IsActive)
                     {
                         if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
-                            pixel.MapCode.Value = (int) (SiteVars.Intensity[site] + 1);
+                            pixel.MapCode.Value = (int)(SiteVars.Intensity[site] + 1);
                         else
                             pixel.MapCode.Value = 1;
                     }
@@ -522,54 +461,59 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            string[] paths31 = { "social-climate-fire", "fire-dnbr-{timestep}.img" };
-            path = MapNames.ReplaceTemplateVars(Path.Combine(paths31), currentTime);
-            using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
+            if (OptionalMaps)
             {
-                IntPixel pixel = outputRaster.BufferPixel;
-                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                string[] paths31 = { "social-climate-fire", "fire-dnbr-{timestep}.tif" };
+                path = MapNames.ReplaceTemplateVars(Path.Combine(paths31), currentTime);
+                using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
                 {
-                    if (site.IsActive)
+                    IntPixel pixel = outputRaster.BufferPixel;
+                    foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
                     {
-                        if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
-                            pixel.MapCode.Value = (int)(SiteVars.DNBR[site]);
+                        if (site.IsActive)
+                        {
+                            if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
+                                pixel.MapCode.Value = (int)(SiteVars.DNBR[site]);
+                            else
+                                pixel.MapCode.Value = 1;
+                        }
                         else
-                            pixel.MapCode.Value = 1;
-                    }
-                    else
-                    {
-                        //  Inactive site
-                        pixel.MapCode.Value = 0;
-                    }
-                    outputRaster.WriteBufferPixel();
-                }
-            }
-
-
-            string[] paths4 = { "social-climate-fire", "fire-spread-probability-{timestep}.img" };
-            path = MapNames.ReplaceTemplateVars(Path.Combine(paths4), currentTime);
-            using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
-            {
-                ShortPixel pixel = outputRaster.BufferPixel;
-                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
-                {
-                    if (site.IsActive)
-                    {
-                        if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
-                            pixel.MapCode.Value = (short)(SiteVars.SpreadProbability[site] * 100);
-                        else
+                        {
+                            //  Inactive site
                             pixel.MapCode.Value = 0;
+                        }
+                        outputRaster.WriteBufferPixel();
                     }
-                    else
-                    {
-                        //  Inactive site
-                        pixel.MapCode.Value = 0;
-                    }
-                    outputRaster.WriteBufferPixel();
                 }
             }
 
-            string[] paths5 = { "social-climate-fire", "day-of-fire-{timestep}.img" };
+            if (OptionalMaps)
+            {
+                string[] paths4 = { "social-climate-fire", "fire-spread-probability-{timestep}.tif" };
+                path = MapNames.ReplaceTemplateVars(Path.Combine(paths4), currentTime);
+                using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
+                {
+                    ShortPixel pixel = outputRaster.BufferPixel;
+                    foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                    {
+                        if (site.IsActive)
+                        {
+                            if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
+                                pixel.MapCode.Value = (short)(SiteVars.SpreadProbability[site] * 100);
+                            else
+                                pixel.MapCode.Value = 0;
+                        }
+                        else
+                        {
+                            //  Inactive site
+                            pixel.MapCode.Value = 0;
+                        }
+                        outputRaster.WriteBufferPixel();
+                    }
+                }
+            }
+
+            string[] paths5 = { "social-climate-fire", "day-of-fire-{timestep}.tif" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths5), currentTime);
             using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
             {
@@ -579,7 +523,7 @@ namespace Landis.Extension.Scrapple
                     if (site.IsActive)
                     {
                         if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
-                            pixel.MapCode.Value = (short) (SiteVars.DayOfFire[site] + 1);
+                            pixel.MapCode.Value = (short)(SiteVars.DayOfFire[site] + 1);
                         else
                             pixel.MapCode.Value = 999;  // distinguish from January 1
                     }
@@ -592,53 +536,59 @@ namespace Landis.Extension.Scrapple
                 }
             }
 
-            string[] paths6 = { "social-climate-fire", "smolder-consumption-{timestep}.img" };
-            path = MapNames.ReplaceTemplateVars(Path.Combine(paths6), currentTime);
-            using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
+            if (OptionalMaps)
             {
-                IntPixel pixel = outputRaster.BufferPixel;
-                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                string[] paths6 = { "social-climate-fire", "smolder-consumption-{timestep}.tif" };
+                path = MapNames.ReplaceTemplateVars(Path.Combine(paths6), currentTime);
+                using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
                 {
-                    if (site.IsActive)
+                    IntPixel pixel = outputRaster.BufferPixel;
+                    foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
                     {
-                        if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
-                            pixel.MapCode.Value = SiteVars.SmolderConsumption[site];
+                        if (site.IsActive)
+                        {
+                            if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
+                                pixel.MapCode.Value = (int)SiteVars.SmolderConsumption[site];
+                            else
+                                pixel.MapCode.Value = 0;
+                        }
                         else
+                        {
+                            //  Inactive site
                             pixel.MapCode.Value = 0;
+                        }
+                        outputRaster.WriteBufferPixel();
                     }
-                    else
-                    {
-                        //  Inactive site
-                        pixel.MapCode.Value = 0;
-                    }
-                    outputRaster.WriteBufferPixel();
                 }
             }
 
-            string[] paths7 = { "social-climate-fire", "flaming-consumptions-{timestep}.img" };
-            path = MapNames.ReplaceTemplateVars(Path.Combine(paths7), currentTime);
-            using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
+            if (OptionalMaps)
             {
-                IntPixel pixel = outputRaster.BufferPixel;
-                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                string[] paths7 = { "social-climate-fire", "flaming-consumptions-{timestep}.tif" };
+                path = MapNames.ReplaceTemplateVars(Path.Combine(paths7), currentTime);
+                using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
                 {
-                    if (site.IsActive)
+                    IntPixel pixel = outputRaster.BufferPixel;
+                    foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
                     {
-                        if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
-                            pixel.MapCode.Value = SiteVars.FlamingConsumption[site];
+                        if (site.IsActive)
+                        {
+                            if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
+                                pixel.MapCode.Value = (int)SiteVars.FlamingConsumption[site];
+                            else
+                                pixel.MapCode.Value = 0;
+                        }
                         else
+                        {
+                            //  Inactive site
                             pixel.MapCode.Value = 0;
+                        }
+                        outputRaster.WriteBufferPixel();
                     }
-                    else
-                    {
-                        //  Inactive site
-                        pixel.MapCode.Value = 0;
-                    }
-                    outputRaster.WriteBufferPixel();
                 }
             }
 
-            string[] paths8 = { "social-climate-fire", "event-ID-{timestep}.img" };
+            string[] paths8 = { "social-climate-fire", "event-ID-{timestep}.tif" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths8), currentTime);
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
@@ -660,7 +610,7 @@ namespace Landis.Extension.Scrapple
                     outputRaster.WriteBufferPixel();
                 }
             }
-            string[] paths9 = { "social-climate-fire", "fine-fuels-{timestep}.img" };
+            string[] paths9 = { "social-climate-fire", "fine-fuels-{timestep}.tif" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths9), currentTime);
             using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
             {
@@ -669,7 +619,7 @@ namespace Landis.Extension.Scrapple
                 {
                     if (site.IsActive)
                     {
-                        pixel.MapCode.Value = (int) SiteVars.FineFuels[site];
+                        pixel.MapCode.Value = (int)SiteVars.FineFuels[site];
                     }
                     else
                     {
@@ -679,6 +629,136 @@ namespace Landis.Extension.Scrapple
                     outputRaster.WriteBufferPixel();
                 }
             }
+
+            string[] paths10 = { "social-climate-fire", "biomass-mortality-{timestep}.tif" };
+            path = MapNames.ReplaceTemplateVars(Path.Combine(paths10), currentTime);
+            using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
+            {
+                IntPixel pixel = outputRaster.BufferPixel;
+                foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                {
+                    if (site.IsActive)
+                    {
+                        if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
+                        {
+                            pixel.MapCode.Value = (int)(SiteVars.BiomassKilled[site]);
+                        }
+                        else
+                            pixel.MapCode.Value = 0;
+                    }
+                    else
+                    {
+                        //  Inactive site
+                        pixel.MapCode.Value = 0;
+                    }
+                    outputRaster.WriteBufferPixel();
+                }
+            }
+
+            if (PlugIn.Parameters.WriteDNBRPredictorMaps)
+            {
+                modelCore.UI.WriteLine("Writing extra maps...");
+                string[] paths11 = { "social-climate-fire", "PET-{timestep}.tif" };
+                path = MapNames.ReplaceTemplateVars(Path.Combine(paths11), currentTime);
+                using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
+                {
+                    IntPixel pixel = outputRaster.BufferPixel;
+                    foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                    {
+                        if (site.IsActive)
+                        {
+                            if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
+                            {
+                                pixel.MapCode.Value = (int)(SiteVars.PotentialEvapotranspiration[site]);
+                            }
+                            else
+                                pixel.MapCode.Value = 0;
+                        }
+                        else
+                        {
+                            //  Inactive site
+                            pixel.MapCode.Value = 0;
+                        }
+                        outputRaster.WriteBufferPixel();
+                    }
+                }
+
+                string[] paths12 = { "social-climate-fire", "CWD-{timestep}.tif" };
+                path = MapNames.ReplaceTemplateVars(Path.Combine(paths12), currentTime);
+                using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
+                {
+                    IntPixel pixel = outputRaster.BufferPixel;
+                    foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                    {
+                        if (site.IsActive)
+                        {
+                            if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
+                            {
+                                pixel.MapCode.Value = (int)(SiteVars.ClimaticWaterDeficit[site]);
+                            }
+                            else
+                                pixel.MapCode.Value = 0;
+                        }
+                        else
+                        {
+                            //  Inactive site
+                            pixel.MapCode.Value = 0;
+                        }
+                        outputRaster.WriteBufferPixel();
+                    }
+                }
+
+                string[] paths13 = { "social-climate-fire", "EWS-{timestep}.tif" };
+                path = MapNames.ReplaceTemplateVars(Path.Combine(paths13), currentTime);
+                using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
+                {
+                    IntPixel pixel = outputRaster.BufferPixel;
+                    foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                    {
+                        if (site.IsActive)
+                        {
+                            if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
+                            {
+                                pixel.MapCode.Value = (int)(SiteVars.siteEWS[site]);
+                            }
+                            else
+                                pixel.MapCode.Value = 0;
+                        }
+                        else
+                        {
+                            //  Inactive site
+                            pixel.MapCode.Value = 0;
+                        }
+                        outputRaster.WriteBufferPixel();
+                    }
+                }
+
+                string[] paths14 = { "social-climate-fire", "Ladders-{timestep}.tif" };
+                path = MapNames.ReplaceTemplateVars(Path.Combine(paths14), currentTime);
+                using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
+                {
+                    IntPixel pixel = outputRaster.BufferPixel;
+                    foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
+                    {
+                        if (site.IsActive)
+                        {
+                            if (SiteVars.Disturbed[site] && SiteVars.Intensity[site] > 0)
+                            {
+                                pixel.MapCode.Value = (int)(SiteVars.siteLadderFuelBiomass[site]);
+                            }
+                            else
+                                pixel.MapCode.Value = 0;
+                        }
+                        else
+                        {
+                            //  Inactive site
+                            pixel.MapCode.Value = 0;
+                        }
+                        outputRaster.WriteBufferPixel();
+                    }
+                }
+            }
+            
         }
 
         //---------------------------------------------------------------------

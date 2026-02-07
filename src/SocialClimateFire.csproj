@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Landis.Extension.SocialClimateFire</RootNamespace>
+    <AssemblyName>Landis.Extension.SocialClimateFire-v4</AssemblyName>
+    <AssemblyTitle>Landis.Extension.SocialClimateFire-v4</AssemblyTitle>
+    <AssemblyCopyright>Landis-II-Foundation</AssemblyCopyright>
+    <AssemblyVersion>4.0.2</AssemblyVersion>
+    <Version>4.0.2</Version>
+    <FileVersion>4.0.2</FileVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/LANDIS-II-Foundation/Extension-SCRAPPLE</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <NeutralLanguage>English</NeutralLanguage>
+    <Authors>Robert Scheller, Zachary Robbins, Todd Hawbaker, Paul Henne, Alec Kretchun</Authors>
+    <Product>Landis.Extension.SocialClimateFire-v4</Product>
+    <Copyright>Landis-II-Foundation</Copyright>
+    <Company>LANDIS-II Foundation</Company>
+    <Description></Description>
+    <PackageReleaseNotes>Core v8 update</PackageReleaseNotes>
+    <PackageTags>LANDIS-II;Landis;Extension;fire;suppression;ignitions;spread</PackageTags>
+    <PackageLicenseUrl>https://github.com/LANDIS-II-Foundation/Extension-SCRAPPLE/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>http://www.landis-ii.org</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Landis.Core" Version="3.0.1" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="Ether.WeightedSelector">
+      <HintPath>lib\Ether.WeightedSelector.dll</HintPath>
+    </Reference>
+    <Reference Include="Landis.Library.Climate-v5">
+      <HintPath>lib\Landis.Library.Climate-v5.dll</HintPath>
+    </Reference>
+    <Reference Include="Landis.Library.Metadata-v2">
+      <HintPath>lib\Landis.Library.Metadata-v2.dll</HintPath>
+    </Reference>
+    <Reference Include="Landis.Library.Parameters-v2">
+      <HintPath>lib\Landis.Library.Parameters-v2.dll</HintPath>
+    </Reference>
+    <Reference Include="Landis.Library.UniversalCohorts-v1">
+      <HintPath>lib\Landis.Library.UniversalCohorts-v1.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
+

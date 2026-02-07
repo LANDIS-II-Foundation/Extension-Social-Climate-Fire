@@ -4,7 +4,7 @@ using Landis.Utilities;
 using System.Collections.Generic;
 using Landis.Core;
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
 
 
@@ -19,7 +19,6 @@ namespace Landis.Extension.Scrapple
         string LighteningFireMap { get; set; }
         string RxFireMap { get; set; }
         string AccidentalFireMap { get; set; }
-
         string LighteningSuppressionMap { get; set; }
         string RxSuppressionMap { get; set; }
         string AccidentalSuppressionMap { get; set; }
@@ -76,16 +75,16 @@ namespace Landis.Extension.Scrapple
         int SuppressionMaxWindSpeed { get; set; }
         Dictionary<int, ISuppressionTable> SuppressionFWI_Table { get; }
         List<ISpecies> LadderFuelSpeciesList { get; }
-        List<IDeadWood> DeadWoodList { get; }
+        List<IDeadWood> StandingDeadWoodList { get; }
 
         double TimeZeroPET { get; set; }
         double TimeZeroCWD { get; set; }
 
-
+        bool WriteDNBRPredictorMaps { get; set; }  // boolean input (Y or N)
     }
 }
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
     /// <summary>
     /// Parameters for the plug-in.
@@ -165,9 +164,8 @@ namespace Landis.Extension.Scrapple
         private double timeZeroPET;
         private double timeZeroCWD;
 
-
-
-
+        private bool writeDNBRPredictorMaps;
+        private bool writeSpecialMaps;
         //---------------------------------------------------------------------
 
         /// <summary>
@@ -175,13 +173,15 @@ namespace Landis.Extension.Scrapple
         /// </summary>
         public int Timestep
         {
-            get {
+            get
+            {
                 return timestep;
             }
-            set {
-                    if (value < 0)
-                        throw new InputValueException(value.ToString(),
-                                                      "Value must be = or > 0.");
+            set
+            {
+                if (value < 0)
+                    throw new InputValueException(value.ToString(),
+                                                  "Value must be = or > 0.");
                 timestep = value;
             }
         }
@@ -792,7 +792,7 @@ namespace Landis.Extension.Scrapple
             //}
         }
         //---------------------------------------------------------------------
-        public List<IDeadWood> DeadWoodList
+        public List<IDeadWood> StandingDeadWoodList
         {
             get
             {
@@ -812,9 +812,20 @@ namespace Landis.Extension.Scrapple
             set { timeZeroCWD = value; }
         }
 
-
-
         //---------------------------------------------------------------------
+
+        public bool WriteDNBRPredictorMaps
+        {
+            get { return writeDNBRPredictorMaps; }
+            set { writeDNBRPredictorMaps = value; }
+        }
+
+        public bool WriteSpecialMaps
+        {
+            get { return writeSpecialMaps; }
+            set { writeSpecialMaps = value; }
+        }
+
 
         public InputParameters(ISpeciesDataset speciesDataset)
         {

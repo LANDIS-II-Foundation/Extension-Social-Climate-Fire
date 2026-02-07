@@ -9,7 +9,7 @@ using Landis.Library.Metadata;
 using Landis.Utilities;
 using Landis.Core;
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
     public static class MetadataHandler
     {
@@ -34,7 +34,7 @@ namespace Landis.Extension.Scrapple
             //          table outputs:   
             //---------------------------------------
 
-            PlugIn.ignitionsLog = new MetadataTable<IgnitionsLog>("scrapple-ignitions-log.csv");
+            PlugIn.ignitionsLog = new MetadataTable<IgnitionsLog>("socialclimatefire-ignitions-log.csv");
 
             OutputMetadata tblOut_igns = new OutputMetadata()
             {
@@ -46,7 +46,7 @@ namespace Landis.Extension.Scrapple
             tblOut_igns.RetriveFields(typeof(IgnitionsLog));
             Extension.OutputMetadatas.Add(tblOut_igns);
 
-            PlugIn.eventLog = new MetadataTable<EventsLog>("scrapple-events-log.csv");
+            PlugIn.eventLog = new MetadataTable<EventsLog>("socialclimatefire-events-log.csv");
 
             OutputMetadata tblOut_events = new OutputMetadata()
             {
@@ -58,7 +58,7 @@ namespace Landis.Extension.Scrapple
             tblOut_events.RetriveFields(typeof(EventsLog));
             Extension.OutputMetadatas.Add(tblOut_events);
 
-            PlugIn.summaryLog = new MetadataTable<SummaryLog>("scrapple-summary-log.csv");
+            PlugIn.summaryLog = new MetadataTable<SummaryLog>("socialclimatefire-summary-log.csv");
 
             OutputMetadata tblSummaryOut_events = new OutputMetadata()
             {
@@ -73,7 +73,7 @@ namespace Landis.Extension.Scrapple
             //---------------------------------------            
             //          map outputs:         
             //---------------------------------------
-            string[] paths = { @"social-climate-fire", "fire-intensity-{timestep}.img" };
+            string[] paths = { @"social-climate-fire", "fire-intensity-{timestep}.tif" };
             OutputMetadata mapOut_Intensity = new OutputMetadata()
             {
                 Type = OutputType.Map,
@@ -85,7 +85,7 @@ namespace Landis.Extension.Scrapple
             };
             Extension.OutputMetadatas.Add(mapOut_Intensity);
 
-            string[] paths2 = { @"social-climate-fire", "special-dead-wood-{timestep}.img" };
+            string[] paths2 = { @"social-climate-fire", "special-dead-wood-{timestep}.tif" };
             OutputMetadata mapOut_SpecialDead = new OutputMetadata()
             {
                 Type = OutputType.Map,
@@ -97,7 +97,7 @@ namespace Landis.Extension.Scrapple
             };
             Extension.OutputMetadatas.Add(mapOut_SpecialDead);
 
-            string[] paths3 = { @"social-climate-fire", "ignitions-type-{timestep}.img" };
+            string[] paths3 = { @"social-climate-fire", "ignitions-type-{timestep}.tif" };
             OutputMetadata mapOut_IgType = new OutputMetadata()
             {
                 Type = OutputType.Map,
@@ -109,7 +109,7 @@ namespace Landis.Extension.Scrapple
             };
             Extension.OutputMetadatas.Add(mapOut_IgType);
 
-            string[] paths4 = { @"social-climate-fire", "fire-spread-probability-{timestep}.img" };
+            string[] paths4 = { @"social-climate-fire", "fire-spread-probability-{timestep}.tif" };
             OutputMetadata mapOut_fireSpread = new OutputMetadata()
             {
                 Type = OutputType.Map,
@@ -121,7 +121,7 @@ namespace Landis.Extension.Scrapple
             };
             Extension.OutputMetadatas.Add(mapOut_fireSpread);
 
-            string[] paths5 = { @"social-climate-fire", "day-of-fire-{timestep}.img" };
+            string[] paths5 = { @"social-climate-fire", "day-of-fire-{timestep}.tif" };
             OutputMetadata mapOut_fireDay = new OutputMetadata()
             {
                 Type = OutputType.Map,
@@ -133,7 +133,7 @@ namespace Landis.Extension.Scrapple
             };
             Extension.OutputMetadatas.Add(mapOut_fireDay);
 
-            string[] paths6 = { @"social-climate-fire", "event-ID-{timestep}.img" };
+            string[] paths6 = { @"social-climate-fire", "event-ID-{timestep}.tif" };
             OutputMetadata mapOut_eventID = new OutputMetadata()
             {
                 Type = OutputType.Map,
@@ -145,7 +145,7 @@ namespace Landis.Extension.Scrapple
             };
             Extension.OutputMetadatas.Add(mapOut_eventID);
 
-            string[] paths7 = { @"social-climate-fire", "fine-fuels-{timestep}.img" };
+            string[] paths7 = { @"social-climate-fire", "fine-fuels-{timestep}.tif" };
             OutputMetadata mapOut_fineFuels = new OutputMetadata()
             {
                 Type = OutputType.Map,

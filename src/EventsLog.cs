@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using Landis.Library.Metadata;
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
     public class EventsLog
     {
@@ -16,6 +16,9 @@ namespace Landis.Extension.Scrapple
 
         [DataFieldAttribute(Unit = FieldUnits.Year, Desc = "Year")]
         public int SimulationYear {set; get;}
+
+        [DataFieldAttribute(Unit = FieldUnits.Year, Desc = "Year")]
+        public int FutureClimateYear { set; get; }
 
         [DataFieldAttribute(Desc = "Initiation Row")]
         public int InitRow { set; get; }

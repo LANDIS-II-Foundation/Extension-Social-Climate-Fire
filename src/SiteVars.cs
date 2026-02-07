@@ -1,10 +1,10 @@
 //  Authors:  Robert M. Scheller, Alec Kretchun, Vincent Schuster
 
 using Landis.SpatialModeling;
-using Landis.Library.BiomassCohorts;
-using Landis.Library.Biomass;
+using Landis.Library.UniversalCohorts;
+//using Landis.Library.Biomass;
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
     public static class SiteVars
     {
@@ -20,10 +20,11 @@ namespace Landis.Extension.Scrapple
         private static ISiteVar<ushort> groundSlope;
         private static ISiteVar<ushort> uphillSlopeAzimuth;
         private static ISiteVar<double> clay;
-        private static ISiteVar<ISiteCohorts> cohorts;
+        private static ISiteVar<SiteCohorts> cohorts;
         private static ISiteVar<double> fineFuels;
         private static ISiteVar<Pool> tempFineFuels;
         private static ISiteVar<int> specialDeadWood;  // potential snags, specifically
+        private static ISiteVar<int> biomassKilled;
         private static ISiteVar<double> spreadProbablity;
 
         private static ISiteVar<int> lightningSuppressionIndex;
@@ -38,6 +39,8 @@ namespace Landis.Extension.Scrapple
         public static ISiteVar<double> ClimaticWaterDeficit;
         public static ISiteVar<double> PotentialEvapotranspiration;
         public static ISiteVar<int> DNBR;
+        public static ISiteVar<double> siteLadderFuelBiomass;
+        public static ISiteVar<double> siteEWS;
 
         //---------------------------------------------------------------------
 
@@ -45,18 +48,21 @@ namespace Landis.Extension.Scrapple
         {
 
             InitializeDisturbances();
-            cohorts = PlugIn.ModelCore.GetSiteVar<ISiteCohorts>("Succession.BiomassCohorts");
+            cohorts = PlugIn.ModelCore.GetSiteVar<SiteCohorts>("Succession.UniversalCohorts");
             //fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.FineFuels");
 
             eventVar = PlugIn.ModelCore.Landscape.NewSiteVar<FireEvent>(InactiveSiteMode.DistinctValues);
-            timeOfLastFire       = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
+            timeOfLastFire = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             DNBR = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             intensity = PlugIn.ModelCore.Landscape.NewSiteVar<byte>();
             spreadProbablity = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             dayOfFire = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
 
-            groundSlope          = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
-            uphillSlopeAzimuth   = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
+            siteLadderFuelBiomass = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
+            siteEWS = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
+            
+            groundSlope = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
+            uphillSlopeAzimuth = PlugIn.ModelCore.Landscape.NewSiteVar<ushort>();
             clay = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             lightningFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
             rxFireWeight = PlugIn.ModelCore.Landscape.NewSiteVar<double>();
@@ -68,6 +74,7 @@ namespace Landis.Extension.Scrapple
             typeOfIginition = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             disturbed = PlugIn.ModelCore.Landscape.NewSiteVar<bool>();
             specialDeadWood = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
+            biomassKilled = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             EventID = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             RxZones = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
 
@@ -248,11 +255,19 @@ namespace Landis.Extension.Scrapple
             }
         }
         //---------------------------------------------------------------------
-        public static ISiteVar<int> SpecialDeadWood
+        public static ISiteVar<int> StandingDeadWood
         {
             get
             {
                 return specialDeadWood;
+            }
+        }
+
+        public static ISiteVar<int> BiomassKilled
+        {
+            get
+            {
+                return biomassKilled;
             }
         }
         //---------------------------------------------------------------------
@@ -275,7 +290,7 @@ namespace Landis.Extension.Scrapple
 
         //---------------------------------------------------------------------
 
-        public static ISiteVar<ISiteCohorts> Cohorts
+        public static ISiteVar<SiteCohorts> Cohorts
         {
             get
             {

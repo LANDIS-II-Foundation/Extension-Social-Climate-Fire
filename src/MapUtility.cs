@@ -2,10 +2,9 @@
 
 using Landis.SpatialModeling;
 using System.IO;
-using System.Collections.Generic;
 
 
-namespace Landis.Extension.Scrapple
+namespace Landis.Extension.SocialClimateFire
 {
     public static class MapUtility
     {
@@ -28,11 +27,11 @@ namespace Landis.Extension.Scrapple
         {
             PlugIn.ModelCore.UI.WriteLine("   Reading in data from {0}", path);
 
-            IInputRaster<IntPixel> map;
+            IInputRaster<DoublePixel> map;
 
             try
             {
-                map = PlugIn.ModelCore.OpenRaster<IntPixel>(path);
+                map = PlugIn.ModelCore.OpenRaster<DoublePixel>(path);
             }
             catch (FileNotFoundException)
             {
@@ -47,7 +46,7 @@ namespace Landis.Extension.Scrapple
             }
 
             using (map) {
-                IntPixel pixel = map.BufferPixel;
+                DoublePixel pixel = map.BufferPixel;
                 foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
                 {
                     map.ReadBufferPixel();
@@ -66,11 +65,11 @@ namespace Landis.Extension.Scrapple
         public static void ReadMap(string path, ISiteVar<int> siteVar)
         {
             PlugIn.ModelCore.UI.WriteLine("   Reading in data from {0}", path);
-            IInputRaster<IntPixel> map;
+            IInputRaster<DoublePixel> map;
 
             try
             {
-                map = PlugIn.ModelCore.OpenRaster<IntPixel>(path);
+                map = PlugIn.ModelCore.OpenRaster<DoublePixel>(path);
             }
             catch (FileNotFoundException)
             {
@@ -86,7 +85,7 @@ namespace Landis.Extension.Scrapple
 
             using (map)
             {
-                IntPixel pixel = map.BufferPixel;
+                DoublePixel pixel = map.BufferPixel;
                 foreach (Site site in PlugIn.ModelCore.Landscape.AllSites)
                 {
                     map.ReadBufferPixel();
