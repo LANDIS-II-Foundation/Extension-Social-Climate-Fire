@@ -86,8 +86,8 @@ namespace Landis.Extension.SocialClimateFire
 
             PlugIn.ModelCore.RegisterSiteVar(SiteVars.Intensity, "Fire.Severity");
             PlugIn.ModelCore.RegisterSiteVar(SiteVars.TimeOfLastFire, "Fire.TimeOfLastEvent");
-            PlugIn.ModelCore.RegisterSiteVar(SiteVars.GroundSlope, "Fire.Slope");
-            PlugIn.ModelCore.RegisterSiteVar(SiteVars.UphillSlopeAzimuth, "Fire.Aspect");
+            //PlugIn.ModelCore.RegisterSiteVar(SiteVars.GroundSlope, "Fire.Slope");
+            //PlugIn.ModelCore.RegisterSiteVar(SiteVars.UphillSlopeAzimuth, "Fire.Aspect");
         }
 
         //---------------------------------------------------------------------
