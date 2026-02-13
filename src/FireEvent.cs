@@ -184,7 +184,6 @@ namespace Landis.Extension.SocialClimateFire
 
                 double effectiveWindSpeed = CalculateEffectiveWindSpeed(targetSite, sourceSite, fireWeatherIndex, day);
 
-                //CalculateIntensity(targetSite, sourceSite);
                 CalculateDNBR(targetSite);
                 fireSites.RemoveAt(0);
 

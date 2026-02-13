@@ -1,7 +1,7 @@
 ; LANDIS-II Extension infomation
 #define CoreRelease "LANDIS-II-V8"
 #define ExtensionName "Social Climate Fire"
-#define AppVersion "4.0.3"
+#define AppVersion "4.0.4"
 #define AppPublisher "LANDIS-II Foundation"
 #define AppURL "http://www.landis-ii.org/"
 
@@ -43,7 +43,6 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 ; This .dll IS the extension (ie, the extension's assembly)
-; NB: Do not put an additional version number in the file name of this .dll
 ; (The name of this .dll is defined in the extension's \src\*.csproj file)
 Source: {#BuildDir}\Landis.Extension.SocialClimateFire-v4.dll; DestDir: {#ExtDir}; Flags: ignoreversion
 Source: {#BuildDir}\Landis.Extension.SocialClimateFire-v4.pdb; DestDir: {#ExtDir}; Flags: ignoreversion
@@ -52,9 +51,6 @@ Source: {#BuildDir}\Landis.Extension.SocialClimateFire-v4.pdb; DestDir: {#ExtDir
 Source: {#BuildDir}\Landis.Library.Parameters-v2.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
 Source: {#BuildDir}\Landis.Library.Climate-v5.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
 Source: {#BuildDir}\Ether.WeightedSelector.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall replacesameversion
-; Source: {#BuildDir}\Ether.WeightedSelector.pdb; DestDir: {#ExtDir}; Flags: uninsneveruninstall
-; Source: {#BuildDir}\Landis.Library.Metadata-v2.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
-; Source: {#BuildDir}\Landis.Library.UniversalCohorts-v1.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
 
 
 ; LANDIS-II identifies the extension with the info in this .txt file
