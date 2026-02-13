@@ -175,7 +175,6 @@ namespace Landis.Extension.SocialClimateFire
                 {
 
                     fireWeatherIndex = Climate.FutureEcoregionYearClimate[ecoregion.Index][PlugIn.ModelCore.CurrentTime].DailyFireWeatherIndex[day];
-                    //fireWeatherIndex = Climate.FutureEcoregionYearClimate[ecoregion.Index][PlugIn.CalendarActualYear].DailyFireWeatherIndex[day];
                 }
                 catch
                 {
@@ -184,7 +183,6 @@ namespace Landis.Extension.SocialClimateFire
 
                 double effectiveWindSpeed = CalculateEffectiveWindSpeed(targetSite, sourceSite, fireWeatherIndex, day);
 
-                //CalculateIntensity(targetSite, sourceSite);
                 CalculateDNBR(targetSite);
                 fireSites.RemoveAt(0);
 

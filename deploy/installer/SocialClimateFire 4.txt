@@ -1,7 +1,7 @@
 LandisData   Extension
 
 Name         "Social Climate Fire"
-Version      4.0.1
+Version      4.0.4
 Type         disturbance:fire
 Assembly     Landis.Extension.SocialClimateFire-v4
 Class        Landis.Extension.SocialClimateFire.PlugIn
