@@ -5,9 +5,9 @@
     <AssemblyName>Landis.Extension.SocialClimateFire-v4</AssemblyName>
     <AssemblyTitle>Landis.Extension.SocialClimateFire-v4</AssemblyTitle>
     <AssemblyCopyright>Landis-II-Foundation</AssemblyCopyright>
-    <AssemblyVersion>4.0.3</AssemblyVersion>
-    <Version>4.0.3</Version>
-    <FileVersion>4.0.3</FileVersion>
+    <AssemblyVersion>4.1</AssemblyVersion>
+    <Version>4.1</Version>
+    <FileVersion>4.1</FileVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/LANDIS-II-Foundation/Extension-SCRAPPLE</RepositoryUrl>
@@ -41,7 +41,7 @@
     <Reference Include="Landis.Library.Parameters-v2">
       <HintPath>lib\Landis.Library.Parameters-v2.dll</HintPath>
     </Reference>
-    <Reference Include="Landis.Library.UniversalCohorts-v1">
+    <Reference Include="Landis.Library.UniversalCohorts-v2">
       <HintPath>lib\Landis.Library.UniversalCohorts-v1.dll</HintPath>
     </Reference>
   </ItemGroup>
