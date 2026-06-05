@@ -48,8 +48,6 @@ Source: {#BuildDir}\Landis.Extension.SocialClimateFire-v4.dll; DestDir: {#ExtDir
 Source: {#BuildDir}\Landis.Extension.SocialClimateFire-v4.pdb; DestDir: {#ExtDir}; Flags: ignoreversion
 
 ; Requisite auxiliary libraries.  These libraries may be used by other extensions and thus are never uninstalled.
-Source: {#BuildDir}\Landis.Library.Parameters-v2.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
-Source: {#BuildDir}\Landis.Library.Climate-v5.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
 Source: {#BuildDir}\Ether.WeightedSelector.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall replacesameversion
 
 
