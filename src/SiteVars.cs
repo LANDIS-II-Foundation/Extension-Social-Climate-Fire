@@ -2,7 +2,6 @@
 
 using Landis.SpatialModeling;
 using Landis.Library.UniversalCohorts;
-//using Landis.Library.Biomass;
 
 namespace Landis.Extension.SocialClimateFire
 {
@@ -49,8 +48,7 @@ namespace Landis.Extension.SocialClimateFire
 
             InitializeDisturbances();
             cohorts = PlugIn.ModelCore.GetSiteVar<SiteCohorts>("Succession.UniversalCohorts");
-            //fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.FineFuels");
-
+            
             eventVar = PlugIn.ModelCore.Landscape.NewSiteVar<FireEvent>(InactiveSiteMode.DistinctValues);
             timeOfLastFire = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
             DNBR = PlugIn.ModelCore.Landscape.NewSiteVar<int>();
@@ -100,6 +98,7 @@ namespace Landis.Extension.SocialClimateFire
             // RMS:  I'm not positive this will work, but the idea is for fine fuels to connect to NECN (.FineFuels) or PnET (.Litter)
             if (fineFuels == null)
             {
+                fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.FineFuels");
                 tempFineFuels = PlugIn.ModelCore.GetSiteVar<Pool>("Succession.Litter");
                 foreach(ActiveSite site in PlugIn.ModelCore.Landscape)
                     SiteVars.FineFuels[site] = SiteVars.tempFineFuels[site].Mass;
