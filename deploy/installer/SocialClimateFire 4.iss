@@ -1,12 +1,12 @@
 ; LANDIS-II Extension infomation
 #define CoreRelease "LANDIS-II-V8"
 #define ExtensionName "Social Climate Fire"
-#define AppVersion "4.1.1"
+#define AppVersion "4.2"
 #define AppPublisher "LANDIS-II Foundation"
 #define AppURL "http://www.landis-ii.org/"
 
 ; Build directory
-#define BuildDir "..\..\src\bin\Debug\netstandard2.0"
+#define BuildDir "..\..\src\bin\Release\netstandard2.0"
 
 ; LANDIS-II installation directories
 #define ExtDir "C:\Program Files\LANDIS-II-v8\extensions"
@@ -51,7 +51,7 @@ Source: {#BuildDir}\Landis.Extension.SocialClimateFire-v4.pdb; DestDir: {#ExtDir
 Source: {#BuildDir}\Ether.WeightedSelector.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall replacesameversion
 ; Source: {#BuildDir}\Ether.WeightedSelector.pdb; DestDir: {#ExtDir}; Flags: uninsneveruninstall
 Source: {#BuildDir}\Landis.Library.Metadata-v2.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
-Source: {#BuildDir}\Landis.Library.UniversalCohorts-v1.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
+Source: {#BuildDir}\Landis.Library.UniversalCohorts-v2.dll; DestDir: {#ExtDir}; Flags: uninsneveruninstall 
 
 
 ; LANDIS-II identifies the extension with the info in this .txt file
