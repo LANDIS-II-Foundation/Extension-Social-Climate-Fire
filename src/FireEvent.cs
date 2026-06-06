@@ -58,6 +58,7 @@ namespace Landis.Extension.SocialClimateFire
         public ActiveSite currentSite;
         public int TotalSitesBurned;
         public int MaxSpreadArea;
+        public int BurningSitesThreshold;
 
         //public Dictionary<int, int> spreadArea;
 
@@ -126,7 +127,7 @@ namespace Landis.Extension.SocialClimateFire
             this.TotalBiomassMortality = 0.0;
             this.currentSite = initiationSite;
             this.maxDay = day;
-
+            this.BurningSitesThreshold = PlugIn.Parameters.BurningSitesThreshold;
         }
 
         //---------------------------------------------------------------------
@@ -228,10 +229,12 @@ namespace Landis.Extension.SocialClimateFire
                 if (day < PlugIn.DaysPerYear)
                 {
                     sourceSite = targetSite;  // the target becomes the source
-                    List<ActiveSite> neighbors = Get4CardinalActiveNeighbors(targetSite);
+                    List<ActiveSite> neighborsCardinal = Get4CardinalActiveNeighbors(targetSite);
+                    List<ActiveSite> allNeighbors = GetAllNeighbors(sourceSite, false);
+                    PlugIn.burningSites.Add(sourceSite);
                     //neighbors.RemoveAll(neighbor => SiteVars.Disturbed[neighbor]);
 
-                    foreach (ActiveSite neighborSite in neighbors)
+                    foreach (ActiveSite neighborSite in neighborsCardinal)
                     {
                         if (CanSpread(neighborSite, sourceSite, day, fireWeatherIndex, effectiveWindSpeed, 1.0))
                         {
@@ -239,11 +242,12 @@ namespace Landis.Extension.SocialClimateFire
                             ActiveSite[] spread = new ActiveSite[] { neighborSite, sourceSite };
                             fireSites.Add(spread);
                             this.TotalSitesSpread++;
+                            PlugIn.burningSites.Add(neighborSite);
                         }
                     }
-                    neighbors = Get4DiagonalNeighbors(targetSite);
+                    List<ActiveSite> neighborsDiagonal = Get4DiagonalNeighbors(targetSite);
 
-                    foreach (ActiveSite neighborSite in neighbors)
+                    foreach (ActiveSite neighborSite in neighborsDiagonal)
                     {
                         if (CanSpread(neighborSite, sourceSite, day, fireWeatherIndex, effectiveWindSpeed, 0.71))
                         {
@@ -251,13 +255,58 @@ namespace Landis.Extension.SocialClimateFire
                             ActiveSite[] spread = new ActiveSite[] { neighborSite, sourceSite };
                             fireSites.Add(spread);
                             this.TotalSitesSpread++;
+                            PlugIn.burningSites.Add(neighborSite);
                         }
                     }
+
+                    // SPREAD from target to new neighbors based on number of burning neighbors ***********************
+
+                    if (this.BurningSitesThreshold > 0)
+                    {
+                        foreach (var neighborSite in allNeighbors)
+                        {
+                            if (!PlugIn.burningSites.Contains(neighborSite) && BurningNeighborsSpread(neighborSite, PlugIn.burningSites))
+                            {
+                                ActiveSite[] spread = new ActiveSite[] { neighborSite, sourceSite };
+                                fireSites.Add(spread);
+                                this.TotalSitesSpread++;
+                                PlugIn.burningSites.Add(neighborSite);
+                            }
+                        }
+                    }
+
                 }
                 // SPREAD to neighbors ***********************
             }
 
 
+        }
+
+        private List<ActiveSite> GetAllNeighbors(ActiveSite sourceSite, bool ignoreDisturbed)
+        {
+            List<ActiveSite> allNeighbors = Get4CardinalActiveNeighbors(sourceSite, ignoreDisturbed);
+            allNeighbors.AddRange(Get4DiagonalNeighbors(sourceSite, ignoreDisturbed));
+
+            // randomize the neighbors
+            return allNeighbors = allNeighbors.OrderBy(_ => new Random().Next()).ToList();
+        }
+
+        private bool BurningNeighborsSpread(ActiveSite neighborSite, List<ActiveSite> burningSites)
+        {
+            int burningNeighbors = 0;
+            List<ActiveSite> neighbors = GetAllNeighbors(neighborSite, false);
+            foreach (var site in neighbors)
+            {
+                if (burningSites.Contains(site))
+                {
+                    burningNeighbors++;
+                }
+                if (burningNeighbors >= this.BurningSitesThreshold)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void CalculateDNBR(ActiveSite site)
@@ -685,7 +734,7 @@ namespace Landis.Extension.SocialClimateFire
             return neighbors;
         }
         //---------------------------------------------------------------------
-        private static List<ActiveSite> Get4CardinalActiveNeighbors(Site srcSite)
+        private static List<ActiveSite> Get4CardinalActiveNeighbors(Site srcSite, bool ignoreDisturbed = true)
         {
             if (!srcSite.IsActive)
                 throw new ApplicationException("Source site is not active.");
@@ -704,7 +753,7 @@ namespace Landis.Extension.SocialClimateFire
             {
                 Site neighbor = srcSite.GetNeighbor(relativeLoc);
 
-                if (neighbor != null && neighbor.IsActive && !SiteVars.Disturbed[neighbor])
+                if (neighbor != null && neighbor.IsActive && (!SiteVars.Disturbed[neighbor] || !ignoreDisturbed))
                 {
                     neighbors.Add((ActiveSite)neighbor);
                 }
@@ -713,7 +762,7 @@ namespace Landis.Extension.SocialClimateFire
             return neighbors;
         }
         //---------------------------------------------------------------------
-        private static List<ActiveSite> Get4DiagonalNeighbors(Site srcSite)
+        private static List<ActiveSite> Get4DiagonalNeighbors(Site srcSite, bool ignoreDisturbed = true)
         {
             if (!srcSite.IsActive)
                 throw new ApplicationException("Source site is not active.");
@@ -732,7 +781,7 @@ namespace Landis.Extension.SocialClimateFire
             {
                 Site neighbor = srcSite.GetNeighbor(relativeLoc);
 
-                if (neighbor != null && neighbor.IsActive && !SiteVars.Disturbed[neighbor])
+                if (neighbor != null && neighbor.IsActive && (!SiteVars.Disturbed[neighbor] || !ignoreDisturbed))
                 {
                     neighbors.Add((ActiveSite)neighbor);
                 }

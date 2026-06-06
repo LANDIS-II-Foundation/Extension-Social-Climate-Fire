@@ -671,4 +671,8 @@ src/.vs/SocialClimateFire/FileContentIndex/bf74301d-5a69-434d-b3f8-a42a8ddedc5b.
 *.db-shm
 *.db-wal
 *.vsidx
+/src/obj
+src/.vs/SocialClimateFire/FileContentIndex/7e7234df-06a7-4d0c-9c57-fc9b55c78463.vsidx
+/src/.vs
+/src/bin/Release
 src/bin/Debug/netstandard2.0/Landis.Library.UniversalCohorts-v2.dll
