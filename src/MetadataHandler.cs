@@ -85,17 +85,17 @@ namespace Landis.Extension.SocialClimateFire
             };
             Extension.OutputMetadatas.Add(mapOut_Intensity);
 
-            string[] paths2 = { @"social-climate-fire", "special-dead-wood-{timestep}.tif" };
-            OutputMetadata mapOut_SpecialDead = new OutputMetadata()
+            string[] paths2 = { @"social-climate-fire", "snag-dead-wood-{timestep}.tif" };
+            OutputMetadata mapOut_SnagDead = new OutputMetadata()
             {
                 Type = OutputType.Map,
-                Name = "SpecialDeadWood",
+                Name = "SnagDeadWood",
                 FilePath = Path.Combine(paths2),
                 Map_DataType = MapDataType.Continuous,
                 Map_Unit = FieldUnits.g_C_m2,
                 Visualize = true,
             };
-            Extension.OutputMetadatas.Add(mapOut_SpecialDead);
+            Extension.OutputMetadatas.Add(mapOut_SnagDead);
 
             string[] paths3 = { @"social-climate-fire", "ignitions-type-{timestep}.tif" };
             OutputMetadata mapOut_IgType = new OutputMetadata()
@@ -156,6 +156,31 @@ namespace Landis.Extension.SocialClimateFire
                 Visualize = true,
             };
             Extension.OutputMetadatas.Add(mapOut_fineFuels);
+
+            string[] paths8 = { @"social-climate-fire", "fire-dnbr-{timestep}.tif" };
+            OutputMetadata mapOut_dnbr = new OutputMetadata()
+            {
+                Type = OutputType.Map,
+                Name = "DNBR",
+                FilePath = Path.Combine(paths8),
+                Map_DataType = MapDataType.Ordinal,
+                Map_Unit = FieldUnits.None,
+                Visualize = true,
+            };
+            Extension.OutputMetadatas.Add(mapOut_dnbr);
+
+            string[] paths10 = { @"social-climate-fire", "biomass-mortality-{timestep}.tif" };
+            OutputMetadata mapOut_biomass_mortality = new OutputMetadata()
+            {
+                Type = OutputType.Map,
+                Name = "BiomassMortality",
+                FilePath = Path.Combine(paths10),
+                Map_DataType = MapDataType.Continuous,
+                Map_Unit = FieldUnits.g_B_m2,
+                Visualize = true,
+            };
+            Extension.OutputMetadatas.Add(mapOut_biomass_mortality);
+
 
             //---------------------------------------
             MetadataProvider mp = new MetadataProvider(Extension);

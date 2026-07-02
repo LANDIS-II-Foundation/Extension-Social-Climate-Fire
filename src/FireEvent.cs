@@ -43,7 +43,7 @@ namespace Landis.Extension.SocialClimateFire
         public int IgnitionDay;
         public double MeanIntensity;
         public double MeanPET;
-        public double MeanWD;
+        public double MeanWaterDeficit;
         public double MeanClay;
         public double MeanFineFuels;
         public double MeanLadderFuels;
@@ -111,9 +111,8 @@ namespace Landis.Extension.SocialClimateFire
             this.TotalSitesBurned = 0;
             this.InitiationFireWeatherIndex = annualWeatherData.DailyFireWeatherIndex[day];
             this.NumberOfDays = 1;
-            //this.MeanIntensity = 0.0;
             this.MeanPET = 0.0;
-            this.MeanWD = 0.0;
+            this.MeanWaterDeficit = 0.0;
             this.MeanClay = 0.0;
             this.MeanFineFuels = 0.0;
             this.MeanLadderFuels = 0.0;
@@ -288,6 +287,8 @@ namespace Landis.Extension.SocialClimateFire
             return allNeighbors = allNeighbors.OrderBy(_ => new Random().Next()).ToList();
         }
 
+        // This function burns sites within the burn perimeter for which more than a user-determined number
+        // of neighbors have also burned.  Added 2026.
         private bool BurningNeighborsSpread(ActiveSite neighborSite, List<ActiveSite> burningSites)
         {
             int burningNeighbors = 0;
@@ -300,6 +301,8 @@ namespace Landis.Extension.SocialClimateFire
                 }
                 if (burningNeighbors >= this.BurningSitesThreshold)
                 {
+                    this.MeanSpreadProbability += 1.0;  // Because this spread is being 'forced', assign a spread probability of 1.0
+                    SiteVars.SpreadProbability[site] = 1.0;
                     return true;
                 }
             }
@@ -308,9 +311,6 @@ namespace Landis.Extension.SocialClimateFire
 
         private void CalculateDNBR(ActiveSite site)
         {
-
-            //PlugIn.ModelCore.UI.WriteLine("  Calculate Intensity: {0}.", site);
-
             double fineFuelPercent = 0.0;
             try
             {
@@ -359,10 +359,6 @@ namespace Landis.Extension.SocialClimateFire
                 SiteVars.ClimaticWaterDeficit[site] = WaterDeficit; // set the site var to the time zero CWD so it appears in output maps
             }
                 
-            
-
-            //double TotalFuels = SiteVars.FineFuels[site] + ladderFuelBiomass;
-
             /// For delayed relative delta normalized burn ratio (DRdNBR) calculation 
             double intercept = PlugIn.Parameters.SiteMortalityB0; //The parameter fit for the intercept 
             double Beta_Clay = PlugIn.Parameters.SiteMortalityB1; //The parameter fit for site level clay % in Soil.
@@ -383,7 +379,7 @@ namespace Landis.Extension.SocialClimateFire
 
             int siteCohortsKilled = 0;
             this.MeanDNBR += (int) siteMortality;
-            this.MeanWD += WaterDeficit;
+            this.MeanWaterDeficit += WaterDeficit;
             this.MeanPET += Previous_Year_PET;
             this.MeanClay += Clay;
             this.MeanLadderFuels += ladderFuelBiomass;
@@ -402,12 +398,9 @@ namespace Landis.Extension.SocialClimateFire
             SiteVars.TypeOfIginition[site] = (int)this.IgnitionType;
             SiteVars.siteEWS[site] = siteEffectiveWindSpeed; 
             SiteVars.siteLadderFuelBiomass[site] = ladderFuelBiomass;
-            //PlugIn.ModelCore.UI.WriteLine("  dNBR: {0}, severity={1}.", siteMortality, standardSeverityIndex);
-
 
             currentSite = site;
             siteCohortsKilled = Damage(site);
-
 
             this.TotalSitesBurned++;
             this.MeanWindDirection += siteWindDirection;
@@ -481,7 +474,7 @@ namespace Landis.Extension.SocialClimateFire
             if (killCohort)
             {
                 this.CohortsKilled++;
-                return 1.0; // cohort.Data.Biomass;
+                return 1.0; 
             }
 
             return 0.0;
@@ -525,7 +518,7 @@ namespace Landis.Extension.SocialClimateFire
             // End LADDER FUELS ************************
 
 
-     // SUPPRESSION ************************
+            // SUPPRESSION ************************
             double suppressEffect = 1.0; // 1.0 = no effect
             double fwi1 = 0.0;
             double fwi2 = 0.0;
@@ -672,9 +665,8 @@ namespace Landis.Extension.SocialClimateFire
             el.TotalSitesBurned = fireEvent.TotalSitesBurned;
             el.CohortsKilled = fireEvent.CohortsKilled;
             el.AvailableCohorts = fireEvent.AvailableCohorts;
-            //el.MeanSeverity = fireEvent.MeanIntensity / (double) fireEvent.TotalSitesBurned;
             el.MeanPET=fireEvent.MeanPET / (double)fireEvent.TotalSitesBurned;
-            el.MeanWD = fireEvent.MeanWD / (double)fireEvent.TotalSitesBurned;
+            el.MeanWaterDeficit = fireEvent.MeanWaterDeficit / (double)fireEvent.TotalSitesBurned;
             el.MeanClay = fireEvent.MeanClay / (double)fireEvent.TotalSitesBurned;
             el.MeanFineFuels = fireEvent.MeanFineFuels / (double)fireEvent.TotalSitesBurned;
             el.MeanLadderFuels = fireEvent.MeanLadderFuels / (double)fireEvent.TotalSitesBurned;
@@ -684,52 +676,44 @@ namespace Landis.Extension.SocialClimateFire
             el.MeanEffectiveWindSpeed = fireEvent.MeanEffectiveWindSpeed / (double)fireEvent.TotalSitesBurned;
             el.MeanSuppressionEffectiveness = fireEvent.MeanSuppression / (double)fireEvent.TotalSitesSpread;
             el.TotalBiomassMortality = fireEvent.TotalBiomassMortality;
-            //el.NumberCellsSeverity1 = fireEvent.NumberCellsSeverity1;
-            //el.NumberCellsSeverity2 = fireEvent.NumberCellsSeverity2;
-            //el.NumberCellsSeverity3 = fireEvent.NumberCellsSeverity3;
-            //el.NumberCellsSeverity4 = fireEvent.NumberCellsSeverity4;
-            //el.NumberCellsSeverity5 = fireEvent.NumberCellsSeverity5;
-            //el.PercentsCellsIntensityFactor1 = (double) fireEvent.NumberCellsIntensityFactor1 / (double)fireEvent.TotalSitesBurned;
-            //el.PercentsCellsIntensityFactor2 = (double)fireEvent.NumberCellsIntensityFactor2 / (double)fireEvent.TotalSitesBurned;
-            //el.PercentsCellsIntensityFactor3 = (double)fireEvent.NumberCellsIntensityFactor3 / (double)fireEvent.TotalSitesBurned;
 
             PlugIn.eventLog.AddObject(el);
             PlugIn.eventLog.WriteToFile();
 
         }
 
-        //---------------------------------------------------------------------
-        private static List<ActiveSite> Get8ActiveNeighbors(Site srcSite)
-        {
-            if (!srcSite.IsActive)
-                throw new ApplicationException("Source site is not active.");
+        ////---------------------------------------------------------------------
+        //private static List<ActiveSite> Get8ActiveNeighbors(Site srcSite)
+        //{
+        //    if (!srcSite.IsActive)
+        //        throw new ApplicationException("Source site is not active.");
 
-            List<ActiveSite> neighbors = new List<ActiveSite>();
+        //    List<ActiveSite> neighbors = new List<ActiveSite>();
 
-            RelativeLocation[] neighborhood = new RelativeLocation[]
-            {
-                new RelativeLocation(-1,  0),  // north
-                new RelativeLocation( 0,  1),  // east
-                new RelativeLocation( 1,  0),  // south
-                new RelativeLocation( 0, -1),  // west
-                new RelativeLocation(-1,  1),  // northwest
-                new RelativeLocation( 1,  1),  // northeast
-                new RelativeLocation( 1,  -1),  // southeast
-                new RelativeLocation( -1, -1),  // southwest
-            };
+        //    RelativeLocation[] neighborhood = new RelativeLocation[]
+        //    {
+        //        new RelativeLocation(-1,  0),  // north
+        //        new RelativeLocation( 0,  1),  // east
+        //        new RelativeLocation( 1,  0),  // south
+        //        new RelativeLocation( 0, -1),  // west
+        //        new RelativeLocation(-1,  1),  // northwest
+        //        new RelativeLocation( 1,  1),  // northeast
+        //        new RelativeLocation( 1,  -1),  // southeast
+        //        new RelativeLocation( -1, -1),  // southwest
+        //    };
 
-            foreach (RelativeLocation relativeLoc in neighborhood)
-            {
-                Site neighbor = srcSite.GetNeighbor(relativeLoc);
+        //    foreach (RelativeLocation relativeLoc in neighborhood)
+        //    {
+        //        Site neighbor = srcSite.GetNeighbor(relativeLoc);
 
-                if (neighbor != null && neighbor.IsActive && !SiteVars.Disturbed[neighbor])
-                {
-                    neighbors.Add((ActiveSite)neighbor);
-                }
-            }
+        //        if (neighbor != null && neighbor.IsActive && !SiteVars.Disturbed[neighbor])
+        //        {
+        //            neighbors.Add((ActiveSite)neighbor);
+        //        }
+        //    }
 
-            return neighbors;
-        }
+        //    return neighbors;
+        //}
         //---------------------------------------------------------------------
         private static List<ActiveSite> Get4CardinalActiveNeighbors(Site srcSite, bool ignoreDisturbed = true)
         {

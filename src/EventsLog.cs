@@ -71,8 +71,8 @@ namespace Landis.Extension.SocialClimateFire
         [DataFieldAttribute(Desc = "Mean PET")]
         public double MeanPET { set; get; }
 
-        [DataFieldAttribute(Desc = "Mean WD")]
-        public double MeanWD { set; get; }
+        [DataFieldAttribute(Desc = "Mean Water Deficit")]
+        public double MeanWaterDeficit { set; get; }
 
         [DataFieldAttribute(Desc = "Mean Clay" )]
         public double MeanClay { set; get; }
@@ -86,31 +86,8 @@ namespace Landis.Extension.SocialClimateFire
         [DataFieldAttribute(Unit = FieldUnits.Severity_Rank, Desc = "Mean DNBR (1-5)", Format = "0.00")]
         public double MeanDNBR { set; get; }
 
-        //[DataFieldAttribute(Desc = "Mean Severity", Format = "0.0")]
-        //public double MeanSeverity { set; get; }
         [DataFieldAttribute(Desc = "Mortality Biomass")]
         public double TotalBiomassMortality { set; get; }
 
-        //[DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cells Intensity 1")]
-        //public double NumberCellsSeverity1 { set; get; }
-
-        //[DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cells Intensity 2")]
-        //public double NumberCellsSeverity2 { set; get; }
-
-        //[DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cells Intensity 3")]
-        //public double NumberCellsSeverity3 { set; get; }
-
-        //[DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cells Intensity 4")]
-        //public double NumberCellsSeverity4 { set; get; }
-        //[DataFieldAttribute(Unit = FieldUnits.Count, Desc = "Number of Cells Intensity 5")]
-        //public double NumberCellsSeverity5 { set; get; }
-        //[DataFieldAttribute(Unit = FieldUnits.Percentage, Desc = "Percent of Cells Intensity Factor 1")]
-        //public double PercentsCellsIntensityFactor1 { set; get; }
-
-        //[DataFieldAttribute(Unit = FieldUnits.Percentage, Desc = "Percent of Cells Intensity Factor 2")]
-        //public double PercentsCellsIntensityFactor2 { set; get; }
-
-        //[DataFieldAttribute(Unit = FieldUnits.Percentage, Desc = "Percent of Cells Intensity Factor 3")]
-        //public double PercentsCellsIntensityFactor3 { set; get; }
     }
 }
