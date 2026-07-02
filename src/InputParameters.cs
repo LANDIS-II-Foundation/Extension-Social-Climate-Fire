@@ -50,6 +50,7 @@ namespace Landis.Extension.SocialClimateFire
         int RxLastDayFire { get; set; }
         int RxTargetSize { get; set; }
         string RxZonesMap { get; set; }
+        int BurningSitesThreshold { get; set; }
 
         double MaximumSpreadAreaB0 { get; set; }
         double MaximumSpreadAreaB1 { get; set; }
@@ -132,6 +133,7 @@ namespace Landis.Extension.SocialClimateFire
         private int lastDayRx;
         private int targetRxSize;
         private string rxZoneMap;
+        private int burningSitesThreshold;
 
         private double maximumSpreadAreaB0;
         private double maximumSpreadAreaB1;
@@ -762,6 +764,19 @@ namespace Landis.Extension.SocialClimateFire
             set
             {
                 ladderFuelMaxAge = value;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        public int BurningSitesThreshold
+        {
+            get
+            {
+                return burningSitesThreshold;
+            }
+            set
+            {
+                burningSitesThreshold = value;
             }
         }
 

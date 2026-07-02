@@ -29,6 +29,7 @@ namespace Landis.Extension.SocialClimateFire
         public WeightedSelector<ActiveSite> weightedRxSites;
         public WeightedSelector<ActiveSite> weightedAccidentalSites;
         public WeightedSelector<ActiveSite> weightedLightningSites;
+        public static List<ActiveSite> burningSites;
 
         public static int FutureClimateBaseYear;
         public static Dictionary<int, int> sitesPerClimateRegion;
@@ -130,7 +131,7 @@ namespace Landis.Extension.SocialClimateFire
             }
 
             SiteVars.TimeOfLastFire.ActiveSiteValues = -999;  // default value to distinguish from recent fires.
-
+            burningSites = new List<ActiveSite>();
         }
 
         //---------------------------------------------------------------------
@@ -140,7 +141,7 @@ namespace Landis.Extension.SocialClimateFire
         ///</summary>
         public override void Run()
         {
-
+            burningSites.Clear();
             if (PlugIn.ModelCore.CurrentTime > 0)
                 SiteVars.InitializeDisturbances();
 

@@ -444,6 +444,23 @@ namespace Landis.Extension.SocialClimateFire
             ReadVar(lfma);
             parameters.LadderFuelMaxAge = lfma.Value;
 
+            InputVar<int> burningSitesThreshold = new InputVar<int>("BurningSitesThreshold");
+            if (ReadOptionalVar(burningSitesThreshold))
+            {
+                if (burningSitesThreshold.Value >= 2 && burningSitesThreshold.Value <= 8)
+                {
+                    parameters.BurningSitesThreshold = burningSitesThreshold.Value;
+                }
+                else
+                {
+                    parameters.BurningSitesThreshold = 0;
+                }
+            }
+            else
+            {
+                parameters.BurningSitesThreshold = 0;
+            }
+
             //  Read the species list for ladderfuels:
             List<string> speciesNames = new List<string>();
 
