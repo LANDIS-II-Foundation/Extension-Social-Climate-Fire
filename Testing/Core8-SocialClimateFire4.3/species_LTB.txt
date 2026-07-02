@@ -1,0 +1,30 @@
+LandisData	Species		
+
+>>				Sexual	Seed Disp Dist	Veg	Sprout	Age	Post-Fire
+>>	Name		Long	Maturit	Effecti	Maximum	Rep P	Min	Max	Regen
+>>	----		-------	-----	-----	----	------  -------	-----	----	-----	--------
+	PinuJeff	500	25	50	300	0	0	0	none
+	PinuLamb	550	20	30	400	0	0	0	none
+	CaloDecu	500	30	30	2000	0	0	0	none
+	AbieConc	450	35	30	500	0	0	0	none
+	AbieMagn	500	40	30	500	0	0	0	none
+	PinuCont	250	7	30	300	0	0	0	none
+	PinuMont	550	18	30	800	0	0	0	none
+	TsugMert	800	20	30	800	0.0005	100	800	none
+	PinuAlbi	900	30	30	5000	0.0001	100	900	none
+	PopuTrem	175	15	30	1000	0.9	1	175	resprout
+	NonnResp	80	5	30	550	0.85	5	70	resprout
+	NonnSeed	80	5	30	1000	0	0	0	none
+	FixnResp	80	5	30	500	0.75	5	70	resprout
+	FixnSeed	80	5	30	800	0	0	0	none
+
+
+
+
+
+
+
+
+
+
+

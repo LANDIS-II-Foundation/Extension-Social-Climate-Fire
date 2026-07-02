@@ -42,7 +42,7 @@
       <HintPath>lib\Landis.Library.Parameters-v2.dll</HintPath>
     </Reference>
     <Reference Include="Landis.Library.UniversalCohorts-v2">
-      <HintPath>lib\Landis.Library.UniversalCohorts-v1.dll</HintPath>
+      <HintPath>lib\Landis.Library.UniversalCohorts-v2.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

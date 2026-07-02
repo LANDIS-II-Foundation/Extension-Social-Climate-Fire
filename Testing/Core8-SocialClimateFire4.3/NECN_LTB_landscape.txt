@@ -1,0 +1,63 @@
+LandisData	"NECN Succession"
+
+Timestep  5
+
+SeedingAlgorithm  WardSeedDispersal
+
+InitialCommunitiesCSV      Initial_Community_Landscape.csv
+InitialCommunitiesMap   initial-communities.tif
+ClimateConfigFile 	climate-generator-baseline.txt	
+
+SoilDepthMapName				random110.tif 
+SoilDrainMapName				constantpoint75.tif 
+SoilBaseFlowMapName				constantpoint4.tif 
+SoilStormFlowMapName			constantpoint4.tif
+SoilFieldCapacityMapName		random_point1_point2.tif
+SoilWiltingPointMapName			random_point05_point099.tif
+SoilPercentSandMapName			random_point01_point5.tif
+SoilPercentClayMapName			random_point01_point5.tif
+InitialSOM1CsurfMapName			random110.tif
+InitialSOM1NsurfMapName			random6.tif
+InitialSOM1CsoilMapName			random110.tif
+InitialSOM1NsoilMapName			random9.tif
+InitialSOM2CMapName				random4500.tif
+InitialSOM2NMapName				random145.tif
+InitialSOM3CMapName				random1294.tif
+InitialSOM3NMapName				random50.tif
+InitialDeadWoodSurfaceMapName	random110.tif 
+InitialDeadCoarseRootsMapName	random50.tif
+
+CalibrateMode 	no
+SmokeModelOutputs no  << produces additional maps that are valuable for modeling smoke
+WaterDecayFunction Ratio <<Linear or Ratio
+
+
+ProbabilityEstablishAdjust 	1.0
+InitialMineralN			2.0
+InitialFineFuels 		0.99  << a fraction 0-1.0 of dead wood.
+AtmosphericNSlope		0.05
+AtmosphericNIntercept		0.05
+Latitude			44.0
+DenitrificationRate		0.001
+DecayRateSurf			0.01
+DecayRateSOM1			0.01
+DecayRateSOM2			0.2
+DecayRateSOM3			0.001
+
+SpeciesParameters NECN_Spp_Table.csv
+
+FireReductionParameters
+>>	Severity	WoodLitter	Litter	CohortWood	CohortFoliar	SOM
+>>	Fire		Reductions------------------------------------------------->
+	1		0.0		0.5	0.05		0.85		0.1
+	2		0.5		0.75	0.15		0.95		0.5
+	3		1.0		1.0	0.35		1.0		0.75		
+
+HarvestReductionParameters
+>>	Name		WoodLitter	Litter	SOM		CohortWood	CohortLeaf
+>>			Reduct		Reduct	Reduction	Removal		Removal
+	MaxAgeClearcut	0.5		0.15	0.2		0.8		0.15
+	PatchCutting	1.0		1.0	1.0		1.0		1.0
+
+
+   

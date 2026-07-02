@@ -191,9 +191,6 @@ namespace Landis.Extension.SocialClimateFire
                 SiteVars.TimeOfLastFire[targetSite] = PlugIn.ModelCore.CurrentTime;
                 dailySpreadArea += PlugIn.ModelCore.CellArea;
 
-                //if (day > PlugIn.DaysPerYear)
-                    //return;
-
                 // DAY OF FIRE *****************************
                 //      Calculate spread-area-max 
                 if (this.IgnitionType == IgnitionType.Rx)
