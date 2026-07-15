@@ -95,10 +95,10 @@ namespace Landis.Extension.SocialClimateFire
         {
             fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.FineFuels");
 
-            // RMS:  I'm not positive this will work, but the idea is for fine fuels to connect to NECN (.FineFuels) or PnET (.Litter)
+            // RMS:  Fine fuels to connect to NECN (.FineFuels) or PnET (.Litter)
             if (fineFuels == null)
             {
-                fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.FineFuels");
+                //fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.FineFuels");
                 tempFineFuels = PlugIn.ModelCore.GetSiteVar<Pool>("Succession.Litter");
                 foreach(ActiveSite site in PlugIn.ModelCore.Landscape)
                     SiteVars.FineFuels[site] = SiteVars.tempFineFuels[site].Mass;

@@ -46,7 +46,7 @@ namespace Landis.Extension.SocialClimateFire
         private static ICore modelCore;
 
         public static int DaysPerYear = 364;
-        private static bool OptionalMaps = true;
+        //private static bool OptionalMaps = true;
 
         private List<IDynamicIgnitionMap> dynamicRxIgns;
         private List<IDynamicIgnitionMap> dynamicLightningIgns;
@@ -385,7 +385,7 @@ namespace Landis.Extension.SocialClimateFire
         {
             string path;
             // Some maps are now optional
-            if (OptionalMaps && PlugIn.Parameters.StandingDeadWoodList.Any())
+            if (PlugIn.Parameters.StandingDeadWoodList.Any())
             {
                 string[] paths = { "social-climate-fire", "snag-dead-wood-{timestep}.tif" };
                 path = MapNames.ReplaceTemplateVars(Path.Combine(paths), currentTime);
@@ -462,8 +462,8 @@ namespace Landis.Extension.SocialClimateFire
                 }
             }
 
-            if (OptionalMaps)
-            {
+            //if (OptionalMaps)
+            //{
                 string[] paths31 = { "social-climate-fire", "fire-dnbr-{timestep}.tif" };
                 path = MapNames.ReplaceTemplateVars(Path.Combine(paths31), currentTime);
                 using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
@@ -486,10 +486,10 @@ namespace Landis.Extension.SocialClimateFire
                         outputRaster.WriteBufferPixel();
                     }
                 }
-            }
+            //}
 
-            if (OptionalMaps)
-            {
+            //if (OptionalMaps)
+            //{
                 string[] paths4 = { "social-climate-fire", "fire-spread-probability-{timestep}.tif" };
                 path = MapNames.ReplaceTemplateVars(Path.Combine(paths4), currentTime);
                 using (IOutputRaster<ShortPixel> outputRaster = modelCore.CreateRaster<ShortPixel>(path, modelCore.Landscape.Dimensions))
@@ -512,7 +512,7 @@ namespace Landis.Extension.SocialClimateFire
                         outputRaster.WriteBufferPixel();
                     }
                 }
-            }
+            //}
 
             string[] paths5 = { "social-climate-fire", "day-of-fire-{timestep}.tif" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths5), currentTime);
@@ -585,8 +585,8 @@ namespace Landis.Extension.SocialClimateFire
             }
 
 
-            if (OptionalMaps)
-            {
+            //if (OptionalMaps)
+            //{
                 string[] paths6 = { "social-climate-fire", "smolder-consumption-{timestep}.tif" };
                 path = MapNames.ReplaceTemplateVars(Path.Combine(paths6), currentTime);
                 using (IOutputRaster<IntPixel> outputRaster = modelCore.CreateRaster<IntPixel>(path, modelCore.Landscape.Dimensions))
@@ -632,7 +632,7 @@ namespace Landis.Extension.SocialClimateFire
                         outputRaster.WriteBufferPixel();
                     }
                 }
-            }
+            //}
 
             string[] paths9 = { "social-climate-fire", "fine-fuels-{timestep}.tif" };
             path = MapNames.ReplaceTemplateVars(Path.Combine(paths9), currentTime);
