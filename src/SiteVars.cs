@@ -1,7 +1,8 @@
 //  Authors:  Robert M. Scheller, Alec Kretchun, Vincent Schuster
 
-using Landis.SpatialModeling;
 using Landis.Library.UniversalCohorts;
+using Landis.SpatialModeling;
+using System.Security.Policy;
 
 namespace Landis.Extension.SocialClimateFire
 {
@@ -96,11 +97,16 @@ namespace Landis.Extension.SocialClimateFire
             fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.FineFuels");
 
             // RMS:  Fine fuels to connect to NECN (.FineFuels) or PnET (.Litter)
-            if (fineFuels == null)
+            if (fineFuels != null)
             {
-                //fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.FineFuels");
+                tempFineFuels = PlugIn.ModelCore.GetSiteVar<Pool>("Succession.FineFuels");
+                foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
+                    SiteVars.FineFuels[site] = SiteVars.tempFineFuels[site].Mass;
+            }
+            else
+            {
                 tempFineFuels = PlugIn.ModelCore.GetSiteVar<Pool>("Succession.Litter");
-                foreach(ActiveSite site in PlugIn.ModelCore.Landscape)
+                foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
                     SiteVars.FineFuels[site] = SiteVars.tempFineFuels[site].Mass;
             }
 
