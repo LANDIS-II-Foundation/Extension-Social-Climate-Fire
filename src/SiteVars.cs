@@ -21,8 +21,8 @@ namespace Landis.Extension.SocialClimateFire
         private static ISiteVar<ushort> uphillSlopeAzimuth;
         private static ISiteVar<double> clay;
         private static ISiteVar<SiteCohorts> cohorts;
-        private static ISiteVar<double> fineFuels;
-        private static ISiteVar<Pool> tempFineFuels;
+        private static ISiteVar<double> doubleFineFuels;
+        private static ISiteVar<Pool> poolFineFuels;
         private static ISiteVar<int> specialDeadWood;  // potential snags, specifically
         private static ISiteVar<int> biomassKilled;
         private static ISiteVar<double> spreadProbablity;
@@ -94,20 +94,19 @@ namespace Landis.Extension.SocialClimateFire
         /// </summary>
         public static void InitializeDisturbances()
         {
-            fineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.FineFuels");
+            doubleFineFuels = PlugIn.ModelCore.GetSiteVar<double>("Succession.FineFuels");
 
-            // RMS:  Fine fuels to connect to NECN (.FineFuels) or PnET (.Litter)
-            if (fineFuels != null)
+            // RMS:  Fine fuels to connect to NECN (.FineFuels) vs PnET or Biomass Succession (.Litter)
+            if (doubleFineFuels != null)  // NECN
             {
-                tempFineFuels = PlugIn.ModelCore.GetSiteVar<Pool>("Succession.FineFuels");
                 foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
-                    SiteVars.FineFuels[site] = SiteVars.tempFineFuels[site].Mass;
+                    SiteVars.FineFuels[site] = SiteVars.doubleFineFuels[site];
             }
-            else
+            else  // PnET or Biomass Succession
             {
-                tempFineFuels = PlugIn.ModelCore.GetSiteVar<Pool>("Succession.Litter");
+                poolFineFuels = PlugIn.ModelCore.GetSiteVar<Pool>("Succession.Litter");
                 foreach (ActiveSite site in PlugIn.ModelCore.Landscape)
-                    SiteVars.FineFuels[site] = SiteVars.tempFineFuels[site].Mass;
+                    SiteVars.FineFuels[site] = SiteVars.poolFineFuels[site].Mass;
             }
 
         }
@@ -174,11 +173,11 @@ namespace Landis.Extension.SocialClimateFire
         {
             get
             {
-                return fineFuels;
+                return doubleFineFuels;
             }
             set
             {
-                fineFuels = value;
+                doubleFineFuels = value;
             }
         }
         //---------------------------------------------------------------------
