@@ -602,15 +602,13 @@ namespace Landis.Extension.SocialClimateFire
             IEcoregion ecoregion = PlugIn.ModelCore.Ecoregion[site];
 
             // EFFECTIVE WIND SPEED ************************
-            double windSpeed = this.annualWeatherData.DailyWindSpeed[day];
+            double windSpeed = this.annualWeatherData.DailyWindSpeed[day];  // Climate User Guide indicates that units are m / second
             double windDirection = this.annualWeatherData.DailyWindDirection[day];
             siteWindDirection = windDirection;
             siteWindSpeed = windSpeed;
             siteFireWeatherIndex = fireWeatherIndex;
 
             double combustionBuoyancy = 10.0;  // Cannot be zero, also very insensitive when UaUb > 5.
-            //if (SiteVars.Intensity[sourceSite] <= 3)
-            //    combustionBuoyancy = 10.0;
             if (SiteVars.Intensity[sourceSite] > 3)
                 combustionBuoyancy = 25.0;
             if (SiteVars.Intensity[sourceSite] > 6)
