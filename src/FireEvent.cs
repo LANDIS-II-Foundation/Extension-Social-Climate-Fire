@@ -47,6 +47,7 @@ namespace Landis.Extension.SocialClimateFire
         public double MeanClay;
         public double MeanFineFuels;
         public double MeanLadderFuels;
+        public double MeanGrassBiomass;
         public double MeanWindDirection;
         public double MeanWindSpeed;
         public double MeanEffectiveWindSpeed;
@@ -116,6 +117,7 @@ namespace Landis.Extension.SocialClimateFire
             this.MeanClay = 0.0;
             this.MeanFineFuels = 0.0;
             this.MeanLadderFuels = 0.0;
+            this.MeanGrassBiomass = 0.0;
             this.MeanWindDirection = 0.0;
             this.MeanWindSpeed = 0.0;
             this.MeanEffectiveWindSpeed = 0.0;
@@ -384,6 +386,7 @@ namespace Landis.Extension.SocialClimateFire
             this.MeanClay += Clay;
             this.MeanLadderFuels += ladderFuelBiomass;
             this.MeanFineFuels += fineFuelPercent;
+            this.MeanGrassBiomass += Math.Min(CalculateGrassBiomass(site) / PlugIn.Parameters.MaxGrassBiomass, 1.0);
             this.SiteMortality =(int)siteMortality;
 
             int standardSeverityIndex = Math.Max((int) siteMortality / 100, 1);
@@ -696,6 +699,7 @@ namespace Landis.Extension.SocialClimateFire
             el.MeanClay = fireEvent.MeanClay / (double)fireEvent.TotalSitesBurned;
             el.MeanFineFuels = fireEvent.MeanFineFuels / (double)fireEvent.TotalSitesBurned;
             el.MeanLadderFuels = fireEvent.MeanLadderFuels / (double)fireEvent.TotalSitesBurned;
+            el.MeanGrassBiomass = fireEvent.MeanGrassBiomass / (double)fireEvent.TotalSitesBurned;
             el.MeanDNBR = fireEvent.MeanDNBR / (double)fireEvent.TotalSitesBurned;
             el.MeanWindDirection = fireEvent.MeanWindDirection / (double)fireEvent.TotalSitesBurned;
             el.MeanWindSpeed = fireEvent.MeanWindSpeed / (double)fireEvent.TotalSitesBurned;

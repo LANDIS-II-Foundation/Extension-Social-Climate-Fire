@@ -83,6 +83,9 @@ namespace Landis.Extension.SocialClimateFire
         [DataFieldAttribute(Desc = "Mean Ladder Fuels ")]
         public double MeanLadderFuels { set; get; }
 
+        [DataFieldAttribute(Desc = "Mean Grass Biomass ")]
+        public double MeanGrassBiomass { set; get; }
+
         [DataFieldAttribute(Unit = FieldUnits.Severity_Rank, Desc = "Mean DNBR (1-5)", Format = "0.00")]
         public double MeanDNBR { set; get; }
 
