@@ -533,12 +533,12 @@ namespace Landis.Extension.SocialClimateFire
             InputVar<bool> writeSpecialMaps = new InputVar<bool>("WriteSpecialMaps");
             if (ReadOptionalVar(writeSpecialMaps))
             {
-                parameters.WriteDNBRPredictorMaps = writeSpecialMaps.Value;
+                parameters.WriteSpecialMaps = writeSpecialMaps.Value;
                 PlugIn.ModelCore.UI.WriteLine("Extra Special maps = TRUE");
             }
             else
             {
-                parameters.WriteDNBRPredictorMaps = false;
+                parameters.WriteSpecialMaps = false;
                 PlugIn.ModelCore.UI.WriteLine("Extra Specieal maps = FALSE");
             }
 
