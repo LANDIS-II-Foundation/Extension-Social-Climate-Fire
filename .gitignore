@@ -971,3 +971,7 @@ Testing/Core8-SocialClimateFire4.3/socialclimatefire-ignitions-log.csv
 Testing/Core8-SocialClimateFire4.3/socialclimatefire-summary-log.csv
 Testing/Core8-SocialClimateFire4.3/Landis-log.txt
 Testing/Core8-SocialClimateFire4.3/Landis-log.txt
+Testing/Core8-SocialClimateFire4.3/Landis-climate-log.txt
+src/bin/Debug/netstandard2.0/Landis.Library.Climate-v6.dll
+src/lib/Landis.Library.Climate-v6.dll
+src/lib/Landis.Library.UniversalCohorts-v2.dll
